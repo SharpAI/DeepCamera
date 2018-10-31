@@ -32,6 +32,9 @@ ssh -p 8022 a@192.168.x.x
 wget https://github.com/solderzzc/model_release/releases/download/v1.0/usr_10312018.tgz
 scp -P 8022 usr_10312018.tgz a@192.168.x.x:/data/data/com.termux/files/
 ```
+or 百度云盘
+
+链接: https://pan.baidu.com/s/1hG6z2BdXCy82xtjXu3mrZg 提取码: 54cp
 
 ### On Android
 ```
