@@ -6,3 +6,10 @@ if [ ! -f model/net2.params ]; then
   tar -xvf model.tgz
   rm model.tgz
 fi
+
+cd src/detector
+npm install
+cd -
+cd src/monitor
+npm install
+

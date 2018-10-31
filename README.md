@@ -1,1 +1,9 @@
-# sharpai
+# SharpAI On Android
+
+## Setup
+
+```
+./setup.sh
+```
+
+
