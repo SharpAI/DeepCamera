@@ -15,7 +15,7 @@ AndroidPorting/Launcher/app/src/main/assets/authorized_keys
 ## Setup
 
 ```
-pkg install openssh wget
+pkg install openssh
 sshd
 ```
 
@@ -26,10 +26,17 @@ ssh -p 8022 a@192.168.x.x
 ```
 
 ## Install Base Root File System
+
+### ON PC
+```
+wget https://github.com/solderzzc/model_release/releases/download/v1.0/usr_10312018.tgz
+scp -P 8022 usr_10312018.tgz a@192.168.x.x:/data/data/com.termux/files/
+```
+
+### On Android
 ```
 cd /data/data/com.termux/files
-wget https://github.com/solderzzc/model_release/releases/download/v1.0/usr_10312018.tgz
-tar -xvf usr_10312018.tgz
+tar -xvf usr_10312018.tgz 
 ```
 
 ## Restart TERMUX
