@@ -3,7 +3,7 @@ process.on('uncaughtException', function (err) {
     console.error('uncaughtException',err)
 });
 
-var motion=require('./motion_clean')
+var motion=require('./motion')
 //var motion=require('./od')
 var deepeye=require('./deepeye')
 var waitqueue=require('./waitqueue')
