@@ -330,3 +330,28 @@ var onframe = function(cameraId, motion_detected, file_path, person_count, start
 }
 motion.init(onframe)
 waitqueue.init()
+
+
+
+const express = require('express');
+const app = express();
+const router = express.Router();
+const port = 3000;
+
+app.get('/', (request, response) => response.send('hello world'));
+
+app.use('/api', router);
+
+router.get('/post', (request, response) => {
+    file_url = request.originalUrl
+    filename = file_url.substring(file_url.indexOf('=')+1)
+    console.log(filename)
+    setTimeout(function(){
+	var undefined_obj
+	var start = new Date()
+	onframe("device", true, filename, undefined_obj, start)
+    }, 0)
+    response.json({message: 'OK'});
+});
+
+app.listen(port, () => console.log('Listening on port ${port}'));
