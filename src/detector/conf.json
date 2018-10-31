@@ -1,0 +1,8 @@
+{
+  "plug":"WorkAI",
+  "host":"camera",
+  "port":8080,
+  "key":"asdfasdfasdf12341234ad79fgsx",
+  "type":"detector",
+  "notice":"Looks like you have the Motion plugin running. Don't forget to enable <b>Send Frames</b> to start pushing frames to be read."
+}

@@ -1,0 +1,51 @@
+#!/bin/bash
+
+DATA='/data'
+RUNTIME=$DATA'/runtime/'
+SHINOBI=$DATA'/Shinobi'
+SRC=$RUNTIME'/facenet/src'
+PORT=$1
+LOG='/dev/runtime.log'$PORT
+
+export LD_PRELOAD=""
+
+if [ $PORT -eq 5000 ];then
+    if [ -e requirements.txt ]; then
+        pip install -r requirements.txt &
+    fi
+
+    #if [ -e $SHINOBI ];then
+    #    service mysql start
+    #    pm2 start $SHINOBI/cron.js
+    #    pm2 start $SHINOBI/camera.js
+    #    #pm2 logs
+    #fi
+
+    $DATA/cron_update &
+fi
+
+cd $SRC
+python -c 'import platform; import time; print platform.uname(); print platform.python_version(); time.sleep(1); print "sleep 1, exit"' > /dev/sysinfo
+
+while ((1)); do
+  if [ -f upload_api.pyc ]; then
+    python upload_api.pyc --port=$PORT
+  elif [ -f upload_api.exe ]; then
+    ./upload_api.exe --port=$PORT
+  else
+    python upload_api.py --port=$PORT
+  fi
+  echo 'check update ' >> $LOG
+
+  cd $DATA
+  if [ $PORT -eq 5000 ];then
+      ./checkupdate
+  fi
+
+  sleep 3
+
+  cd $SRC
+  date >> $LOG
+  echo 'restarting server ' >> $LOG
+done
+

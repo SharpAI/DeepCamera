@@ -1,0 +1,107 @@
+//const qiniu = require("qiniu");
+const proc = require("process");
+
+var fs = require('fs');
+var ALY = require('aliyun-sdk');
+
+/*
+var bucket = proc.env.QINIU_BUCKET;
+var accessKey = proc.env.QINIU_ACCESS_KEY;
+var secretKey = proc.env.QINIU_SECRET_KEY;
+*/
+var bucket = 'workai';
+var accessKey = 'Aq-AfdQq7zWeDeRjmjDLWHwVMZgttNQdo07CDDHf';
+var secretKey = 'lhLLKYpGhqPB-1xOkUjrBTVWRSQqMpaVC-52XVzI';
+
+/*var mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
+var options = {
+  scope: bucket,
+}
+var putPolicy = new qiniu.rs.PutPolicy(options);
+var uploadToken = putPolicy.uploadToken(mac);
+var config = new qiniu.conf.Config();
+var formUploader = new qiniu.form_up.FormUploader(config);
+var putExtra = new qiniu.form_up.PutExtra();
+
+function putFileQiniu(file_key,localFile,cb){
+  uploadToken = putPolicy.uploadToken(mac);
+  formUploader.putFile(uploadToken, file_key, localFile, putExtra, function(respErr,
+    respBody, respInfo) {
+    if (respErr) {
+      if(cb){
+        cb('error',null)
+      }
+      return
+    }
+
+    if (respInfo.statusCode == 200) {
+      var access_url = 'http://workaiossqn.tiegushi.com/' + file_key
+      //console.log(access_url)
+      //console.log(respBody);
+      if(cb){
+        cb(null,access_url)
+      }
+    } else {
+      console.log(respInfo.statusCode);
+      console.log(respBody);
+      if(cb){
+        cb('error',null)
+      }
+    }
+  });
+}
+*/
+
+var ossStream = require('aliyun-oss-upload-stream')(new ALY.OSS({
+  accessKeyId: 'Vh0snNA4Orv3emBj',
+  secretAccessKey: 'd7p2eNO8GuMl1GtIZ0at4wPDyED4Nz',
+  endpoint: 'http://oss-cn-shenzhen.aliyuncs.com',
+  apiVersion: '2013-10-15'
+}));
+
+function putFileAliyun(file_key,localFile,cb){
+  var upload = ossStream.upload({
+    Bucket: 'workai',
+    Key: file_key
+  });
+
+  var read = fs.createReadStream(localFile);
+  read.pipe(upload);
+
+  upload.on('error', function (error) {
+    console.log('error of aliyun upload:', error);
+
+    if(cb){
+      cb('error',null)
+    }
+  });
+
+  upload.on('uploaded', function (details) {
+    console.log('details:', details);
+    var access_url = 'http://cdn.workaioss.tiegushi.com/'+details.Key
+    console.log(access_url)
+
+    if(cb){
+      cb(null,access_url)
+    }
+  });
+}
+
+module.exports = {
+  putFile : putFileAliyun
+}
+/*putFile('animated.gif', "./images/animated.gif",function(error,url){
+  if(error !== null){
+    console.log('Error of upload')
+  } else {
+    console.log('Upload successed, file url is: '+url)
+  }
+})
+putFile('hello_world.png', "./images/hello_world.png",function(error,url){
+  if(error !== null){
+    console.log('Error of upload')
+  } else {
+    console.log('Upload successed, file url is: '+url)
+  }
+})
+*/

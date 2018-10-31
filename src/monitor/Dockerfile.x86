@@ -1,0 +1,11 @@
+FROM node:8-alpine
+
+#RUN apk add --update --no-cache ffmpeg python pkgconfig cairo-dev make g++ jpeg-dev graphicsmagick
+WORKDIR /opt/
+ADD ./package.json /opt/package.json
+RUN npm install 
+
+ADD ./index.js /opt/index.js
+ADD ./run.sh /opt/run.sh
+
+EXPOSE 8080

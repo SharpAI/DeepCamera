@@ -1,0 +1,106 @@
+#!/bin/bash
+DATA='/data'
+RUNTIME=$DATA'/runtime'
+
+copyToBackUp()
+{
+    backup_dir='/data/backup_tmp'
+    backup_dir_pkl='/data/backup_tmp/pkl'
+
+    rm -rf $backup_dir
+    mkdir -p $backup_dir_pkl
+
+    DIR='/data/runtime/facenet/src'
+    DB=$DIR'/data.sqlite'
+
+    if [ -f $DB ];then
+        echo "copy to ..."
+        mv $DB $backup_dir
+    fi
+
+    PB=$(find $DIR'/faces/' -name '*.pb')
+    for i in $PB
+    do
+        dir=$(dirname $i)
+        cp $dir $backup_dir
+    done
+
+    embedding=$(find $DIR'/faces' -name "face_embedding")
+    for file in $embedding
+    do
+        #file = faces/46a3066390c153bba8b9037b/front/face_embedding
+        dir=$(dirname $file)
+        #dir = faces/46a3066390c153bba8b9037b/front
+
+        #do not backup tmp_data
+        result=$(echo $dir | grep "tmp_data")
+        if [ $result"x" != "x" ]
+        then
+            continue
+        fi
+
+        dir=$(dirname $dir)
+        #dir =  faces/46a3066390c153bba8b9037b
+
+        if [ -d $dir ]
+        then
+            echo "copy "$dir" to "$backup_dir_pkl
+            mv $dir $backup_dir_pkl
+        fi
+    done
+
+    if [ -d $DIR'/face_testdataset' ]
+    then
+        mv $DIR'/face_testdataset' $backup_dir
+    fi
+}
+
+copyFromBackUp()
+{
+    backup_dir='/data/backup_tmp'
+    backup_dir_pkl='/data/backup_tmp/pkl'
+    DIR='/data/runtime/facenet/src'
+    DB=$backup_dir'/data.sqlite'
+
+    if [ -f $DB ];then
+        echo "copy to ..."
+        mv $DB $DIR'/data.sqlite'
+    fi
+
+    PB=$(find $backup_dir -name '*.pb')
+    for i in $PB
+    do
+        dir=$(dirname $i)
+        dirname=$(basename $dir)
+        rm -rf $DIR'/faces/'$dirname
+        mv $dir $DIR'/faces/'
+    done
+
+    result=$(find $backup_dir_pkl -maxdepth 1 -mindepth 1)
+    for i in $result
+    do
+        echo "cp "$i" "$DIR"/faces"
+        dirname=$(basename $i)
+        rm -rf $DIR'/faces/'$dirname
+        mv $i $DIR'/faces'
+    done
+
+
+    if [ -d $backup_dir'/face_testdataset' ]
+    then
+        rm -rf $DIR'/face_testdataset'
+        mv $backup_dir'/face_testdataset' $DIR
+    fi
+}
+
+if [ -f $DATA/needupdate ]; then
+  echo "Updating"
+  cd $RUNTIME
+  copyToBackUp
+  git reset --hard origin/master
+  git clean -f -d
+  git merge origin/master
+  cd ..
+  rm -f $DATA/needupdate
+  copyFromBackUp
+fi

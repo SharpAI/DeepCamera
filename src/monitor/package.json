@@ -1,0 +1,16 @@
+{
+  "name": "client-example",
+  "version": "0.1.1",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "crypto-js": "^3.1.9-1",
+    "cryptojs": "^2.5.3",
+    "ddp": "^0.12.1",
+    "ddp-login": "^1.0.10",
+    "dockerode": "^2.5.7",
+    "md5": "^2.2.1",
+    "ws": "^6.1.0",
+    "yamljs": "^0.3.0"
+  }
+}
