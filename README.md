@@ -31,6 +31,9 @@ cd /data/data/com.termux/files
 wget https://github.com/solderzzc/model_release/releases/download/v1.0/usr_10312018.tgz
 tar -xvf usr_10312018.tgz
 ```
+
+## Restart TERMUX
+
 ## Run Sharp AI Code
 
 ```
