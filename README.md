@@ -15,7 +15,7 @@ AndroidPorting/Launcher/app/src/main/assets/authorized_keys
 ## Setup
 
 ```
-pkg install openssh
+pkg install openssh wget
 sshd
 ```
 
