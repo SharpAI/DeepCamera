@@ -64,3 +64,5 @@ https://github.com/solderzzc/hotShare/blob/android_porting/AndroidPorting/vlc-ex
 直接点Play
 
 
+
+## [移植过程](https://github.com/solderzzc/hotShare/issues/3239)
