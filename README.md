@@ -53,4 +53,14 @@ cd sharpai
 ./start_service.sh
 ```
 
+## RTSP 输入源
+
+https://github.com/solderzzc/hotShare/tree/android_porting/AndroidPorting/vlc-example-streamplayer
+
+修改地址：
+https://github.com/solderzzc/hotShare/blob/android_porting/AndroidPorting/vlc-example-streamplayer/app/src/main/java/com/pedro/vlctestapp/MainActivity.java#L173
+
+然后运行
+直接点Play
+
 
