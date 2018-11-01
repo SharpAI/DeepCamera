@@ -86,7 +86,7 @@ EN_SOFTMAX = False
 SOFTMAX_ONLY = False
 
 isUpdatingDataSet = False
-webShowFace = True
+webShowFace = False
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif', 'bitmap'])
 EXT_IMG='png'
