@@ -186,7 +186,7 @@ asynpool.PROC_ALIVE_TIMEOUT = 60.0 #set this long enough
 REDIS_ADDRESS = os.getenv('REDIS_ADDRESS','redis')
 deepeye = Celery('upload_api-v2',
     broker='redis://guest@'+REDIS_ADDRESS+'/0',
-    backend='redis://guest@'+REDIS_ADDRESS+'redis/0')
+    backend='redis://guest@'+REDIS_ADDRESS+'/0')
 deepeye.count = 1
 
 
