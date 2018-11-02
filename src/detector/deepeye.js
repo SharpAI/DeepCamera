@@ -17,8 +17,8 @@ var detect_task_queues_length = 'http://'+host_ip+':'+host_port+'/api/tasks?limi
 var embedding_task_url = 'http://'+host_ip+':'+host_port+'/api/task/apply/upload_api-v2.extract'
 var IMAGE_DIR = process.env.NODE_ENV || '/opt/nvr/detector/images';
 
-var DEVICE_UUID_FILE = '/dev/ro_serialno'
-var DEVICE_GROUP_ID = '/data/usr/com.deep.workai/cache/groupid.txt'
+var DEVICE_UUID_FILE = '/data/data/com.termux/files/home/.ro_serialno'
+var DEVICE_GROUP_ID = '/data/data/com.termux/files/home/.groupid.txt'
 //client = null
 
 function connect_node_celery_to_amqp(){
@@ -313,7 +313,7 @@ function get_device_SN(cb) {
     if(device_SN)
         return cb && cb(null, device_SN)
 
-    fs.readFile('/dev/ro_serialno', 'utf8', function(err, data){
+    fs.readFile('/data/data/com.termux/files/home/.ro_serialno', 'utf8', function(err, data){
         if(err)
             return cb && cb(err, null)
 

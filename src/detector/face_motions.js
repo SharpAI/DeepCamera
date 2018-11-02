@@ -15,8 +15,8 @@ var FACE_MOTION_REPORT_SERVER_REQUEST_PREFIX = 'http://timealbumemail.tiegushi.c
 //var FACE_MOTION_REPORT_SERVER_REQUEST_PREFIX = 'http://10.5.52.253:3000/timelines/add?'
 var REPORT_FACE_MOTION_TO_EVENT_SERVER = true
 
-var DEVICE_UUID_FILE = '/dev/ro_serialno'
-var DEVICE_GROUP_ID = '/data/usr/com.deep.workai/cache/groupid.txt'
+var DEVICE_UUID_FILE = '/data/data/com.termux/files/home/.ro_serial_no'
+var DEVICE_GROUP_ID = '/data/data/com.termux/files/home/.groupid.txt'
 var ON_DEBUG = false
 
 function get_device_uuid(cb){

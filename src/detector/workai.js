@@ -24,7 +24,7 @@ function get_device_SN(cb) {
     if(device_SN)
         return cb && cb(null, device_SN)
 
-    fs.readFile('/dev/ro_serialno', 'utf8', function(err, data){
+    fs.readFile('/data/data/com.termux/files/home/.ro_serialno', 'utf8', function(err, data){
         if(err)
             return cb && cb(err, null)
 

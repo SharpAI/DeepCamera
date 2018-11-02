@@ -4,8 +4,8 @@ import os
 from persistentUUID import getUUID
 deviceId = None
 gourpId = None
-group_id_file_path = '/data/usr/com.deep.workai/cache/groupid.txt'
-device_id_file_path = './ro_serialno'
+group_id_file_path = '/data/data/com.termux/files/home/.groupid.txt'
+device_id_file_path = '/data/data/com.termux/files/home/.ro_serialno'
 
 def get_deviceid():         
     global deviceId         
@@ -32,8 +32,8 @@ def get_deviceid_old():
     if deviceId is not None:
         return deviceId
 
-    iSerial = '/sys/class/android_usb/android0/iSerial'
-    iSerial2 = '/dev/ro_serialno'
+    iSerial = '/data/data/com.termux/files/home/.ro_serialno'
+    iSerial2 = '/data/data/com.termux/files/home/.ro_serialno'
 
     if os.path.exists(iSerial):
         with open(iSerial) as f:

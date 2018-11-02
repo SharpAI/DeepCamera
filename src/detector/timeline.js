@@ -22,8 +22,8 @@ if (typeof db_global_timeline === 'undefined'){
   db_global_timeline = new Datastore()
   console.log('init nedb global for timeline')
 }
-var DEVICE_UUID_FILE = '/dev/ro_serialno'
-var DEVICE_GROUP_ID = '/data/usr/com.deep.workai/cache/groupid.txt'
+var DEVICE_UUID_FILE = '/data/data/com.termux/files/home/.ro_serialno'
+var DEVICE_GROUP_ID = '/data/data/com.termux/files/home/.groupid.txt'
 
 function get_device_uuid(cb){
   fs.readFile(DEVICE_UUID_FILE, function (err,data) {

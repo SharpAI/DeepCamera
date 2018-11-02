@@ -21,7 +21,7 @@ var ddpClient = new DDPClient({
 });
 
 var DEVICE_UUID_FILE = process.env.UUID_FILE || '/dev/ro_serialno'
-var DEVICE_GROUP_ID = process.env.GROUP_ID || '/data/usr/com.deep.workai/cache/groupid.txt'
+var DEVICE_GROUP_ID = '/data/data/com.termux/files/home/.groupid.txt'
 var VERSION_FILE = process.env.VERSION_FILE || '../version'
 var AUTO_UPDATE_FILE = process.env.AUTO_UPDATE_FILE || '../workaipython/wtconf/enableWT'
 var DOCKER_COMPOSE_YML = process.env.DOCKER_COMPOSE_YML || '../docker-compose.yml'
