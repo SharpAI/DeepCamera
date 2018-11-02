@@ -1,6 +1,6 @@
 # SharpAI On Android
 
-## Download Termux Modified Version
+## Download Termux Modified Version on PC
 
 ```
 git clone https://github.com/solderzzc/hotShare -b android_porting
