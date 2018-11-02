@@ -1,31 +1,31 @@
 # SharpAI On Android
 
-## Download Termux Modified Version on PC
+## 1. Download Termux Modified Version on PC
 
 ```
 git clone https://github.com/solderzzc/hotShare -b android_porting
 ```
 
-## Add authorized key
+## 2. Add authorized key
+
+Copy your pc ~/.ssh/id_rsa.pub to android ~/.ssh/authorized_keys (using ssh to connect android device)
 
 AndroidPorting/Launcher/app/src/main/assets/authorized_keys
 
-## Build and run it
-
-## Setup
+## 3. Setup on Android
 
 ```
 pkg install openssh
 sshd
 ```
 
-## Then Remote access it for easy
+## 4. Then Remote access it for easy
 
 ```
-ssh -p 8022 a@192.168.x.x
+ssh -p 8022 username@192.168.x.x
 ```
 
-## Install Base Root File System
+## 5. Install Base Root File System
 
 ### ON PC
 ```
@@ -42,9 +42,7 @@ cd /data/data/com.termux/files
 tar -xvf usr_10312018.tgz 
 ```
 
-## Restart TERMUX
-
-## Run Sharp AI Code
+## 6. Run Sharp AI Code
 
 ```
 git clone https://github.com/solderzzc/sharpai
