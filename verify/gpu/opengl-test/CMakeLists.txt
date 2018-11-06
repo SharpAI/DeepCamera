@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.0)
+project(opengl_test)
+#find_package(OpenGL REQUIRED)
+#find_package(GLFW3 REQUIRED)
+set(CMAKE_CXX_STANDARD 14)
+
+set(SOURCE_FILES main.cpp)
+LINK_DIRECTORIES(/system/lib64)
+add_executable(opengl_test ${SOURCE_FILES})
+target_link_libraries(opengl_test GLESv3 input android android_runtime glfw)
