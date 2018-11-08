@@ -27,6 +27,7 @@ ssh -p 8022 username@192.168.x.x
 
 ## 5. Install Base Root File System
 
+## FOR RK3399, 三星S6手机
 ### ON PC
 ```
 wget https://github.com/solderzzc/model_release/releases/download/v1.0/usr_10312018.tgz
@@ -42,12 +43,40 @@ cd /data/data/com.termux/files
 tar -xvf usr_10312018.tgz 
 ```
 
+## FOR 三星7420开发板
+### ON PC
+```
+wget https://github.com/solderzzc/model_release/releases/download/v1.0/usr_11082018_7420.tgz
+scp -P 8022 usr_11082018_7420.tgz a@192.168.x.x:/data/data/com.termux/files/
+```
+or 百度云盘
+
+
+
+### On Android
+```
+cd /data/data/com.termux/files
+tar -xvf usr_11082018_7420.tgz 
+```
+
+
 ## 6. Run Sharp AI Code
 
+### 下载代码
 ```
 git clone https://github.com/solderzzc/sharpai
 cd sharpai
 ./setup.sh
+```
+
+### 如果是三星开发板还要增加一个命令
+
+```
+download_stubmodel.sh
+```
+
+### 运行服务
+```
 ./start_service.sh
 ```
 
