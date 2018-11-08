@@ -72,7 +72,7 @@ cd sharpai
 ### 如果是三星开发板还要增加一个命令
 
 ```
-download_stubmodel.sh
+./download_stubmodel.sh
 ```
 
 ### 运行服务
