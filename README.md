@@ -51,7 +51,7 @@ scp -P 8022 usr_11082018_7420.tgz a@192.168.x.x:/data/data/com.termux/files/
 ```
 or 百度云盘
 
-
+链接: https://pan.baidu.com/s/1py7PhLuKzdK3LOQWQAFdTQ 提取码: 9zb5 
 
 ### On Android
 ```
