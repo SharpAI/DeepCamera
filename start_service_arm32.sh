@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export LD_LIBRARY_PATH=$LD_LIBRARY:/system/lib:/system/vendor/lib:/system/vendor/lib/egl
+export LD_LIBRARY_PATH=$LD_LIBRARY:/system/lib:/system/vendor/lib:/system/vendor/lib/egl:$PREFIX/lib
 export LD_PRELOAD=$LD_PRELOAD:libatomic.so
 
 redis-server &
