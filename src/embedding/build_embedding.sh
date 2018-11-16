@@ -2,6 +2,7 @@
 
 pyinstaller -y --hidden-import django \
      --name embedding \
+     --onefile \
      --hidden-import celery \
      --hidden-import celery.loaders.app \
      --hidden-import celery.app.amqp \
