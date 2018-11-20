@@ -27,7 +27,6 @@ ssh -p 8022 username@192.168.x.x
 
 ## 5. Install Base Root File System
 
-## FOR RK3399, 三星S6手机
 ### ON PC
 ```
 wget https://github.com/solderzzc/model_release/releases/download/v1.0/usr_10312018.tgz
@@ -41,22 +40,6 @@ or 百度云盘
 ```
 cd /data/data/com.termux/files
 tar -xvf usr_10312018.tgz 
-```
-
-## FOR 三星7420开发板
-### ON PC
-```
-wget https://github.com/solderzzc/model_release/releases/download/v1.0/usr_11082018_7420.tgz
-scp -P 8022 usr_11082018_7420.tgz a@192.168.x.x:/data/data/com.termux/files/
-```
-or 百度云盘
-
-链接: https://pan.baidu.com/s/1py7PhLuKzdK3LOQWQAFdTQ 提取码: 9zb5 
-
-### On Android
-```
-cd /data/data/com.termux/files
-tar -xvf usr_11082018_7420.tgz 
 ```
 
 
