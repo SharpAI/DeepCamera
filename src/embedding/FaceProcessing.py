@@ -106,14 +106,7 @@ def get_model(ctx, image_size, model_str, layer):
 def init_embedding_processor():
     global mod2
     global mod3
-
-    if os.path.isfile(DATA_RUNTIME_FOLDER+'/model-0000.params'):                 
-        global mx                                                                  
-        import mxnet as mx                                                         
-        ctx = mx.cpu(0)                                                            
-        mod3 = get_model(ctx, [112,112], DATA_RUNTIME_FOLDER+'/model,0', 'fc1')                 
-        return mod3
-    elif os.path.isfile(DATA_RUNTIME_FOLDER+'/net2.tar'):
+    if os.path.isfile(DATA_RUNTIME_FOLDER+'/net2.tar'):
         global __t
         global graph_runtime
         import tvm as __t
@@ -121,11 +114,19 @@ def init_embedding_processor():
         loaded_lib = __t.module.load(DATA_RUNTIME_FOLDER+'/net2.tar')
         loaded_json = open(DATA_RUNTIME_FOLDER+"/net2").read()
         loaded_params = bytearray(open(DATA_RUNTIME_FOLDER+"/net2.params", "rb").read())
+
         ctx = __t.cl(0)
+
         mod2 = graph_runtime.create(loaded_json, loaded_lib, ctx)
         mod2.load_params(loaded_params)
         return mod2
-    print('no existing model, nothing to do')                                               
+    elif os.path.isfile('/root/model-r50-am-lfw/model-0000.params'):
+        global mx
+        import mxnet as mx
+        ctx = mx.cpu(0)
+        mod3 = get_model(ctx, [112,112], '/root/model-r50-am-lfw/model,0', 'fc1')
+        print('no existing model, nothing to do')
+        return mod3
 
 def FaceProcessingOne(imgpath,sess,graph):
     images_placeholder = graph.get_tensor_by_name("import/input:0")
@@ -178,7 +179,10 @@ def FaceProcessingImageData2(img_path):
     if mod2 is not None:
         a = transform_image(resize_img).astype('float32')
         mod2.run(data=a)
-        out1 = mod2.get_output(0).asnumpy()
+        try:
+            out1 = mod2.get_output(0).asnumpy()
+        except TypeError as err:
+            out1 = mod2.get_output(0, __t.nd.empty((512,))).asnumpy()
         embedding = sklearn.preprocessing.normalize(out1).flatten()
     elif mod3 is not None:
         aligned = resize_img.transpose((2, 0, 1))

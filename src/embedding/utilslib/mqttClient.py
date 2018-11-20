@@ -16,7 +16,7 @@ import utilslib.aliyunUpload
 
 from threading import Timer
 
-import classifier_classify_new
+import classifier_rest_client as classifier
 
 DEBUG_ON=False
 #HOST='127.0.0.1'
@@ -281,7 +281,7 @@ def trainThreadFunc(self=None, device_id='', toid=''):
                 self.generate_embedding_ifmissing(svm_train_dataset)
             stime = time.time()
             print('Before train.')
-            ret_val = classifier_classify_new.train_svm_with_embedding(args_list)
+            ret_val = classifier.train_svm_with_embedding(args_list)
             print('After train.')
             message = "Failed"
             if ret_val is None:
@@ -654,7 +654,7 @@ class MyMQTTClass:
                         if self and self.generate_embedding_ifmissing:
                             self.generate_embedding_ifmissing(svm_train_dataset)
                         stime = time.time()
-                        ret_val = classifier_classify_new.train_svm_with_embedding(args_list)
+                        ret_val = classifier.train_svm_with_embedding(args_list)
                         message = "Failed"
                         if ret_val is None:
                             message = "Failed"

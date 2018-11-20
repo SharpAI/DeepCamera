@@ -24,6 +24,18 @@ else
   fi
 fi
 
+if [ -f classifier_rest_server.py ]; then
+  LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64 python2 classifier_rest_server.py &
+else
+  if [ -f classifier_rest_server.pyc ]; then
+    LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64 python2 classifier_rest_server.pyc &
+  else
+    if [ -f classifier_rest_server.exe ]; then
+      LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64 ./classifier_rest_server.exe &
+    fi
+  fi
+fi
+
 while [ 1 ]
 do
   if [ -f upload_api-v2.py ]; then
