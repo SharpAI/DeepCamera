@@ -15,12 +15,13 @@ var FACE_MOTION_REPORT_SERVER_REQUEST_PREFIX = 'http://timealbumemail.tiegushi.c
 //var FACE_MOTION_REPORT_SERVER_REQUEST_PREFIX = 'http://10.5.52.253:3000/timelines/add?'
 var REPORT_FACE_MOTION_TO_EVENT_SERVER = true
 
-var DEVICE_UUID_FILE = '/data/data/com.termux/files/home/.ro_serialno'
-var DEVICE_GROUP_ID = '/data/data/com.termux/files/home/.groupid.txt'
+var DEVICE_UUID_FILEPATH = process.env.DEVICE_UUID_FILEPATH || '/dev/ro_serialno'
+var DEVICE_GROUP_ID_FILEPATH = process.env.DEVICE_GROUP_ID_FILEPATH || '/data/usr/com.deep.workai/cache/groupid.txt'
+
 var ON_DEBUG = false
 
 function get_device_uuid(cb){
-  fs.readFile(DEVICE_UUID_FILE, function (err,data) {
+  fs.readFile(DEVICE_UUID_FILEPATH, function (err,data) {
     if (err) {
       return cb && cb('no_uuid')
     }
@@ -28,7 +29,7 @@ function get_device_uuid(cb){
   });
 }
 function get_device_group_id(cb){
-    fs.readFile(DEVICE_GROUP_ID, function (err,data) {
+    fs.readFile(DEVICE_GROUP_ID_FILEPATH, function (err,data) {
       if (err) {
         return cb && cb('no_group_id')
       }

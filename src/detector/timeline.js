@@ -22,11 +22,12 @@ if (typeof db_global_timeline === 'undefined'){
   db_global_timeline = new Datastore()
   console.log('init nedb global for timeline')
 }
-var DEVICE_UUID_FILE = '/data/data/com.termux/files/home/.ro_serialno'
-var DEVICE_GROUP_ID = '/data/data/com.termux/files/home/.groupid.txt'
+
+var DEVICE_UUID_FILEPATH = process.env.DEVICE_UUID_FILEPATH || '/dev/ro_serialno'
+var DEVICE_GROUP_ID_FILEPATH = process.env.DEVICE_GROUP_ID_FILEPATH || '/data/usr/com.deep.workai/cache/groupid.txt'
 
 function get_device_uuid(cb){
-  fs.readFile(DEVICE_UUID_FILE, function (err,data) {
+  fs.readFile(DEVICE_UUID_FILEPATH, function (err,data) {
     if (err) {
       return cb && cb('no_uuid')
     }
@@ -34,7 +35,7 @@ function get_device_uuid(cb){
   });
 }
 function get_device_group_id(cb){
-    fs.readFile(DEVICE_GROUP_ID, function (err,data) {
+    fs.readFile(DEVICE_GROUP_ID_FILEPATH, function (err,data) {
       if (err) {
         return cb && cb('no_group_id')
       }
@@ -177,6 +178,15 @@ module.exports = {
         return cb && cb(null,0)
       }
     })
+  },
+  get_tracking_info:function(tracker_id,cb){
+      db_global.findOne({_id:tracker_id},function(err,doc){
+        if(!err && doc){
+          return cb && cb(null,doc)
+        } else {
+          return cb && cb('error',null)
+        }
+      })
   },
   get_face_ids:function(tracker_id,cb){
     db_global.findOne({_id:tracker_id},function(err,doc){

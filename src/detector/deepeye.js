@@ -7,7 +7,7 @@ var celery = require('node-celery');
 
 var async = require('async')
 var face_motion = require('./face_motions')
-var maintainer = require('./maintainer')
+//var maintainer = require('./maintainer')
 var mqtt_2_group = require('./mqttgif')
 var timeline = require('./timeline')
 var device_SN = null
@@ -77,7 +77,7 @@ module.exports = {
             console.log(err)
             console.log(cropped)
             if(err){
-                maintainer.onError('face detection',err)
+                //maintainer.onError('face detection',err)
             }
             return cb && cb("add detect_task failed!!", 0, 0, [],null,null)
           }
@@ -106,7 +106,7 @@ module.exports = {
             console.log(err)
             console.log(cropped)
             if(err){
-                maintainer.onError('face detection',err)
+                //maintainer.onError('face detection',err)
             }
             return cb && cb("add detect_task failed!!", 0, [], 0)
           }

@@ -14,7 +14,7 @@ client.on('connect', function () {
 
 client.on('message', function (topic, message) {
   // message is Buffer
-  console.log(message.toString())
+  ON_DEBUG && console.log(message.toString())
 })
 
 var MESSAGE_THRESHOLD = 30
@@ -33,12 +33,12 @@ redisClient.select(15, function() {
 function message_threshold_check(person_id,cb){
     var my_key='key_limit_'+person_id;
     redisClient.exists(my_key,function(err,res){
-      console.log('begin redis return =  ===================')
-      console.log(err)
-      console.log(res)
+      ON_DEBUG && console.log('begin redis return =  ===================')
+      ON_DEBUG && console.log(err)
+      ON_DEBUG && console.log(res)
       if(err){
           //Error to operate redis, need send all
-          console.log('need send person message:'+person_id)
+          ON_DEBUG && console.log('need send person message:'+person_id)
           if(cb){
               cb(true)
           }
@@ -48,7 +48,7 @@ function message_threshold_check(person_id,cb){
       if(!res){
           redisClient.set(my_key,1,function(){
             redisClient.expire(my_key,MESSAGE_THRESHOLD,function(){
-              console.log('expire my key')
+              ON_DEBUG && console.log('expire my key')
             })
           })
           if(cb){
@@ -58,7 +58,7 @@ function message_threshold_check(person_id,cb){
         redisClient.ttl(my_key,function(err,res){
           if(res === -1){
             redisClient.expire(my_key,MESSAGE_THRESHOLD,function(){
-              console.log('set expire my key to '+MESSAGE_THRESHOLD)
+              ON_DEBUG && console.log('set expire my key to '+MESSAGE_THRESHOLD)
             })
             if(cb){
               cb(true);
@@ -66,11 +66,11 @@ function message_threshold_check(person_id,cb){
           } else {
             cb();
           }
-          console.log('expire in '+res)
+          ON_DEBUG && console.log('expire in '+res)
         })
       }
 
-      console.log('end redis return =  ===================')
+      ON_DEBUG && console.log('end redis return =  ===================')
     });
 };
 
