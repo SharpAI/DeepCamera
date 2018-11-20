@@ -2980,8 +2980,10 @@ def setup(sender=None, **kwargs):
 
         #e_sess, e_graph = FaceProcessing.InitialFaceProcessor(facenet_model)
         #embedding = featureCalculation2("./image/Mike_Alden_0001_tmp.png", e_sess, e_graph)
-        FaceProcessing.init_embedding_processor()
+        mod = FaceProcessing.init_embedding_processor()
+        print("start to warm up")
         embedding = featureCalculation2("./image/Mike_Alden_0001_tmp.png")
+        print("warmed up")
         #if embedding is not None:
         #    print("worker embedding ready")
 
