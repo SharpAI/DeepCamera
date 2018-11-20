@@ -4,43 +4,17 @@ import os
 from persistentUUID import getUUID
 deviceId = None
 gourpId = None
-group_id_file_path = '/data/data/com.termux/files/home/.groupid.txt'
-device_id_file_path = '/data/data/com.termux/files/home/.ro_serialno'
 
-def get_deviceid():         
-    global deviceId         
-    if deviceId is not None:
-        return deviceId                                
-                                                       
-    if os.path.exists(device_id_file_path):    
-        with open(device_id_file_path) as f:   
-            deviceId = f.readline()                                       
-                                                                          
-    if deviceId is None or len(deviceId)<1:                             
-        deviceId = getUUID()                                            
-        # print('>>> no file found, use MAC as deviceId %s' %(deviceId))
-                                                  
-    if deviceId is not None and len(deviceId) > 1:
-        deviceId = deviceId.strip('\n')        
-        #deviceId = deviceId.upper()           
-        # print("get deviceId: %s" %(deviceId))
-                                   
-    return deviceId                
+device_id_file_path = os.environ.get('DEVICE_UUID_FILEPATH','/dev/ro_serialno')
+group_id_file_path= os.environ.get('DEVICE_GROUP_ID_FILEPATH','/data/usr/com.deep.workai/cache/groupid.txt')
 
-def get_deviceid_old():
+def get_deviceid():
     global deviceId
     if deviceId is not None:
         return deviceId
 
-    iSerial = '/data/data/com.termux/files/home/.ro_serialno'
-    iSerial2 = '/data/data/com.termux/files/home/.ro_serialno'
-
-    if os.path.exists(iSerial):
-        with open(iSerial) as f:
-            deviceId = f.readline()
-
-    if (deviceId is None or len(deviceId)<1) and os.path.exists(iSerial2):
-        with open(iSerial2) as f:
+    if os.path.exists(device_id_file_path):
+        with open(device_id_file_path) as f:
             deviceId = f.readline()
 
     if deviceId is None or len(deviceId)<1:
@@ -53,6 +27,10 @@ def get_deviceid_old():
         # print("get deviceId: %s" %(deviceId))
 
     return deviceId
+
+def get_deviceid_old():
+    return get_deviceid()
+
 def save_groupid_to_file(group_id):
     try:
         with open(group_id_file_path, "w") as group_id_file:
@@ -115,29 +93,7 @@ def get_groupid(uuid):
 
 # global会有BUG
 def get_deviceid2():
-    deviceId = None
-
-    iSerial = '/sys/class/android_usb/android0/iSerial'
-    iSerial2 = '/dev/ro_serialno'
-
-    if os.path.exists(iSerial):
-        with open(iSerial) as f:
-            deviceId = f.readline()
-
-    if (deviceId is None or len(deviceId)<1) and os.path.exists(iSerial2):
-        with open(iSerial2) as f:
-            deviceId = f.readline()
-
-    if deviceId is None or len(deviceId)<1:
-        deviceId = getUUID()
-        # print('>>> no file found, use MAC as deviceId %s' %(deviceId))
-
-    if deviceId is not None and len(deviceId) > 1:
-        deviceId = deviceId.strip('\n')
-        #deviceId = deviceId.upper()
-        # print("get deviceId: %s" %(deviceId))
-
-    return deviceId
+    return get_deviceid()
 def get_current_groupid(uuid=get_deviceid()):
     groupid, _ = get_groupid(uuid)
     if groupid:

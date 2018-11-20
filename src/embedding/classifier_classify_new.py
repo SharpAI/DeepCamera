@@ -169,7 +169,7 @@ previous_model_ts = None
 #             return -1, None, 0
 #
 
-def classify(emb_array, classifier_filename):
+def classify(emb_array, classifier_filename, embedding_path):
     if not os.path.exists(classifier_filename):
         return -1, None, 0, None
     classifier_filename_exp = os.path.expanduser(classifier_filename)

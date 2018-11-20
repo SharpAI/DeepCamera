@@ -2,7 +2,7 @@
 process.on('uncaughtException', function (err) {
     console.error('uncaughtException',err)
 });
-
+var Queue = require('bull');
 var motion=require('./motion')
 //var motion=require('./od')
 var deepeye=require('./deepeye')
@@ -15,9 +15,36 @@ rt_msg = require('./realtime_message')
 var ON_DEBUG = false
 var FACE_DETECTION_DURATION = 100 // MS, fixed value implement first
 var TRACKER_ID_SILIENCE_INTERVAL = 4000 // MS, fixed value implement first
-
+var MAX_UNKNOWN_FRONT_FACE_IN_TRACKING = 5 // 陌生人情况下的入队列阈值
 var cameras_tracker = {}
 
+var REDIS_HOST = process.env.REDIS_HOST || "redis"
+var REDIS_PORT = process.env.REDIS_PORT || 6379
+
+function GetEnvironmentVar(varname, defaultvalue)
+{
+    var result = process.env[varname];
+    if(result!=undefined)
+        return result;
+    else
+        return defaultvalue;
+}
+
+// DEEP_ANALYSIS_MODE true=允许队列缓存, false=不允许队列缓存
+var DEEP_ANALYSIS_MODE = GetEnvironmentVar('DEEP_ANALYSIS_MODE',true)
+// RESTRICT_RECOGNITON_MODE true=只做正脸识别, false=侧脸和正脸都做识别
+var RESTRICT_RECOGNITON_MODE = GetEnvironmentVar('RESTRICT_RECOGNITON_MODE',true)
+// MINIMAL_FACE_RESOLUTION 定义脸最小分辨率
+var MINIMAL_FACE_RESOLUTION = GetEnvironmentVar('MINIMAL_FACE_RESOLUTION', 200)
+// RECOGNITION_ENSURE_VALUE 定义数值为秒，秒数之内确保一次计算
+var RECOGNITION_ENSURE_VALUE = GetEnvironmentVar('RECOGNITION_ENSURE_VALUE', 2)
+
+// Use database 22 to void confict if there's one
+var gifQueue = new Queue('gif making worker', {redis: {
+  host: REDIS_HOST,
+  port: REDIS_PORT,
+  db: 2
+}});
 /*
 var memwatch = require('memwatch-next')
 
@@ -164,7 +191,7 @@ function stop_current_tracking(cameraId){
   cameras_tracker[cameraId].current_tracker_id = ''
   cameras_tracker[cameraId].tracker_id_alive_ts = null
   cameras_tracker[cameraId].current_person_count = 0
-  console.log('TODO: Pass tracker stopped event into system if needed, cameraId: ' + cameraId)
+  ON_DEBUG && console.log('TODO: Pass tracker stopped event into system if needed, cameraId: ' + cameraId)
 }
 function extend_tracker_id_life_time(cameraId){
   ON_DEBUG && console.log('to extend_tracker_id_life_time[ts:'+ cameras_tracker[cameraId].current_tracker_id +']: '+cameraId)
@@ -182,7 +209,7 @@ function start_new_tracker_id(cameraId){
   var ts = new Date().getTime()
   cameras_tracker[cameraId].tracker_id_alive_ts = ts
   cameras_tracker[cameraId].current_tracker_id = ts
-  console.log('start_new_tracker_id: '+cameras_tracker[cameraId].current_tracker_id)
+  ON_DEBUG && console.log('start_new_tracker_id: '+cameras_tracker[cameraId].current_tracker_id)
 }
 
 function is_in_tracking(cameraId){
@@ -203,8 +230,13 @@ function is_in_tracking(cameraId){
   }
   return false
 }
-function save_image_for_delayed_process(cameraId, file_path){
-  var current_face_count = getCurrentFaceCount(cameraId);
+function save_image_for_delayed_process(cameraId, file_path, force_saving){
+  if(!DEEP_ANALYSIS_MODE && !force_saving){
+    ON_DEBUG && console.log('DEEP_ANALYSIS_MODE off, do not save image for delayed process')
+    deepeye.delete_image(file_path)
+    return
+  }
+  var current_face_count = getCurrentFaceCount(cameraId)
   var current_tracker_id = getCurrentTrackerId(cameraId)
   if(current_face_count > 0){
     ON_DEBUG && console.log('TODO: save and send to no priority task, faces: '+current_person_count + ' camera: '+cameraId)
@@ -216,11 +248,88 @@ function save_image_for_delayed_process(cameraId, file_path){
     deepeye.delete_image(file_path)
   }
 }
-function do_face_detection(cameraId,file_path,person_count,start_ts){
+function js_traverse(o) {
+    var type = typeof o
+    if (type == "object") {
+
+    } else {
+        print(o)
+    }
+}
+function getRecognitionTimes(tracking_info){
+  var recognition_times = 0
+  if(tracking_info){
+    for (var key in tracking_info.results) {
+        recognition_times += tracking_info.results[key]
+    }
+    recognition_times += tracking_info.front_faces
+  }
+  return recognition_times
+}
+function getFaceRecognitionTaskList(cameraId,cropped_images,tracking_info,current_tracker_id){
+  /*
+  cropped_images:
+  [ { trackerid: 1542411749715,
+    style: 'right_side',
+    blury: 334.7526585670141,
+    width: 209,
+    totalPeople: 1,
+    path: '/opt/nvr/detector/images/deepeye_1542411760711_0.png',
+    ts: 1542411760730,
+    cameraId: 'Lorex_1',
+    height: 210 } ]
+  tracking_info:
+  {
+    _id: 1542411749715,
+    recognized: true,
+    results: { '15392942339300000': 10 },
+    front_faces: 1,
+    number: 1,
+    created_on: 1542411750486
+  }
+  */
+  if(!cropped_images || cropped_images.length === 0){
+    return [];
+  }
+  var time_diff = (new Date() - current_tracker_id)/1000
+
+  console.log('Tracking lasting for %ds, I like this logic game ',time_diff,cropped_images,tracking_info)
+  var face_list = []
+  cropped_images.forEach(function(item){
+    if(RESTRICT_RECOGNITON_MODE && item.style !== 'front'){
+      deepeye.delete_image(item.path)
+      console.log('Do not use side face')
+      return
+    }
+    if(item.width < MINIMAL_FACE_RESOLUTION || item.height < MINIMAL_FACE_RESOLUTION){
+      console.log('Do not use smaller face than %d',MINIMAL_FACE_RESOLUTION)
+      deepeye.delete_image(item.path)
+      return
+    }
+    // Need to be very carefully about following code block
+    if(tracking_info){
+      var recognition_times = getRecognitionTimes(tracking_info)
+      var person_num = tracking_info.number
+      if(recognition_times > 0 && time_diff > 0 && person_num>0){
+        var calc_condition = time_diff/recognition_times/person_num
+        console.log('recognition time is %d, person_num %d, calc is %d',
+          recognition_times,person_num,calc_condition)
+        if( calc_condition < RECOGNITION_ENSURE_VALUE){
+          console.log('waiting for next time slot for recognition')
+          deepeye.delete_image(item.path)
+          return
+        }
+      }
+    }
+    face_list.push(item)
+  })
+  return face_list
+}
+function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_info,current_tracker_id){
   var ts = new Date().getTime()
-  var current_tracker_id = getCurrentTrackerId(cameraId)
   deepeye.process(cameraId, file_path, ts, current_tracker_id,
     function(err,face_detected,cropped_num,cropped_images,whole_file) {
+      tracking_info && console.log(tracking_info);
       setFaceDetectInProcessingStatus(cameraId, false);
       ON_DEBUG && console.log('detect callback')
       if(err) {
@@ -232,7 +341,7 @@ function do_face_detection(cameraId,file_path,person_count,start_ts){
         person_count = face_detected
       }
       var current_person_count = getCurrentPersonCount(cameraId)
-      console.log('tracker id: '+current_tracker_id+'person count: '+person_count+' face count: '+face_detected+' time cost: '+(new Date() - start_ts));
+      console.log('['+cameraId+'] tid: '+current_tracker_id+' person num: '+person_count+' face num: '+face_detected+' cost: '+(new Date() - start_ts));
       setCurrentPersonCount(cameraId, person_count)
       setCurrentFaceCount(cameraId, face_detected)
       if(person_count >= 1){
@@ -258,42 +367,96 @@ function do_face_detection(cameraId,file_path,person_count,start_ts){
           setCurrentPersonCount(cameraId, face_detected)
       }
 */
-
-      if (cropped_num>0) {
-        var trackerId = getCurrentTrackerId(cameraId)
-        deepeye.embedding(cropped_images, current_tracker_id, function(err,results){
+      var faces_to_be_recognited = getFaceRecognitionTaskList(cameraId,
+        cropped_images,tracking_info,current_tracker_id)
+      if (faces_to_be_recognited.length >0) {
+        deepeye.embedding(faces_to_be_recognited, current_tracker_id, function(err,results){
           timeline.update(current_tracker_id,'in_tracking',person_count,results)
 
           //save gif info
           var jpg_motion_path = face_motions.save_face_motion_image_path(current_tracker_id, whole_file);
           timeline.push_gif_info(current_tracker_id, jpg_motion_path, results, ts, function(err) {
-            if(err)
+            if(err){
               console.log(err)
-
+            }
           })
 
-          face_motions.check_and_generate_face_motion_gif(person_count,
+          gifQueue.add({
+            person_count:person_count,
+            cameraId:cameraId,
+            current_tracker_id:current_tracker_id,
+            whole_file:whole_file,
+            name_sorting:false});
+          /*face_motions.check_and_generate_face_motion_gif(person_count,
             cameraId,current_tracker_id,whole_file,false,
             function(err,the_file){
               deepeye.delete_image(whole_file)
-          })
+          })*/
         })
-      }
-      else {
-        face_motions.check_and_generate_face_motion_gif(person_count,
+      } else {
+          gifQueue.add({
+            person_count:person_count,
+            cameraId:cameraId,
+            current_tracker_id:current_tracker_id,
+            whole_file:whole_file,
+            name_sorting:false});
+        /*face_motions.check_and_generate_face_motion_gif(person_count,
           cameraId,current_tracker_id,whole_file,false,
           function(err,the_file){
             deepeye.delete_image(whole_file)
-        })
+        })*/
       }
-
-
     //})
   });
 }
+gifQueue.process(function(job, done){
 
+  // job.data contains the custom data passed when the job was created
+  // job.id contains id of this job.
+  ON_DEBUG && console.log('process gif task in bull queue %d',job.id)
+  var data = job.data
+  face_motions.check_and_generate_face_motion_gif(
+    data.person_count,
+    data.cameraId,
+    data.current_tracker_id,
+    data.whole_file,
+    data.name_sorting,
+    function(err,the_file){
+      deepeye.delete_image(data.whole_file)
+      done();
+  })
+});
 var delayed_for_face_detection = true;
 
+function need_save_to_delayed_process(tracking_info){
+  // 初始阶段，还没有任何检测结果，送入Delayed队列
+  if(!tracking_info){
+    return true;
+  }
+  /*
+   Tracking Info Format
+   {  _id: 1542403488136, // TimeStamp for the first frame of this event
+      recognized: false,
+      results: { '15392942339300000': 1 },
+      front_faces: 0,
+      number: 1,
+      created_on: 1542403489181
+   }
+  */
+  var recognized_in_results = Object.keys(tracking_info.results).length
+  // 如果已经识别出的人数多于当前Tracking的最大人数，不再送入Delayed队列
+  if(recognized_in_results >= tracking_info.number){
+    console.log('recognized_in_results >= %d, no delayed save',tracking_info.number)
+    return false;
+  }
+  // 镜头前是陌生人，正脸出现次数大于 N，不再入Delayed队列
+  if(tracking_info.front_faces >= MAX_UNKNOWN_FRONT_FACE_IN_TRACKING){
+    console.log('Unknowd faces >= %d no delayed save',MAX_UNKNOWN_FRONT_FACE_IN_TRACKING)
+    return false;
+  }
+  // 其他情况，入队列
+  return true;
+}
 // Has motion mean in defined duration, motion detected.
 // Can define it on WEB GUI
 var onframe = function(cameraId, motion_detected, file_path, person_count, start_ts){
@@ -302,27 +465,43 @@ var onframe = function(cameraId, motion_detected, file_path, person_count, start
   ON_DEBUG && console.log(previous_diff)
   setOldTimeStamp(cameraId, new Date().getTime())
 
-  if( delayed_for_face_detection === true && getFaceDetectInProcessingStatus(cameraId) === true ){
-    save_image_for_delayed_process(cameraId,file_path)
+  var current_tracker_id = false;
 
-    return;
-  }
   if(motion_detected === true){
     if(is_in_tracking(cameraId)){
-      extend_tracker_id_life_time(cameraId)
-      if(delayed_for_face_detection === true){
-        setFaceDetectInProcessingStatus(cameraId, true);
-        return do_face_detection(cameraId,file_path,person_count,start_ts)
-      } else {
-          setFaceDetectInProcessingStatus(cameraId, true);
-          return do_face_detection(cameraId,file_path,person_count,start_ts)
-      }
+      current_tracker_id = getCurrentTrackerId(cameraId)
+      // Better to extend it when person_count > 0 only,comment out here.
+      //extend_tracker_id_life_time(cameraId)
     } else {
       start_new_tracker_id(cameraId)
-      setFaceDetectInProcessingStatus(cameraId, true);
-      return do_face_detection(cameraId,file_path,person_count,start_ts)
     }
+
+    current_tracker_id = getCurrentTrackerId(cameraId)
+    // 现在是实时计算阶段，优先快和准要兼顾
+    if( delayed_for_face_detection === true &&
+      getFaceDetectInProcessingStatus(cameraId) === true ){
+
+      timeline.get_tracking_info(current_tracker_id,
+        function(error, tracking_info){
+          ON_DEBUG && console.log('to analysis tracking info to decide \
+              if save image for delayed processing: ',tracking_info)
+          if(need_save_to_delayed_process(tracking_info)){
+            save_image_for_delayed_process(cameraId,file_path)
+          } else {
+            ON_DEBUG && console.log('delete image due to no need save to delayed process')
+            deepeye.delete_image(file_path)
+          }
+      })
+
+      return;
+    }
+    timeline.get_tracking_info(current_tracker_id,function(error, tracking_info){
+      setFaceDetectInProcessingStatus(cameraId, true);
+      return do_face_detection(cameraId,file_path,person_count,
+        start_ts,tracking_info,current_tracker_id)
+    })
   } else if(is_in_tracking(cameraId)){
+    // 由于现在没有使用Motion Detection，这里都不会进入
     var current_tracker_id = getCurrentTrackerId(cameraId)
     face_motions.clean_up_face_motion_folder(cameraId,current_tracker_id)
     stop_current_tracking(cameraId)
@@ -330,8 +509,6 @@ var onframe = function(cameraId, motion_detected, file_path, person_count, start
 }
 motion.init(onframe)
 waitqueue.init()
-
-
 
 const express = require('express');
 const app = express();
@@ -347,9 +524,9 @@ router.get('/post', (request, response) => {
     filename = file_url.substring(file_url.indexOf('=')+1)
     console.log(filename)
     setTimeout(function(){
-	var undefined_obj
-	var start = new Date()
-	onframe("device", true, filename, undefined_obj, start)
+       var undefined_obj
+       var start = new Date()
+       onframe("device", true, filename, undefined_obj, start)
     }, 0)
     response.json({message: 'OK'});
 });

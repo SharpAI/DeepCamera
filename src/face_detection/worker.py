@@ -3,6 +3,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
+
 #deeepeye
 from celery import Celery
 from celery import Task
@@ -12,9 +14,13 @@ from celery.concurrency import asynpool
 
 #deeepeye
 asynpool.PROC_ALIVE_TIMEOUT = 60.0 #set this long enough
+
+redis_host = os.getenv("REDIS_HOST", default="localhost")
+redis_port = os.getenv("REDIS_PORT", default="6379")
+
 deepeye = Celery('upload_api-v2',
-    broker='redis://guest@localhost/0',
-    backend='redis://guest@localhost/0')
+    broker='redis://guest@'+redis_host+':'+redis_port+'/0',
+    backend='redis://guest@'+redis_host+':'+redis_port+'/0')
 
 @worker_process_init.connect()
 def setup(sender=None, **kwargs):

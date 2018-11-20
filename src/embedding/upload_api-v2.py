@@ -46,7 +46,7 @@ import align.detect_face
 if SAVE_FULL_BODY is True:
     from align.align_dataset_mtcnn_crop_body import save_body_by_face_position_jpg
 # from align import align_dlib
-import classifier_classify_new
+import classifier_rest_client as classifer
 #import clustering_people
 from subprocess import Popen, PIPE
 
@@ -1459,7 +1459,7 @@ def upload_forecast_result(key, forecast_result, json_data, num_p):
 def sendDebugLogToGroup(uuid, current_groupid, message):
     if ENABLE_DEBUG_LOG_TO_GROUP is True:
         sendMessage2Group(uuid, current_groupid, message)
-def SVM_classifier(embedding,align_image_path,uuid,current_groupid,img_style,number_people, img_objid,json_data, forecast_result):
+def SVM_classifier(embedding,align_image_path,uuid,current_groupid,img_style,number_people, img_objid,json_data, forecast_result, embedding_path):
     #Save image to src/face_dataset_classify/group/person/
     if SVM_SAVE_TEST_DATASET is True:
         group_path = os.path.join(svm_face_testdataset, current_groupid)
@@ -1488,7 +1488,7 @@ def SVM_classifier(embedding,align_image_path,uuid,current_groupid,img_style,num
 
         # 输入embedding的预测方法, 速度很快
         svm_stime = time.time()
-        _, human_string, score, top_three_name= classifier_classify_new.classify([embedding], pkl_path)
+        _, human_string, score, top_three_name= classifer.classify(embedding, pkl_path, embedding_path)
         if top_three_name:
             top_three_faceid = [name.split(' ')[1] for name in top_three_name]
         else:
@@ -1624,7 +1624,7 @@ def SVM_classifier_stranger(embedding,align_image_path,uuid,current_groupid,img_
 
         # 输入embedding的预测方法, 速度很快
         svm_stime = time.time()
-        _, human_string, score, top_three_name= classifier_classify_new.classify(embedding, pkl_path)
+        _, human_string, score, top_three_name= classifer.classify(embedding, pkl_path)
         if top_three_name:
             top_three_faceid = [name.split(' ')[1] for name in top_three_name]
         else:
@@ -1842,7 +1842,7 @@ def showRecognizedImage(image_path, queue_index):
 
 def face_recognition_on_embedding(align_image_path, embedding, totalPeople, blury, uuid,
                                    current_groupid, style, trackerId,
-                                   timestamp1, ts):
+                                   timestamp1, ts, embedding_path):
     img_objid = trackerId
     print("img_objid = {}".format(img_objid))
     print("number of people=%d" % (totalPeople))
@@ -1910,7 +1910,7 @@ def face_recognition_on_embedding(align_image_path, embedding, totalPeople, blur
         # embedding = embedding.reshape((1, -1))
         forecast_result['waiting'] = False
         json_data, forecast_result = SVM_classifier(embedding,align_image_path,
-            uuid,current_groupid,img_style,number_people,img_objid,json_data,forecast_result)
+            uuid,current_groupid,img_style,number_people,img_objid,json_data,forecast_result, embedding_path)
     else:
         print('Skip SoftMax/SVM')
         json_data, forecast_result = use_db_detect(current_groupid, uuid, embedding,
@@ -2551,7 +2551,7 @@ def _updateDataSet(url, objId, group_id, device_id, drop, img_type, sqlId, style
                     args_list = ['TRAIN', svm_train_dataset, 'facenet_models/20170512-110547/20170512-110547.pb',
                                  svn_train_pkl, '--batch_size', '1000']
                     generate_embedding_ifmissing(svm_train_dataset)
-                    ret_val = classifier_classify_new.train_svm_with_embedding(args_list)
+                    ret_val = classifer.train_svm_with_embedding(args_list)
                     message = "Failed"
                     if ret_val is None:
                         message = "Failed"
@@ -3063,7 +3063,10 @@ def extract(image):
         if type(trackerid) is not str:
             trackerid = str(trackerid)
 
-        result = face_recognition_on_embedding(imgpath, embedding, totalPeople, blury, uuid, current_groupid, style, trackerid, timestamp1, ts)
+        embedding_path = save_embedding.get_embedding_path(imgpath)
+        save_embedding.create_embedding_string(embedding, embedding_path)
+
+        result = face_recognition_on_embedding(imgpath, embedding, totalPeople, blury, uuid, current_groupid, style, trackerid, timestamp1, ts, embedding_path)
 
     return json.dumps({'result': result})
 

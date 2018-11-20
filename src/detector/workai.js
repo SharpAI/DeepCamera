@@ -19,12 +19,13 @@ var fs = require('fs');
 var qs=require('querystring');
 
 var device_SN = null
+var DEVICE_UUID_FILEPATH = process.env.DEVICE_UUID_FILEPATH || '/dev/ro_serialno'
 
 function get_device_SN(cb) {
     if(device_SN)
         return cb && cb(null, device_SN)
 
-    fs.readFile('/data/data/com.termux/files/home/.ro_serialno', 'utf8', function(err, data){
+    fs.readFile(DEVICE_UUID_FILEPATH, 'utf8', function(err, data){
         if(err)
             return cb && cb(err, null)
 

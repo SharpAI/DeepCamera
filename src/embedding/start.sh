@@ -1,5 +1,8 @@
 #!/bin/bash
 
+export DEVICE_UUID_FILEPATH=/data/data/com.termux/files/home/.ro_serialno
+export DEVICE_GROUP_ID_FILEPATH=/data/data/com.termux/files/home/.groupid.txt
+
 if [ -f parameter_server.py ]; then
   python2 parameter_server.py &
 else
@@ -20,6 +23,18 @@ else
   else
     if [ -f migrate_db.exe ]; then
       ./migrate_db.exe db upgrade
+    fi
+  fi
+fi
+
+if [ -f classifier_rest_server.py ]; then
+  LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64 python2 classifier_rest_server.py &
+else
+  if [ -f classifier_rest_server.pyc ]; then
+    LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64 python2 classifier_rest_server.pyc &
+  else
+    if [ -f classifier_rest_server.exe ]; then
+      LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64 ./classifier_rest_server.exe &
     fi
   fi
 fi

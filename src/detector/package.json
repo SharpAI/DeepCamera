@@ -42,7 +42,10 @@
     "request": "^2.83.0",
     "requestretry": "^3.0.1",
     "socket.io": "^2.1.1",
-    "socket.io-client": "^2.1.1"
+    "socket.io-client": "^2.1.1",
+    "redis":"^2.8.0",
+    "mqtt":"^2.18.7",
+    "bull":"^3.5.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
