@@ -153,11 +153,13 @@ def load_align_image_v2(result, image_path, trackerid, ts, cameraId):
 
     results = result['result']
     if results is None or len(results) < 1:
-        return None, None, None, None
+        return None, None, None, None, None, None
 
     face_path = {}
     blury_arr = {}
     imgs_style = {}
+    face_width_list = {}
+    face_height_list = {}
 
     img = misc.imread(image_path)
     img_size = np.asarray(img.shape)[0:2]
@@ -214,8 +216,10 @@ def load_align_image_v2(result, image_path, trackerid, ts, cameraId):
         face_path[new_image_path] = None
         blury_arr[new_image_path] = blury_value
         imgs_style[new_image_path] = '|'.join(style)
+        face_width_list[new_image_path] = face_width
+        face_height_list[new_image_path] = face_height
 
-    return len(results), face_path, imgs_style, blury_arr
+    return len(results), face_path, imgs_style, blury_arr, face_width_list, face_height_list
 
 def detect(image_path, trackerid, ts, cameraId):
     result = m.detect(image_path)
@@ -228,13 +232,17 @@ def detect(image_path, trackerid, ts, cameraId):
     cropped = []
     detected = False
 
-    nrof_faces, img_data, imgs_style, blury_arr = load_align_image_v2(result, image_path, trackerid, ts, cameraId)
+    nrof_faces, img_data, imgs_style, blury_arr, face_width, face_height = load_align_image_v2(result, image_path, trackerid, ts, cameraId)
     if img_data is not None and len(img_data) > 0:
         people_cnt = len(img_data)
         detected = True
         for align_image_path, prewhitened in img_data.items():
             style=imgs_style[align_image_path]
             blury=blury_arr[align_image_path]
-            cropped.append({"path": align_image_path, "style": style, "blury": blury, "ts": ts, "trackerid": trackerid, "totalPeople": people_cnt, "cameraId": cameraId})
+            width=face_width[align_image_path]
+            height=face_height[align_image_path]
+            cropped.append({"path": align_image_path, "style": style, "blury": blury, "ts": ts,
+                "trackerid": trackerid, "totalPeople": people_cnt, "cameraId": cameraId,
+                "width":width,"height":height})
 
     return json.dumps({'detected': detected, "ts": ts, "totalPeople": people_cnt, "cropped": cropped, 'totalmtcnn': nrof_faces})
