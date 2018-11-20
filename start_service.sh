@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-redis-server &
+redis-server --maxmemory 20mb --maxmemory-policy allkeys-lru --save "" --appendonly no --dbfilename "" &
 mosquitto &
 
 cd src/embedding

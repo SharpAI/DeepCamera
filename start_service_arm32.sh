@@ -1,9 +1,11 @@
 #!/bin/bash
 
 export LD_LIBRARY_PATH=$LD_LIBRARY:/system/lib:/system/vendor/lib:/system/vendor/lib/egl:$PREFIX/lib
-export LD_PRELOAD=$LD_PRELOAD:libatomic.so
+export LD_PRELOAD=$LD_PRELOAD:libatomic.so:libcutils.so
 
-redis-server &
+redis-server --maxmemory 20mb --maxmemory-policy allkeys-lru --save "" --appendonly no --dbfilename "" &
+mosquitto &
+
 mosquitto &
 
 cd src/embedding
