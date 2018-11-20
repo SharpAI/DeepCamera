@@ -17,7 +17,7 @@ threshold = [0.6, 0.7, 0.7]  # three steps's threshold
 factor = 0.709  # scale factor
 # sess, graph = FaceProcessing.InitialFaceProcessor()\
 
-BASEPATH = os.path.abspath(os.path.dirname(__file__))
+BASEPATH = os.path.abspath(os.getenv('RUNTIME_BASEDIR',os.path.dirname(__file__)))
 
 graph2 = tf.Graph()
 with graph2.as_default():

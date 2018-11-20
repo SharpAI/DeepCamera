@@ -40,7 +40,7 @@ import heapq
 import time
 import shutil
 
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
+BASEDIR = os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__)))
 sys.path.append(BASEDIR)
 #import judgeutil
 

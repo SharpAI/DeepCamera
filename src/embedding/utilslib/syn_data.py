@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 import os,sys
-SRCDIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../')
+SRCDIR = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))))
 sys.path.append(SRCDIR)
 
 import requests
@@ -27,9 +27,9 @@ SVM_TRAIN_WITHOUT_CATEGORY=True
 
 uuid = get_deviceid()
 
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
-UPLOAD_FOLDER = os.path.join(BASEDIR, '../image')
-DATABASE = 'sqlite:///' + os.path.join(BASEDIR, '../data/data.sqlite')
+BASEDIR = os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.join(os.path.dirname(__file__),'../')))
+UPLOAD_FOLDER = os.path.join(BASEDIR, 'image')
+DATABASE = 'sqlite:///' + os.path.join(BASEDIR, 'data/data.sqlite')
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
@@ -37,7 +37,7 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db.init_app(app)
 
-facenet_model = os.path.join(BASEDIR, '../facenet_models/20170512-110547/20170512-110547.pb')
+facenet_model = os.path.join(BASEDIR, 'facenet_models/20170512-110547/20170512-110547.pb')
 sess, graph = FaceProcessing.InitialFaceProcessor(facenet_model)
 
 SVM_TRAIN_WITHOUT_CATEGORY=True
@@ -130,12 +130,12 @@ def down_img_embedding(img_url, group_id, face_id, style='front'):
     #return False, None
 
 def migration():
-    sql_db = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/') + 'data.sqlite'
+    sql_db = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.join(os.path.dirname(__file__),'../'))), 'data/') + 'data.sqlite'
     if not os.path.exists(sql_db):
         db.create_all()
 
-    migrate_db_exe = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../') + 'migrate_db.exe'
-    migrate_db_py  = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../') + 'migrate_db.py'
+    migrate_db_exe = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))) + 'migrate_db.exe'
+    migrate_db_py  = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))) + 'migrate_db.py'
     if os.path.exists(migrate_db_exe):
         out_put = subprocess.check_output([migrate_db_exe, 'db', 'upgrade'])
     else:

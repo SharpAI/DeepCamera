@@ -2,7 +2,7 @@
 import os, time
 import heapq
 
-BASEPATH = os.path.abspath(os.path.dirname(__file__))
+BASEPATH = os.path.abspath(os.getenv('RUNTIME_BASEDIR',os.path.dirname(__file__)))
 # pb_path = 'faces/embedding_graph.pb'
 # label_txt_path = "faces/output_labels.txt"
 bottleneck_file = 'test_images/2af60667790f86b7c23df4967YRBBDB722205800149309903838612.jpg.txt'
@@ -60,5 +60,3 @@ def test_on_bottleneck(bottleneck_file, groupid, img_style):
 #
 # if __name__ == '__main__':
 #     test_on_bottleneck(bottleneck_file=bottleneck_file, groupid)
-
-

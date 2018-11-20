@@ -18,7 +18,7 @@ from tensorflow.python.platform import gfile
 from tensorflow.python.util import compat
 
 
-BASEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir, 'data'))
+BASEPATH = os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.join(os.path.dirname(__file__),os.path.pardir)), 'data'))
 
 summaries_dir = "/tmp/output_labels.txt"
 how_many_training_steps = 3000
@@ -372,8 +372,8 @@ class TrainFromBottlenecks:
         self.start_time2 = None
 
     def trainingTesting(self):
-        BASE_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dataset')
-        BOTTLENECKS_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'bottlenecks')
+        BASE_FOLDER = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), 'dataset')
+        BOTTLENECKS_FOLDER = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), 'bottlenecks')
         image_dir = BASE_FOLDER
         bottleneck_dir = BOTTLENECKS_FOLDER
 

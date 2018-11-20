@@ -15,12 +15,12 @@ from scipy import misc
 #
 #
 # dataset = TrainSet.query.all()
-BASEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir, 'data', 'faces'))
+BASEPATH = os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.join(os.path.dirname(__file__),os.path.pardir)), 'data', 'faces'))
 img_dir = 'face_dataset'
 embedding_dir = 'face_embedding'
 denoise_dir = 'face_denoise'
-# BASE_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), img_dir)
-# BOTTLENECKS_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), embedding_dir)
+# BASE_FOLDER = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), img_dir)
+# BOTTLENECKS_FOLDER = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), embedding_dir)
 
 def requests_retry_get(url, timeout=3, retries=3):
     s = Session()
@@ -238,5 +238,3 @@ def down_embedding(embedding_url, embedding_path):
             print('{"error":"Document not found"}')
             return None
             # start 计算embedding
-
-

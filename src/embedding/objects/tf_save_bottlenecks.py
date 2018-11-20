@@ -8,8 +8,8 @@ from urllib import urlopen
 
 filetypes = ['*.jpg', '*.jpeg']
 summaries_dir = "/tmp/output_labels.txt"
-BASE_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dataset')
-BOTTLENECKS_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'bottlenecks')
+BASE_FOLDER = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), 'dataset')
+BOTTLENECKS_FOLDER = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), 'bottlenecks')
 
 def download_img(img_url, group_id, face_id, i):
     u = urlopen(img_url)

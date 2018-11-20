@@ -4,7 +4,7 @@ import os, time
 import heapq
 import tensorflow as tf
 
-BASEPATH = os.path.abspath(os.path.dirname(__file__))
+BASEPATH = os.path.abspath(os.getenv('RUNTIME_BASEDIR',os.path.dirname(__file__)))
 # pb_path = 'bottlenecks_graph.pb'
 bottleneck_file = 'test_images/2af60667790f86b7c23df4967YRBBDB722205800149309903838612.jpg.txt'
 sess_def=None
@@ -106,5 +106,3 @@ def test_on_bottleneck(bottleneck_file, groupid):
 
 # if __name__ == '__main__':
 #     test_on_bottleneck(bottleneck_file=bottleneck_file)
-
-

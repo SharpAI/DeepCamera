@@ -19,7 +19,7 @@ from utilslib.aliyunUpload import aliyun_upload_img
 import cv2
 from align import align_dlib
 
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
+BASEDIR = os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__)))
 UPLOAD_FOLDER = os.path.join(BASEDIR, 'image')
 DATABASE = 'sqlite:///' + os.path.join(BASEDIR, 'data.sqlite')
 

@@ -12,7 +12,7 @@ headers = ['path', 'embed', 'is_or_isnot', 'person_id', 'device_id', 'face_id', 
 # dataset_isnot = TrainSet.query.filter_by(is_or_isnot=False).all()
 
 
-BASE_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dataset')
+BASE_FOLDER = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), 'dataset')
 
 if not os.path.exists(BASE_FOLDER):
     os.makedirs(BASE_FOLDER)

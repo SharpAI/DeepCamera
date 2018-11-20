@@ -8,7 +8,7 @@ from crontab import CronTab
 my_user_cron = CronTab(user=True)
 
 # 新建任务
-path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'qiniu_mkzip.py')
+path = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), 'qiniu_mkzip.py')
 job = my_user_cron.new(command='python {} >> ~/qiniu_mkzip.log'.format(path))
 
 # 执行周期

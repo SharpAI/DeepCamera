@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 import os,sys
-BASEDIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../')
+BASEDIR = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.join(os.path.dirname(__file__),'../'))))
 sys.path.append(BASEDIR)
 
 from faces.save_embedding import download_img_for_svm_sync, get_image_path_sync

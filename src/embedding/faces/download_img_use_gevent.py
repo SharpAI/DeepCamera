@@ -14,7 +14,7 @@ dataset_is = TrainSet.query.filter_by(is_or_isnot=True).all()
 # dataset_isnot = TrainSet.query.filter_by(is_or_isnot=False).all()
 
 
-BASE_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), img_dir)
+BASE_FOLDER = os.path.join(os.path.abspath(os.getenv('RUNTIME_BASEDIR',os.path.dirname(__file__))), img_dir)
 
 if not os.path.exists(BASE_FOLDER):
     os.makedirs(BASE_FOLDER)

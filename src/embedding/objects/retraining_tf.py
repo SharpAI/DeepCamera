@@ -648,7 +648,7 @@ def download_img(img_url, group_id, face_id, i, target_dir):
     return os.path.join(foldername, filename)
 
 def prepareDataset(lists):
-    BASE_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dataset')
+    BASE_FOLDER = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), 'dataset')
     for i, d in enumerate(lists):
         download_img(d.url, d.group_id, d.face_id, i, BASE_FOLDER)
     return BASE_FOLDER

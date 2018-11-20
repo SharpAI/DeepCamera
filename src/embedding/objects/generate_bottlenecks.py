@@ -21,7 +21,7 @@ from six.moves import urllib
 from urllib import urlopen
 from PIL import Image
 
-BASEPATH = os.path.abspath(os.path.dirname(__file__))
+BASEPATH = os.path.abspath(os.getenv('RUNTIME_BASEDIR',os.path.dirname(__file__)))
 
 image_dir = os.path.join("Animal_Data")
 output_graph = "bottlenecks_graph.pb"
@@ -58,8 +58,8 @@ MAX_NUM_IMAGES_PER_CLASS = 2 ** 27 - 1  # ~134M
 image_counter = 0
 start_time = None
 
-# BASE_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dataset')
-# BOTTLENECKS_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'bottlenecks')
+# BASE_FOLDER = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), 'dataset')
+# BOTTLENECKS_FOLDER = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), 'bottlenecks')
 g_graph=None
 g_bottleneck_tensor=None
 g_jpeg_data_tensor=None
@@ -209,6 +209,3 @@ def resize(infile):
             return outfile
         except IOError:
             print("Cannot resize '%s'" % infile)
-
-
-

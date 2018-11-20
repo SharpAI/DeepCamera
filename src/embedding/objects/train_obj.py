@@ -43,9 +43,9 @@ def sendMessage2Group(uuid, group_id, text):
 # image_dir = os.path.join("dataset")
 # bottleneck_dir = "bottlenecks"
 
-BASEPATH = os.path.abspath(os.path.dirname(__file__))
-# image_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dataset')
-# bottleneck_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'bottlenecks')
+BASEPATH = os.path.abspath(os.getenv('RUNTIME_BASEDIR',os.path.dirname(__file__)))
+# image_dir = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), 'dataset')
+# bottleneck_dir = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), 'bottlenecks')
 
 output_graph = "bottlenecks_graph.pb"
 output_labels = "output_labels.txt"
@@ -360,8 +360,8 @@ class TrainFromBottlenecks:
         self.start_time2 = None
 
     def trainingTesting(self):
-        # BASE_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dataset')
-        # BOTTLENECKS_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'bottlenecks')
+        # BASE_FOLDER = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), 'dataset')
+        # BOTTLENECKS_FOLDER = os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__))), 'bottlenecks')
         BASE_FOLDER = image_dir_path
         BOTTLENECKS_FOLDER = bottleneck_dir_path
         image_dir = BASE_FOLDER

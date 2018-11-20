@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_script import Manager, Server
 from flask_migrate import Migrate, MigrateCommand
 
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
+BASEDIR = os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__)))
 # UPLOAD_FOLDER = os.path.join(BASEDIR, 'image')
 DATABASE = 'sqlite:///' + os.path.join(BASEDIR, 'data', 'data.sqlite')
 

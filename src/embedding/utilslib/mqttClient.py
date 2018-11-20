@@ -49,7 +49,7 @@ def uploadLogsThreadFunc(device_id='', toid=''):
     if len(device_id) > 1 and len(toid) > 1:
         sendMessage2Group(device_id, toid, 'Received uploadlogs command, doing...')
 
-    BASEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
+    BASEPATH = os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.join(os.path.dirname(__file__),os.path.pardir))))
     device_id = get_deviceid()
     log_dir = os.path.join(BASEPATH, 'docker_logs')
     timestamp = int(round(time.time() * 1000))
@@ -93,7 +93,7 @@ def uploadLogsThreadFunc(device_id='', toid=''):
 def uploadTrainThreadFunc(device_id='', toid=''):
     if len(device_id) > 1 and len(toid) > 1:
         sendMessage2Group(device_id, toid, 'Received uploadtraindata command, doing...')
-    BASEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
+    BASEPATH = os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.join(os.path.dirname(__file__),os.path.pardir))))
     device_id = get_deviceid()
     current_groupid = get_current_groupid()
     group_file_path = os.path.join(BASEPATH, 'data', 'faces', current_groupid)
@@ -118,7 +118,7 @@ def uploadTrainThreadFunc(device_id='', toid=''):
 def uploadTestThreadFunc(device_id='', toid=''):
     if len(device_id) > 1 and len(toid) > 1:
         sendMessage2Group(device_id, toid, 'Received uploadtestdata command, doing...')
-    BASEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
+    BASEPATH = os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.join(os.path.dirname(__file__),os.path.pardir))))
     device_id = get_deviceid()
     current_groupid = get_current_groupid()
     group_file_path = os.path.join(BASEPATH, 'data', 'face_testdataset', current_groupid)
@@ -154,7 +154,7 @@ def syncDatasetsThreadFunc(device_id='', toid=''):
                 sendMessage2Group(device_id, toid, 'syncDatasetsThreadFunc: no syn_data.exe or syn_data.py {}'.format(device_id))
             return
         current_groupid = get_current_groupid()
-        BASEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
+        BASEPATH = os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.join(os.path.dirname(__file__),os.path.pardir))))
         cmd = "export PYTHONPATH={} && cd {} && python utilslib/{}".format(BASEPATH, BASEPATH, app_name)
         print("syncDatasetsThreadFunc: exec command: {}".format(cmd))
         if len(device_id) > 1 and len(toid) > 1:
@@ -183,7 +183,7 @@ def syncFacesDatasetsThreadFunc(device_id='', toid=''):
                 sendMessage2Group(device_id, toid, 'syncFacesDatasetsThreadFunc: no sync_facesdata.exe or sync_facesdata.py {}'.format(device_id))
             return
         current_groupid = get_current_groupid()
-        BASEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
+        BASEPATH = os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.join(os.path.dirname(__file__),os.path.pardir))))
         cmd = "export PYTHONPATH={} && cd {} && python utilslib/{}".format(BASEPATH, BASEPATH, app_name)
         print("syncDatasetsThreadFunc: exec command: {}".format(cmd))
         if len(device_id) > 1 and len(toid) > 1:
@@ -201,7 +201,7 @@ def syncFacesDatasetsThreadFunc(device_id='', toid=''):
 def checkTrainsetThreadFunc(device_id='', toid=''):
     try:
         current_groupid = get_current_groupid()
-        BASEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
+        BASEPATH = os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.join(os.path.dirname(__file__),os.path.pardir))))
         cmd = "diff -r -x face_embedding {}/data/faces/{} {}/data/faces/{}_sync/".format(BASEPATH, current_groupid, BASEPATH, current_groupid)
         print("checkTrainsetThreadFunc: exec command: {}".format(cmd))
         if len(device_id) > 1 and len(toid) > 1:
