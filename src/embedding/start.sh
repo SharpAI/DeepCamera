@@ -1,5 +1,8 @@
 #!/bin/bash
 
+export DEVICE_UUID_FILEPATH=/data/data/com.termux/files/home/.ro_serialno
+export DEVICE_GROUP_ID_FILEPATH=/data/data/com.termux/files/home/.groupid.txt
+
 if [ -f parameter_server.py ]; then
   python2 parameter_server.py &
 else

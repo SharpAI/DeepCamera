@@ -12,12 +12,13 @@ var mqtt_2_group = require('./mqttgif')
 var timeline = require('./timeline')
 var device_SN = null
 
-var host_ip = 'flower'
+var host_ip = process.env.FLOWER_ADDRESS || 'flower'
+var host_port = process.env.FLOWER_PORT || 5555
 //var host_ip = '192.168.3.3'
-var detect_task_url = 'http://'+host_ip+':5555/api/task/apply/upload_api-v2.detect'
-var detect_task_queues_length = 'http://'+host_ip+':5555/api/tasks?limit=100&state=STARTED&workername=celery%40detect'
-var embedding_task_queues_length = 'http://'+host_ip+':5555/api/tasks?limit=100&state=STARTED&workername=celery%40embedding'
-var embedding_task_url = 'http://'+host_ip+':5555/api/task/apply/upload_api-v2.extract'
+var detect_task_url = 'http://'+host_ip+':'+host_port+'/api/task/apply/upload_api-v2.detect'
+var detect_task_queues_length = 'http://'+host_ip+':'+host_port+'/api/tasks?limit=100&state=STARTED&workername=celery%40detect'
+var embedding_task_queues_length = 'http://'+host_ip+':'+host_port+'/api/tasks?limit=100&state=STARTED&workername=celery%40embedding'
+var embedding_task_url = 'http://'+host_ip+':'+host_port+'/api/task/apply/upload_api-v2.extract'
 var IMAGE_DIR = process.env.NODE_ENV || '/opt/nvr/detector/images';
 
 var DEVICE_UUID_FILEPATH = process.env.DEVICE_UUID_FILEPATH || '/dev/ro_serialno'
