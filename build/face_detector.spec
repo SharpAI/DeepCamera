@@ -3,11 +3,11 @@
 block_cipher = None
 
 
-a = Analysis(['parameter_server.py'],
-             pathex=['/data/data/com.termux/files/home/sharpai/src/embedding'],
+a = Analysis(['../src/face_detection/worker.py'],
+             pathex=['../src/face_detection'],
              binaries=[],
              datas=[],
-             hiddenimports=['email', 'email.message', 'email.mime.message', 'email.mime.image', 'email.mime.text', 'email.mime.audio', 'email.mime.base', 'email.mime.multipart', 'email.mime.nonmultipart'],
+             hiddenimports=['django', 'celery', 'celery.loaders.app', 'celery.app.amqp', 'kombu.transport.redis', 'celery.backends', 'celery.apps', 'celery.events', 'celery.worker', 'celery.bin', 'celery.concurrency', 'celery.contrib', 'celery.fixups', 'celery.security', 'celery.task', 'celery.utils', 'celery.backends.redis', 'celery.app.events'],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -21,7 +21,7 @@ exe = EXE(pyz,
           a.scripts,
           [],
           exclude_binaries=True,
-          name='param',
+          name='worker',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
@@ -33,4 +33,4 @@ coll = COLLECT(exe,
                a.datas,
                strip=False,
                upx=True,
-               name='param')
+               name='worker')
