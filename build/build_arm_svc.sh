@@ -2,5 +2,5 @@
 
 rm -rf build dist runtime
 mkdir runtime
-pyinstaller classifier_rest_single_thread_server.spec
+pyinstaller classifier_single_thread_server.spec
 mv dist/classifier runtime/bin
