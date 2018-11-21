@@ -24,5 +24,8 @@ cp ../src/embedding/image/Mike*.png ./runtime/image
 cp -rf ../src/embedding/pages ./runtime/
 cp -rf ../src/embedding/migrations ./runtime/
 
+cp -rf ../model ./runtime/
+cp -rf ../src/face_detection/model/* ./runtime/model/
+
 cp scripts/*_aarch64.sh runtime/
 chmod +x runtime/*.sh
