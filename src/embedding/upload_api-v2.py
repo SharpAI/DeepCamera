@@ -2970,7 +2970,7 @@ def setup(sender=None, **kwargs):
             d_sess = tf.Session(config=config, graph=d_graph)
             with d_sess.as_default():
                 d_pnet, d_rnet, d_onet = align.detect_face.create_mtcnn(d_sess, None)
-        _, _, _, _, _ = load_align_image("./image/Mike_Alden_0001.png", d_sess, d_graph, d_pnet, d_rnet, d_onet)
+        _, _, _, _, _ = load_align_image(os.path.join(BASEDIR,"image","Mike_Alden_0001.png"), d_sess, d_graph, d_pnet, d_rnet, d_onet)
     elif _type == "embedding":
 
         check_groupid_changed()
@@ -2982,7 +2982,7 @@ def setup(sender=None, **kwargs):
         #embedding = featureCalculation2("./image/Mike_Alden_0001_tmp.png", e_sess, e_graph)
         mod = FaceProcessing.init_embedding_processor()
         print("start to warm up")
-        embedding = featureCalculation2("./image/Mike_Alden_0001_tmp.png")
+        embedding = featureCalculation2(os.path.join(BASEDIR,"image","Mike_Alden_0001_tmp.png"))
         print("warmed up")
         #if embedding is not None:
         #    print("worker embedding ready")
