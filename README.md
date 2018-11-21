@@ -69,5 +69,29 @@ https://github.com/solderzzc/hotShare/blob/android_porting/AndroidPorting/vlc-ex
 直接点Play
 
 
+# 编译，打包
+
+## 安装Pyinstaller
+```
+pip2 download pyinstaller
+tar -xjvf PyInstaller-3.4.0.tar.bz2
+cd PyInstaller-3.4.0
+sed -i'' -e 's#"/usr/tmp"#"/data/data/com.termux/files/usr/tmp"#g' bootloader/src/pyi_utils.c
+CFLAGS="-I/data/data/com.termux/files/usr/include/libandroid-support" LDFLAGS="-landroid-support" pip2 install .
+```
+
+## Build
+
+```
+cd build
+bash ./build_aarch64.sh
+```
+
+## Run
+
+```
+cd build/runtime
+bash ./start_aarch64.sh
+```
 
 ## [移植过程](https://github.com/solderzzc/hotShare/issues/3239)
