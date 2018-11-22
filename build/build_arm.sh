@@ -1,20 +1,24 @@
 #!/usr/bin/env bash
 
 rm -rf build dist runtime
+
 mkdir runtime
+
 pyinstaller embedding.spec
-cp -rf dist/embedding/* runtime/
+mv dist/embedding runtime/bin
 rm -rf dist/embedding
+
 pyinstaller face_detector.spec
-cp -rf dist/worker/* runtime/
+cp -rf dist/worker/* runtime/bin/
 rm -rf dist/worker
+
 pyinstaller parameter_server.spec
-cp -rf dist/param/* runtime/
+cp -rf dist/param/* runtime/bin/
 rm -rf dist/param
 
 mkdir -p runtime/data/faces
 mkdir -p runtime/faces/default_data
-mkdir runtime/image
+mkdir -p runtime/image
 cp ../src/embedding/data/data.sqlite ./runtime/data/
 cp ../src/embedding/data/params.ini ./runtime/data/
 cp ../src/embedding/faces/default_data/default_face.png ./runtime/faces/default_data/
