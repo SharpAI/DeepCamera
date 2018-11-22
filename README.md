@@ -83,6 +83,10 @@ https://github.com/solderzzc/hotShare/blob/android_porting/AndroidPorting/vlc-ex
 #### 包含了除SVM之外的编译运行依赖，这是开发用的
 链接:https://pan.baidu.com/s/13A6wI0Nt-BnlPKdEmu242w  密码:3swc
 
+```
+cp /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/*.so $PREFIX/lib/
+```
+
 ## Arch Linux的执行环境（开发用）
 #### arch_dev_root.tgz
 #### ARCH Linux才能够正常使用scikit-learn(SVM),原因没查出来
