@@ -75,6 +75,19 @@ https://github.com/solderzzc/hotShare/blob/android_porting/AndroidPorting/vlc-ex
 
 # RK3288 的使用方法
 
+因为RK3288的data只有3G，需要加一个SD卡，一旦编译完毕，可以 tar 到备份SD卡，本地做删除，才有空间继续编译开发。
+
+## Termux的执行环境（开发用）
+#### usr_dev_root_1121_2018.tgz
+
+#### 包含了除SVM之外的编译运行依赖，这是开发用的
 链接:https://pan.baidu.com/s/13A6wI0Nt-BnlPKdEmu242w  密码:3swc
 
+## Arch Linux的执行环境（开发用）
+#### arch_dev_root.tgz
+#### ARCH Linux才能够正常使用scikit-learn(SVM),原因没查出来
+
+
+
+ 
 
