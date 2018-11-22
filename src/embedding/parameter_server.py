@@ -3,7 +3,8 @@ from flask import Flask, render_template, request, jsonify, redirect, views
 from ConfigParser import ConfigParser
 import time, shutil
 
-base_path = os.path.dirname(os.path.abspath(__file__))
+#base_path = os.path.dirname(os.path.abspath(__file__))
+base_path = os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__)))
 tpl_path = os.path.join(base_path, "pages", "template")
 static_path = os.path.join(base_path, "pages", 'static')
 
