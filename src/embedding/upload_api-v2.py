@@ -6,7 +6,6 @@ from __future__ import print_function
 import os, json, time, sys, thread
 import argparse
 import unicodedata
-import cv2
 import shutil
 import subprocess
 import threading
@@ -214,164 +213,7 @@ SVM_HIGH_SCORE_WITH_DB_CHECK=True
 #    dlibAlign = align_dlib.AlignDlib(dlibFacePredictor)  # 装载特征提取器，实例化AlignDlib类; 默认用了dlib自带的人脸检测器
 
 
-def dlibImageProcessor(imgPath):
-    """
-    dlib 处理图片
-    :param imgPath:
-    :return: 包含图片路径与 prewhitened 的 dict
-    """
-    bgrImg = cv2.imread(imgPath)
-    if bgrImg is None:
-        raise Exception("Unable to load image: {}".format(imgPath))
-    rgbImg = cv2.cvtColor(bgrImg, cv2.COLOR_BGR2RGB)
-    # assert np.isclose(norm(rgbImg), 11.1355)
-
-    dets = dlibAlign.getAllFaceBoundingBoxes(rgbImg)
-
-    # dets的元素个数即为脸的个数
-    print("Number of faces detected: {}".format(len(dets)))
-
-    face_path = {}  # 存放多个脸部图片及prewhitened
-    blury_arr = {}
-
-    # 使用enumerate 函数遍历序列中的元素以及它们的下标
-    # 下标i即为人脸序号
-    for i, bb in enumerate(dets):
-        if bb is not None:
-            alignedFace = dlibAlign.align(160, rgbImg, bb)  # 缩放裁剪对齐
-            #alignedFace = cv2.medianBlur(alignedFace,5)
-            #alignedFace = cv2.GaussianBlur(alignedFace,(5,5),0)
-            gray_face = cv2.cvtColor(alignedFace, cv2.COLOR_BGR2GRAY)
-            blury_value = cv2.Laplacian(gray_face, cv2.CV_64F).var()
-            if blury_value < int(data_collection.get("blury_threhold")):
-                print('A blur face (%d) captured, avoid it.' % blury_value)
-                #continue
-            else:
-                print('Blur Value: %d, good' % blury_value)
-            prewhitened = facenet.prewhiten(alignedFace)
-            tmp_image_path = imgPath.rsplit('.', 1)[0] + str(i) + '.' + imgPath.rsplit('.', 1)[1]
-            misc.imsave(tmp_image_path, alignedFace)  # 保存为图像
-            face_path[tmp_image_path] = prewhitened
-            blury_arr[tmp_image_path] = blury_value
-    return face_path, blury_arr
-
-
-def is_acute(c_1, c_2, c_3):
-    dist_12 = math.hypot(c_1[0] - c_2[0], c_1[1] - c_2[1])
-    dist_23 = math.hypot(c_2[0] - c_3[0], c_2[1] - c_3[1])
-    dist_13 = math.hypot(c_1[0] - c_3[0], c_1[1] - c_3[1])
-
-    my_list = [dist_12, dist_23, dist_13]
-    my_list.sort()
-    if math.pow(my_list[0], 2) + math.pow(my_list[1], 2) - math.pow(my_list[2], 2) > 0:
-        return True
-    else:
-        return False
-
 counter = 0
-
-def load_align_image(image_path, sess, graph, pnet, rnet, onet):
-    #img = misc.imread(os.path.expanduser(image_path))
-    img = misc.imread(image_path)
-    img_size = np.asarray(img.shape)[0:2]
-    with graph.as_default():
-        with sess.as_default():
-            bounding_boxes, bounding_points = align.detect_face.detect_face(img, minsize, pnet, rnet, onet, threshold, factor)
-    nrof_faces = bounding_boxes.shape[0]  # 人脸数目
-    width = img_size[1]
-    height = img_size[0]
-    if nrof_faces > 0:
-        face_path = {}  # 存放多个脸部图片
-        blury_arr = {}
-        imgs_style = {}  # 存放不同人脸图对应的类型，如左侧、右侧、低头、抬头、低像素、过模糊、标准
-        face_body = {}  # 人脸对应的人体图片路径
-        #print('The number of faces detected: {}'.format(nrof_faces))
-        for i in range(nrof_faces):  # 遍历所有faces
-            style = []
-            det = np.squeeze(bounding_boxes.copy()[i, 0:4])
-            # det = np.squeeze(align.detect_face.rerec(bounding_boxes.copy())[i, 0:4])
-            bounding_point = bounding_points[:, i]  # 按i获取多个人脸的point
-            bb = np.zeros(4, dtype=np.int32)  # 坐标
-            bb[0] = np.maximum(det[0] - margin / 2, 0)
-            bb[1] = np.maximum(det[1] - margin / 2, 0)
-            bb[2] = np.minimum(det[2] + margin / 2, img_size[1])
-            bb[3] = np.minimum(det[3] + margin / 2, img_size[0])
-
-            if bb[0] == 0 or bb[1] == 0 or bb[2] >= width or bb[3] >= height:
-                print('Out of boundary ({},{},{},{})'.format(bb[0],bb[1],bb[2],bb[3]))
-                continue
-            else:
-                eye_1 = [bounding_point[0], bounding_point[5]]
-                eye_2 = [bounding_point[1], bounding_point[6]]
-                nose = [bounding_point[2], bounding_point[7]]
-                mouth_1 = [bounding_point[3], bounding_point[8]]
-                mouth_2 = [bounding_point[4], bounding_point[9]]
-                face_width = bb[2] - bb[0]
-                face_height = bb[3] - bb[1]
-                if face_width * face_height  < minsize * minsize:
-                    print("to small to recognise ({},{})".format(face_width,face_height))
-                    continue
-                else:
-                    middle_point = (bb[2] + bb[0])/2
-                    y_middle_point = (bb[3] + bb[1]) / 2
-                    #print('eye_1[0]={}, eye_2[0]={}, middle_point={}, bounding_point[5]={}, bounding_point[6]={}, y_middle_point={}'.format(eye_1[0], eye_2[0], middle_point, bounding_point[5], bounding_point[6], y_middle_point))
-                    if eye_1[0] > middle_point:
-                        print('(Left Eye on the Right) Add style')
-                        style.append('left_side')
-                        # continue
-                    elif eye_2[0] < middle_point:
-                        print('(Right Eye on the left) Add style')
-                        style.append('right_side')
-                        # continue
-                    elif max(bounding_point[5], bounding_point[6]) > y_middle_point:
-                        print('(Eye lower than middle of face) Skip')
-                        style.append('lower_head')
-                        # continue
-                        # 左右两个眼睛最低的y轴，低于图片的中间高度，就认为是低头
-                    #    style.append('lower_head')
-                    #elif bounding_point[7] < y_middle_point:
-                        # 鼻子的y轴高于图片的中间高度，就认为是抬头
-                    #    style.append('raise_head')
-                    else:
-                        style.append('front')
-                        #print('Good Face')
-
-                if SAVE_FULL_BODY is True:
-                    file_path_to_save = image_path.rsplit('.', 1)[0] + '_' + str(i) + '_t1.' + 'jpg'
-                    result, width_ratio, height_ratio = save_body_by_face_position_jpg(bb,img,file_path_to_save)
-
-                cropped = img[bb[1]:bb[3], bb[0]:bb[2], :]  # 裁剪
-                aligned = misc.imresize(cropped, (160, 160), interp='bilinear')  # 缩放图像
-
-                # Need to detect if face is too blury to be detected
-                #aligned = cv2.medianBlur(aligned,5)
-                #aligned = cv2.GaussianBlur(aligned,(5,5),0)
-                gray_face = cv2.cvtColor(aligned, cv2.COLOR_BGR2GRAY)
-                blury_value = int(cv2.Laplacian(gray_face, cv2.CV_64F).var())
-                if blury_value < int(data_collection.get("blury_threhold")):
-                    print('A blur face (%d) captured, avoid it.' %blury_value)
-                    style = ['blury']
-                    #isDirty = True
-                    # continue
-                else:
-                    print('Blur Value: %d, good'%blury_value)
-
-                new_image_path = image_path.rsplit('.', 1)[0] + '_' + str(i) + '.' + EXT_IMG    #image_path.rsplit('.', 1)[1]
-                misc.imsave(new_image_path, aligned)  # 保存为图像
-                #prewhitened = facenet.prewhiten(aligned)
-                #face_path[new_image_path] = prewhitened
-                face_path[new_image_path] = ""
-                blury_arr[new_image_path] = blury_value
-                imgs_style[new_image_path] = '|'.join(style)  # 如 'left_side|raise_head'
-                if SAVE_FULL_BODY and result:
-                    face_body[new_image_path] = file_path_to_save
-                else:
-                    face_body[new_image_path] = ''
-                #isDirty_arr[new_image_path] = isDirty
-                #print(prewhitened.shape)
-        return nrof_faces, face_path, imgs_style, blury_arr, face_body #, isDirty_arr , dlib_bb_dict
-    return nrof_faces, None, None, None, None #, None , None
-
 
 def featureCalculation(imgpath):
     global e_sess
@@ -382,30 +224,6 @@ def featureCalculation(imgpath):
     #    with e_sess.as_default():
     embedding = FaceProcessing.FaceProcessingImageData2(img)
     return embedding
-
-
-def detectMotion(img_path,uuid):
-    min_area = 200
-    img_gray = cv2.imread(os.path.expanduser(img_path), 0)
-    if uuid in preFrameOnDevice:
-        frameDelta = cv2.absdiff(preFrameOnDevice[uuid], img_gray)
-        preFrameOnDevice[uuid] = img_gray
-        thresh = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]
-        (cnts, _) = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-        delta_value = 0
-        for c in cnts:
-            # if the contour is too small, ignore it
-            delta_value+= cv2.contourArea(c)
-        if delta_value >= min_area:
-            #(x, y, w, h) = cv2.boundingRect(c)
-            print(cv2.boundingRect(c))
-            #cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            print('Moved delta %d'% delta_value)
-            return True
-        return False
-    else:
-        preFrameOnDevice[uuid] = img_gray
-    return True
 
 
 def updatePeopleImgURL(ownerid, url, embedding, uuid, objid, img_type, accuracy, fuzziness, sqlId, style, img_ts, tid,
@@ -482,24 +300,6 @@ def check_accuracy(confident, val):
 
     percent = round(percent, 2)
     return percent
-
-def blur_detection(img_path=None, img_buff=None):
-    img = None
-
-    if img_path is None and img_buff is None:
-        return 1
-
-    if img_buff is None:
-        img = misc.imread(os.path.expanduser(img_path))
-    else:
-        img = img_buff
-
-    #img = cv2.medianBlur(img,5)
-    #img = cv2.GaussianBlur(img,(5,5),0)
-    gray_face = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    blury_value = cv2.Laplacian(gray_face, cv2.CV_64F).var()
-    print(">>> object blury_value: %d" %(blury_value))
-    return blury_value
 
 #
 # 返回值:
@@ -1003,8 +803,6 @@ def downloadTrainDatasets(result, group_id):
                 if img_path and check_image_valid(img_path):
                     if not os.path.exists(denoise_path):
                         img = misc.imread(os.path.expanduser(img_path))
-                        #img = cv2.medianBlur(img,5)
-                        #img = cv2.GaussianBlur(img,(5,5),0)
                         save_embedding.save_image_denoise(img, denoise_path)
                         recreate_embedding = True
 
@@ -1958,81 +1756,6 @@ def face_recognition_on_embedding(align_image_path, embedding, totalPeople, blur
 def detect_face():
     return Response(json.dumps(get_resultQueue()), status=200, mimetype='application/json')
 
-@app.route('/api/imgpath/', methods=['POST'])
-@app.route('/api/fullimg/', methods=['POST'])
-def upload_full_img():
-    if request.files:
-        f = request.files['file']
-    else:
-        f = None
-    img_local_path = request.form.get('imgpath', '')
-    print('img_local_path = %s' % (img_local_path))
-
-    if f is None and img_local_path is None and not os.path.exists(img_local_path):
-        print('f is None or img_local_path is None')
-        return jsonify({'error': 1001, 'message': u'Captured photo not exists.', "detected": False, "recognized": False})
-
-    img_objid = trackerId = request.args.get('objid', '')  # 当前整张图片对应的objid/trackerId
-    print('img_objid = %s' % (img_objid))
-    current_groupid = get_current_groupid()
-
-    #新平板没有添加到任何组，后面的处理会报错
-    if current_groupid is None:
-        return jsonify({"error": 1002, "message": u"平板没有添加组", "detected": False, "recognized": False})
-
-    if f and allowed_file(f.filename):
-        old_filename = f.filename
-        new_filename, uuid, ts = format_img_filename(old_filename)
-        image_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
-        f.save(image_path)
-        print('image_path = %s' % (image_path))
-    else:
-        old_filename = os.path.basename(img_local_path)
-        new_filename, uuid, ts = format_img_filename(old_filename)
-        image_path = os.path.join(os.path.dirname(img_local_path), new_filename)
-        print(img_local_path, image_path)
-        os.rename(img_local_path, image_path)  # 加上 gFlask_port 后 rename
-
-    print('-----------------------')
-    timestamp1 = time.time()
-    #print("0 %.2f seconds" % (time.time() - timestamp1))
-    if FACE_DETECTION_WITH_DLIB is False:
-        _, img_data, imgs_style, blury_arr, body_data = load_align_image(image_path, sess, graph, pnet, rnet, onet)
-    else:
-        img_data, blury_arr = dlibImageProcessor(image_path)
-    print("1 %.2f seconds" % (time.time() - timestamp1))
-    if img_data:
-        if SAVE_ORIGINAL_FACE:
-            shutil.copy(image_path, original_face_img_path)
-        resp = face_recognition_on_face_image(img_data, blury_arr,uuid,
-                                       current_groupid,imgs_style,img_objid,
-                                       timestamp1,ts, body_data)
-
-        #FIXME: 来回重命名文件应该没必要？
-        if f is None and os.path.exists(image_path):
-            os.rename(image_path, img_local_path)
-        return resp
-    else:
-        print('No availabel face in this image')
-        print('-----------------------')
-        if EN_OBJECT_DETECTION is False:
-            #if os.path.exists(image_path):
-            #    os.remove(image_path)
-            #if os.path.exists(img_local_path):
-            #    os.remove(img_local_path)
-            if f is None and os.path.exists(image_path):
-                os.rename(image_path,img_local_path)
-            return Response(json.dumps({"result": "ok", "detected": False, "recognized": False}),
-                            status=200, mimetype='application/json')
-        print("-- 2 %.2f seconds" % (time.time() - timestamp1))
-
-        #if os.path.exists(image_path):
-        #    os.remove(image_path)
-        #if os.path.exists(img_local_path):
-        #    os.remove(img_local_path)
-        os.rename(image_path,img_local_path)
-        return jsonify({"error": 1001, "message": u"识别失败", "detected": False, "recognized": False})
-
 FACE_COUNT = defaultdict(int)
 OBJ_COUNT = 0
 def updateDataSet(url, objId, group_id, device_id, drop, img_type, sqlId, style, img_ts, rm_reason):
@@ -2145,8 +1868,6 @@ def downloadFunc():
                 if img_path:
                     if not os.path.exists(denoise_path):
                         img = misc.imread(os.path.expanduser(img_path))
-                        #img = cv2.medianBlur(img,5)
-                        #img = cv2.GaussianBlur(img,(5,5),0)
                         save_embedding.save_image_denoise(img, denoise_path)
                         recreate_embedding = True
                     if not os.path.exists(embedding_path) or recreate_embedding == True:
@@ -2218,8 +1939,6 @@ def generate_embedding_ifmissing(data_dir):
         recreate_embedding = False
         if not os.path.exists(denoise_path):
             img = misc.imread(os.path.expanduser(img_path))
-            #img = cv2.medianBlur(img,5)
-            #img = cv2.GaussianBlur(img,(5,5),0)
             save_embedding.save_image_denoise(img, denoise_path)
             recreate_embedding = True
         if not os.path.exists(embedding_path) or recreate_embedding == True:
@@ -2398,8 +2117,6 @@ def _updateDataSet(url, objId, group_id, device_id, drop, img_type, sqlId, style
                         misc.imsave(img_path, aligned)
 
                         denoise_path = save_embedding.get_image_denoise_path(img_path)
-                        #aligned = cv2.medianBlur(aligned,5)
-                        #aligned = cv2.GaussianBlur(aligned,(5,5),0)
                         save_embedding.save_image_denoise(aligned, denoise_path)
 
                         #embedding = featureCalculation2(denoise_path, e_sess, e_graph)
@@ -2472,8 +2189,6 @@ def _updateDataSet(url, objId, group_id, device_id, drop, img_type, sqlId, style
                         recreate_embedding = False
                         if not os.path.exists(denoise_path):
                             img = misc.imread(os.path.expanduser(img_path))
-                            #img = cv2.medianBlur(img,5)
-                            #img = cv2.GaussianBlur(img,(5,5),0)
                             save_embedding.save_image_denoise(img, denoise_path)
                             recreate_embedding = True
 
@@ -2960,18 +2675,7 @@ def setup(sender=None, **kwargs):
     # setup
     print('done initializing <<< ==== be called Per Fork/Process')
     _type=getQueueName()
-    if _type == "detect":
-        # This detect function will not be called
-        #check_groupid_changed()
-        d_graph = tf.Graph()
-        with d_graph.as_default():
-            config=tf.ConfigProto(log_device_placement=False)
-            config.gpu_options.per_process_gpu_memory_fraction = 0.3
-            d_sess = tf.Session(config=config, graph=d_graph)
-            with d_sess.as_default():
-                d_pnet, d_rnet, d_onet = align.detect_face.create_mtcnn(d_sess, None)
-        _, _, _, _, _ = load_align_image(os.path.join(BASEDIR,"image","Mike_Alden_0001.png"), d_sess, d_graph, d_pnet, d_rnet, d_onet)
-    elif _type == "embedding":
+    if _type == "embedding":
 
         check_groupid_changed()
         init_fs()
@@ -2997,40 +2701,6 @@ class FaceDetectorTask(Task):
         self._model = 'testing'
         self._type = getQueueName()
         print(">>> {}".format(self._type))
-
-@deepeye.task(base=FaceDetectorTask, bind=True, max_retries=1, default_retry_delay=10)
-def detect(self, image_path, trackerid, ts, cameraId):
-    global d_graph
-    global d_sess
-    global d_pnet
-    global d_rnet
-    global d_onet
-    people_cnt = 0
-    cropped = []
-    detected = False
-    current_groupid = get_current_groupid()
-    device_id = get_deviceid()
-
-    if not os.path.exists(image_path) or current_groupid is None:
-        return json.dumps({'detected': detected, "ts": ts, "totalPeople": people_cnt, "cropped": cropped})
-
-    nrof_faces, img_data, imgs_style, blury_arr, body_data = load_align_image(image_path, d_sess, d_graph, d_pnet, d_rnet, d_onet)
-    print("detect: imgs_style={}".format(imgs_style))
-    print(blury_arr)
-    if img_data is not None and len(img_data) > 0:
-        people_cnt = len(img_data)
-        detected = True
-        for align_image_path, prewhitened in img_data.items():
-            style=imgs_style[align_image_path]
-            blury=blury_arr[align_image_path]
-            cropped.append({"path": align_image_path, "style": style, "blury": blury, "ts": ts, "trackerid": trackerid, "totalPeople": people_cnt, "cameraId": cameraId})
-            update_frame_db(camera_id=cameraId, device_id=device_id, group_id=current_groupid, blury=blury,
-                            img_path=align_image_path, img_style=style, num_face=people_cnt,
-                            tracking_id=trackerid, time_stamp=ts, tracking_flag=None)
-    #TODO: save image info to db
-    # totalmtcnn:  number of all people detected by MTCNN
-    # totalPeople: = totalmtcnn - (not front) - (blurry)
-    return json.dumps({'detected': detected, "ts": ts, "totalPeople": people_cnt, "cropped": cropped, 'totalmtcnn': nrof_faces})
 
 @deepeye.task
 def extract(image):
