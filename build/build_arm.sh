@@ -4,7 +4,7 @@ rm -rf build dist runtime
 
 mkdir runtime
 
-pyinstaller embedding.spec
+pyinstaller embedding_arm.spec
 mv dist/embedding runtime/bin
 rm -rf dist/embedding
 
