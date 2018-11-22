@@ -49,7 +49,7 @@ tar -xvf usr_10312018.tgz
 ```
 git clone https://github.com/solderzzc/sharpai
 cd sharpai
-./setup.sh
+./setup.sh (rk3288 运行 ./setup_arm32.sh)
 ```
 
 
