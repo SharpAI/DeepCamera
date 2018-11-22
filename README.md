@@ -1,4 +1,4 @@
-# SharpAI On Android
+# SharpAI On Android AARCH64
 
 ## 1. Download Termux Modified Version on PC
 
@@ -71,3 +71,10 @@ https://github.com/solderzzc/hotShare/blob/android_porting/AndroidPorting/vlc-ex
 
 
 ## [移植过程](https://github.com/solderzzc/hotShare/issues/3239)
+
+
+# RK3288 的使用方法
+
+链接:https://pan.baidu.com/s/13A6wI0Nt-BnlPKdEmu242w  密码:3swc
+
+
