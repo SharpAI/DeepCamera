@@ -87,6 +87,16 @@ https://github.com/solderzzc/hotShare/blob/android_porting/AndroidPorting/vlc-ex
 #### arch_dev_root.tgz
 #### ARCH Linux才能够正常使用scikit-learn(SVM),原因没查出来
 
+```
+cd ~
+tar -zxvf arch_dev_root.tgz
+
+wget https://sdrausty.github.io/TermuxArch/setupTermuxArch.sh
+bash setupTermuxArch.sh
+```
+
+
+
 
 
  
