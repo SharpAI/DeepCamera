@@ -22,7 +22,7 @@ a.binaries += TOC([('libtvm.so','/data/data/com.termux/files/usr/lib/libtvm.so',
   ('libtvm_runtime.so','/data/data/com.termux/files/usr/lib/libtvm_runtime.so','BINARY')])
 exe = EXE(pyz,
           a.scripts,
-	  exclude_binaries=True,
+	  #exclude_binaries=True,
 	  name='embedding',
           debug=False,
           bootloader_ignore_signals=False,
