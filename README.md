@@ -141,7 +141,7 @@ Use `sharpai/build/build_arm_svc.sh` to Build
 链接:https://pan.baidu.com/s/136d1nVtPfQrrxqCZWjebLA  密码:5e53
 
 ### 编译后的可执行程序
-
+链接:https://pan.baidu.com/s/1x71O1npURpMvQCv-jQ4Fwg  密码:qyex
 ```
 cd ~
 tar -zxvf runtime_all_armv7.tgz
