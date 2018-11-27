@@ -108,6 +108,12 @@ bash ./start_aarch64.sh
 #### 包含了除SVM之外的编译运行依赖，这是开发用的
 链接:https://pan.baidu.com/s/1j41lNXYeYTruYsIXmo5YZA  密码:0yxx
 
+#### face_detection-3.0.0-cp27-cp27mu-linux_armv7l.whl
+链接:https://pan.baidu.com/s/1f2Y-OYiWfMYGHwywJw5sUA  密码:92vo
+```
+pip2 install face_detection-3.0.0-cp27-cp27mu-linux_armv7l.whl
+```
+
 
 ### Arch Linux的执行环境（开发用）
 #### arch_dev_root.tgz
