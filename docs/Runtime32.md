@@ -25,4 +25,6 @@ $ scp -P 8022 libpython2.7.so.1.0 a@10.20.10.93:/data/data/com.termux/files/usr/
 cd /data/data/com.termux/files/usr/lib/
 tar -xvf libopencv2.tar
 ln -s libpython2.7.so.1.0 libpython2.7.so
+
+rm /data/data/com.termux/files/usr/var/cache/apt/archives/*.deb
 ```
