@@ -128,10 +128,10 @@ tar -zxvf arch_dev_root.tgz
 wget https://sdrausty.github.io/TermuxArch/setupTermuxArch.sh
 bash setupTermuxArch.sh
 ```
-
+```
 ./arch/startarch
-
-Use sharpai/build/build_svc.sh to Build
+```
+Use `sharpai/build/build_arm_svc.sh` to Build
 
 ## 打包后的程序运行环境（产品发布用）
 
