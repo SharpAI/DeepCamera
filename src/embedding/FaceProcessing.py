@@ -106,12 +106,16 @@ def get_model(ctx, image_size, model_str, layer):
 def init_embedding_processor():
     global mod2
     global mod3
-    if os.path.isfile(DATA_RUNTIME_FOLDER+'/net2.tar'):
+    if os.path.isfile(DATA_RUNTIME_FOLDER+'/net2'):
         global __t
         global graph_runtime
         import tvm as __t
         from tvm.contrib import graph_runtime
-        loaded_lib = __t.module.load(DATA_RUNTIME_FOLDER+'/net2.tar')
+        loaded_lib = None
+        if os.path.isfile(DATA_RUNTIME_FOLDER+'/net2.tar.so'):
+            loaded_lib = __t.module.load(DATA_RUNTIME_FOLDER+'/net2.tar.so')
+        else:
+            loaded_lib = __t.module.load(DATA_RUNTIME_FOLDER+'/net2.tar')
         loaded_json = open(DATA_RUNTIME_FOLDER+"/net2").read()
         loaded_params = bytearray(open(DATA_RUNTIME_FOLDER+"/net2.params", "rb").read())
 
