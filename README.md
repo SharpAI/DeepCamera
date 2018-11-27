@@ -130,9 +130,9 @@ bash setupTermuxArch.sh
 ```
 
 ## Runtime
+```
+./arch/startarch c "cd /data/data/com.termux/files/home/runtime_arch/bin && ./classifier "
 
-
-
-
+```
  
 
