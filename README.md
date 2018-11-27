@@ -134,6 +134,28 @@ bash setupTermuxArch.sh
 Use sharpai/build/build_svc.sh to Build
 
 ## Runtime
+
+### Termux Runtime: 
+
+### 编译后的可执行程序
+
+```
+cd ~
+tar -zxvf runtime_all_armv7.tgz
+```
+
+### Arch Linux Runtime: runtime_arch_linux_armv7.tgz
+链接:https://pan.baidu.com/s/16ta4yC_mp6AOrhMyCs6N0w  密码:xwdr
+
+```
+cd ~
+tar -zxvf runtime_arch_linux_armv7.tgz
+
+wget https://sdrausty.github.io/TermuxArch/setupTermuxArch.sh
+bash setupTermuxArch.sh
+```
+
+
 ```
 ./arch/startarch c "cd /data/data/com.termux/files/home/runtime_arch/bin && ./classifier "
 
