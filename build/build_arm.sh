@@ -3,8 +3,10 @@
 rm -rf build dist runtime
 
 mkdir runtime
+cp patchs/function.py /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/_ffi/_ctypes/function.py
+cp patchs/ndarray.py /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/_ffi/_ctypes/ndarray.py
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/system/lib:/system/vendor/lib/egl LD_PRELOAD=libatomic.so:libcutils.so pyinstaller -y embedding_arm.spec
 
-pyinstaller embedding_arm.spec
 mv dist/embedding runtime/bin
 rm -rf dist/embedding
 
@@ -27,7 +29,7 @@ cp -rf ../src/embedding/pages ./runtime/
 cp -rf ../src/embedding/migrations ./runtime/
 
 cp -rf ../model ./runtime/
-cp -rf ../src/face_detection/model/* ./runtime/model/
+cp -rf ../src/face_detection/model ./runtime/bin/
 
 cp scripts/*_arm.sh runtime/
 chmod +x runtime/*.sh
