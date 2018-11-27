@@ -97,7 +97,7 @@ bash ./start_aarch64.sh
 ## [移植过程](https://github.com/solderzzc/hotShare/issues/3239)
 
 
-# SharpAI on ARM32(RK3288)
+# SharpAI on Android ARM32(RK3288)
 
 ## Development
 
