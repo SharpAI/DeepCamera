@@ -113,6 +113,8 @@ bash ./start_aarch64.sh
 pkg uninstall gcc-6 gcc-7 gcc-8
 ```
 
+Use sharpai/build/build_arm.sh to Build
+
 ### Arch Linux的执行环境（开发用）
 #### arch_dev_root.tgz
 #### ARCH Linux才能够正常使用scikit-learn(SVM),原因没查出来
@@ -126,6 +128,10 @@ tar -zxvf arch_dev_root.tgz
 wget https://sdrausty.github.io/TermuxArch/setupTermuxArch.sh
 bash setupTermuxArch.sh
 ```
+
+./arch/startarch
+
+Use sharpai/build/build_svc.sh to Build
 
 ## Runtime
 ```
