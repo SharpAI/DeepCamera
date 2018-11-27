@@ -97,7 +97,7 @@ bash ./start_aarch64.sh
 ## [移植过程](https://github.com/solderzzc/hotShare/issues/3239)
 
 
-# RK3288 的使用方法（开发方式）
+# RK3288 (ARM32) 的使用方法（开发方式）
 
 因为RK3288的data只有3G，需要加一个SD卡，一旦编译完毕，可以 tar 到备份SD卡，本地做删除，才有空间继续编译开发。
 
