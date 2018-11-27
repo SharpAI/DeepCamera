@@ -1,2 +1,4 @@
 model
 model.tgz
+*.pyc
+runtime
