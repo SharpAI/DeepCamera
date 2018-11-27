@@ -133,7 +133,7 @@ bash setupTermuxArch.sh
 
 Use sharpai/build/build_svc.sh to Build
 
-## Runtime
+## 打包后的程序运行环境（产品发布用）
 
 ### Termux Runtime: 
 
