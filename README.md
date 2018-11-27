@@ -106,14 +106,12 @@ bash ./start_aarch64.sh
 ### Termux的执行环境（开发用）
 #### usr_dev_root_1128_2018.tgz
 #### 包含了除SVM之外的编译运行依赖，这是开发用的
-链接:https://pan.baidu.com/s/1j41lNXYeYTruYsIXmo5YZA  密码:0yxx
+链接:https://pan.baidu.com/s/1MjlCUiiUVf0z_ILoZ7y44w  密码:3rh7
 
-#### face_detection-3.0.0-cp27-cp27mu-linux_armv7l.whl
-链接:https://pan.baidu.com/s/1f2Y-OYiWfMYGHwywJw5sUA  密码:92vo
+空间不够了，这样节省一些：
 ```
-pip2 install face_detection-3.0.0-cp27-cp27mu-linux_armv7l.whl
+pkg uninstall gcc-6 gcc-7 gcc-8
 ```
-
 
 ### Arch Linux的执行环境（开发用）
 #### arch_dev_root.tgz
