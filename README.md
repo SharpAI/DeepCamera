@@ -97,19 +97,15 @@ bash ./start_aarch64.sh
 ## [移植过程](https://github.com/solderzzc/hotShare/issues/3239)
 
 
-# RK3288 的使用方法
+# RK3288 的使用方法（开发方式）
 
 因为RK3288的data只有3G，需要加一个SD卡，一旦编译完毕，可以 tar 到备份SD卡，本地做删除，才有空间继续编译开发。
 
 ## Termux的执行环境（开发用）
-#### usr_dev_root_1121_2018.tgz
-
+#### usr_dev_root_1128_2018.tgz
 #### 包含了除SVM之外的编译运行依赖，这是开发用的
-链接:https://pan.baidu.com/s/13A6wI0Nt-BnlPKdEmu242w  密码:3swc
+链接:https://pan.baidu.com/s/1j41lNXYeYTruYsIXmo5YZA  密码:0yxx
 
-```
-cp /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/*.so $PREFIX/lib/
-```
 
 ## Arch Linux的执行环境（开发用）
 #### arch_dev_root.tgz
