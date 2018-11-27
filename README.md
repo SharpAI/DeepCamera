@@ -135,7 +135,10 @@ Use `sharpai/build/build_arm_svc.sh` to Build
 
 ## 打包后的程序运行环境（产品发布用）
 
-### Termux Runtime: 
+### Termux Runtime:    runtime_termux_armv7.tgz
+
+
+链接:https://pan.baidu.com/s/136d1nVtPfQrrxqCZWjebLA  密码:5e53
 
 ### 编译后的可执行程序
 
