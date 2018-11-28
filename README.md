@@ -1,3 +1,7 @@
+
+# [Runtime On AARCH64](https://github.com/solderzzc/sharpai/blob/master/docs/Runtime_AARCH64.md)
+
+
 # SharpAI On Android AARCH64
 
 ## 1. Download Termux Modified Version on PC
