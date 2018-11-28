@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 export RUNTIME_BASEDIR=`pwd`
-export LD_LIBRARY_PATH=/system/lib:$LD_LIBRARY_PATH:$PREFIX/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PREFIX/lib
 
 cd bin
 while [ 1 ]

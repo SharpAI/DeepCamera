@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 export RUNTIME_BASEDIR=`pwd`
-export LD_LIBRARY_PATH=/system/lib:$LD_LIBRARY_PATH:$PREFIX/lib:/system/vendor/lib/egl
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PREFIX/lib:/system/vendor/lib/egl
 export DATA_RUNTIME_FOLDER=../model
 export DEVICE_UUID_FILEPATH=/data/data/com.termux/files/home/.ro_serialno
 export DEVICE_GROUP_ID_FILEPATH=/data/data/com.termux/files/home/.groupid.txt
