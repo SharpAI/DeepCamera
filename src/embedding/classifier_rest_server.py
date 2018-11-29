@@ -19,7 +19,8 @@ def classify_task():
 
     emb = save_embedding.read_embedding_string(embedding_path)
     emb = np.asarray(emb)
-    result = classifer.classify(emb, classifier_filename, None)
+
+    result = classifer.classify([emb], classifier_filename, None)
     #_, human_string, score, top_three_name = classifer.classify(emb, classifier_filename, None)
     return jsonify({'status': 'ok','result':result}), 200
 @app.route('/train', methods=['POST'])
