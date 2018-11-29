@@ -13,70 +13,51 @@
 
 - adb install apk
 
-### On Android Launcher (Termux Console)
-```
-pkg install openssh
-sshd
-```
+## 2. Download usr.tgz and runtime.tgz
 
-## 2. Add id_rsa.pub to 
-```
-~/.ssh/authorized_keys 
-```
+### 百度云盘
+#### usr_10312018.tgz
+链接: https://pan.baidu.com/s/1hG6z2BdXCy82xtjXu3mrZg 提取码: 54cp
 
-## 3. Then Remote access it for easy
+#### runtime.tgz
+链接:https://pan.baidu.com/s/1h1PXtRmJcPMnzmGnfzCN-Q  密码:prmc
 
-```
-ssh -p 8022 a@192.168.x.x
-```
 
-## 4. Install Base Root File System
+## 3. Install Base Root File System
 
 ### ON PC
-
-百度云盘
-
-链接: https://pan.baidu.com/s/1hG6z2BdXCy82xtjXu3mrZg 提取码: 54cp
 ```
-scp -P 8022 usr_10312018.tgz a@ip:/data/data/com.termux/files
+adb push 4-usr_10312018.tgz /data/data/com.termux/files/
+adb push 5-runtime_aarch64_1128_2018.tgz /data/data/com.termux/home/
 ```
-### On Android
+### On Android Termux:
 ```
-cd /data/data/com.termux/files
-tar -xvf usr_10312018.tgz 
-```
+cd 
+cd ..
+tar -zxf 4-usr_10312018.tgz
 
-## 5. Install Runtime
+cd home
+tar -zxf 5-runtime_aarch64_1128_2018.tgz
 
-
-### On PC
-链接:https://pan.baidu.com/s/1q82sDODnlH5wOohNJkQRGw  密码:d7xw
-
-```
-scp -P 8022 runtime_1127_src_2018.tgz a@ip:/data/data/com.termux/files/home
-```
-
-### On Android
-```
-cd ~/
-tar -zxvf runtime_1127_src_2018.tgz
 cd runtime
 ./start_aarch64.sh
 ```
 
-## 6. Get Serial No
+## 4. Get Serial No
 
 ```
 cat ~/.ro_serialno
 ```
 
-## 7. Generate QR Code from serialno(from step 6)
+## 5. Generate QR Code from serialno(from step 6)
 
 For example: `https://www.qr-code-generator.com`, `text mode`
 
-## 8. Scan QR Code and add device in ’来了吗‘
+## 6. Scan QR Code and add device in ’来了吗‘
 
-## 9. Configure RTSP URL in RTSP HW Decoder
+## 7. Configure RTSP URL in RTSP HW Decoder
+
+![Screen_Shot_2018-11-27_at_8.50.29_PM](/uploads/18260a1c774ad2d51e81e9637d87fade/Screen_Shot_2018-11-27_at_8.50.29_PM.png)
 
 
 Click 'start play' should working now.
