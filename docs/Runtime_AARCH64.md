@@ -57,7 +57,5 @@ For example: `https://www.qr-code-generator.com`, `text mode`
 
 ## 7. Configure RTSP URL in RTSP HW Decoder
 
-![Screen_Shot_2018-11-27_at_8.50.29_PM](/uploads/18260a1c774ad2d51e81e9637d87fade/Screen_Shot_2018-11-27_at_8.50.29_PM.png)
-
 
 Click 'start play' should working now.
