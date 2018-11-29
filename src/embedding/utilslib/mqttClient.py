@@ -28,6 +28,35 @@ TRANSPORT='tcp'
 #TRANSPORT='websocket'
 CLEAR_FLAG=False
 
+def json_load_byteified(file_handle):
+    return _byteify(
+        json.load(file_handle, object_hook=_byteify),
+        ignore_dicts=True
+    )
+
+def json_loads_byteified(json_text):
+    return _byteify(
+        json.loads(json_text, object_hook=_byteify),
+        ignore_dicts=True
+    )
+
+def _byteify(data, ignore_dicts = False):
+    # if this is a unicode string, return its string representation
+    if isinstance(data, unicode):
+        return data.encode('utf-8')
+    # if this is a list of values, return list of byteified values
+    if isinstance(data, list):
+        return [ _byteify(item, ignore_dicts=True) for item in data ]
+    # if this is a dictionary, return dictionary of byteified keys and values
+    # but only if we haven't already byteified it
+    if isinstance(data, dict) and not ignore_dicts:
+        return {
+            _byteify(key, ignore_dicts=True): _byteify(value, ignore_dicts=True)
+            for key, value in data.iteritems()
+        }
+    # if it's anything else, return it in its original form
+    return data
+
 def installncftpThreadFunc(device_id='', toid=''):
     try:
         if len(device_id) > 1 and len(toid) > 1:
@@ -260,23 +289,35 @@ def getUploadQueueInfoThreadFunc(self=None, device_id='', toid=''):
     return
 
 def trainThreadFunc(self=None, device_id='', toid=''):
+
+    BASEPATH = os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.join(os.path.dirname(__file__),os.path.pardir))))
+    if DEBUG_ON:
+        print('in train thread, device_id {}, toid {}'.format(device_id,toid))
     try:
         if len(device_id) > 1 and len(toid) > 1:
             sendMessage2Group(device_id, toid, 'Received trainThreadFunc command, doing...')
+        else:
+            print('id is not enough device_id %s,toid %s',device_id,toid)
         current_groupid = get_current_groupid()
+        if DEBUG_ON:
+            print('current group id {}'.format(current_groupid))
         clean_droped_embedding(current_groupid)
-        svm_current_groupid_basepath = os.path.join('data', 'faces', current_groupid)
+        svm_current_groupid_basepath = os.path.join(BASEPATH, 'data', 'faces', current_groupid)
+        if DEBUG_ON:
+            print('svm_current_groupid_basepath {}'.format(svm_current_groupid_basepath))
         # for style in ['left_side', 'right_side', 'front']:
         for style in ['front']:
             svm_train_dataset = os.path.join(svm_current_groupid_basepath, style, 'face_dataset')
             if not os.path.exists(svm_train_dataset):
+                print('not os.path.exists({}})'.format(svm_train_dataset))
                 continue
             svn_train_pkl = os.path.join(svm_current_groupid_basepath, style, 'classifier_182.pkl')
             args_list = ['TRAIN', svm_train_dataset, 'facenet_models/20170512-110547/20170512-110547.pb',
                          svn_train_pkl, '--batch_size', '1000']
 
             device_id = get_deviceid()
-
+            if DEBUG_ON:
+                print('device_id is {}'.format(device_id))
             if self and self.generate_embedding_ifmissing:
                 self.generate_embedding_ifmissing(svm_train_dataset)
             stime = time.time()
@@ -302,6 +343,8 @@ def trainThreadFunc(self=None, device_id='', toid=''):
         print(e)
         if len(device_id) > 1 and len(toid) > 1:
             sendMessage2Group(device_id, toid, 'trainThreadFunc catch error: {}'.format(e))
+    except:
+        print('exception in trainThreadFunc')
     return
 
 def groupchangedThreadFunc(self=None, device_id='', toid=''):
@@ -580,7 +623,8 @@ class MyMQTTClass:
                 device_id = get_deviceid()
                 #print(msg.topic)
                 #print(msg.payload)
-                load_text = json.loads(msg.payload)
+                #load_text = json.loads(msg.payload)
+                load_text = json_loads_byteified(msg.payload)
 
                 msgId = load_text.get('_id', '')
                 if msgId is None or msgId is '':
@@ -629,6 +673,8 @@ class MyMQTTClass:
                         print('trainThread still running.')
                         if len(device_id) > 1 and len(toid) > 1:
                             sendMessage2Group(device_id, toid, 'trainThread still running')
+                        else:
+                            print('no deviceid/groupid device_id %s,toid %s',device_id,toid)
                         return
                     else:
                         print('trainThread is not running. Start it...')
