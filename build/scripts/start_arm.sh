@@ -3,9 +3,9 @@
 redis-server --maxmemory 20mb --maxmemory-policy allkeys-lru --save "" --appendonly no --dbfilename "" &
 mosquitto &
 
-./flower_aarch64.sh &
-./embedding_aarch64.sh &
-./worker_aarch64.sh &
-./classifier_aarch64.sh &
-./param_aarch64.sh &
+./flower_arm.sh &
+./embedding_arm.sh &
+./worker_arm.sh &
+./classifier_arm.sh &
+./param_arm.sh &
 ./start_detector.sh &
