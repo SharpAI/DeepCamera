@@ -358,9 +358,9 @@ def check_embedding_on_detected_person_forSVM_ByDir(current_groupid, embedding, 
     found = 0
     people = None
     if SVM_TRAIN_WITHOUT_CATEGORY is True:
-        facedir = 'data/faces/{}/{}/face_dataset/{}'.format(current_groupid, 'front', classid)
+        facedir = '{}/data/faces/{}/{}/face_dataset/{}'.format(BASEDIR,current_groupid, 'front', classid)
     else:
-        facedir = 'data/faces/{}/{}/face_dataset/{}'.format(current_groupid, style, classid)
+        facedir = '{}/data/faces/{}/{}/face_dataset/{}'.format(BASEDIR,current_groupid, style, classid)
     print("check embedding: facedir = {}".format(facedir))
     embedding_array = []
     if os.path.isdir(facedir):
@@ -1260,18 +1260,18 @@ def sendDebugLogToGroup(uuid, current_groupid, message):
 def SVM_classifier(embedding,align_image_path,uuid,current_groupid,img_style,number_people, img_objid,json_data, forecast_result, embedding_path):
     #Save image to src/face_dataset_classify/group/person/
     if SVM_SAVE_TEST_DATASET is True:
-        group_path = os.path.join(svm_face_testdataset, current_groupid)
+        group_path = os.path.join(BASEDIR,svm_face_testdataset, current_groupid)
         if not os.path.exists(group_path):
             os.mkdir(group_path)
         print('test dataset group_path=%s' % group_path)
 
     pkl_path = ""
     if SVM_TRAIN_WITHOUT_CATEGORY is True:
-        pkl_path = 'data/faces/{}/{}/classifier_182.pkl'.format(current_groupid, 'front')
-        face_dataset_path = 'data/faces/{}/{}/face_dataset'.format(current_groupid, 'front')
+        pkl_path = '{}/data/faces/{}/{}/classifier_182.pkl'.format(BASEDIR,current_groupid, 'front')
+        face_dataset_path = '{}/data/faces/{}/{}/face_dataset'.format(BASEDIR,current_groupid, 'front')
     else:
-        pkl_path = 'data/faces/{}/{}/classifier_182.pkl'.format(current_groupid, img_style)
-        face_dataset_path = 'data/faces/{}/{}/face_dataset'.format(current_groupid, img_style)
+        pkl_path = '{}/data/faces/{}/{}/classifier_182.pkl'.format(BASEDIR,current_groupid, img_style)
+        face_dataset_path = '{}/data/faces/{}/{}/face_dataset'.format(BASEDIR,current_groupid, img_style)
     svm_detected = False
 
     if os.path.exists(pkl_path):
@@ -1281,7 +1281,7 @@ def SVM_classifier(embedding,align_image_path,uuid,current_groupid,img_style,num
                         if os.path.isdir(os.path.join(face_dataset_path, path))]
             nrof_classes = len(classes)
             print("SVM_classifier: nrof_classes={}".format(nrof_classes))
-        tmp_image_path = 'data/faces/noname/person/face_tmp.'+EXT_IMG
+        tmp_image_path = BASEDIR + '/data/faces/noname/person/face_tmp.'+EXT_IMG
         shutil.copyfile(align_image_path, tmp_image_path)
 
         # 输入embedding的预测方法, 速度很快
