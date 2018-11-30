@@ -2,3 +2,5 @@ model
 model.tgz
 *.pyc
 runtime
+build/build/*
+build/dist/*
