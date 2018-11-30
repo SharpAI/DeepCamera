@@ -18,6 +18,10 @@ pyinstaller parameter_server.spec
 cp -rf dist/param/* runtime/bin/
 rm -rf dist/param
 
+pyinstaller flower_main.spec
+cp -rf dist/flower_main/* runtime/bin/
+rm -rf dist/flower_main
+
 mkdir -p runtime/data/faces
 mkdir -p runtime/faces/default_data
 mkdir -p runtime/image
@@ -33,3 +37,6 @@ cp -rf ../src/face_detection/model/* ./runtime/model/
 
 cp scripts/*_aarch64.sh runtime/
 chmod +x runtime/*.sh
+
+
+./build_detector.sh
