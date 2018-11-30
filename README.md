@@ -88,13 +88,13 @@ CFLAGS="-I/data/data/com.termux/files/usr/include/libandroid-support" LDFLAGS="-
 
 ```
 cd build
-bash ./build_aarch64.sh
+bash ./build_aarch64.sh runtime存储的全路径
 ```
 
 ## Run
 
 ```
-cd build/runtime
+cd runtime存储的全路径/runtime
 bash ./start_aarch64.sh
 ```
 
