@@ -39,3 +39,5 @@ cp -rf ../src/face_detection/model $runtime/bin/
 
 cp scripts/*_arm.sh $runtime/
 chmod +x $runtime/*.sh
+
+./build_detector.sh $1

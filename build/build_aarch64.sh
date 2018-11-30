@@ -39,4 +39,4 @@ cp scripts/*_aarch64.sh runtime/
 chmod +x runtime/*.sh
 
 
-./build_detector.sh
+./build_detector.sh $1
