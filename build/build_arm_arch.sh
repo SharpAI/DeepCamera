@@ -11,7 +11,7 @@ cp -rf ../src/face_detection/model runtime_arch/bin/
 
 rm $runtime_tar
 tar -cf $runtime_tar runtime_arch
-
+sync
 rm -rf runtime_arch/bin
 
 pyinstaller -y classifier_server.spec
