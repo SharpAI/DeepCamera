@@ -1,5 +1,5 @@
 ## Setup Termux Linux Development Environment
-
+直接安装耗时较长，可以下载已经制作好的开发环境
 
 ### Download 
 
