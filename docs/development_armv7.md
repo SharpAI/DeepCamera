@@ -1,4 +1,9 @@
 ## Setup Termux Linux Development Environment
+
+## Build Termux Runtime
+## Clean up Termux Linux Development Environment
+## Setup Termux Linux and Arch Linux Environment
+
 直接安装耗时较长，可以下载已经制作好的开发环境
 
 ### （方法一）Download From Baidu Pan
@@ -27,13 +32,14 @@ pip install wheel
 pip install scikit-image
 pip install pyinstaller
 ```
-
-## Build Termux Runtime
-
-## Clean up Termux Linux Development Environment
-
-## Setup Termux Linux and Arch Linux Environment
-
 ## Build Arch Linux Runtime
-
+```
+cd sharpai/build
+bash ./build_arm_arch.sh /mnt/internal_sd/
+```
 ## Clean Up
+
+```
+exit
+bash ./setupTermuxArch.sh purge
+```
