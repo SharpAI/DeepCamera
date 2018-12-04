@@ -1,9 +1,18 @@
 ## Setup Termux Linux Development Environment
 直接安装耗时较长，可以下载已经制作好的开发环境
 
-### Download 
+### （方法一）Download From Baidu Pan
 链接:https://pan.baidu.com/s/1b3JLWbRs9_lWy-tVCsbr_A  密码:9czu
-### Install
+```
+scp -p 8022 arch_dev.......tgz /data/data/com.termux/files/home
+```
+
+```
+cd
+tar -zxf arch_dev.....tgz
+./arch/startarch
+```
+### （方法二）Install Through Network
 ```
 pkg install wget
 $PREFIX/bin/wget https://sdrausty.github.io/TermuxArch/setupTermuxArch.sh
