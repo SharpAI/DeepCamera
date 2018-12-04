@@ -1,6 +1,7 @@
 ## 记录
 
 
+### RK3288
 
 arch_dev_root_1203_2018_final.tgz
 
