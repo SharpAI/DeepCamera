@@ -2,7 +2,7 @@
 直接安装耗时较长，可以下载已经制作好的开发环境
 
 ### Download 
-
+链接:https://pan.baidu.com/s/1b3JLWbRs9_lWy-tVCsbr_A  密码:9czu
 ### Install
 ```
 pkg install wget
