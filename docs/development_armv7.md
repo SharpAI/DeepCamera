@@ -1,6 +1,15 @@
 ## Setup Termux Linux Development Environment
+#### usr_dev_root_1128_2018.tgz
+#### 包含了除SVM之外的编译运行依赖，这是开发用的
+链接:https://pan.baidu.com/s/1MjlCUiiUVf0z_ILoZ7y44w  密码:3rh7
 
+空间不够了，这样节省一些：
+```
+pkg uninstall gcc-6 gcc-7 gcc-8
+```
 ## Build Termux Runtime
+Use sharpai/build/build_arm.sh to Build
+
 ## Clean up Termux Linux Development Environment
 ## Setup Termux Linux and Arch Linux Environment
 
