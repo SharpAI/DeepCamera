@@ -51,3 +51,9 @@ bash ./setupTermuxArch.sh purge
 链接:https://pan.baidu.com/s/1ZUbdVTAiChSdO0ZoFA2bUQ  密码:br1p
 
 ### （方法二）网络安装
+
+## 运行
+
+```
+./arch/startarch c "cd /data/data/com.termux/files/home/runtime_arch/bin && ./classifier "
+```
