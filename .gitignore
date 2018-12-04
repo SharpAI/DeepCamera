@@ -4,3 +4,4 @@ model.tgz
 runtime
 build/build/*
 build/dist/*
+build/runtime_arch

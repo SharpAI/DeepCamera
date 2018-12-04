@@ -27,7 +27,7 @@
 ### ON PC
 ```
 adb push usr_10312018.tgz /data/data/com.termux/files/
-adb push runtime_aarch64_1128_2018.tgz /data/data/com.termux/home/
+adb push runtime_aarch64_1128_2018.tgz /data/data/com.termux/files/home/
 ```
 ### On Android Termux:
 ```

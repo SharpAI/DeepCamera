@@ -12,10 +12,6 @@ LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/system/lib:/system/vendor/lib/egl LD_PRELOAD=l
 mv dist/embedding $runtime/bin
 rm -rf dist/embedding
 
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/system/lib:/system/vendor/lib/egl LD_PRELOAD=libatomic.so:libcutils.so:libm.so  pyinstaller -y  face_detector_arm.spec
-cp -rf dist/worker/* $runtime/bin/
-rm -rf dist/worker
-
 pyinstaller parameter_server.spec
 cp -rf dist/param/* $runtime/bin/
 rm -rf dist/param

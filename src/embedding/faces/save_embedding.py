@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
 import os
-import urllib2
 try:
     import Image
 except:
@@ -37,8 +36,6 @@ def download_img_only(img_url, dirname):
     if not os.path.exists(image_dir_path):
         os.mkdir(image_dir_path)
 
-    # u = urllib2.urlopen(img_url)
-    # r = requests.get(img_url)
     r = requests_retry_get(img_url)
     filename = img_url.rsplit('/', 1)[-1] + '.png'
     image_path = os.path.join(image_dir_path, filename)
