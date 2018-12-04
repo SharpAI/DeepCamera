@@ -43,3 +43,11 @@ bash ./build_arm_arch.sh /mnt/internal_sd/
 exit
 bash ./setupTermuxArch.sh purge
 ```
+
+
+## Prepare ARCH Linux rootfs
+
+### （方法一）下载
+链接:https://pan.baidu.com/s/1ZUbdVTAiChSdO0ZoFA2bUQ  密码:br1p
+
+### （方法二）网络安装
