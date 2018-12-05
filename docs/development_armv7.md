@@ -16,14 +16,15 @@ Use sharpai/build/build_arm.sh to Build
 直接安装耗时较长，可以下载已经制作好的开发环境
 
 ### （方法一）Download From Baidu Pan
-链接:https://pan.baidu.com/s/1b3JLWbRs9_lWy-tVCsbr_A  密码:9czu
+arch_dev_root_1203_2018_final.tgz
+链接:https://pan.baidu.com/s/1_GnaOZ9urmhjX0RcFlKq7w  密码:eio5
 ```
-scp -p 8022 arch_dev.......tgz /data/data/com.termux/files/home
+scp -p 8022 arch_dev_root_1203_2018_final.tgz /data/data/com.termux/files/home
 ```
 
 ```
 cd
-tar -zxf arch_dev.....tgz
+tar -zxf arch_dev_root_1203_2018_final.tgz
 ./arch/startarch
 ```
 ### （方法二）Install Through Network
