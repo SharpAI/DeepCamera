@@ -25,6 +25,7 @@ scp -p 8022 arch_dev_root_1203_2018_final.tgz /data/data/com.termux/files/home
 ```
 cd
 tar -zxf arch_dev_root_1203_2018_final.tgz
+pkg install proot
 ./arch/startarch
 ```
 ### （方法二）Install Through Network
