@@ -41,6 +41,8 @@ def read_image(img_path, **kwargs):
 
 def preprocess(img, bbox=None, landmark=None, **kwargs):
   try:
+    if isinstance(img, unicode):		
+       img = str(img)
     if isinstance(img, str):
       img = read_image(img, **kwargs)
   except NameError as error:
