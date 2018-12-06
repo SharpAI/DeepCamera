@@ -5,6 +5,6 @@ export DATA_RUNTIME_FOLDER=../model
 cd bin
 while [ 1 ]
 do
-  ./worker worker --loglevel INFO -E -n detect -c 2 -Q detect
+  ./worker worker --loglevel INFO -E -n detect -c 1 -Q detect
   sleep 20
 done
