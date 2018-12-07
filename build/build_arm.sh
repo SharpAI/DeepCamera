@@ -31,9 +31,8 @@ cp -rf ../src/embedding/pages $runtime/
 cp -rf ../src/embedding/migrations $runtime/
 
 cp -rf ../model $runtime/
-cp -rf ../src/face_detection/model $runtime/bin/
 
 cp scripts/*_arm.sh $runtime/
 chmod +x $runtime/*.sh
 
-./build_detector.sh $1
+bash ./build_detector.sh $1
