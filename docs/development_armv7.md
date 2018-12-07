@@ -43,6 +43,7 @@ bash build_arm.sh ./
 ```
 ## 设置 Arch Linux 开发环境
 
+#### 使用板子Flash资源
 ```
 scp -p 8022 <arch_开发.tgz> /data/data/com.termux/files/home
 ```
@@ -52,7 +53,10 @@ tar -zxf <arch_开发.tgz>
 pkg install proot
 ./arch/startarch
 ```
-
+#### 使用外接移动硬盘
+```
+mount -o bind /mnt/usb_storage/USB_DISK2/udisk2/arch /data/data/com.termux/files/home/arch
+```
 ## 编译 Arch Linux 中的运行程序
 ```
 cd sharpai/build
