@@ -58,7 +58,7 @@ pkg install proot
 su
 mount
 umount /mnt/usb_storage/USB_DISK2/udisk2 <--在上一步检查出哪个是移动硬盘
-mount -o rw -t ext4 /dev/block/vold/8:3 ./home 
+mount -o rw -t ext4 /dev/block/vold/8:3 /data/data/com.termux/files/home 
 exit
 pkg install tsu
 tsu
