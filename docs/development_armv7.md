@@ -62,6 +62,8 @@ mount -o rw -t ext4 /dev/block/vold/8:3 ./home
 exit
 pkg install tsu
 tsu
+tar -zxf <arch_开发.tgz>
+bash ./arch/startarch
 ```
 ## 编译 Arch Linux 中的运行程序
 ```
