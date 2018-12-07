@@ -1,5 +1,5 @@
 # 准备工作
-## 资源文件
+## 开发和产品所需要的资源文件
 
 |系统|版本|文件名|下载地址|
 |:-:|:-:|:-:|:-:|
@@ -8,7 +8,8 @@
 |Arch|开发|arch_dev_root_1203_2018_final.tgz|链接: https://pan.baidu.com/s/1FdaTiqjuLKEr7ZvKw2JF4g  密码:hvlz|
 |Arch|产品|arch_usr_runtime_1203_2018_final.tgz|链接: https://pan.baidu.com/s/13WwQzuwy9mljzAbhhEeEYA  密码:p1va|
 
-## Setup USB Storage
+## 3288的存储空间很小，外挂USB移动硬盘开发
+#### On PC
 ```
 sudo mkfs.ext4 /dev/sdX1
 sudo tune2fs -o acl /dev/sdX1
@@ -19,7 +20,7 @@ setfacl -m d:u::rwx,d:g::rwx,d:o::rwx /mnt
 sudo umount /mnt
 ```
 
-## On Android
+#### On Android
 ```
 chown u0_a78:u0_a78 u/mnt/usb_storage/USB_DISK2/disk0 
 ```
