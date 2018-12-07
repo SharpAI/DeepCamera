@@ -5,6 +5,7 @@ npm install
 npm run webpack
 mv main.bin.js $runtime/
 cp -rf node_modules $runtime/
+cp -rf config $runtime/
 
 cd -
 cp scripts/start_detector.sh $runtime/
