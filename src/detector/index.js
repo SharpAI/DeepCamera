@@ -509,6 +509,7 @@ var onframe = function(cameraId, motion_detected, file_path, person_count, start
   }
 }
 motion.init(onframe)
+upload_listener.init(onframe)
 waitqueue.init()
 
 const express = require('express');
