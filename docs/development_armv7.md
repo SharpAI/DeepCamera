@@ -1,3 +1,19 @@
+## Setup USB Storage
+```
+sudo mkfs.ext4 /dev/sdX1
+sudo tune2fs -o acl /dev/sdX1
+sudo mount /dev/sdX1 /mnt
+sudo chown <username>: /mnt
+chmod 777 /mnt
+setfacl -m d:u::rwx,d:g::rwx,d:o::rwx /mnt
+sudo umount /mnt
+```
+
+## On Android
+```
+chown u0_a78:u0_a78 u/mnt/usb_storage/USB_DISK2/disk0 
+```
+
 ## Setup Termux Linux Development Environment
 #### usr_dev_root_1128_2018.tgz
 #### 包含了除SVM之外的编译运行依赖，这是开发用的
