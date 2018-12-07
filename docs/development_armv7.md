@@ -85,7 +85,7 @@ bash ./setupTermuxArch.sh purge
 
 `./arch/startarch c "cd /data/data/com.termux/files/home/runtime_arch/bin && ./classifier "`
 
-`./arch/startarch c "cd /data/data/com.termux/files/home/runtime_arch/bin && ./worker worker --loglevel INFO -E -n detect -c 2 -Q detect"`
+`./arch/startarch c "cd /data/data/com.termux/files/home/runtime_arch/bin && ./worker worker --loglevel INFO -E -n detect -c 1 -Q detect"`
 
 
 
