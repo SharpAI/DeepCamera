@@ -71,8 +71,16 @@ cd sharpai/build
 bash ./build_arm_arch.sh /mnt/internal_sd/
 ```
 
+# 制作运行系统
 
-
+```
+cd /data/data/com.termux/files
+tar -zxvf <Termux_产品.tgz> 
+cd /data/data/com.termux/files/home
+tar --exclude=arch/etc/ca-certificates/extracted/cadir/* -zxvf <Termux_产品.tgz>
+tar -xvf /mnt/internal_sd/runtime.tar
+tar -xvf /mnt/internal_sd/runtime_arch.tar
+```
 
 # 分隔符，以下没有整理
 
