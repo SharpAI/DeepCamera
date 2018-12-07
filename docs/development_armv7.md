@@ -1,3 +1,12 @@
+## 资源文件
+
+|系统|版本|文件名|下载地址|
+|:-:|:-:|:-:|:-:|
+|Termux|开发|usr_dev_root_armv7_1126_2018.tgz|链接: https://pan.baidu.com/s/18GwmAj04ylqg1AYS5T5BQA  密码:0w8a|
+|Termux|产品|usr_runtime_root_1126_2018.tgz|链接: https://pan.baidu.com/s/1toQ7kfEMF4JkMVr0GuevPg  密码:nk1j|
+|Arch|开发|arch_dev_root_1203_2018_final.tgz|链接: https://pan.baidu.com/s/1FdaTiqjuLKEr7ZvKw2JF4g  密码:hvlz|
+|Arch|产品|arch_usr_runtime_1203_2018_final.tgz|链接: https://pan.baidu.com/s/13WwQzuwy9mljzAbhhEeEYA  密码:p1va|
+
 ## Setup USB Storage
 ```
 sudo mkfs.ext4 /dev/sdX1
