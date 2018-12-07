@@ -55,7 +55,10 @@ pkg install proot
 ```
 #### 使用外接移动硬盘
 ```
-mount -o bind /mnt/usb_storage/USB_DISK2/udisk2/arch /data/data/com.termux/files/home/arch
+su
+mount
+umount /mnt/usb_storage/USB_DISK2/udisk2 <--在上一步检查出哪个是移动硬盘
+mount -o rw -t ext4 /dev/block/vold/8:3 ./home 
 ```
 ## 编译 Arch Linux 中的运行程序
 ```
@@ -66,7 +69,7 @@ bash ./build_arm_arch.sh /mnt/internal_sd/
 
 
 
-
+# 分隔符，以下没有整理
 
 
 ## Clean Up
