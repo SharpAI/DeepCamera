@@ -15,7 +15,7 @@
 
 ## 2. Download usr.tgz and runtime.tgz
 
-### 百度云盘
+### 百度云盘 (TODO: ROOTFS还需要做精简)
 #### usr_10312018.tgz
 链接: https://pan.baidu.com/s/1hG6z2BdXCy82xtjXu3mrZg 提取码: 54cp
 

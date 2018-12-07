@@ -32,18 +32,19 @@ ssh -p 8022 username@192.168.x.x
 ## 5. Install Base Root File System
 
 ### ON PC
-```
-wget https://github.com/solderzzc/model_release/releases/download/v1.0/usr_10312018.tgz
-scp -P 8022 usr_10312018.tgz a@192.168.x.x:/data/data/com.termux/files/
-```
-or 百度云盘
 
-链接: https://pan.baidu.com/s/1hG6z2BdXCy82xtjXu3mrZg 提取码: 54cp
+百度云盘
+
+`uploading`
+
+```
+scp -P 8022 usr_aarch64_dev_1204_2018.tgz a@192.168.x.x:/data/data/com.termux/files/
+```
 
 ### On Android
 ```
 cd /data/data/com.termux/files
-tar -xvf usr_10312018.tgz 
+tar -xvf usr_aarch64_dev_1204_2018.tgz
 ```
 
 
@@ -64,22 +65,15 @@ cd sharpai
 
 ## RTSP 输入源
 
-https://github.com/solderzzc/hotShare/tree/android_porting/AndroidPorting/vlc-example-streamplayer
-
-修改地址：
-https://github.com/solderzzc/hotShare/blob/android_porting/AndroidPorting/vlc-example-streamplayer/app/src/main/java/com/pedro/vlctestapp/MainActivity.java#L173
-
-然后运行
-直接点Play
-
+使用RTSP Decoder
 
 # 编译，打包
 
 ## 安装Pyinstaller
 ```
 pip2 download pyinstaller
-tar -xjvf PyInstaller-3.4.0.tar.bz2
-cd PyInstaller-3.4.0
+tar -xjvf PyInstaller-3.4.tar.bz2
+cd PyInstaller-3.4
 sed -i'' -e 's#"/usr/tmp"#"/data/data/com.termux/files/usr/tmp"#g' bootloader/src/pyi_utils.c
 CFLAGS="-I/data/data/com.termux/files/usr/include/libandroid-support" LDFLAGS="-landroid-support" pip2 install .
 ```

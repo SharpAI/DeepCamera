@@ -8,6 +8,7 @@ import json, cv2, os
 import numpy as np
 from scipy import misc
 import face_preprocess
+import time
 
 minsize = 100  # minimum size of face, 100 for 1920x1080 resolution, 70 for 1280x720.
 image_size = 160
@@ -142,7 +143,7 @@ def load_align_image(result, image_path, trackerid, ts, cameraId):
 
     return len(results), face_path, imgs_style, blury_arr
 
-def load_align_image_v2(result, image_path, trackerid, ts, cameraId):
+def load_align_image_v2(result, image_path, trackerid, ts, cameraId, face_filter):
     detected = False
     people_cnt = 0
     cropped = []
@@ -186,6 +187,23 @@ def load_align_image_v2(result, image_path, trackerid, ts, cameraId):
             print("to small to recognise ({},{})".format(face_width,face_height))
             continue
 
+        #Check if face is misrecognized
+        if face_filter is not None:
+            box = (x1, y1, x2, y2)
+            #crop = img[bb[1]:(bb[3]+bb[1]), bb[0]:(bb[2]+bb[0]), :]
+            cropped = img[y1:y2, x1:x2, :]
+            star_time = time.time()
+            result, rects = face_filter.template_matching(cameraId, cropped, box, image_path)
+            end_time = time.time()
+            print('Performance: template_matching is {}S'.format(end_time-star_time))
+            if result is False:
+                print('filter_face: template_matching is False.')
+            else:
+                print('filter_face: template_matching is True.')
+                continue
+        else:
+            print('face_filter is None, what\'s wrong?')
+
         #style
         style = faceStyle(landmark, bbox)
 
@@ -221,7 +239,7 @@ def load_align_image_v2(result, image_path, trackerid, ts, cameraId):
 
     return len(results), face_path, imgs_style, blury_arr, face_width_list, face_height_list
 
-def detect(image_path, trackerid, ts, cameraId):
+def detect(image_path, trackerid, ts, cameraId, face_filter):
     result = m.detect(image_path)
 
     #FIXME:
@@ -232,7 +250,7 @@ def detect(image_path, trackerid, ts, cameraId):
     cropped = []
     detected = False
 
-    nrof_faces, img_data, imgs_style, blury_arr, face_width, face_height = load_align_image_v2(result, image_path, trackerid, ts, cameraId)
+    nrof_faces, img_data, imgs_style, blury_arr, face_width, face_height = load_align_image_v2(result, image_path, trackerid, ts, cameraId, face_filter)
     if img_data is not None and len(img_data) > 0:
         people_cnt = len(img_data)
         detected = True
