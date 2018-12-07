@@ -1,3 +1,4 @@
+# 准备工作
 ## 资源文件
 
 |系统|版本|文件名|下载地址|
@@ -23,20 +24,23 @@ sudo umount /mnt
 chown u0_a78:u0_a78 u/mnt/usb_storage/USB_DISK2/disk0 
 ```
 
-## Setup Termux Linux Development Environment
-### PC
+# 开发流程
+## 设置 Termux Linux 开发环境
+### PC端
 ```
 scp -p 8022 <Termux_开发.tgz> a@ip:/data/data/com.termux/files/
 ```
-### Android
+### Android端
 ```
 cd /data/data/com.termux/files
 tar -zxvf <Termux_开发.tgz>
 ```
-## Build Termux Runtime
-Use sharpai/build/build_arm.sh to Build
-
-## Setup Arch Linux Environment
+## 编译Termux中的运行程序
+```
+cd sharpai/build/
+bash build_arm.sh ./
+```
+## 设置 Arch Linux 开发环境
 
 ```
 scp -p 8022 <arch_开发.tgz> /data/data/com.termux/files/home
@@ -48,7 +52,7 @@ pkg install proot
 ./arch/startarch
 ```
 
-## Build Arch Linux Runtime
+## 编译 Arch Linux 中的运行程序
 ```
 cd sharpai/build
 bash ./build_arm_arch.sh /mnt/internal_sd/
