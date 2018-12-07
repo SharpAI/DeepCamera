@@ -9,6 +9,7 @@ var deepeye=require('./deepeye')
 var waitqueue=require('./waitqueue')
 var timeline=require('./timeline')
 var face_motions=require('./face_motions')
+var upload_listener=require('./upload_listener')
 
 rt_msg = require('./realtime_message')
 
@@ -530,5 +531,4 @@ router.get('/post', (request, response) => {
     }, 0)
     response.json({message: 'OK'});
 });
-
-app.listen(port, () => console.log('Listening on port ${port}'));
+app.listen(port,'0.0.0.0' ,() => console.log('Listening on port ',port));
