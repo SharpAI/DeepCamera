@@ -80,6 +80,7 @@ cd /data/data/com.termux/files/home
 tar --exclude=arch/etc/ca-certificates/extracted/cadir/* -zxvf <Termux_产品.tgz>
 tar -xvf /mnt/internal_sd/runtime.tar
 tar -xvf /mnt/internal_sd/runtime_arch.tar
+pkg install proot
 ```
 
 # 分隔符，以下没有整理
