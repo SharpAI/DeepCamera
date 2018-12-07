@@ -9,41 +9,63 @@ if (mcConfig.endPoint === '<endpoint>') {
     process.exit(1);
 }
 var mc = new Minio.Client(mcConfig)
-let poller = mc.listenBucketNotification('sharpai', '', '.jpg', ['s3:ObjectCreated:*'])
 var sharpai_onframe=null
 
-poller.on('notification', record => {
-    console.log('New object: %s/%s (size: %d)', record.s3.bucket.name,
-                record.s3.object.key, record.s3.object.size)
-    var saving_filename = new Date().getTime()+'_'+record.s3.object.key
-    var absolutePath = path.resolve(saving_filename)
+function listenToSharpAIBucket(){
+  let poller = mc.listenBucketNotification('sharpai', '', '.jpg', ['s3:ObjectCreated:*'])
+  poller.on('notification', record => {
+      console.log('New object: %s/%s (size: %d)', record.s3.bucket.name,
+                  record.s3.object.key, record.s3.object.size)
+      var saving_filename = new Date().getTime()+'_'+record.s3.object.key
+      var absolutePath = path.resolve(saving_filename)
 
-    mc.fGetObject(record.s3.bucket.name,record.s3.object.key,saving_filename,function(err){
-      console.log('safed file to ',absolutePath)
+      mc.fGetObject(record.s3.bucket.name,record.s3.object.key,saving_filename,function(err){
+        console.log('safed file to ',absolutePath)
 
-      if(sharpai_onframe){
-        console.log('save key then process it')
+        if(sharpai_onframe){
+          console.log('save key then process it')
 
-         var undefined_obj
-         var start = new Date()
-         sharpai_onframe("uploaded", true, absolutePath, undefined_obj, start)
-      }
-
-      mc.removeObject(record.s3.bucket.name, record.s3.object.key, function(err) {
-        if (err) {
-          return console.log('Unable to remove object', err)
+           var undefined_obj
+           var start = new Date()
+           sharpai_onframe("uploaded", true, absolutePath, undefined_obj, start)
         }
-        console.log('Removed the object',record.s3.object.key,' on minio')
-      })
-    })
-    // Now that we've received our notification, we can cancel the listener.
-    // We could leave it open if we wanted to continue to receive notifications.
-    //poller.stop()
-})
 
+        mc.removeObject(record.s3.bucket.name, record.s3.object.key, function(err) {
+          if (err) {
+            return console.log('Unable to remove object', err)
+          }
+          console.log('Removed the object',record.s3.object.key,' on minio')
+        })
+      })
+  })
+}
+function ensureSharpAIBucket(cb){
+  mc.bucketExists('sharpai', function(err, exists) {
+    if (err || !exists) {
+      console.log('sharpai bucket does not exist')
+      console.log(err)
+      mc.makeBucket('sharpai', function(err) {
+        if (err) {
+          cb && cb(err)
+          return console.log('Error creating bucket.', err)
+        }
+        console.log('Bucket created successfully')
+        cb && cb(null)
+      })
+      return
+    }
+    if (exists) {
+      cb && cb(null)
+      return console.log('Bucket exists.')
+    }
+  })
+}
 module.exports = {
   init : function(onframe){
     sharpai_onframe=onframe
+    ensureSharpAIBucket(function(){
+      listenToSharpAIBucket()
+    })
     console.log('upload listerer is ready')
   }
 }
