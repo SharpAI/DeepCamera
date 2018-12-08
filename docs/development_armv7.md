@@ -83,6 +83,13 @@ tar -xvf /mnt/internal_sd/runtime_arch.tar
 pkg install proot
 ```
 
+
+# 系统打包
+
+|日期|描述|链接|
+|:-:|:-:|:-:|
+|1207-2018|Flower没跑 Monitor没跑 GM没装没有Gif|链接:https://pan.baidu.com/s/1FR30UEfFnPqc11UBNA9wbg  密码:3uzn|
+
 # 分隔符，以下没有整理
 
 
