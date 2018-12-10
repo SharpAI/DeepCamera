@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-redis-server --maxmemory 20mb --maxmemory-policy allkeys-lru --save "" --appendonly no --dbfilename "" &
+cd /data/data/com.termux/files/home/runtime
+redis-server --maxmemory 80mb --maxmemory-policy allkeys-lru --save "" --appendonly no --dbfilename "" &
 mosquitto &
 
-./flower_arm.sh &
-./embedding_arm.sh &
-./worker_arm.sh &
-./classifier_arm.sh &
-./param_arm.sh &
-./start_detector.sh &
+#./flower_arm.sh &
+$PREFIX/bin/bash ./embedding_arm.sh &
+$PREFIX/bin/bash ./worker_arm.sh &
+$PREFIX/bin/bash ./classifier_arm.sh &
+$PREFIX/bin/bash ./param_arm.sh &
+$PREFIX/bin/bash ./start_detector.sh &
