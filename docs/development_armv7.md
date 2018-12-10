@@ -9,6 +9,7 @@
 |Arch|产品|arch_usr_runtime_1203_2018_final.tgz|链接: https://pan.baidu.com/s/13WwQzuwy9mljzAbhhEeEYA  密码:p1va|
 
 ## 3288的存储空间很小，外挂USB移动硬盘开发
+`外挂移动硬盘无法编译nodejs detector，需要在外挂之前先把nodejs部分编译，然后保存起来`
 #### On PC
 ```
 sudo mkfs.ext4 /dev/sdX1
@@ -82,6 +83,13 @@ tar -xvf /mnt/internal_sd/runtime.tar
 tar -xvf /mnt/internal_sd/runtime_arch.tar
 pkg install proot
 ```
+
+
+# 系统打包
+
+|日期|描述|链接|
+|:-:|:-:|:-:|
+|1207-2018|Flower没跑 Monitor没跑 GM没装没有Gif|链接:https://pan.baidu.com/s/1FR30UEfFnPqc11UBNA9wbg  密码:3uzn|
 
 # 分隔符，以下没有整理
 
