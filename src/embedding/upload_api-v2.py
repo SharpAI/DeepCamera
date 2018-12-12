@@ -2741,11 +2741,64 @@ def extract(image):
     return json.dumps({'result': result})
 
 @deepeye.task
-def fullimage(x, y):
-    sleep(30)  # Simulate work
-    return x -  y
+def extract_image_feature_only(image):
+    global e_sess
+    global e_graph
+    print(">>> extract() {} ".format(image))
+    imgpath=image["path"]
+    style=image["style"]
+    blury=image["blury"]
+    ts=image["ts"]
+    trackerid=image["trackerid"]
+    totalPeople=image["totalPeople"]
+    uuid = get_deviceid()
+    current_groupid = get_current_groupid()
+
+    if current_groupid is None:
+        return json.dumps({"embedding_path":""})
+    embedding = featureCalculation2(imgpath)
+    if embedding is not None:
+        if type(trackerid) is not str:
+            trackerid = str(trackerid)
+
+        embedding_path = save_embedding.get_embedding_path(imgpath)
+        save_embedding.create_embedding_string(embedding, embedding_path)
+
+    return json.dumps({'embedding_path': embedding_path})
+
+@deepeye.task
+def classify_on_embedding_file(image):
+    global e_sess
+    global e_graph
+    print(">>> extract() {} ".format(image))
+    embedding_path=image["path"]
+    style=image["style"]
+    blury=image["blury"]
+    ts=image["ts"]
+    trackerid=image["trackerid"]
+    totalPeople=image["totalPeople"]
+    uuid = get_deviceid()
+    current_groupid = get_current_groupid()
+
+    if current_groupid is None:
+        return json.dumps({"result": {"style": "", "url": "", "face_fuzziness": 5, "recognized": False, "detected": True, "face_id": "", "accuracy": 0}})
+
+    timestamp1 = time.time()
+
+    result={}
+
+    if embedding_path is not None:
+        if type(trackerid) is not str:
+            trackerid = str(trackerid)
+
+        result = face_recognition_on_embedding(None, None, totalPeople, blury, uuid, current_groupid, style, trackerid, timestamp1, ts, embedding_path)
+
+    return json.dumps({'result': result})
+
 deepeye.conf.task_routes = {
-    'upload_api-v2.extract': {'queue': 'embedding'}
+    'upload_api-v2.extract': {'queue': 'embedding'},
+    'upload_api-v2.extract_image_feature_only': {'queue': 'embedding'},
+    'upload_api-v2.classify_on_embedding_file': {'queue': 'classify'}
 }
 
 
