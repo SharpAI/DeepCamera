@@ -153,6 +153,19 @@ module.exports = {
 
       ON_DEBUG && console.log(img)
       embedding_task(img, function(err,result) {
+        /* Format of result
+          {
+           "result":{
+              "style":"front",
+              "url":"http://aioss.tiegushi.com/2eecee88-ff24-11e8-a63a-0242ac140007",
+              "face_fuzziness":389.8992707171606,
+              "recognized":true,
+              "detected":true,
+              "face_id":"15380878754880000",
+              "accuracy":97
+           }
+          }
+        */
         //console.log(result)
         callback(null,result)
       })
