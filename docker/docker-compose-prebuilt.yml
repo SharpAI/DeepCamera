@@ -160,3 +160,4 @@ services:
       - ../src/detector/face_motions.js:/opt/nvr/detector/face_motions.js
       - ../src/detector/mqttgif.js:/opt/nvr/detector/mqttgif.js
       - ../src/detector/realtime_message.js:/opt/nvr/detector/realtime_message.js
+      - ../src/detector/upload_listener.js:/opt/nvr/detector/upload_listener.js
