@@ -44,6 +44,7 @@ services:
       - ./workaipython/sql:/opt/nvr/conf
       - /dev/shm/streams:/dev/shm/streams
       - /opt/nvr/detector/images:/opt/nvr/detector/images
+      - ../src/shinobi/2018.03.15.14.50_patchs/camera.js:/opt/nvr/camera.js
   flower:
     command: sh -c "flower --port=5555"
     image: deepeye2/workai_flower:latest
