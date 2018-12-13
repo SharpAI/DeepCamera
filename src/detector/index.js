@@ -9,7 +9,6 @@ var deepeye=require('./deepeye')
 var waitqueue=require('./waitqueue')
 var timeline=require('./timeline')
 var face_motions=require('./face_motions')
-var upload_listener=require('./upload_listener')
 
 rt_msg = require('./realtime_message')
 
@@ -43,6 +42,13 @@ var MINIMAL_FACE_RESOLUTION = GetEnvironmentVar('MINIMAL_FACE_RESOLUTION', 200)
 var RECOGNITION_ENSURE_VALUE = GetEnvironmentVar('RECOGNITION_ENSURE_VALUE', 15)
 // BIGGEST_FACE_ONLY_MODE 只计算最大脸模式，通常用于闸机系统，多算无意的模式，缺省关闭
 var BIGGEST_FACE_ONLY_MODE = GetEnvironmentVar('BIGGEST_FACE_ONLY_MODE', false)
+// UPLOAD_IMAGE_SERVICE_ENABLED, true 打开minio上传监听，false 关闭minio上传监听
+var UPLOAD_IMAGE_SERVICE_ENABLED = GetEnvironmentVar('UPLOAD_IMAGE_SERVICE_ENABLED', false)
+
+
+if(UPLOAD_IMAGE_SERVICE_ENABLED){
+  var upload_listener=require('./upload_listener')
+}
 
 // Use database 22 to void confict if there's one
 var gifQueue = new Queue('gif making worker', {redis: {
@@ -545,7 +551,9 @@ var onframe = function(cameraId, motion_detected, file_path, person_count, start
   }
 }
 motion.init(onframe)
-upload_listener.init(onframe)
+if(UPLOAD_IMAGE_SERVICE_ENABLED{
+  upload_listener.init(onframe)
+}
 waitqueue.init()
 
 const express = require('express');
