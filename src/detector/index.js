@@ -41,6 +41,8 @@ var RESTRICT_RECOGNITON_MODE = GetEnvironmentVar('RESTRICT_RECOGNITON_MODE',true
 var MINIMAL_FACE_RESOLUTION = GetEnvironmentVar('MINIMAL_FACE_RESOLUTION', 200)
 // RECOGNITION_ENSURE_VALUE 定义数值为秒，秒数之内确保一次计算
 var RECOGNITION_ENSURE_VALUE = GetEnvironmentVar('RECOGNITION_ENSURE_VALUE', 15)
+// BIGGEST_FACE_ONLY_MODE 只计算最大脸模式，通常用于闸机系统，多算无意的模式，缺省关闭
+var BIGGEST_FACE_ONLY_MODE = GetEnvironmentVar('BIGGEST_FACE_ONLY_MODE', false)
 
 // Use database 22 to void confict if there's one
 var gifQueue = new Queue('gif making worker', {redis: {
@@ -340,6 +342,13 @@ function getFaceRecognitionTaskList(cameraId,cropped_images,tracking_info,curren
           deepeye.delete_image(item.path)
           return
         }
+      }
+    }
+    if(BIGGEST_FACE_ONLY_MODE){
+      if(face_list.length >=1){
+          console.log('BIGGEST_FACE_ONLY_MODE, skipped one face')
+          deepeye.delete_image(item.path)
+          return
       }
     }
     face_list.push(item)
