@@ -38,7 +38,7 @@ var RESTRICT_RECOGNITON_MODE = GetEnvironmentVar('RESTRICT_RECOGNITON_MODE',true
 // MINIMAL_FACE_RESOLUTION 定义脸最小分辨率
 var MINIMAL_FACE_RESOLUTION = GetEnvironmentVar('MINIMAL_FACE_RESOLUTION', 200)
 // RECOGNITION_ENSURE_VALUE 定义数值为秒，秒数之内确保一次计算
-var RECOGNITION_ENSURE_VALUE = GetEnvironmentVar('RECOGNITION_ENSURE_VALUE', 2)
+var RECOGNITION_ENSURE_VALUE = GetEnvironmentVar('RECOGNITION_ENSURE_VALUE', 15)
 
 // Use database 22 to void confict if there's one
 var gifQueue = new Queue('gif making worker', {redis: {
