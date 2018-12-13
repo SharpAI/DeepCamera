@@ -551,7 +551,7 @@ var onframe = function(cameraId, motion_detected, file_path, person_count, start
   }
 }
 motion.init(onframe)
-if(UPLOAD_IMAGE_SERVICE_ENABLED{
+if(UPLOAD_IMAGE_SERVICE_ENABLED){
   upload_listener.init(onframe)
 }
 waitqueue.init()
