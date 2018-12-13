@@ -3,6 +3,19 @@ var client  = mqtt.connect('mqtt://broker')
 var redis = require("redis")
 var request = require('requestretry')
 var ON_DEBUG = false
+function GetEnvironmentVar(varname, defaultvalue)
+{
+    var result = process.env[varname];
+    if(result!=undefined)
+        return result;
+    else
+        return defaultvalue;
+}
+
+
+// 通过环境变量来控制重发消息机制
+var THRESHOLD_ON_REALTIME_MESSAGE = GetEnvironmentVar('THRESHOLD_ON_REALTIME_MESSAGE', false)
+
 
 client.on('connect', function () {
   client.subscribe('presence', function (err) {
@@ -18,19 +31,28 @@ client.on('message', function (topic, message) {
 })
 
 var MESSAGE_THRESHOLD = 30
-var redisClient = redis.createClient(
-    {port: 6379,
-        return_buffers: true, // to handle binary payloads
-        host: process.env.REDIS_HOST || "redis",
-        password:   process.env.REDIS_PASSWORD});
 
-redisClient.select(15, function() {
-  console.log('select database 15 to avoid conflict')
-});
+if(THRESHOLD_ON_REALTIME_MESSAGE){
+  var redisClient = redis.createClient(
+      {port: 6379,
+          return_buffers: true, // to handle binary payloads
+          host: process.env.REDIS_HOST || "redis",
+          password:   process.env.REDIS_PASSWORD});
+
+  redisClient.select(15, function() {
+    console.log('select database 15 to avoid conflict')
+  });
+}
 
 // callback true to allow send
 // callback false to disallow send
 function message_threshold_check(person_id,cb){
+    if(THRESHOLD_ON_REALTIME_MESSAGE){
+      if(cb){
+        cb(true)
+      }
+      return
+    }
     var my_key='key_limit_'+person_id;
     redisClient.exists(my_key,function(err,res){
       ON_DEBUG && console.log('begin redis return =  ===================')
