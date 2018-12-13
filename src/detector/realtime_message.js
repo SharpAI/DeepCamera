@@ -31,9 +31,9 @@ client.on('message', function (topic, message) {
 })
 
 var MESSAGE_THRESHOLD = 30
-
-if(THRESHOLD_ON_REALTIME_MESSAGE){
-  var redisClient = redis.createClient(
+var redisClient = null
+if(!THRESHOLD_ON_REALTIME_MESSAGE){
+  redisClient = redis.createClient(
       {port: 6379,
           return_buffers: true, // to handle binary payloads
           host: process.env.REDIS_HOST || "redis",
@@ -47,7 +47,7 @@ if(THRESHOLD_ON_REALTIME_MESSAGE){
 // callback true to allow send
 // callback false to disallow send
 function message_threshold_check(person_id,cb){
-    if(THRESHOLD_ON_REALTIME_MESSAGE){
+    if(!THRESHOLD_ON_REALTIME_MESSAGE){
       if(cb){
         cb(true)
       }
