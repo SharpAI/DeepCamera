@@ -311,6 +311,11 @@ function getFaceRecognitionTaskList(cameraId,cropped_images,tracking_info,curren
 
   console.log('Tracking lasting for %ds, I like this logic game ',time_diff,cropped_images,tracking_info)
   var face_list = []
+  cropped_images.sort(function(a,b){
+    var area_a = a.height * a.width;
+    var area_b = b.height * b.width;
+    return area_b - area_a;
+  })
   cropped_images.forEach(function(item){
     if(RESTRICT_RECOGNITON_MODE && item.style !== 'front'){
       deepeye.delete_image(item.path)
@@ -383,6 +388,8 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
           setCurrentPersonCount(cameraId, face_detected)
           }
     */
+
+      // 根据数学的Sampling 原则，我们计算一张图片的Embedding时，只需要确保其他的图片不要计算，而等着一张图片的都计算完
       if(SAMPLING_TO_SAVE_ENERGY_MODE){
         if(getEmbeddingInProcessingStatus(cameraId)){
           console.log('Sampling mode, skip this frame since previous calcuation is in progress')
@@ -399,7 +406,6 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
       var faces_to_be_recognited = getFaceRecognitionTaskList(cameraId,
         cropped_images,tracking_info,current_tracker_id)
       if (faces_to_be_recognited.length >0) {
-        // 根据数学的Sampling 原则，我们计算一张图片的Embedding时，只需要确保其他的图片不要计算，而等着一张图片的都计算完
         setEmbeddingInProcessingStatus(cameraId,true)
         deepeye.embedding(faces_to_be_recognited, current_tracker_id, function(err,results){
           getEmbeddingInProcessingStatus(cameraId,false)
