@@ -33,6 +33,8 @@ function GetEnvironmentVar(varname, defaultvalue)
 
 // DEEP_ANALYSIS_MODE true=允许队列缓存, false=不允许队列缓存
 var DEEP_ANALYSIS_MODE = GetEnvironmentVar('DEEP_ANALYSIS_MODE',true)
+// SAMPLING_TO_SAVE_ENERGY_MODE true，同一个Camera在进行Embedding计算的时候其他图片不再计算Embedding, false=关闭
+var SAMPLING_TO_SAVE_ENERGY_MODE = GetEnvironmentVar('SAMPLING_TO_SAVE_ENERGY_MODE',true)
 // RESTRICT_RECOGNITON_MODE true=只做正脸识别, false=侧脸和正脸都做识别
 var RESTRICT_RECOGNITON_MODE = GetEnvironmentVar('RESTRICT_RECOGNITON_MODE',true)
 // MINIMAL_FACE_RESOLUTION 定义脸最小分辨率
@@ -176,6 +178,19 @@ function setFaceDetectInProcessingStatus(cameraId, face_detect_in_processing) {
       return 0;
   }
   cameras_tracker[cameraId].face_detect_in_processing = face_detect_in_processing;
+}
+function setEmbeddingInProcessingStatus(cameraId, face_embedding_in_processing) {
+  if(!cameraId || !checkAndNewCameraTrackerInfo(cameraId)) {
+      return 0;
+  }
+  cameras_tracker[cameraId].face_embedding_in_processing = face_embedding_in_processing;
+}
+function getEmbeddingInProcessingStatus(cameraId) {
+  if(!cameraId || !checkAndNewCameraTrackerInfo(cameraId)) {
+      return 0;
+  }
+
+  return cameras_tracker[cameraId].face_embedding_in_processing;
 }
 function getCurrentTrackerId(cameraId) {
   if(!cameraId || (cameras_tracker && !cameras_tracker[cameraId])) {
@@ -366,12 +381,28 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
           start_new_tracker_id(cameraId)
           current_tracker_id = getCurrentTrackerId(cameraId)
           setCurrentPersonCount(cameraId, face_detected)
+          }
+    */
+      if(SAMPLING_TO_SAVE_ENERGY_MODE){
+        if(getEmbeddingInProcessingStatus(cameraId)){
+          console.log('Sampling mode, skip this frame since previous calcuation is in progress')
+
+          gifQueue.add({
+            person_count:person_count,
+            cameraId:cameraId,
+            current_tracker_id:current_tracker_id,
+            whole_file:whole_file,
+            name_sorting:false});
+          return
+        }
       }
-*/
       var faces_to_be_recognited = getFaceRecognitionTaskList(cameraId,
         cropped_images,tracking_info,current_tracker_id)
       if (faces_to_be_recognited.length >0) {
+        // 根据数学的Sampling 原则，我们计算一张图片的Embedding时，只需要确保其他的图片不要计算，而等着一张图片的都计算完
+        setEmbeddingInProcessingStatus(cameraId,true)
         deepeye.embedding(faces_to_be_recognited, current_tracker_id, function(err,results){
+          getEmbeddingInProcessingStatus(cameraId,false)
           timeline.update(current_tracker_id,'in_tracking',person_count,results)
 
           //save gif info
@@ -381,18 +412,13 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
               console.log(err)
             }
           })
-
+          // after it,the whole_file will be deleted, so need call it after face_motions.save_face_motion_image_path
           gifQueue.add({
             person_count:person_count,
             cameraId:cameraId,
             current_tracker_id:current_tracker_id,
             whole_file:whole_file,
             name_sorting:false});
-          /*face_motions.check_and_generate_face_motion_gif(person_count,
-            cameraId,current_tracker_id,whole_file,false,
-            function(err,the_file){
-              deepeye.delete_image(whole_file)
-          })*/
         })
       } else {
           gifQueue.add({
@@ -401,11 +427,6 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
             current_tracker_id:current_tracker_id,
             whole_file:whole_file,
             name_sorting:false});
-        /*face_motions.check_and_generate_face_motion_gif(person_count,
-          cameraId,current_tracker_id,whole_file,false,
-          function(err,the_file){
-            deepeye.delete_image(whole_file)
-        })*/
       }
     //})
   });
