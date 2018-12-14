@@ -10,8 +10,8 @@ import os, time
 import shutil
 import sys
 from scipy import misc
-import requests
 
+requests = None
 
 class FaceFilterClass():
     def __init__(self):
@@ -31,7 +31,9 @@ class FaceFilterClass():
                 self.cv2_minor = value
                 break
         print("self.cv2_major={}, self.cv2_minor={}".format(self.cv2_major, self.cv2_minor))
-
+        if self.DEBUG_SENDBACK == True:
+            global requests
+            import requests as requests
     def setThreshold(self, threshold):
         if threshold > 100:
             self.MOTION_DETECTION_THRESHOLD = threshold
@@ -267,7 +269,7 @@ class FaceFilterClass():
                 files = {'file': ('camera.jpg', fin, 'multipart/form-data')}
                 url = 'http://192.168.103.17:3000/uploadImageWithName'
                 r = requests.post(url, files=files)
-            return result, rects, 
+            return result, rects,
         except Exception as e:
             print('template_matching: Error, ', e)
             return False, []
@@ -305,4 +307,3 @@ class FaceFilterClass():
                 result = True
         return result, [(x, y, w, h)]
     '''
-
