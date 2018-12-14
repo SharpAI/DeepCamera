@@ -44,7 +44,8 @@ var RECOGNITION_ENSURE_VALUE = GetEnvironmentVarInt('RECOGNITION_ENSURE_VALUE', 
 var BIGGEST_FACE_ONLY_MODE = GetEnvironmentVarInt('BIGGEST_FACE_ONLY_MODE', 0)
 // UPLOAD_IMAGE_SERVICE_ENABLED, true 打开minio上传监听，false 关闭minio上传监听
 var UPLOAD_IMAGE_SERVICE_ENABLED = GetEnvironmentVarInt('UPLOAD_IMAGE_SERVICE_ENABLED', 0)
-
+// GIF_UPLOADING 控制GIF图上传
+var GIF_UPLOADING = GetEnvironmentVarInt('GIF_UPLOADING', 1)
 
 if(UPLOAD_IMAGE_SERVICE_ENABLED){
   var upload_listener=require('./upload_listener')
@@ -428,28 +429,36 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
           setEmbeddingInProcessingStatus(cameraId,false)
           timeline.update(current_tracker_id,'in_tracking',person_count,results)
 
-          //save gif info
-          var jpg_motion_path = face_motions.save_face_motion_image_path(current_tracker_id, whole_file);
-          timeline.push_gif_info(current_tracker_id, jpg_motion_path, results, ts, function(err) {
-            if(err){
-              console.log(err)
-            }
-          })
-          // after it,the whole_file will be deleted, so need call it after face_motions.save_face_motion_image_path
-          gifQueue.add({
-            person_count:person_count,
-            cameraId:cameraId,
-            current_tracker_id:current_tracker_id,
-            whole_file:whole_file,
-            name_sorting:false});
+          if(GIF_UPLOADING){
+            //save gif info
+            var jpg_motion_path = face_motions.save_face_motion_image_path(current_tracker_id, whole_file);
+            timeline.push_gif_info(current_tracker_id, jpg_motion_path, results, ts, function(err) {
+              if(err){
+                console.log(err)
+              }
+            })
+            // after it,the whole_file will be deleted, so need call it after face_motions.save_face_motion_image_path
+            gifQueue.add({
+              person_count:person_count,
+              cameraId:cameraId,
+              current_tracker_id:current_tracker_id,
+              whole_file:whole_file,
+              name_sorting:false});
+          } else {
+            deepeye.delete_image(whole_file)
+          }
         })
       } else {
-          gifQueue.add({
-            person_count:person_count,
-            cameraId:cameraId,
-            current_tracker_id:current_tracker_id,
-            whole_file:whole_file,
-            name_sorting:false});
+          if(GIF_UPLOADING){
+            gifQueue.add({
+              person_count:person_count,
+              cameraId:cameraId,
+              current_tracker_id:current_tracker_id,
+              whole_file:whole_file,
+              name_sorting:false});
+          } else {
+            deepeye.delete_image(whole_file)
+          }
       }
     //})
   });

@@ -6,6 +6,16 @@ var timelineDuration = 60*1000; //30s
 var sent_ts_recognized = 0;
 var sent_ts_not_recognized = 0;
 var realtime_msg_interval = 30*1000;
+function GetEnvironmentVarInt(varname, defaultvalue)
+{
+    var result = process.env[varname];
+    if(result!=undefined)
+        return parseInt(result,10);
+    else
+        return defaultvalue;
+}
+// DEEP_ANALYSIS_MODE true=允许队列缓存, false=不允许队列缓存
+var REALTIME_STRANGER_SDK_MESSAGE = GetEnvironmentVarInt('REALTIME_STRANGER_SDK_MESSAGE',1)
 
 if (typeof db_global === 'undefined'){
   db_global = new Datastore()
@@ -96,6 +106,41 @@ function generate_known_person_message(tracker_id,recognition_results){
     })
   })
 }
+
+function generate_unknown_person_message(tracker_id,recognition_results){
+  var result_info = {
+    status:'Stranger',
+    persons:[],
+    person_id:''
+  }
+  get_device_uuid(function(uuid){
+    get_device_group_id(function(group_id){
+      recognition_results.forEach(function(result){
+        var person_info = {
+            "id":result.face_id,
+            "uuid":uuid,
+            "group_id":group_id.toString(),
+            "img_url":result.url,
+            "position":"",
+            "type":"face",
+            "current_ts":Date.now(),
+            "accuracy":result.accuracy,
+            "fuzziness":result.face_fuzziness,
+            "sqlid":0,
+            "style":result.style,
+            "tid":tracker_id,
+            //"img_ts":1537393971031,
+            "p_ids":[]
+        }
+        result_info.person_id = result.face_id
+        result_info.persons.push(person_info)
+        console.log('unknown message ',result)
+      })
+      console.log('=============================')
+      rt_msg.send_rt_unknown_message(result_info)
+    })
+  })
+}
 module.exports = {
   update: function(tracker_id,event_type,number,recognition_results){
     //console.log()
@@ -108,6 +153,7 @@ module.exports = {
     */
     if(recognition_results && recognition_results.length > 0){
       var recognitions = []
+      var unknown_faces = []
       var front_faces = 0
       recognition_results.forEach(function(item){
         if(item != undefined && item != null && item.result != undefined && item.result != null) {
@@ -117,6 +163,8 @@ module.exports = {
           }
           if(result && result.recognized === false && result.style ==='front' /*|| result.style == 'left_side' || result.style ==='right_side'*/){
             front_faces++
+            console.log(result)
+            unknown_faces.push(result)
           }
         }
       })
@@ -126,6 +174,12 @@ module.exports = {
         recognized = true
         generate_known_person_message(tracker_id,recognition_results)
       }
+      if(REALTIME_STRANGER_SDK_MESSAGE){
+        if(unknown_faces.length > 0){
+          generate_unknown_person_message(tracker_id,unknown_faces)
+        }
+      }
+
       console.log('=====> update tracker_id ' + tracker_id +
         ' type '+ event_type + ' results: ' + recognition_results)
       db_global.findOne({_id:tracker_id},function(err,doc){
