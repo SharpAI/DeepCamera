@@ -1,9 +1,19 @@
 var http = require('http');
 var request = require('requestretry')
 var host = 'http://workaihost.tiegushi.com/'
-var SENDTOTIMELINE = true
 gst_api_url = host + 'restapi/workai'
 gst_stranger_api_url = host + 'restapi/updateStrangers'
+
+function GetEnvironmentVarInt(varname, defaultvalue)
+{
+    var result = process.env[varname];
+    if(result!=undefined)
+        return parseInt(result,10);
+    else
+        return defaultvalue;
+}
+// ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE 一张图里，出现一个人脸，不再计算后续
+var SENDTOTIMELINE = GetEnvironmentVarInt('GIF_UPLOADING', 1)
 
 function post_gif_2_group(faceid, url,uuid,group_id){
     if(!SENDTOTIMELINE) {

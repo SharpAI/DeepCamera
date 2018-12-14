@@ -19,6 +19,16 @@ var DEVICE_UUID_FILEPATH = process.env.DEVICE_UUID_FILEPATH || '/dev/ro_serialno
 var DEVICE_GROUP_ID_FILEPATH = process.env.DEVICE_GROUP_ID_FILEPATH || '/data/usr/com.deep.workai/cache/groupid.txt'
 
 var ON_DEBUG = false
+function GetEnvironmentVarInt(varname, defaultvalue)
+{
+    var result = process.env[varname];
+    if(result!=undefined)
+        return parseInt(result,10);
+    else
+        return defaultvalue;
+}
+// ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE 一张图里，出现一个人脸，不再计算后续
+var GIF_UPLOADING = GetEnvironmentVarInt('GIF_UPLOADING', 1)
 
 function get_device_uuid(cb){
   fs.readFile(DEVICE_UUID_FILEPATH, function (err,data) {
@@ -130,6 +140,9 @@ function get_face_motion_report_url(group_id,uuid,person_faceid,cameraId,file_ur
     group_id + '&uuid='+uuid+ '&faceid='+person_faceid+'&cameraId='+cameraId
 }
 function send_face_motion_event_to_event_server(group_id,uuid,person_name,cameraId,file_url){
+  if(!GIF_UPLOADING){
+    return;
+  }
   var request_url =get_face_motion_report_url(group_id,uuid,person_name,cameraId,file_url)
   request({
       url: request_url,
