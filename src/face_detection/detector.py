@@ -47,7 +47,7 @@ def faceBlury(gray_face):
     blury_value = cv2.Laplacian(gray_face, cv2.CV_64F).var()
     return blury_value
 
-def faceStyle(landmark, bb):
+def faceStyle(landmark, bb, face_width):
     style = []
 
     eye_1 = landmark[0]
@@ -58,6 +58,7 @@ def faceStyle(landmark, bb):
 
     middle_point = (bb[2] + bb[0])/2
     y_middle_point = (bb[3] + bb[1]) / 2
+    eye_distance = abs(eye_1[0]-eye_2[0])
     if eye_1[0] > middle_point:
         print('(Left Eye on the Right) Add style')
         style.append('left_side')
@@ -69,6 +70,9 @@ def faceStyle(landmark, bb):
     elif max(eye_1[1], eye_2[1]) > y_middle_point:
         print('(Eye lower than middle of face) Skip')
         style.append('lower_head')
+    elif face_width/eye_distance > 6:
+        print('side_face, eye distance is {}, face width is {}'.format(eye_distance,face_width))
+        style.append('side_face')
     #elif nose[1] < y_middle_point:
     #    # 鼻子的y轴高于图片的中间高度，就认为是抬头
     #    style.append('raise_head')
@@ -118,7 +122,7 @@ def load_align_image(result, image_path, trackerid, ts, cameraId):
             continue
 
         #style
-        style = faceStyle(landmark, bbox)
+        style = faceStyle(landmark, bbox, face_width)
 
         #blury
         cropped = img[y1:y2, x1:x2, :]
@@ -205,7 +209,7 @@ def load_align_image_v2(result, image_path, trackerid, ts, cameraId, face_filter
             print('face_filter is None, what\'s wrong?')
 
         #style
-        style = faceStyle(landmark, bbox)
+        style = faceStyle(landmark, bbox, face_width)
 
         #face_preprocess
         bbox = x1, x2, y1, y2
