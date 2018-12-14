@@ -113,7 +113,7 @@ services:
       - "redis"
       - "broker"
       - "workaipython"
-    command: "npm install && node /opt/index.js"
+    command: "npm install &&  sleep 10000 && node /opt/index.js"
     image: solderzzc/monitor:2018
     logging:
       driver: json-file
@@ -164,12 +164,12 @@ services:
       - workaipython:workaipython
       - broker:broker
     volumes:
-      - ./videos:/opt/nvr/videos
       - ./workaipython/ro_serialno:/dev/ro_serialno
       - ./workaipython/groupid.txt:/data/usr/com.deep.workai/cache/groupid.txt
       - ./runtime/images:/opt/nvr/detector/images
       - ./runtime/face_motion:/opt/nvr/detector/face_motion
       - ./runtime/face_cropped:/opt/nvr/detector/face_cropped
+      - ./runtime/videos:/opt/nvr/videos
       - /var/run/docker.sock:/var/run/docker.sock
       - ../src/detector/deepeye.js:/opt/nvr/detector/deepeye.js
       - ../src/detector/index.js:/opt/nvr/detector/index.js
