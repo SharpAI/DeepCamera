@@ -1,0 +1,189 @@
+version: '2'
+services:
+  redis:
+    image: redis:3.2
+    restart: always
+    container_name: "redis"
+    command: sh -c "rm -rf /data/*.rdb && redis-server --maxmemory 50mb --maxmemory-policy allkeys-lru --save \"\" --appendonly no --dbfilename \"\""
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+  broker:
+    image: eclipse-mosquitto:1.5.5
+    restart: always
+    container_name: "broker"
+    ports:
+      - 1883:1883
+      - 9001:9001
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+  camera:
+    container_name: "camera"
+    command: sh -c "if [ ! -f /opt/nvr/conf/conf.sqlite ]; then cp /opt/nvr/sql/shinobi.sample.sqlite /opt/nvr/conf/conf.sqlite -a ; fi && sleep 3 &&  (node /opt/nvr/cron.js &) && node /opt/nvr/camera.js"
+    image: solderzzc/shinobi_x86:2018
+    restart: always
+    environment:
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+    ports:
+      - 8080:8080
+    volumes:
+      - ./runtime/videos:/opt/nvr/videos
+      - ./workaipython/sql:/opt/nvr/conf
+      - ./runtime/images:/opt/nvr/detector/images
+      - ./runtime/frames:/opt/nvr/videos/frames
+  flower:
+    command: sh -c "flower --port=5555"
+    image: solderzzc/flower:2018
+    restart: always
+    ports:
+      - 5555:5555
+    depends_on:
+      - "redis"
+    links:
+      - redis:redis
+    environment:
+      CELERY_BROKER_URL: redis://redis/0
+      CELERY_RESULT_BACKEND: redis://redis/0
+  face_detector:
+    command: sh -c "cd /root/detection && pip install -r requirements.txt && python test.py && ./start.sh"
+    image: solderzzc/face_detection:2018
+    container_name: "face_detector"
+    restart: always
+    environment:
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+    depends_on:
+      - "redis"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+    volumes:
+      - ./workaipython/ro_serialno:/dev/ro_serialno
+      - ./workaipython/groupid.txt:/data/usr/com.deep.workai/cache/groupid.txt
+      - ./workaipython/cache:/data/runtime/cache
+      - ./runtime/images:/opt/nvr/detector/images
+      - ./runtime/frames:/opt/nvr/videos/frames
+      - ../src/face_detection:/root/detection
+  workaipython:
+    command: sh -c "cd /data/runtime/src/ && pip install -r requirements.txt && ./start_embedding_only.sh"
+    image: solderzzc/sharpai_runtime:tf1.8
+    container_name: "workaipython"
+    environment:
+      RUNTIME_BASEDIR: "/data/runtime/src/"
+    restart: always
+    depends_on:
+      - "redis"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+    links:
+      - redis:redis
+    privileged: true
+    ports:
+      - 5000:5000
+      - 5050:5050
+    volumes:
+      - ./workaipython/ro_serialno:/dev/ro_serialno
+      - ./workaipython/groupid.txt:/data/usr/com.deep.workai/cache/groupid.txt
+      - ./workaipython/cache:/data/runtime/cache
+      - ./workaipython/data:/data/runtime/src/data
+      - ./runtime/images:/opt/nvr/detector/images
+      - ./runtime/frames:/opt/nvr/videos/frames
+      - ../src/embedding:/data/runtime/src
+  monitor:
+    container_name: "monitor"
+    depends_on:
+      - "camera"
+      - "flower"
+      - "redis"
+      - "broker"
+      - "workaipython"
+    command: "npm install && node /opt/index.js"
+    image: solderzzc/monitor:2018
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+    restart: always
+    links:
+      - camera:camera
+      - redis:redis
+      - flower:flower
+      - workaipython:workaipython
+      - broker:broker
+    environment:
+      HOST_ADDRESS: "workaihost.tiegushi.com"
+      HOST_PORT: 80
+    volumes:
+      - ./workaipython/ro_serialno:/dev/ro_serialno
+      - ./workaipython/groupid.txt:/data/usr/com.deep.workai/cache/groupid.txt
+      - ../src/monitor/index.js:/opt/index.js
+      - ../src/monitor/package.json:/opt/package.json
+  detector_plugin:
+    container_name: "detector_plugin"
+    depends_on:
+      - "camera"
+      - "flower"
+      - "redis"
+      - "broker"
+      #- "face_detector"
+    #command: sh -c "( while true; do find /opt/nvr/detector/images -type f -mmin +180 -delete ; sleep 60; done & ) && ( while true; do find /opt/nvr/detector/face_motion -type d -mmin +180 -exec rm -rf {} \; ; sleep  60; done & ) &&cd /opt/nvr/detector && npm install  && node /opt/nvr/detector/index.js"
+    command: sh -c "cd /opt/nvr/detector && npm install && node /opt/nvr/detector/index.js"
+    image: solderzzc/shinobi_x86:2018
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+    restart: always
+    env_file:
+      - ./production_1.env
+    environment:
+      TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
+      IMAGE_DIR: "/opt/nvr/detector/images"
+    links:
+      - camera:camera
+      - redis:redis
+      - flower:flower
+      - workaipython:workaipython
+      - broker:broker
+    volumes:
+      - ./videos:/opt/nvr/videos
+      - ./workaipython/ro_serialno:/dev/ro_serialno
+      - ./workaipython/groupid.txt:/data/usr/com.deep.workai/cache/groupid.txt
+      - ./runtime/images:/opt/nvr/detector/images
+      - ./runtime/face_motion:/opt/nvr/detector/face_motion
+      - ./runtime/face_cropped:/opt/nvr/detector/face_cropped
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ../src/detector/deepeye.js:/opt/nvr/detector/deepeye.js
+      - ../src/detector/index.js:/opt/nvr/detector/index.js
+      - ../src/detector/motion.js:/opt/nvr/detector/motion.js
+      #- ../src/detector/maintainer.js:/opt/nvr/detector/maintainer.js
+      - ../src/detector/workai-v2.js:/opt/nvr/detector/workai-v2.js
+      - ../src/detector/workai.js:/opt/nvr/detector/workai.js
+      - ../src/detector/upload.js:/opt/nvr/detector/upload.js
+      - ../src/detector/makegif.js:/opt/nvr/detector/makegif.js
+      - ../src/detector/package.json:/opt/nvr/detector/package.json
+      - ../src/detector/conf.json:/opt/nvr/detector/conf.json
+      - ../src/detector/waitqueue.js:/opt/nvr/detector/waitqueue.js
+      - ../src/detector/timeline.js:/opt/nvr/detector/timeline.js
+      - ../src/detector/visit.js:/opt/nvr/detector/visit.js
+      - ../src/detector/face_motions.js:/opt/nvr/detector/face_motions.js
+      - ../src/detector/mqttgif.js:/opt/nvr/detector/mqttgif.js
+      - ../src/detector/realtime_message.js:/opt/nvr/detector/realtime_message.js
