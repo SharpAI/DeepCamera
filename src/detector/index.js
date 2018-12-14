@@ -21,29 +21,29 @@ var cameras_tracker = {}
 var REDIS_HOST = process.env.REDIS_HOST || "redis"
 var REDIS_PORT = process.env.REDIS_PORT || 6379
 
-function GetEnvironmentVar(varname, defaultvalue)
+function GetEnvironmentVarInt(varname, defaultvalue)
 {
     var result = process.env[varname];
     if(result!=undefined)
-        return result;
+        return parseInt(result,10);
     else
         return defaultvalue;
 }
 
 // DEEP_ANALYSIS_MODE true=允许队列缓存, false=不允许队列缓存
-var DEEP_ANALYSIS_MODE = GetEnvironmentVar('DEEP_ANALYSIS_MODE',true)
+var DEEP_ANALYSIS_MODE = GetEnvironmentVarInt('DEEP_ANALYSIS_MODE',1)
 // SAMPLING_TO_SAVE_ENERGY_MODE true，同一个Camera在进行Embedding计算的时候其他图片不再计算Embedding, false=关闭
-var SAMPLING_TO_SAVE_ENERGY_MODE = GetEnvironmentVar('SAMPLING_TO_SAVE_ENERGY_MODE',true)
+var SAMPLING_TO_SAVE_ENERGY_MODE = GetEnvironmentVarInt('SAMPLING_TO_SAVE_ENERGY_MODE',1)
 // RESTRICT_RECOGNITON_MODE true=只做正脸识别, false=侧脸和正脸都做识别
-var RESTRICT_RECOGNITON_MODE = GetEnvironmentVar('RESTRICT_RECOGNITON_MODE',true)
+var RESTRICT_RECOGNITON_MODE = GetEnvironmentVarInt('RESTRICT_RECOGNITON_MODE',1)
 // MINIMAL_FACE_RESOLUTION 定义脸最小分辨率
-var MINIMAL_FACE_RESOLUTION = GetEnvironmentVar('MINIMAL_FACE_RESOLUTION', 200)
+var MINIMAL_FACE_RESOLUTION = GetEnvironmentVarInt('MINIMAL_FACE_RESOLUTION', 200)
 // RECOGNITION_ENSURE_VALUE 定义数值为秒，秒数之内确保一次计算（有了SAMPLING_TO_SAVE_ENERGY_MODE之后，这个模式不怎么有用）
-var RECOGNITION_ENSURE_VALUE = GetEnvironmentVar('RECOGNITION_ENSURE_VALUE', 15)
+var RECOGNITION_ENSURE_VALUE = GetEnvironmentVarInt('RECOGNITION_ENSURE_VALUE', 15)
 // BIGGEST_FACE_ONLY_MODE 只计算最大脸模式，通常用于闸机系统，多算无意的模式，缺省关闭
-var BIGGEST_FACE_ONLY_MODE = GetEnvironmentVar('BIGGEST_FACE_ONLY_MODE', false)
+var BIGGEST_FACE_ONLY_MODE = GetEnvironmentVarInt('BIGGEST_FACE_ONLY_MODE', 0)
 // UPLOAD_IMAGE_SERVICE_ENABLED, true 打开minio上传监听，false 关闭minio上传监听
-var UPLOAD_IMAGE_SERVICE_ENABLED = GetEnvironmentVar('UPLOAD_IMAGE_SERVICE_ENABLED', false)
+var UPLOAD_IMAGE_SERVICE_ENABLED = GetEnvironmentVarInt('UPLOAD_IMAGE_SERVICE_ENABLED', 0)
 
 
 if(UPLOAD_IMAGE_SERVICE_ENABLED){
@@ -105,6 +105,7 @@ function checkAndNewCameraTrackerInfo(cameraId) {
                                    'old_ts': 0,
                                    'previous_face_detection_ts': null,
                                    'face_detect_in_processing': false,
+                                   'face_embedding_in_processing': false,
                                    'saved_faces_motion':0}
   }
   return true;
@@ -404,26 +405,26 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
           }
     */
 
-      // 根据数学的Sampling 原则，我们计算一张图片的Embedding时，只需要确保其他的图片不要计算，而等着一张图片的都计算完
-      if(SAMPLING_TO_SAVE_ENERGY_MODE){
-        if(getEmbeddingInProcessingStatus(cameraId)){
-          console.log('Sampling mode, skip this frame since previous calcuation is in progress')
-
-          gifQueue.add({
-            person_count:person_count,
-            cameraId:cameraId,
-            current_tracker_id:current_tracker_id,
-            whole_file:whole_file,
-            name_sorting:false});
-          return
-        }
-      }
       var faces_to_be_recognited = getFaceRecognitionTaskList(cameraId,
         cropped_images,tracking_info,current_tracker_id)
       if (faces_to_be_recognited.length >0) {
+        // 根据数学的Sampling 原则，我们计算一张图片的Embedding时，只需要确保其他的图片不要计算，而等着一张图片的都计算完
+        if(SAMPLING_TO_SAVE_ENERGY_MODE){
+          if(getEmbeddingInProcessingStatus(cameraId)){
+            console.log('Sampling mode, skip this frame since previous calcuation is in progress, need delete images of faces')
+
+            gifQueue.add({
+              person_count:person_count,
+              cameraId:cameraId,
+              current_tracker_id:current_tracker_id,
+              whole_file:whole_file,
+              name_sorting:false});
+            return
+          }
+        }
         setEmbeddingInProcessingStatus(cameraId,true)
         deepeye.embedding(faces_to_be_recognited, current_tracker_id, function(err,results){
-          getEmbeddingInProcessingStatus(cameraId,false)
+          setEmbeddingInProcessingStatus(cameraId,false)
           timeline.update(current_tracker_id,'in_tracking',person_count,results)
 
           //save gif info

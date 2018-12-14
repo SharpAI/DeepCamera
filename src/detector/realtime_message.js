@@ -3,18 +3,18 @@ var client  = mqtt.connect('mqtt://broker')
 var redis = require("redis")
 var request = require('requestretry')
 var ON_DEBUG = false
-function GetEnvironmentVar(varname, defaultvalue)
+function GetEnvironmentVarInt(varname, defaultvalue)
 {
     var result = process.env[varname];
     if(result!=undefined)
-        return result;
+        return parseInt(result,10);
     else
         return defaultvalue;
 }
 
 
 // 通过环境变量来控制重发消息机制
-var THRESHOLD_ON_REALTIME_MESSAGE = GetEnvironmentVar('THRESHOLD_ON_REALTIME_MESSAGE', false)
+var THRESHOLD_ON_REALTIME_MESSAGE = GetEnvironmentVarInt('THRESHOLD_ON_REALTIME_MESSAGE', 0)
 
 
 client.on('connect', function () {

@@ -59,7 +59,7 @@ services:
       CELERY_BROKER_URL: redis://redis/0
       CELERY_RESULT_BACKEND: redis://redis/0
   face_detector:
-    command: sh -c "cd /root/detection && python test.py && python worker.py worker --loglevel INFO -E -n detect -c 2 -Q detect"
+    command: sh -c "cd /root/detection && python test.py && python worker.py worker --loglevel INFO -E -n detect -c 1 -Q detect"
     image: deepeye3/face_detector:latest
     container_name: "face_detector"
     environment:
@@ -117,7 +117,7 @@ services:
       - "flower"
       - "redis"
       - "broker"
-    command: sh -c "cd /opt/nvr/detector && npm install && node /opt/nvr/detector/index.js"
+    command: sh -c "export && cd /opt/nvr/detector && npm install && node /opt/nvr/detector/index.js"
     logging:
       driver: json-file
       options:
@@ -126,12 +126,11 @@ services:
     image: deepeye1/shinobi:latest
     restart: always
     privileged: true
+    env_file:
+      - ./production_1.env
     environment:
       TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
       IMAGE_DIR: "/opt/nvr/detector/images"
-      DEEP_ANALYSIS_MODE: 1
-      RESTRICT_RECOGNITON_MODE: 1
-      MINIMAL_FACE_RESOLUTION: 150
     links:
       - camera:camera
       - redis:redis

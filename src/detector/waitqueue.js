@@ -4,14 +4,16 @@ var timeline=require('./timeline')
 var wait_detect_queue = [];
 var ON_DEBUG = false
 var processWaitQueueInterval = null;
-function GetEnvironmentVar(varname, defaultvalue)
+function GetEnvironmentVarInt(varname, defaultvalue)
 {
     var result = process.env[varname];
     if(result!=undefined)
-        return result;
+        return parseInt(result,10);
     else
         return defaultvalue;
 }
+
+var MINIMAL_FACE_RESOLUTION = GetEnvironmentVarInt('MINIMAL_FACE_RESOLUTION', 200)
 
 function need_do_face_recognition(tracking_info){
   // 初始阶段，还没有任何检测结果，送入Delayed队列
@@ -42,7 +44,6 @@ function need_do_face_recognition(tracking_info){
   // 其他情况，计算
   return true;
 }
-var MINIMAL_FACE_RESOLUTION = GetEnvironmentVar('MINIMAL_FACE_RESOLUTION', 200)
 
 function getLargeFrontFacesList(cropped_images){
   var face_list = []
