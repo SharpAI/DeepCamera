@@ -336,6 +336,7 @@ function getFaceRecognitionTaskList(cameraId,cropped_images,tracking_info,curren
       deepeye.delete_image(item.path)
       return
     }
+    /*
     // Need to be very carefully about following code block
     if(tracking_info){
       var recognition_times = getRecognitionTimes(tracking_info)
@@ -350,7 +351,7 @@ function getFaceRecognitionTaskList(cameraId,cropped_images,tracking_info,curren
           return
         }
       }
-    }
+    }*/
     if(BIGGEST_FACE_ONLY_MODE){
       if(face_list.length >=1){
           console.log('BIGGEST_FACE_ONLY_MODE, skipped one face')
