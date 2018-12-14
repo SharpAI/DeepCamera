@@ -27,6 +27,17 @@ var DEVICE_GROUP_ID_FILEPATH = process.env.DEVICE_GROUP_ID_FILEPATH || '/data/us
 var REDIS_HOST = process.env.REDIS_HOST || "redis"
 var REDIS_PORT = process.env.REDIS_PORT || 6379
 
+function GetEnvironmentVarInt(varname, defaultvalue)
+{
+    var result = process.env[varname];
+    if(result!=undefined)
+        return parseInt(result,10);
+    else
+        return defaultvalue;
+}
+// ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE 一张图里，出现一个人脸，不再计算后续
+var ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE = GetEnvironmentVarInt('ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE', 1)
+
 function connect_node_celery_to_amqp(){
   client = celery.createClient({
     CELERY_BROKER_URL: 'redis://'+REDIS_HOST+':'+REDIS_PORT+'/0',
@@ -135,6 +146,7 @@ module.exports = {
   },
   embedding : function embedding_caculation(cropped_images, trackerId, cb) {
     var index = 0;
+    var recognized_results=[];
 
     async.mapSeries(cropped_images, function(img,callback){
       if(trackerId){
@@ -152,6 +164,11 @@ module.exports = {
       index ++;
 
       ON_DEBUG && console.log(img)
+      if(ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE && recognized_results.length>0){
+        console.log('skipped in bypass mode, recognized_results ',recognized_results)
+        callback(null,null)
+        return
+      }
       embedding_task(img, function(err,result) {
         /* Format of result
           {
@@ -167,6 +184,11 @@ module.exports = {
           }
         */
         //console.log(result)
+        if(result.result.recognized && ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE){
+          recognized_results.push(result)
+          callback(null,result)
+          return
+        }
         callback(null,result)
       })
     }, function(err, results){
@@ -176,6 +198,12 @@ module.exports = {
         return cb && cb(err,null)
       } else {
         return cb && cb(null,results)
+        if(ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE && recognized_results.length>0){
+          callback(null,recognized_results)
+          return
+        } else {
+          cb(null,results)
+        }
       }
     });
 
