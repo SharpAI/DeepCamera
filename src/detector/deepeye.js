@@ -4,12 +4,14 @@ var qs=require('querystring');
 var path = require('path');
 var request = require('request');
 var celery = require('node-celery');
+var requestretry = require('requestretry')
 
 var async = require('async')
 var face_motion = require('./face_motions')
 //var maintainer = require('./maintainer')
 var mqtt_2_group = require('./mqttgif')
 var timeline = require('./timeline')
+var upload = require('./upload')
 var device_SN = null
 
 var host_ip = process.env.FLOWER_ADDRESS || 'flower'
@@ -408,8 +410,44 @@ function classify_task(task_info, cb) {
       function(result){
         ON_DEBUG && console.log(result)
         if(result && result.status === 'SUCCESS'){
+
+          console.log('result.result.result ',result.result.result)
+          console.log('result.result.api_data',result.result.api_data)
+
           if(result.result){
             var json = JSON.parse(result.result)
+            console.log('JSON.parse(result.result)=',json)
+            json.result['url'] = upload.getAccessUrl(json.result.key)
+            console.log('json.result.key[',json.result.key,']task_info.path',task_info.path)
+            var key = json.result.key
+            upload.putFile(key,task_info.path,function(error,accessUrl){
+              console.log('error=',error,'accessUrl=',accessUrl)
+              if(!error){
+                var gst_api_url = json.api_data.api_url
+                var json_request_content = json.api_data.payload
+                json_request_content.img_url = accessUrl
+                console.log('api_url,',gst_api_url,'json_request_content ',json_request_content)
+                requestretry({
+                    url: gst_api_url,
+                    method: "POST",
+                    json: true,
+                    maxAttempts: 5,   // (default) try 5 times
+                    retryDelay: 5000,
+                    body: json_request_content
+                }, function (error, response, body){
+                    if(error) {
+                        console.log("report to server event: ",error)
+                    } else {
+                        console.log('report to server event: ',body)
+                        if(body && body.state=="SUCCESS" && body.result) {
+                            var json = JSON.parse(body.result)
+                        }
+                    }
+                });
+              }
+            })
+            delete json.result.key
+            console.log('classify result json:',json)
             return cb && cb(null, json)
           }
         }

@@ -38,19 +38,13 @@ from multiprocessing import Process
 from collections import OrderedDict
 
 USE_DEFAULT_DATA=True   # Enable to use "groupid_default" for SVM training
-SAVE_FULL_BODY=False
 
 import facenet
-import align.detect_face
-if SAVE_FULL_BODY is True:
-    from align.align_dataset_mtcnn_crop_body import save_body_by_face_position_jpg
-# from align import align_dlib
-import classifier_rest_client as classifer
+from recognition import face_recognition_on_embedding
 #import clustering_people
 from subprocess import Popen, PIPE
 
 import FaceProcessing
-from utilslib.uploadFile import uploadFileInit
 from utilslib.mqttClient import MyMQTTClass
 from utilslib.persistentUUID import getUUID
 from utilslib.save2gst import save2gst, post2gst_motion, post2gst_video
@@ -116,61 +110,6 @@ CONFIDENT_VALUE_THRESHOLD = 0.80 #点圈显示的匹配度阈值，大于这个�
 FOR_ARLO = True
 # BLURY_THREHOLD = 10 # Blur image if less than it. Reference: http://www.pyimagesearch.com/2015/09/07/blur-detection-with-opencv/
 
-
-class DataCollection(object):
-    def __init__(self, update_freq=10):
-        self.url = "http://localhost:5000/api/parameters"
-        self.pre_time = time.time()
-        self.update_freq = update_freq
-        self.items = self.fetch()
-
-    def fetch(self):
-        try:
-            resp = requests.get(self.url)
-            assert resp.status_code == 200
-            r = resp.json()
-        except Exception as e:
-            print(e)
-            #print("status_code: %s" %resp.status_code)
-            # if web server not work return default values.
-            r = None
-            if not FOR_ARLO:
-                r = {
-                    "blury_threhold": "10",
-                    "fuzziness_1": "40",
-                    "fuzziness_2": "200",
-                    "score_1": "0.75",
-                    "score_2": "0.60",
-                    }
-            else:
-                r = {
-                    "blury_threhold": "60",
-                    "fuzziness_1": "40",
-                    "fuzziness_2": "200",
-                    "score_1": "0.90",
-                    "score_2": "0.40",
-                    }
-        if "_interval" in r:
-            _freq = int(r["_interval"])
-            if self.update_freq != _freq:
-                self.update_freq = _freq
-        r.update({"_interval": self.update_freq})
-        return r
-
-    def reload(self):
-        cur_time = time.time()
-        if cur_time - self.pre_time > self.update_freq:
-            self.pre_time = cur_time
-            self.items = self.fetch()
-
-    def get(self, key):
-        key = key.lower()
-        self.reload()
-        return self.items.get(key, None)
-
-
-data_collection = DataCollection()
-
 uploadImg=None
 mqttc=None
 gbottlenecks=None
@@ -199,78 +138,14 @@ SVM_SAVE_TEST_DATASET=True
 SVM_TRAIN_WITHOUT_CATEGORY=True
 SVM_HIGH_SCORE_WITH_DB_CHECK=True
 
-#sess, graph = FaceProcessing.InitialFaceProcessor(facenet_model)
-
-#if FACE_DETECTION_WITH_DLIB is False:
-#    graph2 = tf.Graph()
-#    with graph2.as_default():
-#        sess2 = tf.Session(config=tf.ConfigProto(log_device_placement=False), graph=graph2)
-#        with sess2.as_default():
-#            pnet, rnet, onet = align.detect_face.create_mtcnn(sess2, None)
-#else:
-#    dlibFacePredictor = os.path.join(BASEDIR,'../models',
-#                                 "shape_predictor_68_face_landmarks.dat")  # 特征提取器
-#    dlibAlign = align_dlib.AlignDlib(dlibFacePredictor)  # 装载特征提取器，实例化AlignDlib类; 默认用了dlib自带的人脸检测器
-
-
 counter = 0
 
 def featureCalculation(imgpath):
-    global e_sess
-    global e_graph
     img = misc.imread(os.path.expanduser(imgpath))
     prewhitened = facenet.prewhiten(img)
-    #with e_graph.as_default():
-    #    with e_sess.as_default():
+
     embedding = FaceProcessing.FaceProcessingImageData2(img)
     return embedding
-
-
-def updatePeopleImgURL(ownerid, url, embedding, uuid, objid, img_type, accuracy, fuzziness, sqlId, style, img_ts, tid,
-                       p_ids, waiting):
-    if len(url) < 1 or len(uuid) < 1 or len(objid) < 1 or len(img_type) < 1:
-        return
-
-    print(sqlId)
-    if (img_type == 'object'):
-        if not DO_NOT_REPORT_TO_SERVER:
-            save2gst(uuid, objid, url, '', 'object', accuracy, int(fuzziness), 0, "", img_ts,tid, None, waiting)  # 发送请求给workai
-        return
-
-    # 换成迁移训练，不需要预生成这个数据
-    # with app.app_context():
-    #     man = People.query.filter_by(id=ownerid).first()
-    #     man.aliyun_url = url
-    #     db.session.add(man)
-    #     db.session.commit()
-    #
-    #     train = TrainSet(url=url,
-    #                      embed=embedding,
-    #                      device_id=uuid,
-    #                      face_id=ownerid)  # 系统自动label，生成一个训练数据
-    #     db.session.add(train)
-    #     db.session.commit()
-
-    if not DO_NOT_REPORT_TO_SERVER:
-        save2gst(uuid, objid, url, '', 'face', accuracy, int(fuzziness), int(sqlId), style, img_ts, tid, p_ids, waiting)  # 发送请求给workai
-
-
-def compare(emb1, emb2):
-    dist = np.sqrt(np.sum(np.square(np.subtract(emb1, emb2))))
-    # d = emb1 - emb2
-    # sqL2 = np.dot(d, d)
-
-    # print("+ Squared l2 distance between representations: {:0.3f}, dist is {:0.3f}".format(sqL2,dist))
-    # print("+ distance between representations:  {:0.3f}".format(dist))
-    # return sqL2
-    return dist
-
-def compare2(emb1, emb2):
-    dist = np.sum([emb2]*emb1, axis=1)
-    return dist
-
-def compare3(emb1, emb2):
-    return np.sum(np.square(emb1-emb2))
 
 def allowed_file(filename):
     """
@@ -281,161 +156,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-def check_accuracy(confident, val):
-    c = int(confident*100)
-    v = int(val*100)
-    if v == c :
-        return 0.10
-    if v > c :
-        return 0.01
-
-    percent = (float(c) - float(v))/float(c)
-    if (percent<0.10):
-        percent = 0.49
-    else:
-        percent = percent + 0.50
-
-    if (percent>=1.0):
-        percent = 0.99
-
-    percent = round(percent, 2)
-    return percent
-
-#
-# 返回值:
-#    found:  发现符合CONFIDENT_VALUE_THRESHOLD的记录
-#    total:  遍历过这个人的记录
-#
-def check_embedding_on_detected_person(current_groupid, embedding, style, classid):
-    total = 0
-    found = 0
-    people = None
-    #遍历整个数据库, 检查这个人是谁
-    if SVM_TRAIN_WITHOUT_CATEGORY is True:
-        people = People.query.filter_by(group_id=current_groupid, classId=classid).all()
-    else:
-        people = People.query.filter_by(group_id=current_groupid, style=style, classId=classid).all()
-    if people:
-        for person in people:
-            val = compare(embedding, person.embed)
-            total = total+1
-            face_accuracy = check_accuracy(confident_value, val)  # facenet计算的accuracy
-            if face_accuracy >= CONFIDENT_VALUE_THRESHOLD:
-                found = found+1
-            if total >= 500:
-                break
-    return found, total
-
-def check_embedding_on_detected_person_forSVM(current_groupid, embedding, style, classid, nrof_classes):
-    total = 0
-    found = 0
-    people = None
-    #遍历整个数据库, 检查这个人是谁
-    if SVM_TRAIN_WITHOUT_CATEGORY is True:
-        people = People.query.filter_by(group_id=current_groupid, classId=classid).all()
-    else:
-        people = People.query.filter_by(group_id=current_groupid, style=style, classId=classid).all()
-    if people:
-        for person in people:
-            val = compare2(embedding, person.embed)
-            total = total+1
-            #face_accuracy = check_accuracy(confident_value, val)  # facenet计算的accuracy
-            face_accuracy = val
-            print('face_accuracy={}'.format(face_accuracy))
-            threshold = 0.70
-            if nrof_classes <= 5 and nrof_classes > 0:
-                threshold = 0.90
-            elif nrof_classes <= 10 and nrof_classes > 0:
-                threshold = 0.82
-            if face_accuracy >= threshold:
-                found = found+1
-            if total >= 500:
-                break
-    return found, total
-
-def check_embedding_on_detected_person_forSVM_ByDir(current_groupid, embedding, style, classid, nrof_classes):
-    total = 0
-    found = 0
-    people = None
-    if SVM_TRAIN_WITHOUT_CATEGORY is True:
-        facedir = '{}/data/faces/{}/{}/face_dataset/{}'.format(BASEDIR,current_groupid, 'front', classid)
-    else:
-        facedir = '{}/data/faces/{}/{}/face_dataset/{}'.format(BASEDIR,current_groupid, style, classid)
-    print("check embedding: facedir = {}".format(facedir))
-    embedding_array = []
-    if os.path.isdir(facedir):
-        image_paths = []
-        images = os.listdir(facedir)
-        if len(images) < 1:
-            print("Check embedding: Empty directory: facedir={}".format(facedir))
-            return 0, 0
-        for img in images:
-            img_path = os.path.join(facedir, img)
-            emb_path = save_embedding.get_embedding_path(img_path)
-            emb = save_embedding.read_embedding_string(emb_path)
-            emb = np.asarray(emb)
-            embedding_array.append(emb)
-    if len(embedding_array) > 0:
-        for emb in embedding_array:
-            val = compare2(embedding, emb)
-            total = total+1
-            #face_accuracy = check_accuracy(confident_value, val)  # facenet计算的accuracy
-            face_accuracy = val
-            print('face_accuracy={}'.format(face_accuracy))
-            '''
-            threshold = 1.0
-            if nrof_classes <= 5 and nrof_classes > 0:
-                threshold = 1.0
-            elif nrof_classes <= 10 and nrof_classes > 0:
-                threshold = 1.0
-            '''
-            threshold = 0.42
-            if face_accuracy > threshold:
-                found = found+1
-            if total >= 500:
-                break
-    return found, total
-
-#
-# 返回值:
-#    classId:  点圈里面人名字对应的ID，多个平板之间同一个人名字这个ID是相同的, 返回None 表示没有识别出这个人
-#    sqlId:    与当前被检测embedding接近的那条数据的id, 即原始数据Id
-#    accuracy: 点圈里面显示的匹配度
-#
-def find_nearest_embedding(current_groupid, uuid, embedding, style, peopleNum):
-    if EN_SOFTMAX is True and SOFTMAX_ONLY is True:
-        return None, None, None
-
-    result_classId = {'Id': None, 'dist': None}
-
-    #遍历整个数据库，检查这张图片不是人脸
-    people = People.query.filter_by(group_id=current_groupid, classId="notface").all()
-    if people:
-        min_value = min([(compare(embedding, p.embed), p.objId, p.classId, p.id) for p in people])  # 遍历数据库并求最小compare值
-        if min_value[0] < confident_value:
-            face_accuracy = check_accuracy(confident_value, min_value[0])  # facenet计算的accuracy
-            if face_accuracy > 0.9:
-                print("this must be a None-face image")
-                return min_value[2], min_value[3], face_accuracy
-
-    #遍历整个数据库, 检查这个人是谁
-    people = People.query.filter_by(group_id=current_groupid, style=style).all()
-    if people:
-        min_value = min([(compare(embedding, p.embed), p.objId, p.classId, p.id) for p in people if p.classId != "notface"])  # 遍历数据库并求最小compare值
-        print(min_value)
-        face_accuracy = check_accuracy(confident_value, min_value[0])  # facenet计算的accuracy
-        if face_accuracy >= CONFIDENT_VALUE_THRESHOLD:
-            result_classId['Id'] = min_value[2]
-            result_classId['dist'] = min_value[0]
-            face_accuracy = check_accuracy(confident_value, min_value[0])  # facenet计算的accuracy
-            print(">>> same people(db): accuracy=%f" % (face_accuracy))
-            return result_classId['Id'], min_value[3], face_accuracy
-
-    return None, None, None
-
 def insertOneImageIntoPeopleDB(filepath, uuid, group_id, objid, url, notFace=False, style="front"):
-    global e_sess
-    global e_graph
 
     if notFace is True:
         classId = "notface"
@@ -445,7 +166,6 @@ def insertOneImageIntoPeopleDB(filepath, uuid, group_id, objid, url, notFace=Fal
     if not os.path.exists(filepath):
         print("file not exists %s" %(filepath))
         return
-    #embedding = featureCalculation2(filepath, e_sess, e_graph)
     embedding = featureCalculation2(filepath)
     with app.app_context():
         people = People(embed=embedding, uuid=uuid, group_id=group_id,
@@ -763,8 +483,6 @@ def check_image_valid(filepath):
     return True
 
 def downloadTrainDatasets(result, group_id):
-    global e_sess
-    global e_graph
     failedDownloadedItems = []
     img_path = None
     embedding_path = None
@@ -816,7 +534,6 @@ def downloadTrainDatasets(result, group_id):
                         img = misc.imread(os.path.expanduser(denoise_path))  # 手动裁剪后的图片需要再缩放一下
                         aligned = misc.imresize(img, (image_size, image_size), interp='bilinear')
                         misc.imsave(img_path, aligned)
-                        #embedding = featureCalculation2(img_path, e_sess, e_graph)
                         print('......')
                         print('img_path: ',img_path)
                         embedding = featureCalculation2(img_path)
@@ -1115,75 +832,6 @@ def format_img_filename(old_filename):
     new_filename = uuid + '_' + str(gFlask_port) + '_' + str(unix_time).replace('.', '') + '_' + str(ts) + '.' + ext
     return new_filename, uuid, ts
 
-def get_empty_faceid(current_groupid, uuid, embedding,
-                  img_style, number_people, img_objid, forecast_result):
-    """
-    当softmax无结果时（无模型/预测置信度低）调用遍历数据库识别
-    :param current_groupid:
-    :param uuid:
-    :param embedding:
-    :param img_style:
-    :param number_people:
-    :param img_objid:
-    :return:
-    """
-    json_data = {'detected': True, 'recognized': False}
-    face_id = img_objid + str(all_face_index).zfill(4)
-
-    json_data['recognized'] = False
-    json_data['face_id'] = face_id
-    json_data['accuracy'] = 0
-    json_data['style'] = img_style
-
-    forecast_result['face_id'] = face_id
-    forecast_result['face_accuracy'] = 0
-    embedding_string = ','.join(str(x) for x in embedding)
-    forecast_result['embedding_string'] = embedding_string
-    return json_data, forecast_result
-
-def use_db_detect(current_groupid, uuid, embedding,
-                  img_style, number_people, img_objid, forecast_result):
-    """
-    当softmax无结果时（无模型/预测置信度低）调用遍历数据库识别
-    :param current_groupid:
-    :param uuid:
-    :param embedding:
-    :param img_style:
-    :param number_people:
-    :param img_objid:
-    :return:
-    """
-    json_data = {'detected': True, 'recognized': False}
-    face_id, sqlId, face_accuracy = find_nearest_embedding(current_groupid, uuid, embedding, img_style,
-                                                           number_people)
-    if face_id is not None:
-        print(">>> same people: accuracy=%f" % (face_accuracy))
-        people = None
-        people_sqlId = sqlId
-
-        json_data['recognized'] = True
-        json_data['face_id'] = face_id
-        json_data['accuracy'] = int(face_accuracy * 100)
-        forecast_result['face_accuracy'] = face_accuracy
-    else:
-        face_id = img_objid + str(all_face_index).zfill(4)
-
-        people = People(embed=embedding, uuid=uuid, group_id=current_groupid,
-                        objId=face_id, aliyun_url='', classId=face_id, style=img_style)
-        db.session.add(people)
-        db.session.commit()
-        people_sqlId = people.id
-        print(">>> new people")
-        json_data['recognized'] = False
-        json_data['face_id'] = face_id
-        json_data['accuracy'] = 0
-
-    forecast_result['people'] = people
-    forecast_result['people_sqlId'] = people_sqlId
-    forecast_result['face_id'] = face_id
-    forecast_result['face_accuracy'] = face_accuracy
-    return json_data, forecast_result
-
 
 @app.route('/api/upload_video/', methods=['POST'])
 def upload_video():
@@ -1213,548 +861,14 @@ def upload_video():
     print(payload)
     return Response(json.dumps({"result": "ok"}), status=200, mimetype='application/json')
 
-
-def upload_forecast_result(key, forecast_result, json_data, num_p):
-    uuid = forecast_result['uuid']
-    face_id = forecast_result['face_id']
-    face_accuracy = forecast_result['face_accuracy']
-    people_sqlId = forecast_result['people_sqlId']
-    align_image_path = forecast_result['align_image_path']
-    img_style_str = forecast_result['img_style_str']
-    ts = forecast_result['ts']
-    trackerId = forecast_result['trackerId']
-    face_fuzziness = forecast_result['face_fuzziness']
-    people = forecast_result['people']
-    p_ids = forecast_result['p_ids']
-    embedding_string = forecast_result['embedding_string']
-    #embedding_bytes = embedding_string.encode('utf-8')
-    img_type = forecast_result['img_type']
-    waiting = forecast_result['waiting']
-    do_not_report_to_server = DO_NOT_REPORT_TO_SERVER
-    uploadedimgurl = None
-
-    if img_type is not None and img_type == 'body':
-        do_not_report_to_server = True
-
-    if face_id is not None and face_id != "notface":
-        #embedding_url = uploadImg.uploadData(key, embedding_bytes)
-        uploadedimgurl = uploadImg.uploadImage(key, 'notownerid', align_image_path,
-                                               embedding='', uuid=uuid,
-                                               block=False, DO_NOT_REPORT_TO_SERVER=do_not_report_to_server,
-                                               objid=face_id, img_type=img_type,
-                                               accuracy=face_accuracy, fuzziness=face_fuzziness, sqlId=people_sqlId,
-                                               style=img_style_str, ts=ts, tid=str(trackerId), p_ids=p_ids, waiting = waiting)
-    # if uploadedimgurl is not None:
-    #     forecast_result['url'] = uploadedimgurl
-    #     forecast_result['detected'] = json_data['detected']
-    #     push_or_not = push_resultQueue(forecast_result, num_p)
-    return uploadedimgurl
-        # print(align_image_path)
-        # if os.path.exists(align_image_path):
-        #    os.remove(align_image_path)
-
-
 def sendDebugLogToGroup(uuid, current_groupid, message):
     if ENABLE_DEBUG_LOG_TO_GROUP is True:
         sendMessage2Group(uuid, current_groupid, message)
-def SVM_classifier(embedding,align_image_path,uuid,current_groupid,img_style,number_people, img_objid,json_data, forecast_result, embedding_path):
-    #Save image to src/face_dataset_classify/group/person/
-    if SVM_SAVE_TEST_DATASET is True:
-        group_path = os.path.join(BASEDIR,svm_face_testdataset, current_groupid)
-        if not os.path.exists(group_path):
-            os.mkdir(group_path)
-        print('test dataset group_path=%s' % group_path)
-
-    pkl_path = ""
-    if SVM_TRAIN_WITHOUT_CATEGORY is True:
-        pkl_path = '{}/data/faces/{}/{}/classifier_182.pkl'.format(BASEDIR,current_groupid, 'front')
-        face_dataset_path = '{}/data/faces/{}/{}/face_dataset'.format(BASEDIR,current_groupid, 'front')
-    else:
-        pkl_path = '{}/data/faces/{}/{}/classifier_182.pkl'.format(BASEDIR,current_groupid, img_style)
-        face_dataset_path = '{}/data/faces/{}/{}/face_dataset'.format(BASEDIR,current_groupid, img_style)
-    svm_detected = False
-
-    if os.path.exists(pkl_path):
-        nrof_classes = 0
-        if os.path.exists(face_dataset_path):
-            classes = [path for path in os.listdir(face_dataset_path) \
-                        if os.path.isdir(os.path.join(face_dataset_path, path))]
-            nrof_classes = len(classes)
-            print("SVM_classifier: nrof_classes={}".format(nrof_classes))
-        tmp_image_path = BASEDIR + '/data/faces/noname/person/face_tmp.'+EXT_IMG
-        shutil.copyfile(align_image_path, tmp_image_path)
-
-        # 输入embedding的预测方法, 速度很快
-        svm_stime = time.time()
-        _, human_string, score, top_three_name= classifer.classify(embedding, pkl_path, embedding_path)
-        if top_three_name:
-            top_three_faceid = [name.split(' ')[1] for name in top_three_name]
-        else:
-            top_three_faceid = None
-
-        print('-> svm classify cost {}s'.format(time.time()-svm_stime))
-        print("current value of score_1 ", float(data_collection.get("score_1")))
-        print("current value of score_2 ", float(data_collection.get("score_2")))
-        print("current value of fuzziness_1 ", float(data_collection.get("fuzziness_1")))
-        print("current value of fuzziness_2 ", float(data_collection.get("fuzziness_2")))
-        print("current value of update interval  ", float(data_collection.get("_interval")))
-        if human_string is not None:
-            message = ""
-            message2 = ""
-            face_id = human_string.split(' ')[1]
-            score = round(score, 2)
-            fuzziness = forecast_result['face_fuzziness']
-            if USE_DEFAULT_DATA is True:
-                if face_id == 'defaultfaceid':
-                    score = 0.0
-
-            '''
-            if score >= 0.85:
-                if SVM_HIGH_SCORE_WITH_DB_CHECK is False:
-                    svm_detected = True
-                message = "<SVM Recognized> Face ID: %s %s/%s" % (face_id, score, img_style)
-                if SVM_HIGH_SCORE_WITH_DB_CHECK is True:
-                    found, total = check_embedding_on_detected_person_forSVM(current_groupid=current_groupid,
-                                   embedding=embedding,style=img_style,classid=face_id)
-                    if (total>=30 and found>1) or (total<30 and found>0):
-                        svm_detected = True
-                        message2 = "<DB Recognized> Face ID: %s %s/%s, 2nd %s/%s" % (face_id, score, img_style, found, total)
-                    else:
-                        message2 = "<DB 3nd Score Low> Face ID: %s %s/%s, 2nd %s/%s" % (face_id, score, img_style, found, total)
-            elif
-            '''
-            if not FOR_ARLO:
-                if score >= float(data_collection.get("score_1")) or (score >= float(data_collection.get("score_2")) and fuzziness >= float(data_collection.get("fuzziness_1")) and fuzziness < float(data_collection.get("fuzziness_2"))):
-                    found, total = check_embedding_on_detected_person_forSVM(current_groupid=current_groupid,
-                                   embedding=embedding,style=img_style,classid=face_id, nrof_classes=nrof_classes)
-                    if found > 0:
-                        svm_detected = True
-                        message = "<DB Recognized> Face ID: %s %s/%s, 2nd %s/%s" % (face_id, score, img_style, found, total)
-                    else:
-                        message = "<DB 2nd Score Low> Face ID: %s %s/%s, 2nd %s/%s" % (face_id, score, img_style, found, total)
-                elif 0.35<score<0.8:
-                    message = "Send this face to Zone Waiting: %s,%s"%(score, fuzziness)
-                    forecast_result['waiting'] = True
-                else:
-                    message = "<1st Score Low> Face ID: %s %s/%s" % (face_id, score, img_style)
-            else:
-                if score > float(data_collection.get("score_2")):#0.40
-                    found, total = check_embedding_on_detected_person_forSVM_ByDir(current_groupid=current_groupid,
-                                   embedding=embedding,style=img_style,classid=human_string.replace(' ', '_'),nrof_classes=nrof_classes)
-                    if found > 0:
-                        if score > float(data_collection.get("score_1")):#0.9
-                            svm_detected = True
-                            message = "<1, DB Recognized> Face ID: %s %s/%s, 2nd %s/%s" % (face_id, score, img_style, found, total)
-                        else:
-                            message = "<2, DB Recognized> Face ID: %s %s/%s, 2nd %s/%s, but judge failed" % (face_id, score, img_style, found, total)
-                    else:
-                        message = "<3, DB Recognized Not, found=0> Face ID: %s %s/%s, 2nd %s/%s" % (face_id, score, img_style, found, total)
-                else:
-                    message = "<4, DB Recognized Not, Low score> Face ID: %s %s/%s" % (face_id, score, img_style)
-
-            print(message)
-            if (message2 != ""):
-                print(message2)
-            if svm_detected is True:
-                json_data['recognized'] = True
-                json_data['face_id'] = face_id
-                json_data['accuracy'] = int(score*100)
-                json_data['style'] = img_style
-
-                forecast_result['face_id'] = face_id
-                forecast_result['face_accuracy'] = score
-                embedding_string = ','.join(str(x) for x in embedding)
-                forecast_result['embedding_string'] = embedding_string
-            else:
-                forecast_result['p_ids'] = top_three_faceid
-                print("Not Recognized %s" % face_id)
-            sendDebugLogToGroup(uuid, current_groupid, message)
-            #Save image to src/face_dataset_classify/group/person/
-    if SVM_SAVE_TEST_DATASET is True:
-        if svm_detected is True:
-            svm_face_testdataset_person_path = os.path.join(group_path, human_string)
-        else:
-            svm_face_testdataset_person_path = os.path.join(group_path, 'noname')
-
-        if not os.path.exists(svm_face_testdataset_person_path):
-            os.mkdir(svm_face_testdataset_person_path)
-        print('test dataset person path=%s' % svm_face_testdataset_person_path)
-        dir = os.path.basename(align_image_path)
-        name = os.path.splitext(dir)[0]
-        save_testdataset_filepath = os.path.join(svm_face_testdataset_person_path, name+'_'+str(int(time.time()))+'.png')
-        print('save classified image to path: %s' % save_testdataset_filepath)
-        shutil.copyfile(align_image_path, save_testdataset_filepath)
-    if svm_detected is False:
-        json_data, forecast_result = get_empty_faceid(current_groupid, uuid, embedding,
-                                                    img_style, number_people, img_objid,
-                                                    forecast_result)
-        print('not in train classification or need to more train_dataset')
-
-    return json_data, forecast_result
-
-def SVM_classifier_stranger(embedding,align_image_path,uuid,current_groupid,img_style,number_people, img_objid,json_data, forecast_result):
-    #Save image to src/face_dataset_classify/group/person/
-    if SVM_SAVE_TEST_DATASET is True:
-        group_path = os.path.join(svm_stranger_testdataset, current_groupid)
-        if not os.path.exists(group_path):
-            os.mkdir(group_path)
-        print('test dataset group_path=%s' % group_path)
-
-    pkl_path = ""
-    if SVM_TRAIN_WITHOUT_CATEGORY is True:
-        pkl_path = 'data/faces/{}/{}/classifier_182.pkl'.format(current_groupid, 'front')
-        face_dataset_path = 'data/faces/{}/{}/face_dataset'.format(current_groupid, 'front')
-    else:
-        pkl_path = 'data/{}/{}/classifier_182.pkl'.format(current_groupid, img_style)
-        face_dataset_path = 'data/faces/{}/{}/face_dataset'.format(current_groupid, img_style)
-
-    svm_detected = False
-
-    if os.path.exists(pkl_path):
-        nrof_classes = 0
-        if os.path.exists(face_dataset_path):
-            classes = [path for path in os.listdir(face_dataset_path) \
-                        if os.path.isdir(os.path.join(face_dataset_path, path))]
-            nrof_classes = len(classes)
-            print("SVM_classifier: nrof_classes={}".format(nrof_classes))
-        tmp_image_path = 'data/faces/noname/person/face_tmp.'+EXT_IMG
-        shutil.copyfile(align_image_path, tmp_image_path)
-
-        # 输入embedding的预测方法, 速度很快
-        svm_stime = time.time()
-        _, human_string, score, top_three_name= classifer.classify(embedding, pkl_path)
-        if top_three_name:
-            top_three_faceid = [name.split(' ')[1] for name in top_three_name]
-        else:
-            top_three_faceid = None
-
-        print('-> svm classify cost {}s'.format(time.time()-svm_stime))
-        print("current value of score_1 way 1 ", float(data_collection.get("score_1")))
-        print("current value of score_2 ", float(data_collection.get("score_2")))
-        print("current value of fuzziness_1 ", float(data_collection.get("fuzziness_1")))
-        print("current value of fuzziness_2 ", float(data_collection.get("fuzziness_2")))
-        print("current value of update interval  ", float(data_collection.get("_interval")))
-        if human_string is not None:
-            message = ""
-            message2 = ""
-            face_id = human_string.split(' ')[1]
-            score = round(score, 2)
-            fuzziness = forecast_result['face_fuzziness']
-
-            '''
-            if score >= 0.85:
-                if SVM_HIGH_SCORE_WITH_DB_CHECK is False:
-                    svm_detected = True
-                message = "<SVM Recognized> Face ID: %s %s/%s" % (face_id, score, img_style)
-                if SVM_HIGH_SCORE_WITH_DB_CHECK is True:
-                    found, total = check_embedding_on_detected_person_forSVM(current_groupid=current_groupid,
-                                   embedding=embedding,style=img_style,classid=face_id)
-                    if (total>=30 and found>1) or (total<30 and found>0):
-                        svm_detected = True
-                        message2 = "<DB Recognized> Face ID: %s %s/%s, 2nd %s/%s" % (face_id, score, img_style, found, total)
-                    else:
-                        message2 = "<DB 3nd Score Low> Face ID: %s %s/%s, 2nd %s/%s" % (face_id, score, img_style, found, total)
-            elif
-            '''
-            if score >= 0.90 or (score >= 0.77 and fuzziness >= 40 and fuzziness < 200):
-                found, total = check_embedding_on_detected_person_forSVM(current_groupid=current_groupid,
-                               embedding=embedding,style=img_style,classid=face_id, nrof_classes=nrof_classes)
-                if found > 0:
-                    svm_detected = True
-                    message = "<DB Recognized> Face ID: %s %s/%s, 2nd %s/%s" % (face_id, score, img_style, found, total)
-                else:
-                    message = "<DB 2nd Score Low> Face ID: %s %s/%s, 2nd %s/%s" % (face_id, score, img_style, found, total)
-            else:
-                message = "<1st Score Low> Face ID: %s %s/%s" % (face_id, score, img_style)
-
-            print(message)
-            if (message2 != ""):
-                print(message2)
-            if svm_detected is True:
-                json_data['recognized'] = True
-                json_data['face_id'] = face_id
-                json_data['accuracy'] = int(score*100)
-                json_data['style'] = img_style
-
-                forecast_result['face_id'] = face_id
-                forecast_result['face_accuracy'] = score
-                embedding_string = ','.join(str(x) for x in embedding)
-                forecast_result['embedding_string'] = embedding_string
-            else:
-                forecast_result['p_ids'] = top_three_faceid
-                print("Not Recognized %s" % face_id)
-            sendDebugLogToGroup(uuid, current_groupid, message)
-            #Save image to src/face_dataset_classify/group/person/
-    if SVM_SAVE_TEST_DATASET is True:
-        if svm_detected is True:
-            svm_face_testdataset_person_path = os.path.join(group_path, human_string)
-        else:
-            svm_face_testdataset_person_path = os.path.join(group_path, 'noname')
-
-        if not os.path.exists(svm_face_testdataset_person_path):
-            os.mkdir(svm_face_testdataset_person_path)
-        print('test dataset person path=%s' % svm_face_testdataset_person_path)
-        dir = os.path.basename(align_image_path)
-        name = os.path.splitext(dir)[0]
-        save_testdataset_filepath = os.path.join(svm_face_testdataset_person_path, name+'_'+str(int(time.time()))+'.png')
-        print('save classified image to path: %s' % save_testdataset_filepath)
-        shutil.copyfile(align_image_path, save_testdataset_filepath)
-    if svm_detected is False:
-        json_data, forecast_result = get_empty_faceid(current_groupid, uuid, embedding,
-                                                    img_style, number_people, img_objid,
-                                                    forecast_result)
-        print('not in train classification or need to more train_dataset')
-
-    return json_data, forecast_result
-
-def face_recognition_on_face_image(img_data,blury_arr,uuid,
-                                   current_groupid,imgs_style,trackerId,
-                                   timestamp1,ts, body_data):
-    global all_face_index
-    img_objid = trackerId
-    print("img_objid = {}".format(img_objid))
-    number_people = 1
-    for align_image_path, prewhitened in img_data.items():
-        print("number of people=%d" % (number_people))
-        if number_people > 1:
-            trackerId = str(uuid1())
-        number_people += 1
-        img_style_str = imgs_style[align_image_path]
-        img_style = img_style_str
-        json_data = {'detected':False, 'recognized': False, 'style': img_style_str}
-
-        forecast_result = {'people':None,
-                         'img_type': 'face',
-                         'people_sqlId': 0,
-                         'face_id': None,  # 当前这个人脸图片的objId/face_id
-                         'trackerId': trackerId,
-                         'uuid': uuid,
-                         'ts': ts,
-                         'img_style_str': img_style_str,
-                         'align_image_path': align_image_path,
-                         'face_accuracy': 0,
-                         'face_fuzziness': 0,
-                         'embedding_string': '',
-                         'p_ids': None,
-                         }  # 保存发送给uploadImage的数据
-
-        if NEAR_FRONTIAL_ONLY is True:
-            if not img_style == 'front':
-                message = "<Side Face> Skip non-near-frontial image[%s]" % (img_style)
-                print(message)
-
-                json_data, forecast_result = get_empty_faceid(current_groupid, uuid, '',
-                                                            img_style, number_people, img_objid,
-                                                            forecast_result)
-
-                key = str(uuid1())
-                if not DO_NOT_UPLOAD_IMAGE:
-                    upload_forecast_result(key, forecast_result, json_data, number_people)
-                if SAVE_FULL_BODY and body_path:
-                    key += '_body'  # 表示人体
-                    body_result['face_id'] = forecast_result['face_id'] + '_body'
-                    upload_forecast_result(key, body_result, json_data,number_people)
-                sendDebugLogToGroup(uuid, current_groupid, message)
-                continue
-        # 2个不认识的人同时出现在图片里面的时候用来生成不一样的face_id
-        if all_face_index < 9999:
-            all_face_index += 1
-        else:
-            all_face_index = 0
-
-        if blury_arr[align_image_path] is not None:
-            forecast_result['face_fuzziness'] = blury_arr[align_image_path]
-            print(">>> blury=%d" %(blury_arr[align_image_path]))
-        json_data['detected'] = True
-        with graph.as_default():
-            with sess.as_default():
-                embedding = FaceProcessing.FaceProcessingImageData(img_data)
-
-        print("2 %.2f seconds" % (time.time() - timestamp1))
-        if forecast_result['face_fuzziness'] < int(data_collection.get("blury_threhold")):
-            json_data, forecast_result = get_empty_faceid(current_groupid, uuid, embedding,
-                                                    img_style, number_people, img_objid,
-                                                    forecast_result)
-            print("Too blurry image, skip it img_objid={}, trackerId={}".format(img_objid, trackerId))
-        elif SVM_CLASSIFIER_ENABLED is True:
-            #img_style = 'front'
-            # embedding = embedding.reshape((1, -1))
-            forecast_result['waiting'] = False
-            json_data, forecast_result = SVM_classifier(embedding,align_image_path,
-                uuid,current_groupid,img_style,number_people,img_objid,json_data,forecast_result)
-        else:
-            print('Skip SoftMax/SVM')
-            json_data, forecast_result = use_db_detect(current_groupid, uuid, embedding,
-                                                        img_style, number_people, trackerId,
-                                                        forecast_result)
-
-        print("3 %.2f seconds" % (time.time() - timestamp1))
-
-
-        # face cannot be recognized, process it as a stranger
-        '''
-        if json_data['recognized'] is False:
-            json_data, forecast_result = SVM_classifier_stranger(embedding,align_image_path,
-                uuid,current_groupid,img_style,number_people,img_objid,json_data,forecast_result)
-        '''
-
-        forecast_result['trackerId'] = trackerId
-        # 人脸预测结果发送
-        key = str(uuid1())
-
-        # upload_forecast_result(key, forecast_result, json_data, number_people)
-        face_id = forecast_result['face_id']
-        if not DO_NOT_UPLOAD_IMAGE and face_id is not None and face_id != "notface":
-            print("---------------------------UPLOAD----------------------------")
-            push_or_not = push_resultQueue(forecast_result, number_people)
-            if push_or_not is True:
-                url = upload_forecast_result(key, forecast_result, json_data, number_people)
-               # add stranger into Strange db
-                # if forecast_result['recognized'] is False:
-                #     with app.app_context():
-                #         stranger = Stranger(embed=embedding, uuid=uuid, group_id=current_groupid, objId=face_id, aliyun_url=url,classId=face_id,style=style)
-                #         db.session.add(stranger)
-                #         db.session.commit
-
-                # if url is not None:
-                #    forecast_result['url'] = url
-                #    forecast_result['detected'] = json_data['detected']
-
-        if SAVE_FULL_BODY and body_path:
-           key += '_body'  # 表示人体
-           body_result['face_id'] = forecast_result['face_id'] + '_body'
-           upload_forecast_result(key, body_result, json_data, number_people)
-
-    #if os.path.exists(image_path):
-    #    os.remove(image_path)
-    #if os.path.exists(img_local_path):
-    #    os.remove(img_local_path)
-
-    resp = Response(json.dumps(json_data), status=200, mimetype='application/json')
-    return resp
 
 def showRecognizedImage(image_path, queue_index):
     if os.path.exists(image_path):
         recognized_img_path = os.path.join(os.path.dirname(image_path), 'face{}.png'.format(queue_index))
         shutil.copy(image_path, recognized_img_path)
-
-def face_recognition_on_embedding(align_image_path, embedding, totalPeople, blury, uuid,
-                                   current_groupid, style, trackerId,
-                                   timestamp1, ts, embedding_path):
-    img_objid = trackerId
-    print("img_objid = {}".format(img_objid))
-    print("number of people=%d" % (totalPeople))
-    if totalPeople > 1:
-        trackerId = str(uuid1())
-
-    number_people=totalPeople
-    img_style_str = style
-    img_style = img_style_str
-    json_data = {'detected':False, 'recognized': False, 'style': img_style_str}
-
-    forecast_result = {'people':None,
-                     'img_type': 'face',
-                     'people_sqlId': 0,
-                     'face_id': None,  # 当前这个人脸图片的objId/face_id
-                     'trackerId': trackerId,
-                     'uuid': uuid,
-                     'ts': ts,
-                     'img_style_str': img_style_str,
-                     'align_image_path': align_image_path,
-                     'face_accuracy': 0,
-                     'face_fuzziness': 0,
-                     'embedding_string': '',
-                     'waiting': False,
-                     'p_ids': None,
-                     }  # 保存发送给uploadImage的数据
-
-    if NEAR_FRONTIAL_ONLY is True:
-        if not img_style == 'front':
-            message = "<Side Face> Skip non-near-frontial image[%s]" % (img_style)
-            print(message)
-
-            json_data, forecast_result = get_empty_faceid(current_groupid, uuid, '',
-                                                        img_style, number_people, img_objid,
-                                                        forecast_result)
-
-            key = str(uuid1())
-            if not DO_NOT_UPLOAD_IMAGE:
-                upload_forecast_result(key, forecast_result, json_data, number_people)
-            if SAVE_FULL_BODY and body_path:
-                key += '_body'  # 表示人体
-                body_result['face_id'] = forecast_result['face_id'] + '_body'
-                upload_forecast_result(key, body_result, json_data,number_people)
-            sendDebugLogToGroup(uuid, current_groupid, message)
-            return
-            #continue
-    # 2个不认识的人同时出现在图片里面的时候用来生成不一样的face_id
-    #if all_face_index < 9999:
-    #    all_face_index += 1
-    #else:
-    #    all_face_index = 0
-
-    forecast_result['face_fuzziness'] = blury
-    print(">>> blury=%d" %(blury))
-    json_data['detected'] = True
-
-    print("2 %.2f seconds" % (time.time() - timestamp1))
-    if forecast_result['face_fuzziness'] < int(data_collection.get("blury_threhold")):
-        json_data, forecast_result = get_empty_faceid(current_groupid, uuid, embedding,
-                                                img_style, number_people, img_objid,
-                                                forecast_result)
-        print("Too blurry image, skip it img_objid={}, trackerId={}".format(img_objid, trackerId))
-    elif SVM_CLASSIFIER_ENABLED is True:
-        #img_style = 'front'
-        # embedding = embedding.reshape((1, -1))
-        forecast_result['waiting'] = False
-        json_data, forecast_result = SVM_classifier(embedding,align_image_path,
-            uuid,current_groupid,img_style,number_people,img_objid,json_data,forecast_result, embedding_path)
-    else:
-        print('Skip SoftMax/SVM')
-        json_data, forecast_result = use_db_detect(current_groupid, uuid, embedding,
-                                                    img_style, number_people, trackerId,
-                                                    forecast_result)
-
-    print("3 %.2f seconds" % (time.time() - timestamp1))
-
-
-    # face cannot be recognized, process it as a stranger
-    '''
-    if json_data['recognized'] is False:
-        json_data, forecast_result = SVM_classifier_stranger(embedding,align_image_path,
-            uuid,current_groupid,img_style,number_people,img_objid,json_data,forecast_result)
-    elif
-    '''
-    if json_data['recognized'] is True:
-        if webShowFace is True:
-            showRecognizedImage(forecast_result['align_image_path'], 1)
-
-    forecast_result['trackerId'] = trackerId
-    # 人脸预测结果发送
-    key = str(uuid1())
-
-    url = upload_forecast_result(key, forecast_result, json_data, number_people)
-    #update_frame_db(group_id=current_groupid, img_path=align_image_path, accuracy=forecast_result['face_accuracy'], url=url)
-    #face_id = forecast_result['face_id']
-    #if not DO_NOT_UPLOAD_IMAGE and face_id is not None and face_id != "notface":
-    #    print("---------------------------UPLOAD----------------------------")
-    #    push_or_not = push_resultQueue(forecast_result, number_people)
-    #    if push_or_not is True:
-    #        url = upload_forecast_result(key, forecast_result, json_data, number_people)
-
-    json_data['url'] = url
-    json_data['face_fuzziness'] = blury
-
-    if SAVE_FULL_BODY and body_path:
-       key += '_body'  # 表示人体
-       body_result['face_id'] = forecast_result['face_id'] + '_body'
-       upload_forecast_result(key, body_result, json_data, number_people)
-
-    return json_data
-
-@app.route('/api/detect_face/', methods=['GET'])
-def detect_face():
-    return Response(json.dumps(get_resultQueue()), status=200, mimetype='application/json')
 
 FACE_COUNT = defaultdict(int)
 OBJ_COUNT = 0
@@ -1942,7 +1056,6 @@ def generate_embedding_ifmissing(data_dir):
             save_embedding.save_image_denoise(img, denoise_path)
             recreate_embedding = True
         if not os.path.exists(embedding_path) or recreate_embedding == True:
-            #embedding = featureCalculation2(denoise_path, e_sess, e_graph)
             embedding = featureCalculation2(denoise_path)
             save_embedding.create_embedding_string(embedding, embedding_path)
             print("Create missing embedding file: {}".format(embedding_path))
@@ -2119,19 +1232,11 @@ def _updateDataSet(url, objId, group_id, device_id, drop, img_type, sqlId, style
                         denoise_path = save_embedding.get_image_denoise_path(img_path)
                         save_embedding.save_image_denoise(aligned, denoise_path)
 
-                        #embedding = featureCalculation2(denoise_path, e_sess, e_graph)
                         embedding = featureCalculation2(denoise_path)
                         embedding_path = save_embedding.get_embedding_path(img_path)
                         save_embedding.create_embedding_string(embedding, embedding_path)
                         FACE_COUNT[style] += 1
                         train.filepath = img_path
-                        #misc.imsave(img_path, aligned)
-                        #embedding = featureCalculation2(img_path, e_sess, e_graph)
-                        #embedding = featureCalculation2(img_path)
-                        #embedding_path = save_embedding.get_embedding_path(img_path)
-                        #save_embedding.create_embedding_string(embedding, embedding_path)
-                        #FACE_COUNT[style] += 1
-                        #train.filepath = img_path
                         print('-> insert: SVM {} style face count, url={}'.format((FACE_COUNT[style]), url))
                     else:
                         print('download failed, save to json file for future download: url={}'.format(url))
@@ -2145,7 +1250,6 @@ def _updateDataSet(url, objId, group_id, device_id, drop, img_type, sqlId, style
                     img = misc.imread(os.path.expanduser(img_path))  # 手动裁剪后的图片需要再缩放一下
                     aligned = misc.imresize(img, (image_size, image_size), interp='bilinear')
                     misc.imsave(img_path, aligned)
-                    #embedding = featureCalculation2(img_path, e_sess, e_graph)
                     embedding = featureCalculation2(img_path)
                     embedding_path = save_embedding.get_embedding_path(img_path)
                     save_embedding.create_embedding_string(embedding, embedding_path)
@@ -2402,151 +1506,12 @@ def mqttDebugOnOff(MQTTDebugFlag):
     if MQTTDebugFlag is False or MQTTDebugFlag is True:
         ENABLE_DEBUG_LOG_TO_GROUP = MQTTDebugFlag
 
-# flask默认的启动
-#if __name__ == '__main__':
-#    args = parse_arguments(sys.argv[1:])
-#    if args.report is True:
-#        print('Upload and report to WorkAI')
-#        DO_NOT_UPLOAD_IMAGE = False
-#        DO_NOT_REPORT_TO_SERVER = False
-#    port = args.port
-#    host = args.host
-#    gFlask_port = port
-#
-#    if port == 5000:
-#        try:
-#            basepath = os.path.abspath(os.getenv('RUNTIME_BASEDIR',os.path.dirname(__file__)))
-#            start_filepath = '/start'
-#            dotstart_filepath = '/.start'
-#            checkupdate_filepath = '/data/checkupdate'
-#            git_start_filepath = os.path.join(basepath, 'start')
-#            if os.path.exists(git_start_filepath):
-#                cmd = "cp -f {} {}".format(git_start_filepath, start_filepath)
-#                out_put = subprocess.call(cmd, shell=True)
-#                print("{}, exec result is {}".format(cmd, out_put))
-#                cmd = "chmod 755 {}".format(start_filepath)
-#                out_put = subprocess.call(cmd+";exit 0", shell=True)
-#                print("{}, exec result is {}".format(cmd, out_put))
-#            else:
-#                print("{} not exist!".format(git_start_filepath))
-#
-#            git_dotstart_filepath = os.path.join(basepath, '.start')
-#            if os.path.exists(git_dotstart_filepath):
-#                cmd = "cp -f {} {}".format(git_dotstart_filepath, dotstart_filepath)
-#                out_put = subprocess.call(cmd, shell=True)
-#                print("{}, exec result is {}".format(cmd, out_put))
-#                cmd = "chmod 755 {}".format(dotstart_filepath)
-#                out_put = subprocess.call(cmd+";exit 0", shell=True)
-#                print("{}, exec result is {}".format(cmd, out_put))
-#            else:
-#                print("{} not exist!".format(git_dotstart_filepath))
-#
-#            git_checkupdate_filepath = os.path.join(basepath, 'checkupdate')
-#            if os.path.exists(git_checkupdate_filepath):
-#                cmd = "cp -f {} {}".format(git_checkupdate_filepath, checkupdate_filepath)
-#                out_put = subprocess.call(cmd, shell=True)
-#                print("{}, exec result is {}".format(cmd, out_put))
-#                cmd = "chmod 755 {}".format(checkupdate_filepath)
-#                out_put = subprocess.call(cmd+";exit 0", shell=True)
-#                print("{}, exec result is {}".format(cmd, out_put))
-#            else:
-#                print("{} not exist!".format(git_checkupdate_filepath))
-#
-#            cmd = "ps -aux|grep .start | grep 5001 | awk '{print $2}' | xargs kill -9"
-#            out_put = subprocess.call(cmd, shell=True)
-#            print("{}, exec result is {}".format(cmd, out_put))
-#            cmd = "ps -aux|grep python | grep 5001 | awk '{print $2}' | xargs kill -9"
-#            out_put = subprocess.call(cmd, shell=True)
-#            print("{}, exec result is {}".format(cmd, out_put))
-#            cmd = "chmod a+x {}".format(start_filepath)
-#            out_put = subprocess.call(cmd+";exit 0", shell=True)
-#            print("{}, exec result is {}".format(cmd, out_put))
-#        except OSError as e:
-#            print("Update shell script execpt:{}".format(e))
-#
-#    print("port = {}".format(port))
-#    if port == 5001:
-#        exit()
-#
-#    uploadImg = uploadFileInit(updatePeopleImgURL)
-#    #only master process need mqtt
-#    if port == 5000:
-#        #TODO: UUID when no eth0/wlan0
-#        mqttc = MyMQTTClass(getUUID() + str(port))
-#        mqttc.initialize(updata_trainset, disposeAutoGroupFunc)
-#        mqttc.registerUpateTrainsetHandle(updateDataSet)
-#        mqttc.registerMQTTDebugOnOffHandle(mqttDebugOnOff)
-#        mqttc.registerDropPersonHandle(dropPersonFunc)
-#        mqttc.registerMQTTFinalSyncDatasetsHandle(disposeFinalSyncDatasetsThreadFunc)
-#        mqttc.registerMQTTSyncStatusInfoHandle(disposeSyncStatusInfoThreadFunc)
-#
-#    if not os.path.exists(UPLOAD_FOLDER):
-#        os.makedirs(UPLOAD_FOLDER)
-#    # if not os.path.exists(os.path.join(BASEDIR, 'data.sqlite')):
-#    #     db.create_all()
-#    if not os.path.exists(os.path.join(BASEDIR, 'data.sqlite')):
-#        if os.path.exists(os.path.join(BASEDIR, 'data_init')):
-#            shutil.copyfile(os.path.join(BASEDIR, 'data_init'), os.path.join(BASEDIR, 'data.sqlite'))
-#
-#    if not os.path.exists(TMP_DIR_PATH):
-#        os.makedirs(TMP_DIR_PATH)
-#
-#    if SVM_CLASSIFIER_ENABLED:
-#        svm_face_dataset = os.path.join(BASEDIR, 'face_dataset')
-#        svm_face_embedding = os.path.join(BASEDIR, 'face_embedding')
-#        svm_tmp_dir = os.path.join(BASEDIR, 'faces', 'noname', 'person')
-#        svm_face_testdataset = os.path.join(BASEDIR, 'face_testdataset')
-#        svm_stranger_testdataset = os.path.join(BASEDIR, 'stranger_testdataset')
-#        if not os.path.exists(svm_face_dataset):
-#            os.mkdir(svm_face_dataset)
-#        if not os.path.exists(svm_face_embedding):
-#            os.mkdir(svm_face_embedding)
-#        if not os.path.exists(svm_tmp_dir):
-#            os.makedirs(svm_tmp_dir)
-#        if not os.path.exists(svm_face_testdataset):
-#            os.mkdir(svm_face_testdataset)
-#        if not os.path.exists(svm_stranger_testdataset):
-#            os.mkdir(svm_stranger_testdataset)
-#
-#
-#    # do nothing, just warm up
-#    featureCalculation('./image/Mike_Alden_0001.png')
-#    if port == 5000:
-#        #thread.start_new_thread(mqttc.run,('',))
-#        mqttc.start()
-#    # threading.Thread(target=mqttc.run, args=('',)).start()
-#        migration()
-#
-#    if EN_OBJECT_DETECTION == True:
-#        gbottlenecks = GenerateBottlenecks()
-#        trainfromfottlenecks = TrainFromBottlenecks()
-#
-#    # Timer thread start
-#    #timer = Timer()
-#    #timer.restart()
-#    #threading.Thread(target=post_gif_loop, name='LoopThread').start()
-#
-#    app.run(host=host,port=port)
-#    # manager.run()  # run: $ python upload_api.py runserver
-
 
 def crons_start():
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
     if not os.path.exists(os.path.join(BASEDIR, 'data', 'data.sqlite')):
         db.create_all()
-
-
-#############################
-#face detector
-d_graph=None
-d_sess=None
-d_pnet=None
-d_rnet=None
-d_onet=None
-#embedding
-e_sess=None
-e_graph=None
 
 svm_face_dataset=None
 svm_face_embedding=None
@@ -2661,15 +1626,6 @@ def featureCalculation2(imgpath):
 
 @worker_process_init.connect()
 def setup(sender=None, **kwargs):
-    global d_graph
-    global d_sess
-    global d_pnet
-    global d_rnet
-    global d_onet
-
-    global e_sess
-    global e_graph
-    global uploadImg
     global mqttc
 
     # setup
@@ -2680,10 +1636,7 @@ def setup(sender=None, **kwargs):
         check_groupid_changed()
         init_fs()
 
-        uploadImg = uploadFileInit(updatePeopleImgURL)
 
-        #e_sess, e_graph = FaceProcessing.InitialFaceProcessor(facenet_model)
-        #embedding = featureCalculation2("./image/Mike_Alden_0001_tmp.png", e_sess, e_graph)
         mod = FaceProcessing.init_embedding_processor()
         print("start to warm up")
         embedding = featureCalculation2(os.path.join(BASEDIR,"image","Mike_Alden_0001_tmp.png"))
@@ -2704,8 +1657,6 @@ class FaceDetectorTask(Task):
 
 @deepeye.task
 def extract(image):
-    global e_sess
-    global e_graph
     print(">>> extract() {} ".format(image))
     imgpath=image["path"]
     style=image["style"]
@@ -2724,9 +1675,6 @@ def extract(image):
     embedding = None
     result={}
 
-    #embedding = featureCalculation2(imgpath, e_sess, e_graph)
-    #print('image path: ',imgpath)
-    #aligned_np_path = imgpath.replace('jpg','npy')
     embedding = featureCalculation2(imgpath)
     if embedding is not None:
         #print("-------Embedding: ", embedding)
@@ -2736,14 +1684,12 @@ def extract(image):
         embedding_path = save_embedding.get_embedding_path(imgpath)
         save_embedding.create_embedding_string(embedding, embedding_path)
 
-        result = face_recognition_on_embedding(imgpath, embedding, totalPeople, blury, uuid, current_groupid, style, trackerid, timestamp1, ts, embedding_path)
+        result, api_data = face_recognition_on_embedding(imgpath, embedding, totalPeople, blury, uuid, current_groupid, style, trackerid, timestamp1, ts, embedding_path)
 
-    return json.dumps({'result': result})
+    return json.dumps({'result': result,'api_data':api_data})
 
 @deepeye.task
 def extract_v2(image):
-    global e_sess
-    global e_graph
     # print(">>> extract() {} ".format(image))
     imgstring=image["base64data"]
     imgpath=image["path"]
@@ -2769,8 +1715,6 @@ def extract_v2(image):
 
 @deepeye.task
 def classify(image):
-    global e_sess
-    global e_graph
     print(">>> extract() {} ".format(image))
     embedding_path=image["embedding_path"]
     imgpath=image["path"]
@@ -2794,9 +1738,9 @@ def classify(image):
             trackerid = str(trackerid)
         embedding = save_embedding.read_embedding_string(embedding_path)
         embedding = np.asarray(embedding)
-        result = face_recognition_on_embedding(imgpath, embedding, totalPeople, blury, uuid, current_groupid, style, trackerid, timestamp1, ts, embedding_path)
+        result, api_data = face_recognition_on_embedding(imgpath, embedding, totalPeople, blury, uuid, current_groupid, style, trackerid, timestamp1, ts, embedding_path)
 
-    return json.dumps({'result': result})
+    return json.dumps({'result': result,'api_data': api_data})
 
 deepeye.conf.task_routes = {
     'upload_api-v2.extract': {'queue': 'embedding'},

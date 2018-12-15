@@ -61,7 +61,9 @@ function putFileQiniu(file_key,localFile,cb){
   });
 }
 */
-
+function getAccessUrl(file_key){
+  return 'http://cdn.workaioss.tiegushi.com/'+file_key;
+}
 function putFileAliyun(file_key,localFile,cb){
   _putFileAliyun(file_key,localFile,function(err, url){
     if(!err && url){
@@ -79,7 +81,7 @@ function putFileAliyun(file_key,localFile,cb){
                 if(!err && url){
                   cb && cb(null,url)
                 } else {
-      
+
                   console.log('3rd upload err, gave up');
                   cb && cb('error',null)
                 }
@@ -107,7 +109,7 @@ function _putFileAliyun(file_key,localFile,cb){
         if (result.name && result.name !==''){
           file_name = result.name;
         }
-        var access_url = 'http://cdn.workaioss.tiegushi.com/'+file_name;
+        var access_url = getAccessUrl(file_name);
         console.log('upload succ to: '+access_url);
         if(cb){
           cb(null,access_url)
@@ -123,7 +125,8 @@ function _putFileAliyun(file_key,localFile,cb){
 }
 
 module.exports = {
-  putFile : putFileAliyun
+  putFile : putFileAliyun,
+  getAccessUrl: getAccessUrl
 }
 /*putFile('animated.gif', "./images/animated.gif",function(error,url){
   if(error !== null){

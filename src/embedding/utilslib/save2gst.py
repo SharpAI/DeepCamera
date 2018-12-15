@@ -5,8 +5,101 @@ from utilslib.getDeviceInfo import get_current_groupid
 
 host = 'http://workaihost.tiegushi.com/'
 #host = 'http://deepeye.tiegushi.com/'
+def generate_protocol_string(key, ownerid, filepath, embedding, uuid,
+                DO_NOT_REPORT_TO_SERVER,
+                block=True, objid="", img_type="",
+                accuracy=0, fuzziness=0, sqlId="", style='', ts=0, tid="", p_ids=None, waiting = False
+                ):
+    print("in uploadImage block {}".format(block))
 
+    image_ts = ts
+    if float(ts) < 1:
+        image_ts = int(time.time() *1000)
 
+    url = 'http://workaiossqn.tiegushi.com/' + key
+    job = {'oid': ownerid,
+                     'sqlid': sqlId,
+                     'path': filepath,
+                     'embedding': embedding,
+                     'uuid': uuid,
+                     'key': key,
+                     'DO_NOT_REPORT_TO_SERVER': DO_NOT_REPORT_TO_SERVER,
+                     'objid': objid,
+                     'img_type': img_type,
+                     'accuracy': accuracy,
+                     'fuzziness': fuzziness,
+                     'ts': image_ts,
+                     'style': style,
+                     'tid': tid,
+                     'p_ids': p_ids,
+                     'waiting': waiting}
+    keyid = key
+    embedding = job['embedding']
+    uuid = job['uuid']
+    objid = job['objid']
+    img_type = job['img_type']
+    donot_callback = job['DO_NOT_REPORT_TO_SERVER']
+    sqlId = job['sqlid']
+    style = job['style']
+    ts = job['ts']
+    tid = job['tid']
+    p_ids = job['p_ids']
+    waiting = job['waiting']
+    return _generate_protocol_string(keyid,uuid,objid, url, embedding, img_type,
+       accuracy=job['accuracy'], fuzziness=job['fuzziness'], sqlId=sqlId, style=style, img_ts=ts,tid=tid, p_ids=p_ids, waiting = waiting)
+
+def _generate_protocol_string(keyid,uuid, id, url, position, img_type, accuracy=0, fuzziness=0, sqlId=0, style='', img_ts=0, tid='', p_ids=None, waiting = False):
+    #gst_api_url = 'http://192.168.1.73:3000/restapi/workai'
+    #workAIweb_url = 'http://192.168.1.123:3000/restapi/workai'
+    gst_api_url = host + 'restapi/workai'
+    workAIweb_url = 'http://aixd.raidcdn.cn/restapi/workai'
+    query = ''
+    event_type='warn'
+    if style is not None:
+        styles = style.split('|')
+        for s in styles:
+            if s == 'dirty' or s == 'low_pixel' or s == 'blury':
+                print("save2gst: dirty or low_pixel or blurry pictures, discard it: url={}".format(url))
+                return
+    else:
+        print("save2gst: img_type is None, what's wrong? url={}".format(url))
+
+    current_groupid = get_current_groupid()
+    if current_groupid is None:
+        current_groupid = 'unknown'
+
+    if (accuracy is not None) and (accuracy > 0):
+        query = '?accuracy=' + str(accuracy)
+        event_type = 'notice'
+    else:
+        query = '?accuracy=%20'
+        event_type = 'danger'
+
+    if (fuzziness is not None) and (fuzziness > 0):
+        query = query + '&fuzziness=' + str(fuzziness)
+    else:
+        query = query + '&fuzziness=%20'
+
+    gst_api_url = gst_api_url + query
+
+    payload = {'id': id,
+               'uuid': uuid,
+               'group_id': current_groupid,
+               'img_url': url,
+               'position': position,
+               'type': img_type,
+               'current_ts': int(time.time()*1000),
+               'accuracy': accuracy,
+               'fuzziness': fuzziness,
+               'sqlid': sqlId,
+               'style': style,
+               'tid': tid,
+               'img_ts': img_ts,
+               'p_ids': p_ids,
+               'event_type': event_type,
+               'waiting': waiting
+               }
+    return keyid, gst_api_url, payload
 def save2gst(uuid, id, url, position, img_type, accuracy=0, fuzziness=0, sqlId=0, style='', img_ts=0, tid='', p_ids=None, waiting = False):
     #gst_api_url = 'http://192.168.1.73:3000/restapi/workai'
     #workAIweb_url = 'http://192.168.1.123:3000/restapi/workai'

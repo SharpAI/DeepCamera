@@ -113,7 +113,7 @@ services:
       - "redis"
       - "broker"
       - "workaipython"
-    command: "npm install &&  sleep 10000 && node /opt/index.js"
+    command: "npm install && sleep 10000 && node /opt/index.js"
     image: solderzzc/monitor:2018
     logging:
       driver: json-file

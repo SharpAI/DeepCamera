@@ -5,6 +5,7 @@ import numpy as np
 from flask import Flask, jsonify, request, abort
 import classifier_classify_new as classifer
 from faces import save_embedding
+#from recognition import face_recognition_on_embedding
 
 app = Flask(__name__)
 
@@ -23,6 +24,16 @@ def classify_task():
     result = classifer.classify([emb], classifier_filename, None)
     #_, human_string, score, top_three_name = classifer.classify(emb, classifier_filename, None)
     return jsonify({'status': 'ok','result':result}), 200
+
+@app.route('/classify_full', methods=['POST'])
+def classify_full():
+    if not request.json:
+        abort(400)
+    req_data = request.get_json()
+    print(req_data)
+
+    return jsonify({'status': 'ok','result':result}), 200
+
 @app.route('/train', methods=['POST'])
 def train_task():
     if not request.json:

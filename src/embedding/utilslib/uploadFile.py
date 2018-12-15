@@ -69,7 +69,7 @@ class workQueue(threading.Thread):
             block:       if block=False, upload with thread
         Returns:
         """
-
+        print("in uploadImage block {}".format(block))
 
         image_ts = ts
         if float(ts) < 1:
