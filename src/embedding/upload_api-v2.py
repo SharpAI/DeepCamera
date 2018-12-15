@@ -2741,10 +2741,11 @@ def extract(image):
     return json.dumps({'result': result})
 
 @deepeye.task
-def extract_image_feature_only(image):
+def extract_v2(image):
     global e_sess
     global e_graph
-    print(">>> extract() {} ".format(image))
+    # print(">>> extract() {} ".format(image))
+    imgstring=image["base64data"]
     imgpath=image["path"]
     style=image["style"]
     blury=image["blury"]
@@ -2756,22 +2757,23 @@ def extract_image_feature_only(image):
 
     if current_groupid is None:
         return json.dumps({"embedding_path":""})
-    embedding = featureCalculation2(imgpath)
+    embedding = FaceProcessing.FaceProcessingBase64ImageData2(imgstring)
     if embedding is not None:
         if type(trackerid) is not str:
             trackerid = str(trackerid)
 
         embedding_path = save_embedding.get_embedding_path(imgpath)
-        save_embedding.create_embedding_string(embedding, embedding_path)
+        embedding_str = save_embedding.convert_embedding_to_string(embedding)
 
-    return json.dumps({'embedding_path': embedding_path})
+    return json.dumps({'embedding_path': embedding_path,'embedding_str':embedding_str})
 
 @deepeye.task
-def classify_on_embedding_file(image):
+def classify(image):
     global e_sess
     global e_graph
     print(">>> extract() {} ".format(image))
-    embedding_path=image["path"]
+    embedding_path=image["embedding_path"]
+    imgpath=image["path"]
     style=image["style"]
     blury=image["blury"]
     ts=image["ts"]
@@ -2790,15 +2792,16 @@ def classify_on_embedding_file(image):
     if embedding_path is not None:
         if type(trackerid) is not str:
             trackerid = str(trackerid)
-
-        result = face_recognition_on_embedding(None, None, totalPeople, blury, uuid, current_groupid, style, trackerid, timestamp1, ts, embedding_path)
+        embedding = save_embedding.read_embedding_string(embedding_path)
+        embedding = np.asarray(embedding)
+        result = face_recognition_on_embedding(imgpath, embedding, totalPeople, blury, uuid, current_groupid, style, trackerid, timestamp1, ts, embedding_path)
 
     return json.dumps({'result': result})
 
 deepeye.conf.task_routes = {
     'upload_api-v2.extract': {'queue': 'embedding'},
-    'upload_api-v2.extract_image_feature_only': {'queue': 'embedding'},
-    'upload_api-v2.classify_on_embedding_file': {'queue': 'classify'}
+    'upload_api-v2.extract_v2': {'queue': 'embedding'},
+    'upload_api-v2.classify': {'queue': 'embedding'}
 }
 
 

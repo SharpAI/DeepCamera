@@ -213,7 +213,14 @@ def read_embedding_string(embedding_path):
         embedding_array = [ float(s) for s in embedding_string_array ]
         #print("embedding_array={}".format(embedding_array))
         return embedding_array
+def convert_embedding_to_string(embedding):
+    embedding_string = ','.join(str(x) for x in embedding)
+    return embedding_string
 
+def convert_string_to_embedding(embedding_string):
+    embedding_string_array = embedding_string.split(",")
+    embedding_array = [ float(s) for s in embedding_string_array ]
+    return embedding_array
 
 def down_embedding(embedding_url, embedding_path):
     try:

@@ -2,12 +2,14 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import base64
+from StringIO import StringIO
+from PIL import Image
 import numpy as np
 import argparse
 import facenet
 import align.detect_face
 import cv2
-
 import os
 import sys
 import time
@@ -173,12 +175,23 @@ def FaceProcessingImageData(imgData,sess,graph):
     return features
 
 def FaceProcessingImageData2(img_path):
+    img_data = misc.imread(img_path)
+    img = cv2.cvtColor(img_data, cv2.COLOR_BGR2RGB)
+    return _FaceProcessingImageData2(img)
+
+def FaceProcessingBase64ImageData2(base64_string):
+    sbuf = StringIO()
+    sbuf.write(base64.b64decode(base64_string))
+    pimg = Image.open(sbuf)
+    img = np.array(pimg)
+    #img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    return _FaceProcessingImageData2(img)
+
+def _FaceProcessingImageData2(img):
     global mod2
     global mod3
-    img = misc.imread(img_path)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    nimg = np.transpose(img, (2,0,1))
 
+    nimg = np.transpose(img, (2,0,1))
     resize_img = misc.imresize(nimg, [112, 112], interp='bilinear')
     if mod2 is not None:
         a = transform_image(resize_img).astype('float32')
@@ -197,6 +210,7 @@ def FaceProcessingImageData2(img_path):
         embedding = mod3.get_outputs()[0].asnumpy()
         embedding = sklearn.preprocessing.normalize(embedding).flatten()
     return embedding
+
 def transform_image(image):
     #image = np.array(image) - np.array([123., 117., 104.])
     #image /= np.array([58.395, 57.12, 57.375])
