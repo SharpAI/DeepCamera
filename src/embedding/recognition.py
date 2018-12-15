@@ -21,7 +21,6 @@ from uuid import uuid1
 from PIL import Image
 import numpy as np
 
-from utilslib.uploadFile import uploadFileInit
 from utilslib.mqttClient import MyMQTTClass
 from utilslib.persistentUUID import getUUID
 from utilslib.getDeviceInfo import deviceId, get_current_groupid, get_deviceid, save_groupid_to_file, check_groupid_changed
@@ -68,7 +67,6 @@ svm_tmp_dir=None
 svm_face_testdataset=None
 svm_stranger_testdataset=None
 
-uploadImg=None
 data_collection=None
 def init_fs():
     global svm_face_dataset
@@ -493,7 +491,4 @@ class DataCollection(object):
         return self.items.get(key, None)
 
 data_collection = DataCollection()
-
 init_fs()
-
-uploadImg = uploadFileInit(updatePeopleImgURL)
