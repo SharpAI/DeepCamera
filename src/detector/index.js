@@ -425,7 +425,7 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
           }
         }
         setEmbeddingInProcessingStatus(cameraId,true)
-        deepeye.embedding(faces_to_be_recognited, current_tracker_id, function(err,results){
+        deepeye.embedding_clustering(faces_to_be_recognited, current_tracker_id, function(err,results){
           setEmbeddingInProcessingStatus(cameraId,false)
           timeline.update(current_tracker_id,'in_tracking',person_count,results)
 

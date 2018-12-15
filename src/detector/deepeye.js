@@ -50,6 +50,12 @@ function connect_node_celery_to_amqp(){
       'upload_api-v2.extract': {
         queue: 'embedding'
       },
+      'upload_api-v2.extract_v2': {
+        queue: 'embedding'
+      },
+      'upload_api-v2.classify': {
+        queue: 'embedding'
+      },
       'upload_api-v2.fullimage': {
         queue: 'nopriority'
       },
@@ -184,6 +190,57 @@ module.exports = {
           }
         */
         //console.log(result)
+        if(result.result.recognized && ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE){
+          recognized_results.push(result)
+          callback(null,result)
+          return
+        }
+        callback(null,result)
+      })
+    }, function(err, results){
+      if(err){
+        console.log('Error in Embedding Task')
+        console.log(err)
+        return cb && cb(err,null)
+      } else {
+        return cb && cb(null,results)
+        if(ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE && recognized_results.length>0){
+          callback(null,recognized_results)
+          return
+        } else {
+          cb(null,results)
+        }
+      }
+    });
+
+  },
+  embedding_clustering : function(cropped_images, trackerId, cb) {
+    var index = 0;
+    var recognized_results=[];
+
+    async.mapSeries(cropped_images, function(img,callback){
+      if(trackerId){
+        img.trackerid = trackerId
+      }
+
+      if(cropped_images.length>1) {
+        if(img && img.ts) {
+          img.trackerid = '' + img.trackerid + img.ts
+        }
+        else {
+          img.trackerid = '' + img.trackerid + index;
+        }
+      }
+      index ++;
+
+      ON_DEBUG && console.log(img)
+      if(ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE && recognized_results.length>0){
+        console.log('skipped in bypass mode, recognized_results ',recognized_results)
+        callback(null,null)
+        return
+      }
+      embedding_only_task(img, function(err,result) {
+        //console.log('embedding_path: ',result.embedding_path)
         if(result.result.recognized && ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE){
           recognized_results.push(result)
           callback(null,result)
@@ -344,7 +401,55 @@ function embedding_task(cropped_file_path, cb) {
     return cb && cb('error', null)
   }
 }
+function classify_task(task_info, cb) {
+  if(connected_to_celery_broker){
+    client.call('upload_api-v2.classify',
+      [task_info],
+      function(result){
+        ON_DEBUG && console.log(result)
+        if(result && result.status === 'SUCCESS'){
+          if(result.result){
+            var json = JSON.parse(result.result)
+            return cb && cb(null, json)
+          }
+        }
+        return cb && cb('error', null)
+    });
+  } else {
+    console.log('Abnormal situation, not connected to celery broker. Please check this')
+    return cb && cb('error', null)
+  }
+}
+function embedding_only_task(task_info, cb) {
+  if(connected_to_celery_broker){
+    var buff = fs.readFileSync(task_info.path);
+    var base64data = buff.toString('base64');
+    //console.log('Image converted to base 64 is:\n\n' + base64data);
+    task_info.base64data = base64data;
 
+    client.call('upload_api-v2.extract_v2',
+      [task_info],
+      function(result){
+        ON_DEBUG && console.log(result)
+
+        if(result && result.status === 'SUCCESS'){
+          if(result.result){
+            var json = JSON.parse(result.result)
+            ON_DEBUG && console.log(json)
+            fs.writeFileSync(json.embedding_path,json.embedding_str);
+            task_info.embedding_path = json.embedding_path
+            delete task_info.base64data
+            return classify_task(task_info,cb)
+            //return cb && cb(null, json)
+          }
+        }
+        return cb && cb('error', null)
+    });
+  } else {
+    console.log('Abnormal situation, not connected to celery broker. Please check this')
+    return cb && cb('error', null)
+  }
+}
 function detect_task_flower(file_path, trackerid, ts, cameraId, cb) {
     var json_request_content = {'args': [file_path, trackerid, ts, cameraId]};
     console.log('request task url: ', detect_task_url)
