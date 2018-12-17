@@ -62,6 +62,8 @@ services:
     command: sh -c "cd /root/detection && python test.py && python worker.py worker --loglevel INFO -E -n detect -c 1 -Q detect"
     image: deepeye3/face_detector:latest
     container_name: "face_detector"
+    env_file:
+      - ./production_1.env
     environment:
       REDIS_HOST: "redis"
       REDIS_PORT: "6379"

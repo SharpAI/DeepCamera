@@ -206,7 +206,7 @@ def load_align_image_v2(result, image_path, trackerid, ts, cameraId, face_filter
                 print('filter_face: template_matching is True.')
                 continue
         else:
-            print('face_filter is None, what\'s wrong?')
+            print('face_filter is None, disabled by environment')
 
         #style
         style = faceStyle(landmark, bbox, face_width)
