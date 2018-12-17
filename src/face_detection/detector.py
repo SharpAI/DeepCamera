@@ -10,7 +10,7 @@ from scipy import misc
 import face_preprocess
 import time
 
-minsize = 100  # minimum size of face, 100 for 1920x1080 resolution, 70 for 1280x720.
+minsize = int(os.getenv("MINIMAL_FACE_RESOLUTION", default="100"))  # minimum size of face, 100 for 1920x1080 resolution, 70 for 1280x720.
 image_size = 160
 margin = 16
 BLURY_THREHOLD = 5
@@ -241,7 +241,7 @@ def load_align_image_v2(result, image_path, trackerid, ts, cameraId, face_filter
         face_width_list[new_image_path] = face_width
         face_height_list[new_image_path] = face_height
 
-    return len(results), face_path, imgs_style, blury_arr, face_width_list, face_height_list
+    return len(face_path), face_path, imgs_style, blury_arr, face_width_list, face_height_list
 
 def detect(image_path, trackerid, ts, cameraId, face_filter):
     result = m.detect(image_path)
