@@ -39,6 +39,14 @@ function GetEnvironmentVarInt(varname, defaultvalue)
 }
 // ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE 一张图里，出现一个人脸，不再计算后续
 var ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE = GetEnvironmentVarInt('ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE', 1)
+// TASK_EXECUTOR_EXPIRE_IN_SECONDS Celery重启的时候，已经发出的任务不会超时，将导致永远不再执行
+var TASK_EXECUTOR_EXPIRE_IN_SECONDS = GetEnvironmentVarInt('TASK_EXECUTOR_EXPIRE_IN_SECONDS', 30)
+
+function celery_task_expires_option(){
+  return {
+  		expires: new Date(Date.now() + TASK_EXECUTOR_EXPIRE_IN_SECONDS * 1000) // expires in TASK_EXECUTOR_EXPIRE_IN_SECONDS
+  }
+}
 
 function connect_node_celery_to_amqp(){
   client = celery.createClient({
@@ -347,7 +355,7 @@ function object_detection_task(file_path, trackerid, ts, cameraId, cb) {
         } else {
           return cb && cb('error', 0)
         }
-    });
+    },celery_task_expires_option());
   } else {
     console.log('Abnormal situation, not connected to celery broker. Please check this')
     return cb && cb('error', 0, null)
@@ -377,7 +385,7 @@ function detect_task(file_path, trackerid, ts, cameraId, cb) {
         } else {
           return cb && cb('error', 0, null)
         }
-    });
+    },celery_task_expires_option());
   } else {
     console.log('Abnormal situation, not connected to celery broker. Please check this')
     return cb && cb('error', 0, null)
@@ -397,7 +405,7 @@ function embedding_task(cropped_file_path, cb) {
           }
         }
         return cb && cb('error', null)
-    });
+    },celery_task_expires_option());
   } else {
     console.log('Abnormal situation, not connected to celery broker. Please check this')
     return cb && cb('error', null)
@@ -448,7 +456,7 @@ function classify_task(task_info, cb) {
           }
         }
         return cb && cb('error', null)
-    });
+    },celery_task_expires_option());
   } else {
     console.log('Abnormal situation, not connected to celery broker. Please check this')
     return cb && cb('error', null)
@@ -478,7 +486,7 @@ function embedding_only_task(task_info, cb) {
           }
         }
         return cb && cb('error', null)
-    });
+    },celery_task_expires_option());
   } else {
     console.log('Abnormal situation, not connected to celery broker. Please check this')
     return cb && cb('error', null)
