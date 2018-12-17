@@ -345,7 +345,11 @@ def SVM_classifier(embedding,align_image_path,uuid,current_groupid,img_style,num
         name = os.path.splitext(dir)[0]
         save_testdataset_filepath = os.path.join(svm_face_testdataset_person_path, name+'_'+str(int(time.time()))+'.png')
         print('save classified image to path: %s' % save_testdataset_filepath)
-        shutil.copyfile(align_image_path, save_testdataset_filepath)
+        try:
+            shutil.copyfile(align_image_path, save_testdataset_filepath)
+        except IOError:
+            print('cant copy file from {} to {},need check later'.format(align_image_path,save_testdataset_filepath ))
+            pass
     if svm_detected is False:
         json_data, forecast_result = get_empty_faceid(current_groupid, uuid, embedding,
                                                     img_style, number_people, img_objid,
