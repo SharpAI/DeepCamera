@@ -46,6 +46,8 @@ var BIGGEST_FACE_ONLY_MODE = GetEnvironmentVarInt('BIGGEST_FACE_ONLY_MODE', 0)
 var UPLOAD_IMAGE_SERVICE_ENABLED = GetEnvironmentVarInt('UPLOAD_IMAGE_SERVICE_ENABLED', 0)
 // GIF_UPLOADING 控制GIF图上传
 var GIF_UPLOADING = GetEnvironmentVarInt('GIF_UPLOADING', 1)
+// TASK_IN_DETECTOR_EXPIRE_IN_SECONDS Celery重启的时候，已经发出的任务不会超时，将导致永远不再执行
+var TASK_IN_DETECTOR_EXPIRE_IN_SECONDS = GetEnvironmentVarInt('TASK_IN_DETECTOR_EXPIRE_IN_SECONDS', 15)
 
 if(UPLOAD_IMAGE_SERVICE_ENABLED){
   var upload_listener=require('./upload_listener')
@@ -366,10 +368,15 @@ function getFaceRecognitionTaskList(cameraId,cropped_images,tracking_info,curren
 }
 function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_info,current_tracker_id){
   var ts = new Date().getTime()
+  var timeout = setTimeout(function(){
+    console.log('timeout of tack do_face_detection, manually recover it')
+    setFaceDetectInProcessingStatus(cameraId, false);
+  },TASK_IN_DETECTOR_EXPIRE_IN_SECONDS*1000)
   deepeye.process(cameraId, file_path, ts, current_tracker_id,
     function(err,face_detected,cropped_num,cropped_images,whole_file) {
       tracking_info && console.log(tracking_info);
       setFaceDetectInProcessingStatus(cameraId, false);
+      clearTimeout(timeout)
       ON_DEBUG && console.log('detect callback')
       if(err) {
           console.log(err)
@@ -424,9 +431,16 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
             return
           }
         }
+
+        var embedding_timeout = setTimeout(function(){
+          console.log('timeout of tack embedding_clustering, manually recover it')
+            setEmbeddingInProcessingStatus(cameraId,false)
+        },TASK_IN_DETECTOR_EXPIRE_IN_SECONDS*1000)
+
         setEmbeddingInProcessingStatus(cameraId,true)
         deepeye.embedding_clustering(faces_to_be_recognited, current_tracker_id, function(err,results){
           setEmbeddingInProcessingStatus(cameraId,false)
+          clearTimeout(embedding_timeout)
           timeline.update(current_tracker_id,'in_tracking',person_count,results)
 
           if(GIF_UPLOADING){
