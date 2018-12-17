@@ -241,7 +241,7 @@ def load_align_image_v2(result, image_path, trackerid, ts, cameraId, face_filter
         face_width_list[new_image_path] = face_width
         face_height_list[new_image_path] = face_height
 
-    return len(results), face_path, imgs_style, blury_arr, face_width_list, face_height_list
+    return len(face_path), face_path, imgs_style, blury_arr, face_width_list, face_height_list
 
 def detect(image_path, trackerid, ts, cameraId, face_filter):
     result = m.detect(image_path)
