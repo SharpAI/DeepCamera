@@ -10,7 +10,7 @@ from scipy import misc
 import face_preprocess
 import time
 
-minsize = 100  # minimum size of face, 100 for 1920x1080 resolution, 70 for 1280x720.
+minsize = int(os.getenv("MINIMAL_FACE_RESOLUTION", default="100"))  # minimum size of face, 100 for 1920x1080 resolution, 70 for 1280x720.
 image_size = 160
 margin = 16
 BLURY_THREHOLD = 5
