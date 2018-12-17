@@ -110,6 +110,7 @@ services:
       - /opt/nvr/detector/frames:/opt/nvr/videos/frames
       - /sys/class/misc/mali0:/sys/class/misc/mali0
       - /dev/mali0:/dev/mali0
+      - /var/run/docker.sock:/var/run/docker.sock
   detector_plugin:
     container_name: "detector_plugin"
     depends_on:
