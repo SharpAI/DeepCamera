@@ -60,6 +60,8 @@ services:
     image: solderzzc/face_detection:2018
     container_name: "face_detector"
     restart: always
+    env_file:
+      - ./production_1.env
     environment:
       REDIS_HOST: "redis"
       REDIS_PORT: "6379"
