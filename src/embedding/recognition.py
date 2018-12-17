@@ -134,7 +134,7 @@ def upload_forecast_result(key, forecast_result, json_data, num_p):
 
     return generate_protocol_string(key, face_id, align_image_path,
                                                embedding='', uuid=uuid,
-                                               block=False, DO_NOT_REPORT_TO_SERVER=do_not_report_to_server,
+                                               DO_NOT_REPORT_TO_SERVER=do_not_report_to_server,block=False,
                                                objid=face_id, img_type=img_type,
                                                accuracy=face_accuracy, fuzziness=face_fuzziness, sqlId=people_sqlId,
                                                style=img_style_str, ts=ts, tid=str(trackerId), p_ids=p_ids, waiting = waiting)
@@ -197,14 +197,6 @@ def face_recognition_on_embedding(align_image_path, embedding, totalPeople, blur
     key = str(uuid1())
 
     _,api_url,payload = upload_forecast_result(key, forecast_result, json_data, number_people)
-    #update_frame_db(group_id=current_groupid, img_path=align_image_path, accuracy=forecast_result['face_accuracy'], url=url)
-    #face_id = forecast_result['face_id']
-    #if not DO_NOT_UPLOAD_IMAGE and face_id is not None and face_id != "notface":
-    #    print("---------------------------UPLOAD----------------------------")
-    #    push_or_not = push_resultQueue(forecast_result, number_people)
-    #    if push_or_not is True:
-    #        url = upload_forecast_result(key, forecast_result, json_data, number_people)
-
     json_data['key'] = key
     json_data['face_fuzziness'] = blury
 

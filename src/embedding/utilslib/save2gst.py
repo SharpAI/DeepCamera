@@ -17,36 +17,9 @@ def generate_protocol_string(key, ownerid, filepath, embedding, uuid,
         image_ts = int(time.time() *1000)
 
     url = 'http://workaiossqn.tiegushi.com/' + key
-    job = {'oid': ownerid,
-                     'sqlid': sqlId,
-                     'path': filepath,
-                     'embedding': embedding,
-                     'uuid': uuid,
-                     'key': key,
-                     'DO_NOT_REPORT_TO_SERVER': DO_NOT_REPORT_TO_SERVER,
-                     'objid': objid,
-                     'img_type': img_type,
-                     'accuracy': accuracy,
-                     'fuzziness': fuzziness,
-                     'ts': image_ts,
-                     'style': style,
-                     'tid': tid,
-                     'p_ids': p_ids,
-                     'waiting': waiting}
-    keyid = key
-    embedding = job['embedding']
-    uuid = job['uuid']
-    objid = job['objid']
-    img_type = job['img_type']
-    donot_callback = job['DO_NOT_REPORT_TO_SERVER']
-    sqlId = job['sqlid']
-    style = job['style']
-    ts = job['ts']
-    tid = job['tid']
-    p_ids = job['p_ids']
-    waiting = job['waiting']
-    return _generate_protocol_string(keyid,uuid,objid, url, embedding, img_type,
-       accuracy=job['accuracy'], fuzziness=job['fuzziness'], sqlId=sqlId, style=style, img_ts=ts,tid=tid, p_ids=p_ids, waiting = waiting)
+
+    return _generate_protocol_string(keyid=key,uuid=uuid,id=objid, url=url, position=embedding, img_type=img_type,
+       accuracy=accuracy, fuzziness=fuzziness, sqlId=sqlId, style=style, img_ts=image_ts,tid=tid, p_ids=p_ids, waiting = waiting)
 
 def _generate_protocol_string(keyid,uuid, id, url, position, img_type, accuracy=0, fuzziness=0, sqlId=0, style='', img_ts=0, tid='', p_ids=None, waiting = False):
     #gst_api_url = 'http://192.168.1.73:3000/restapi/workai'
@@ -99,6 +72,7 @@ def _generate_protocol_string(keyid,uuid, id, url, position, img_type, accuracy=
                'event_type': event_type,
                'waiting': waiting
                }
+    print('result of _generate_protocol_string {}'.format(payload))
     return keyid, gst_api_url, payload
 def save2gst(uuid, id, url, position, img_type, accuracy=0, fuzziness=0, sqlId=0, style='', img_ts=0, tid='', p_ids=None, waiting = False):
     #gst_api_url = 'http://192.168.1.73:3000/restapi/workai'
