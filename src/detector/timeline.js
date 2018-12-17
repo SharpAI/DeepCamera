@@ -79,6 +79,10 @@ function generate_known_person_message(tracker_id,recognition_results){
   get_device_uuid(function(uuid){
     get_device_group_id(function(group_id){
       recognition_results.forEach(function(item){
+        if(!item){
+          console.log('one empty item in recognition_results, might be skipped when has known person recognized')
+          return
+        }
         var result = item.result
         if(result && result.recognized === true && result.face_id ){
           var person_info = {
