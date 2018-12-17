@@ -410,10 +410,6 @@ function classify_task(task_info, cb) {
       function(result){
         ON_DEBUG && console.log(result)
         if(result && result.status === 'SUCCESS'){
-
-          console.log('result.result.result ',result.result.result)
-          console.log('result.result.api_data',result.result.api_data)
-
           if(result.result){
             var json = JSON.parse(result.result)
             console.log('JSON.parse(result.result)=',json)
