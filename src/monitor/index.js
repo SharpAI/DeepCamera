@@ -450,6 +450,10 @@ function connectToFlower(){
          }
       }
       if(result.hostname == "celery@embedding"){
+         if(result.result.test(/embedding_str/)){
+           console.log('embedded_v2')
+           return
+         }
          console.log('extract embedding')
          var extract_result = JSON.parse(result.result.replace(/\'/g,""))
          if(extract_result.result.recognized){
