@@ -39,6 +39,7 @@ from sklearn.svm import SVC
 import heapq
 import time
 import shutil
+import judgeutil
 
 BASEDIR = os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__)))
 sys.path.append(BASEDIR)
@@ -171,7 +172,7 @@ previous_model_ts = None
 
 def classify(emb_array, classifier_filename, embedding_path):
     if not os.path.exists(classifier_filename):
-        return -1, None, 0, None
+        return -1, None, 0, None, None
     classifier_filename_exp = os.path.expanduser(classifier_filename)
 
     global previous_model_ts
@@ -212,11 +213,11 @@ def classify(emb_array, classifier_filename, embedding_path):
     timestamp = os.path.getmtime(classifier_filename_exp)
     judge_dir = os.path.dirname(classifier_filename_exp)
     #judge_result = -1
-    #judgeutil.predict(emb_array, best_class_indices[0], judge_dir, timestamp)
+    judge_result = judgeutil.predict(emb_array, best_class_indices[0], judge_dir, timestamp)
     if len(best_class_indices) > 0:
-        return 0, class_name, score, top_three_name
+        return 0, class_name, score, top_three_name, judge_result
     else:
-        return -1, None, 0, None
+        return -1, None, 0, None, None
 
 # def train_svm(args_list):
 #     args = parse_arguments(args_list)

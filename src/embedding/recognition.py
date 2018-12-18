@@ -256,7 +256,7 @@ def SVM_classifier(embedding,align_image_path,uuid,current_groupid,img_style,num
 
         # 输入embedding的预测方法, 速度很快
         svm_stime = time.time()
-        _, human_string, score, top_three_name= classifer.classify(embedding, pkl_path, embedding_path)
+        _, human_string, score, top_three_name, judge_result = classifer.classify(embedding, pkl_path, embedding_path)
         if top_three_name:
             top_three_faceid = [name.split(' ')[1] for name in top_three_name]
         else:
@@ -296,7 +296,7 @@ def SVM_classifier(embedding,align_image_path,uuid,current_groupid,img_style,num
                     found, total = check_embedding_on_detected_person_forSVM_ByDir(current_groupid=current_groupid,
                                    embedding=embedding,style=img_style,classid=human_string.replace(' ', '_'),nrof_classes=nrof_classes)
                     if found > 0:
-                        if score > float(data_collection.get("score_1")):#0.6
+                        if score > float(data_collection.get("score_1")) or judge_result != 0:#0.9
                             svm_detected = True
                             message = "<1, SVM Recognized> Face ID: %s %s/%s, 2nd %s/%s" % (face_id, score, img_style, found, total)
                         else:
