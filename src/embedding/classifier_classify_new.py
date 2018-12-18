@@ -39,11 +39,11 @@ from sklearn.svm import SVC
 import heapq
 import time
 import shutil
-import judgeutil
+#import judgeutil
 
 BASEDIR = os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__)))
 sys.path.append(BASEDIR)
-#import judgeutil
+import judgeutil
 
 first_loadmodel = False
 last_modify_time = None
@@ -213,6 +213,7 @@ def classify(emb_array, classifier_filename, embedding_path):
     timestamp = os.path.getmtime(classifier_filename_exp)
     judge_dir = os.path.dirname(classifier_filename_exp)
     #judge_result = -1
+    print('-------judge_result-------')
     judge_result = judgeutil.predict(emb_array, best_class_indices[0], judge_dir, timestamp)
     if len(best_class_indices) > 0:
         return 0, class_name, score, top_three_name, judge_result
@@ -428,7 +429,7 @@ def train_svm_with_embedding(args_list):
             pickle.dump((model, class_names), outfile)
         timestamp = os.path.getmtime(classifier_filename_exp)
         judge_dir = os.path.dirname(classifier_filename_exp)
-        #judgeutil.train(judge_emb_array, judge_labels, [cls.name.replace('_', ' ') for cls in judge_dataset], judge_dir, timestamp)
+        judgeutil.train(judge_emb_array, judge_labels, [cls.name.replace('_', ' ') for cls in judge_dataset], judge_dir, timestamp)
         print('Saved classifier model to file "%s"' % classifier_filename_exp)
     return "OK"
 

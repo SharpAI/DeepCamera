@@ -30,7 +30,7 @@ from utilslib.qiniuUpload import qiniu_upload_img, qiniu_upload_video, qiniu_upl
 from utilslib.clean_droped_data import clean_droped_embedding
 
 from utilslib.save2gst import generate_protocol_string
-import classifier_classify_new as classifer
+import classifier_classify_new as classifier
 from faces import save_embedding
 
 all_face_index = 0 #每当识别出一个人脸就+1，当2个人同时出现在图片里面并且都不认识，需要区分开来
@@ -256,7 +256,7 @@ def SVM_classifier(embedding,align_image_path,uuid,current_groupid,img_style,num
 
         # 输入embedding的预测方法, 速度很快
         svm_stime = time.time()
-        _, human_string, score, top_three_name, judge_result = classifer.classify(embedding, pkl_path, embedding_path)
+        _, human_string, score, top_three_name, judge_result = classifier.classify(embedding, pkl_path, embedding_path)
         if top_three_name:
             top_three_faceid = [name.split(' ')[1] for name in top_three_name]
         else:
