@@ -31,6 +31,7 @@ def load_graph(frozen_graph_filename):
     return None
 
 def load_graph_sess(frozen_graph_filename):
+    return None, None
 
 
 def init_graph(pb_file):
