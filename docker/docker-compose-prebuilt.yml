@@ -113,6 +113,7 @@ services:
       - /sys/class/misc/mali0:/sys/class/misc/mali0
       - /dev/mali0:/dev/mali0
       - /var/run/docker.sock:/var/run/docker.sock
+      - ../src/embedding/judgeutil.so_linux_aarch64:/data/runtime/src/judgeutil.so
   detector_plugin:
     container_name: "detector_plugin"
     depends_on:
