@@ -15,6 +15,8 @@ from recognition import face_recognition_on_embedding
 asynpool.PROC_ALIVE_TIMEOUT = 60.0 #set this long enough
 
 REDIS_ADDRESS = os.getenv('REDIS_ADDRESS','redis')
+
+TASKER=os.getenv('TASKER','worker')
 deepeye = Celery('classify',
     broker='redis://guest@'+REDIS_ADDRESS+'/0',
     backend='redis://guest@'+REDIS_ADDRESS+'/0')
@@ -96,6 +98,8 @@ deepeye.conf.task_routes = {
     'classify.classify': {'queue': 'classify'}
 }
 if __name__ == '__main__':
-    deepeye.start()
-    print('starting flask')
-    app.run(port=5050,host="0.0.0.0")
+    if TASKER == "worker":
+        deepeye.start()
+    else:
+        print('starting flask..')
+        app.run(port=5050,host="0.0.0.0")

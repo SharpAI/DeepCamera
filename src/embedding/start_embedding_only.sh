@@ -13,13 +13,16 @@ else
 fi
 
 if [ -f classifier_rest_server.py ]; then
-  WORKER_TYPE=classify python2 classifier_rest_server.py worker --loglevel INFO -E -n classify -c 1 -Q classify &
+  TASKER=worker WORKER_TYPE=classify python2 classifier_rest_server.py worker --loglevel INFO -E -n classify -c 1 -Q classify &
+  TASKER=restserver python2 classifier_rest_server.py &
 else
   if [ -f classifier_rest_server.pyc ]; then
-    WORKER_TYPE=classify python2 classifier_rest_server.pyc worker --loglevel INFO -E -n classify -c 1 -Q classify &
+    TASKER=worker WORKER_TYPE=classify python2 classifier_rest_server.pyc worker --loglevel INFO -E -n classify -c 1 -Q classify &
+    TASKER=restserver python2 classifier_rest_server.pyc &
   else
     if [ -f classifier_rest_server.exe ]; then
-      WORKER_TYPE=classify ./classifier_rest_server.exe worker --loglevel INFO -E -n classify -c 1 -Q classify &
+      TASKER=worker WORKER_TYPE=classify ./classifier_rest_server.exe worker --loglevel INFO -E -n classify -c 1 -Q classify &
+      TASKER=restserver python2 classifier_rest_server.exe &
     fi
   fi
 fi
