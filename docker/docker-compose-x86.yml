@@ -107,6 +107,7 @@ services:
       - ./runtime/images:/opt/nvr/detector/images
       - ./runtime/frames:/opt/nvr/videos/frames
       - ../src/embedding:/data/runtime/src
+      - ../src/embedding/judgeutil.so.x86:/data/runtime/src/judgeutil.so
   monitor:
     container_name: "monitor"
     depends_on:

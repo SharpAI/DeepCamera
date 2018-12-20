@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ls -alh
 if [ -f parameter_server.py ]; then
   python2 parameter_server.py &
 else
@@ -13,13 +13,13 @@ else
 fi
 
 if [ -f classifier_rest_server.py ]; then
-  python2 classifier_rest_server.py &
+  WORKER_TYPE=classify python2 classifier_rest_server.py worker --loglevel INFO -E -n classify -c 1 -Q classify &
 else
   if [ -f classifier_rest_server.pyc ]; then
-    python2 classifier_rest_server.pyc &
+    WORKER_TYPE=classify python2 classifier_rest_server.pyc worker --loglevel INFO -E -n classify -c 1 -Q classify &
   else
     if [ -f classifier_rest_server.exe ]; then
-      ./classifier_rest_server.exe &
+      WORKER_TYPE=classify ./classifier_rest_server.exe worker --loglevel INFO -E -n classify -c 1 -Q classify &
     fi
   fi
 fi

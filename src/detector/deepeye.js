@@ -57,17 +57,11 @@ function connect_node_celery_to_amqp(){
       'upload_api-v2.detect': {
         queue: 'detect'
       },
-      'upload_api-v2.extract': {
-        queue: 'embedding'
-      },
       'upload_api-v2.extract_v2': {
         queue: 'embedding'
       },
-      'upload_api-v2.classify': {
-        queue: 'embedding'
-      },
-      'upload_api-v2.fullimage': {
-        queue: 'nopriority'
+      'classify.classify': {
+        queue: 'classify'
       },
       'od.detect': {
         queue: 'od'
@@ -413,7 +407,7 @@ function embedding_task(cropped_file_path, cb) {
 }
 function classify_task(task_info, cb) {
   if(connected_to_celery_broker){
-    client.call('upload_api-v2.classify',
+    client.call('classify.classify',
       [task_info],
       function(result){
         ON_DEBUG && console.log(result)

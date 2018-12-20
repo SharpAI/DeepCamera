@@ -40,7 +40,6 @@ from collections import OrderedDict
 USE_DEFAULT_DATA=True   # Enable to use "groupid_default" for SVM training
 
 import facenet
-from recognition import face_recognition_on_embedding
 #import clustering_people
 from subprocess import Popen, PIPE
 
@@ -1656,39 +1655,6 @@ class FaceDetectorTask(Task):
         print(">>> {}".format(self._type))
 
 @deepeye.task
-def extract(image):
-    print(">>> extract() {} ".format(image))
-    imgpath=image["path"]
-    style=image["style"]
-    blury=image["blury"]
-    ts=image["ts"]
-    trackerid=image["trackerid"]
-    totalPeople=image["totalPeople"]
-    uuid = get_deviceid()
-    current_groupid = get_current_groupid()
-
-    if current_groupid is None:
-        return json.dumps({"result": {"style": "", "url": "", "face_fuzziness": 5, "recognized": False, "detected": True, "face_id": "", "accuracy": 0}})
-
-    timestamp1 = time.time()
-
-    embedding = None
-    result={}
-
-    embedding = featureCalculation2(imgpath)
-    if embedding is not None:
-        #print("-------Embedding: ", embedding)
-        if type(trackerid) is not str:
-            trackerid = str(trackerid)
-
-        embedding_path = save_embedding.get_embedding_path(imgpath)
-        save_embedding.create_embedding_string(embedding, embedding_path)
-
-        result, api_data = face_recognition_on_embedding(imgpath, embedding, totalPeople, blury, uuid, current_groupid, style, trackerid, timestamp1, ts, embedding_path)
-
-    return json.dumps({'result': result,'api_data':api_data})
-
-@deepeye.task
 def extract_v2(image):
     # print(">>> extract() {} ".format(image))
     imgstring=image["base64data"]
@@ -1713,41 +1679,9 @@ def extract_v2(image):
 
     return json.dumps({'embedding_path': embedding_path,'embedding_str':embedding_str})
 
-@deepeye.task
-def classify(image):
-    print(">>> extract() {} ".format(image))
-    embedding_path=image["embedding_path"]
-    imgpath=image["path"]
-    style=image["style"]
-    blury=image["blury"]
-    ts=image["ts"]
-    trackerid=image["trackerid"]
-    totalPeople=image["totalPeople"]
-    uuid = get_deviceid()
-    current_groupid = get_current_groupid()
-
-    if current_groupid is None:
-        return json.dumps({"result": {"style": "", "url": "", "face_fuzziness": 5, "recognized": False, "detected": True, "face_id": "", "accuracy": 0}})
-
-    timestamp1 = time.time()
-
-    result={}
-
-    if embedding_path is not None:
-        if type(trackerid) is not str:
-            trackerid = str(trackerid)
-        embedding = save_embedding.read_embedding_string(embedding_path)
-        embedding = np.asarray(embedding)
-        result, api_data = face_recognition_on_embedding(imgpath, embedding, totalPeople, blury, uuid, current_groupid, style, trackerid, timestamp1, ts, embedding_path)
-
-    return json.dumps({'result': result,'api_data': api_data})
-
 deepeye.conf.task_routes = {
-    'upload_api-v2.extract': {'queue': 'embedding'},
-    'upload_api-v2.extract_v2': {'queue': 'embedding'},
-    'upload_api-v2.classify': {'queue': 'embedding'}
+    'upload_api-v2.extract_v2': {'queue': 'embedding'}
 }
-
 
 if __name__ == '__main__':
     deepeye.start()

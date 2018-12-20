@@ -448,13 +448,13 @@ function connectToFlower(){
            status.face_detected++;
            console.log('face detected')
          }
-      }
-      if(result.hostname == "celery@embedding"){
+      } else if(result.hostname == "celery@embedding"){
          if(result.result.test(/embedding_str/)){
            console.log('embedded_v2')
            return
          }
-         console.log('extract embedding')
+      } else if(result.hostname == "celery@classify"){
+         console.log('Classify Result')
          var extract_result = JSON.parse(result.result.replace(/\'/g,""))
          if(extract_result.result.recognized){
             status.face_recognized++;
