@@ -15,7 +15,7 @@
 - Value of minimal face's resolution
 - only faces greater than this value will not be calculated for embedding.
 
-### 5. RECOGNITION_ENSURE_VALUE
+### 5. RECOGNITION_ENSURE_VALUE -- Deprecated
 - This value will be deprecated
 - used to be a guarantee for recognition in a period time
 

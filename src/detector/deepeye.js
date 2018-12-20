@@ -44,6 +44,8 @@ function GetEnvironmentVarInt(varname, defaultvalue)
 var ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE = GetEnvironmentVarInt('ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE', 1)
 // TASK_EXECUTOR_EXPIRE_IN_SECONDS Celery重启的时候，已经发出的任务不会超时，将导致永远不再执行
 var TASK_EXECUTOR_EXPIRE_IN_SECONDS = GetEnvironmentVarInt('TASK_EXECUTOR_EXPIRE_IN_SECONDS', 30)
+// 任务并发执行数量
+var CLUSTER_CONCURRENCY = GetEnvironmentVarInt('CLUSTER_CONCURRENCY', 1)
 
 function connect_node_celery_to_cluster(){
   cluster_client = celery.createClient({
@@ -253,7 +255,7 @@ module.exports = {
     var index = 0;
     var recognized_results=[];
 
-    async.mapSeries(cropped_images, function(img,callback){
+    async.mapLimit(cropped_images,CLUSTER_CONCURRENCY,function(img,callback){
       if(trackerId){
         img.trackerid = trackerId
       }

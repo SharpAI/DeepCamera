@@ -38,8 +38,6 @@ var SAMPLING_TO_SAVE_ENERGY_MODE = GetEnvironmentVarInt('SAMPLING_TO_SAVE_ENERGY
 var RESTRICT_RECOGNITON_MODE = GetEnvironmentVarInt('RESTRICT_RECOGNITON_MODE',1)
 // MINIMAL_FACE_RESOLUTION 定义脸最小分辨率
 var MINIMAL_FACE_RESOLUTION = GetEnvironmentVarInt('MINIMAL_FACE_RESOLUTION', 200)
-// RECOGNITION_ENSURE_VALUE 定义数值为秒，秒数之内确保一次计算（有了SAMPLING_TO_SAVE_ENERGY_MODE之后，这个模式不怎么有用）
-var RECOGNITION_ENSURE_VALUE = GetEnvironmentVarInt('RECOGNITION_ENSURE_VALUE', 15)
 // BIGGEST_FACE_ONLY_MODE 只计算最大脸模式，通常用于闸机系统，多算无意的模式，缺省关闭
 var BIGGEST_FACE_ONLY_MODE = GetEnvironmentVarInt('BIGGEST_FACE_ONLY_MODE', 0)
 // UPLOAD_IMAGE_SERVICE_ENABLED, true 打开minio上传监听，false 关闭minio上传监听
@@ -339,22 +337,6 @@ function getFaceRecognitionTaskList(cameraId,cropped_images,tracking_info,curren
       deepeye.delete_image(item.path)
       return
     }
-    /*
-    // Need to be very carefully about following code block
-    if(tracking_info){
-      var recognition_times = getRecognitionTimes(tracking_info)
-      var person_num = tracking_info.number
-      if(recognition_times > 0 && time_diff > 0 && person_num>0){
-        var calc_condition = time_diff/recognition_times/person_num
-        console.log('recognition time is %d, person_num %d, calc is %d',
-          recognition_times,person_num,calc_condition)
-        if( calc_condition < RECOGNITION_ENSURE_VALUE){
-          console.log('waiting for next time slot for recognition')
-          deepeye.delete_image(item.path)
-          return
-        }
-      }
-    }*/
     if(BIGGEST_FACE_ONLY_MODE){
       if(face_list.length >=1){
           console.log('BIGGEST_FACE_ONLY_MODE, skipped one face')
