@@ -123,9 +123,9 @@ asynpool.PROC_ALIVE_TIMEOUT = 60.0 #set this long enough
 CLUSTER_REDIS_ADDRESS = os.getenv('CLUSTER_REDIS_ADDRESS','redis')
 CLUSTER_REDIS_PORT = os.getenv('CLUSTER_REDIS_PORT','6379')
 deepeye = Celery('upload_api-v2',
-    broker='redis://guest@'+CLUSTER_REDIS_ADDRESS+':'+CLUSTER_REDIS_PORT+'/0',
-    backend='redis://guest@'+CLUSTER_REDIS_ADDRESS+':'+CLUSTER_REDIS_PORT+'/0')
-#deepeye.count = 1
+    broker='redis://'+CLUSTER_REDIS_ADDRESS+':'+CLUSTER_REDIS_PORT+'/0',
+    backend='redis://'+CLUSTER_REDIS_ADDRESS+':'+CLUSTER_REDIS_PORT+'/0')
+deepeye.count = 1
 
 SAVE_ORIGINAL_FACE = False
 original_face_img_path = os.path.join(BASEDIR, 'data', 'original_face_img')

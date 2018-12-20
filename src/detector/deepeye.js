@@ -47,8 +47,8 @@ var TASK_EXECUTOR_EXPIRE_IN_SECONDS = GetEnvironmentVarInt('TASK_EXECUTOR_EXPIRE
 
 function connect_node_celery_to_cluster(){
   cluster_client = celery.createClient({
-    CELERY_BROKER_URL: 'redis://guest@'+CLUSTER_REDIS_ADDRESS+':'+CLUSTER_REDIS_PORT+'/0',
-    CELERY_RESULT_BACKEND: 'redis://guest@'+CLUSTER_REDIS_ADDRESS+':'+CLUSTER_REDIS_PORT+'/0',
+    CELERY_BROKER_URL: 'redis://'+CLUSTER_REDIS_ADDRESS+':'+CLUSTER_REDIS_PORT+'/0',
+    CELERY_RESULT_BACKEND: 'redis://'+CLUSTER_REDIS_ADDRESS+':'+CLUSTER_REDIS_PORT+'/0',
     TASK_RESULT_EXPIRES: 60,
     CELERY_ROUTES: {
       'upload_api-v2.extract_v2': {
@@ -90,9 +90,6 @@ function connect_node_celery_to_amqp(){
     CELERY_ROUTES: {
       'upload_api-v2.detect': {
         queue: 'detect'
-      },
-      'upload_api-v2.extract_v2': {
-        queue: 'embedding'
       },
       'classify.classify': {
         queue: 'classify'
@@ -422,7 +419,7 @@ function detect_task(file_path, trackerid, ts, cameraId, cb) {
 
 function embedding_task(cropped_file_path, cb) {
   if(connected_to_celery_cluster){
-    cluster_client.call('upload_api-v2.extract',
+    client.call('upload_api-v2.extract',
       [cropped_file_path],
       function(result){
         ON_DEBUG && console.log(result)
@@ -497,7 +494,7 @@ function embedding_only_task(task_info, cb) {
     //console.log('Image converted to base 64 is:\n\n' + base64data);
     task_info.base64data = base64data;
 
-    client.call('upload_api-v2.extract_v2',
+    cluster_client.call('upload_api-v2.extract_v2',
       [task_info],
       function(result){
         ON_DEBUG && console.log(result)
