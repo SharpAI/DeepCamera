@@ -29,6 +29,9 @@ var DEVICE_GROUP_ID_FILEPATH = process.env.DEVICE_GROUP_ID_FILEPATH || '/data/us
 var REDIS_HOST = process.env.REDIS_HOST || "redis"
 var REDIS_PORT = process.env.REDIS_PORT || 6379
 
+var CLUSTER_REDIS_ADDRESS = process.env.CLUSTER_REDIS_ADDRESS || "redis"
+var CLUSTER_REDIS_PORT = process.env.CLUSTER_REDIS_PORT || 6379
+
 function GetEnvironmentVarInt(varname, defaultvalue)
 {
     var result = process.env[varname];
@@ -41,6 +44,37 @@ function GetEnvironmentVarInt(varname, defaultvalue)
 var ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE = GetEnvironmentVarInt('ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE', 1)
 // TASK_EXECUTOR_EXPIRE_IN_SECONDS Celery重启的时候，已经发出的任务不会超时，将导致永远不再执行
 var TASK_EXECUTOR_EXPIRE_IN_SECONDS = GetEnvironmentVarInt('TASK_EXECUTOR_EXPIRE_IN_SECONDS', 30)
+
+function connect_node_celery_to_cluster(){
+  cluster_client = celery.createClient({
+    CELERY_BROKER_URL: 'redis://guest@'+CLUSTER_REDIS_ADDRESS+':'+CLUSTER_REDIS_PORT+'/0',
+    CELERY_RESULT_BACKEND: 'redis://guest@'+CLUSTER_REDIS_ADDRESS+':'+CLUSTER_REDIS_PORT+'/0',
+    TASK_RESULT_EXPIRES: 60,
+    CELERY_ROUTES: {
+      'upload_api-v2.extract_v2': {
+        queue: 'embedding'
+      }
+    }
+  });
+
+  cluster_client.on('connect', function() {
+    connected_to_celery_cluster = true
+    console.log('The connection to celery cluster is connected')
+  });
+  cluster_client.on('error', function(err) {
+      console.log(err)
+      connected_to_celery_cluster = false
+      console.log('The connection to celery cluster has error');
+      setTimeout(function(){
+        console.log('retry to connect to celery cluster')
+        connect_node_celery_to_cluster()
+      },5000)
+  });
+}
+if(typeof cluster_client === 'undefined'){
+  connected_to_celery_cluster = false
+  connect_node_celery_to_cluster()
+}
 
 function celery_task_expires_option(){
   return {
@@ -387,8 +421,8 @@ function detect_task(file_path, trackerid, ts, cameraId, cb) {
 }
 
 function embedding_task(cropped_file_path, cb) {
-  if(connected_to_celery_broker){
-    client.call('upload_api-v2.extract',
+  if(connected_to_celery_cluster){
+    cluster_client.call('upload_api-v2.extract',
       [cropped_file_path],
       function(result){
         ON_DEBUG && console.log(result)
@@ -401,7 +435,7 @@ function embedding_task(cropped_file_path, cb) {
         return cb && cb('error', null)
     },celery_task_expires_option());
   } else {
-    console.log('Abnormal situation, not connected to celery broker. Please check this')
+    console.log('Abnormal situation, not connected to celery cluster. Please check this')
     return cb && cb('error', null)
   }
 }

@@ -120,12 +120,12 @@ all_face_index = 0 #每当识别出一个人脸就+1，当2个人同时出现在
 #deeepeye
 asynpool.PROC_ALIVE_TIMEOUT = 60.0 #set this long enough
 
-REDIS_ADDRESS = os.getenv('REDIS_ADDRESS','redis')
+CLUSTER_REDIS_ADDRESS = os.getenv('CLUSTER_REDIS_ADDRESS','redis')
+CLUSTER_REDIS_PORT = os.getenv('CLUSTER_REDIS_PORT','6379')
 deepeye = Celery('upload_api-v2',
-    broker='redis://guest@'+REDIS_ADDRESS+'/0',
-    backend='redis://guest@'+REDIS_ADDRESS+'/0')
-deepeye.count = 1
-
+    broker='redis://guest@'+CLUSTER_REDIS_ADDRESS+':'+CLUSTER_REDIS_PORT+'/0',
+    backend='redis://guest@'+CLUSTER_REDIS_ADDRESS+':'+CLUSTER_REDIS_PORT+'/0')
+#deepeye.count = 1
 
 SAVE_ORIGINAL_FACE = False
 original_face_img_path = os.path.join(BASEDIR, 'data', 'original_face_img')

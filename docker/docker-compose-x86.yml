@@ -4,6 +4,8 @@ services:
     image: redis:3.2
     restart: always
     container_name: "redis"
+    ports:
+      - 6379:6379
     command: sh -c "rm -rf /data/*.rdb && redis-server --maxmemory 50mb --maxmemory-policy allkeys-lru --save \"\" --appendonly no --dbfilename \"\""
     logging:
       driver: json-file
@@ -83,6 +85,8 @@ services:
     command: sh -c "cd /data/runtime/src/ && pip install -r requirements.txt && ./start_embedding_only.sh"
     image: solderzzc/sharpai_runtime:tf1.8
     container_name: "workaipython"
+    env_file:
+      - ./cluster.env
     environment:
       RUNTIME_BASEDIR: "/data/runtime/src/"
     restart: always
@@ -157,6 +161,7 @@ services:
     restart: always
     env_file:
       - ./production_1.env
+      - ./cluster.env
     environment:
       TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
       IMAGE_DIR: "/opt/nvr/detector/images"
