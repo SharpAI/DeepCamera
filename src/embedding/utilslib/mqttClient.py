@@ -435,9 +435,6 @@ def devices_group_message(msg_payload, handle, handle2):
 
 
     if (group_id is not None) and (msg_type is not None):
-        if deviceId == device_id:
-            print('ignor message frome myself')
-            return
         if (msg_type == "trainset"):
             if (url is not None) and (face_id is not None) and (drop is not None):
                 if handle is not None:
