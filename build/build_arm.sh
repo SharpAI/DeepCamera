@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
+if [ ! $# -eq 1 ]; then
+    echo "usage: ./build_arm.sh /your/build/path"
+    exit 1
+fi
 
-runtime="$1/./runtime"
+buildpath=$(realpath $1)
+runtime=${buildpath}"/runtime"
 
 rm -rf build dist $runtime/bin
 
@@ -35,4 +40,4 @@ cp -rf ../model $runtime/
 cp scripts/*_arm.sh $runtime/
 chmod +x $runtime/*.sh
 
-bash ./build_detector.sh $1
+bash ./build_detector.sh ${buildpath}
