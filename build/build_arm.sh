@@ -4,6 +4,8 @@ if [ ! $# -eq 1 ]; then
     exit 1
 fi
 
+find . -name "*.pyc" | xargs rm -rf
+
 buildpath=$(realpath $1)
 runtime=${buildpath}"/runtime"
 
@@ -21,7 +23,8 @@ pyinstaller parameter_server.spec
 cp -rf dist/param/* $runtime/bin/
 rm -rf dist/param
 
-pyinstaller flower_main.spec
+pip install -r ../src/flower/requirements.txt
+pyinstaller --clean flower_main.spec
 cp -rf dist/flower_main/* $runtime/bin/
 rm -rf dist/flower_main
 
