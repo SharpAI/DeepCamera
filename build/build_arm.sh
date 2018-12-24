@@ -40,4 +40,14 @@ cp -rf ../model $runtime/
 cp scripts/*_arm.sh $runtime/
 chmod +x $runtime/*.sh
 
+pushd ${runtime}"/bin"
+    wget https://dl.minio.io/server/minio/release/linux-arm64/minio
+    if [ $? != 0 ]; then
+        echo "download minio failed!"
+	exit 1
+    fi
+    chmod a+rx minio
+    mkdir -p ${runtime}"/data/minio"
+popd
+
 bash ./build_detector.sh ${buildpath}
