@@ -44,7 +44,7 @@ cp scripts/*_arm.sh $runtime/
 chmod +x $runtime/*.sh
 
 pushd ${runtime}"/bin"
-    wget https://dl.minio.io/server/minio/release/linux-arm64/minio
+    wget https://dl.minio.io/server/minio/release/linux-arm/minio
     if [ $? != 0 ]; then
         echo "download minio failed!"
 	exit 1
