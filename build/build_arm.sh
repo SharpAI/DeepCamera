@@ -1,22 +1,30 @@
 #!/usr/bin/env bash
+if [ ! $# -eq 1 ]; then
+    echo "usage: ./build_arm.sh /your/build/path"
+    exit 1
+fi
 
-runtime="$1/./runtime"
+find . -name "*.pyc" | xargs rm -rf
+
+buildpath=$(realpath $1)
+runtime=${buildpath}"/runtime"
 
 rm -rf build dist $runtime/bin
 
 mkdir $runtime
 cp patchs/function.py /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/_ffi/_ctypes/function.py
 cp patchs/ndarray.py /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/_ffi/_ctypes/ndarray.py
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/system/lib:/system/vendor/lib/egl LD_PRELOAD=libatomic.so:libcutils.so pyinstaller -y embedding_arm.spec
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/system/lib:/system/vendor/lib/egl LD_PRELOAD=libatomic.so:libcutils.so pyinstaller --clean -y embedding_arm.spec
 
 mv dist/embedding $runtime/bin
 rm -rf dist/embedding
 
-pyinstaller parameter_server.spec
+pyinstaller --clean parameter_server.spec
 cp -rf dist/param/* $runtime/bin/
 rm -rf dist/param
 
-pyinstaller flower_main.spec
+pip install -r ../src/flower/requirements.txt
+pyinstaller --clean flower_main.spec
 cp -rf dist/flower_main/* $runtime/bin/
 rm -rf dist/flower_main
 
@@ -35,4 +43,14 @@ cp -rf ../model $runtime/
 cp scripts/*_arm.sh $runtime/
 chmod +x $runtime/*.sh
 
-bash ./build_detector.sh $1
+pushd ${runtime}"/bin"
+    wget https://dl.minio.io/server/minio/release/linux-arm/minio
+    if [ $? != 0 ]; then
+        echo "download minio failed!"
+	exit 1
+    fi
+    chmod a+rx minio
+    mkdir -p ${runtime}"/data/minio"
+popd
+
+bash ./build_detector.sh ${buildpath}

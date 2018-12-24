@@ -8,6 +8,6 @@ export DEVICE_GROUP_ID_FILEPATH=/data/data/com.termux/files/home/.groupid.txt
 cd bin
 while [ 1 ]
 do
-    LD_PRELOAD=libatomic.so:libcutils.so WORKER_TYPE=embedding REDIS_ADDRESS=localhost WORKER_BROKER=redis://localhost/0 ./embedding worker --loglevel INFO -E -n embedding -c 1 -Q embedding
+    LD_PRELOAD=libatomic.so:libcutils.so WORKER_TYPE=embedding CLUSTER_REDIS_ADDRESS=localhost REDIS_ADDRESS=localhost WORKER_BROKER=redis://localhost/0 ./embedding worker --loglevel INFO -E -n embedding -c 1 -Q embedding
     sleep 20
 done

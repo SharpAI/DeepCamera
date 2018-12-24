@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-runtime="$1/./runtime"
+runtime=$(realpath $1)"/runtime"
 cd ../src/detector
 npm install
 npm run webpack

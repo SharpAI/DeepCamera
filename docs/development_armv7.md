@@ -39,7 +39,9 @@ tar -zxvf <Termux_开发.tgz>
 ```
 ## 编译Termux中的运行程序
 ```
-cd sharpai/build/
+cd sharpai/
+./setup_arm32.sh
+cd build/
 bash build_arm.sh ./
 ```
 ## 设置 Arch Linux 开发环境

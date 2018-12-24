@@ -5,7 +5,7 @@ export DEVICE_GROUP_ID_FILEPATH=/data/data/com.termux/files/home/.groupid.txt
 
 while [ 1 ]
 do
-  REDIS_HOST=localhost FLOWER_ADDRESS=localhost FLOWER_PORT=5556 node main.bin.js
+  CLUSTER_REDIS_ADDRESS=localhost REDIS_HOST=localhost FLOWER_ADDRESS=localhost FLOWER_PORT=5556 node main.bin.js
   sleep 20
 done
 
