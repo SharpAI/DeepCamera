@@ -11,7 +11,7 @@ runtime=${buildpath}"/runtime"
 
 rm -rf build dist $runtime/bin
 
-mkdir $runtime
+mkdir -p $runtime
 cp patchs/function.py /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/_ffi/_ctypes/function.py
 cp patchs/ndarray.py /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/_ffi/_ctypes/ndarray.py
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/system/lib:/system/vendor/lib/egl LD_PRELOAD=libatomic.so:libcutils.so pyinstaller --clean -y embedding_arm.spec
@@ -54,3 +54,10 @@ pushd ${runtime}"/bin"
 popd
 
 bash ./build_detector.sh ${buildpath}
+
+
+#build for arch-linux
+$PREFIX/bin/bash /data/data/com.termux/files/home/arch/startarch c "cd /data/data/com.termux/files/home/sharpai/build && ./build_arm_arch.sh ."
+
+#generate sharpai.tgz for apk
+
