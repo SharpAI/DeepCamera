@@ -22,8 +22,8 @@ flask-migrate==2.0.3
 python-resize-image==1.1.11
 networkx==2.1
 #importlib==1.0.4
-celery==4.1.0
+celery==4.2.0
 redis==2.10.5
-kombu==4.1.0
+kombu==4.2.1
 docker==3.3.0
 ConfigParser==3.5.0

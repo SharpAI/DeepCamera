@@ -61,3 +61,4 @@ $PREFIX/bin/bash /data/data/com.termux/files/home/arch/startarch c "cd /data/dat
 
 #generate sharpai.tgz for apk
 
+

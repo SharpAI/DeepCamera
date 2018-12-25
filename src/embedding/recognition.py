@@ -3,31 +3,14 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import os, json, time, sys, thread
-import argparse
-import unicodedata
+import os, json, time, sys
 import shutil
-import subprocess
-import threading
-# import dlib
-import math
 import time
 import os.path
-import Queue
-from threading import Timer
 import requests
 from uuid import uuid1
 
-from PIL import Image
 import numpy as np
-
-from utilslib.mqttClient import MyMQTTClass
-from utilslib.persistentUUID import getUUID
-from utilslib.getDeviceInfo import deviceId, get_current_groupid, get_deviceid, save_groupid_to_file, check_groupid_changed
-from utilslib.qiniuUpload import qiniu_upload_img, qiniu_upload_video, qiniu_upload_data, SUFFIX
-# from utilslib.make_a_gif import load_all_images, build_gif, url_to_image
-# from utilslib.timer import Timer
-from utilslib.clean_droped_data import clean_droped_embedding
 
 from utilslib.save2gst import generate_protocol_string
 import classifier_classify_new as classifier

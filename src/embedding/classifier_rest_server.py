@@ -9,7 +9,7 @@ from celery import Celery
 from celery import Task
 from celery.concurrency import asynpool
 
-from utilslib.getDeviceInfo import deviceId, get_current_groupid, get_deviceid, save_groupid_to_file, check_groupid_changed
+from utilslib.getDeviceInfo import get_current_groupid, get_deviceid 
 from recognition import face_recognition_on_embedding
 
 asynpool.PROC_ALIVE_TIMEOUT = 60.0 #set this long enough

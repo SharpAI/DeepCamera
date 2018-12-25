@@ -1,12 +1,23 @@
 # coding=utf-8
-from urllib2 import Request, urlopen, URLError, HTTPError
+from urllib.request import Request, urlopen, URLError, HTTPError
 import os
-from persistentUUID import getUUID
+import netifaces
 deviceId = None
 gourpId = None
 
 device_id_file_path = os.environ.get('DEVICE_UUID_FILEPATH','/dev/ro_serialno')
 group_id_file_path= os.environ.get('DEVICE_GROUP_ID_FILEPATH','/data/usr/com.deep.workai/cache/groupid.txt')
+
+def getUUID():
+    interfaces = netifaces.interfaces()
+    for interface in interfaces:
+        if interface == 'wlan0':
+            return netifaces.ifaddresses('wlan0')[netifaces.AF_LINK][0]['addr'].strip(":")
+        if interface == 'eth0':
+            return netifaces.ifaddresses('eth0')[netifaces.AF_LINK][0]['addr'].strip(":")
+        if interface == 'en0':
+            return netifaces.ifaddresses('en0')[netifaces.AF_LINK][0]['addr'].strip(":")
+    return None
 
 def get_deviceid():
     global deviceId
