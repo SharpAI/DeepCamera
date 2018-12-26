@@ -4,14 +4,18 @@ if [ ! $# -eq 1 ]; then
     exit 1
 fi
 
-find . -name "*.pyc" | xargs rm -rf
-
 buildpath=$(realpath $1)
 runtime=${buildpath}"/runtime"
+archruntime=${buildpath}"/runtime_arch"
 
-rm -rf build dist $runtime/bin
+rm -rf build dist $runtime $archruntime
+rm -rf .termux/
+rm -rf .minio/
+rm -rf .ro_serialno
+rm -rf .groupid.txt
+rm -rf sharpai-app.tgz
 
-mkdir -p $runtime
+mkdir -p $runtime/bin
 cp patchs/function.py /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/_ffi/_ctypes/function.py
 cp patchs/ndarray.py /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/_ffi/_ctypes/ndarray.py
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/system/lib:/system/vendor/lib/egl LD_PRELOAD=libatomic.so:libcutils.so pyinstaller --clean -y embedding_arm.spec
@@ -60,5 +64,15 @@ bash ./build_detector.sh ${buildpath}
 $PREFIX/bin/bash /data/data/com.termux/files/home/arch/startarch c "cd /data/data/com.termux/files/home/sharpai/build && ./build_arm_arch.sh ."
 
 #generate sharpai.tgz for apk
+mkdir -p .termux/boot/
+mkdir .minio
+touch .ro_serialno
+touch .groupid.txt
 
+cp ../src/minio/config.json .minio/
+cp scripts/termux_boot_sharpai_arm.sh .termux/boot/
+chmod a+rx .termux/boot/termux_boot_sharpai_arm.sh
 
+echo "creating sharpai-app.tgz ..."
+tar -czmf sharpai-app.tgz .minio .ro_serialno .groupid.txt .termux runtime runtime_arch
+ls -lh sharpai-app.tgz
