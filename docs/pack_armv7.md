@@ -46,8 +46,11 @@ $ cd
 $ ./arch/startarch 
 $ cd sharpai/build/
 $ ./build_arm.sh  .
+
+-rw------- 1 u0_a54 u0_a54 415M Dec 26 14:38 sharpai-app.tgz
 ```
 
 ### 3 生成apk
-把上面生成的sharpai-app.tgz拷贝到PC上，放到这个目录hotShare/AndroidPorting/Launcher/app/src/main/assets/，同时这个目录还要有sharpai-base.tgz
+把上面生成的sharpai-app.tgz拷贝到PC上，放到这个目录hotShare/AndroidPorting/Launcher/app/src/main/assets/
+同时这个目录还要有sharpai-base.tgz
 编译好之后的apk文件就可以安装到rk3288上
