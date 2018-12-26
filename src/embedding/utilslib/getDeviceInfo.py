@@ -1,5 +1,9 @@
 # coding=utf-8
-from urllib.request import Request, urlopen, URLError, HTTPError
+try:
+    from urllib2 import Request, urlopen, URLError, HTTPError
+except Exception as e:
+    from urllib.request import Request, urlopen, URLError, HTTPError
+
 import os
 import netifaces
 deviceId = None

@@ -8,6 +8,7 @@ $PREFIX/bin/bash ./minio_arm.sh &
 $PREFIX/bin/bash ./flower_arm.sh &
 $PREFIX/bin/bash ./embedding_arm.sh &
 $PREFIX/bin/bash ./worker_arm.sh &
-$PREFIX/bin/bash ./classifier_arm.sh &
+$PREFIX/bin/bash ./classifier_worker_arm.sh &
+$PREFIX/bin/bash ./classifier_restserver_arm.sh &
 $PREFIX/bin/bash ./param_arm.sh &
 $PREFIX/bin/bash ./start_detector.sh &
