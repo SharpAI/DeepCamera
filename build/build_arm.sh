@@ -20,7 +20,7 @@ cp patchs/function.py /data/data/com.termux/files/usr/lib/python2.7/site-package
 cp patchs/ndarray.py /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/_ffi/_ctypes/ndarray.py
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/system/lib:/system/vendor/lib/egl LD_PRELOAD=libatomic.so:libcutils.so pyinstaller --clean -y embedding_arm.spec
 
-mv dist/embedding $runtime/bin
+cp -rf dist/embedding/* $runtime/bin
 rm -rf dist/embedding
 
 pyinstaller --clean parameter_server.spec

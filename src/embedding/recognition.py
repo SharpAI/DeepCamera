@@ -58,33 +58,36 @@ def init_fs():
     global svm_face_testdataset
     global svm_stranger_testdataset
 
-    if not os.path.exists(UPLOAD_FOLDER):
-        os.makedirs(UPLOAD_FOLDER)
-    # if not os.path.exists(os.path.join(BASEDIR, 'data.sqlite')):
-    #     db.create_all()
-    if not os.path.exists(os.path.join(BASEDIR, 'data', 'data.sqlite')):
-        if os.path.exists(os.path.join(BASEDIR, 'data_init')):
-            shutil.copyfile(os.path.join(BASEDIR, 'data_init'), os.path.join(BASEDIR, 'data', 'data.sqlite'))
+    try:
+        if not os.path.exists(UPLOAD_FOLDER):
+            os.makedirs(UPLOAD_FOLDER)
+        # if not os.path.exists(os.path.join(BASEDIR, 'data.sqlite')):
+        #     db.create_all()
+        if not os.path.exists(os.path.join(BASEDIR, 'data', 'data.sqlite')):
+            if os.path.exists(os.path.join(BASEDIR, 'data_init')):
+                shutil.copyfile(os.path.join(BASEDIR, 'data_init'), os.path.join(BASEDIR, 'data', 'data.sqlite'))
 
-    if not os.path.exists(TMP_DIR_PATH):
-        os.makedirs(TMP_DIR_PATH)
+        if not os.path.exists(TMP_DIR_PATH):
+            os.makedirs(TMP_DIR_PATH)
 
-    if SVM_CLASSIFIER_ENABLED:
-        svm_face_dataset = os.path.join(BASEDIR, 'data', 'face_dataset')
-        svm_face_embedding = os.path.join(BASEDIR, 'data', 'face_embedding')
-        svm_tmp_dir = os.path.join(BASEDIR, 'data', 'faces', 'noname', 'person')
-        svm_face_testdataset = os.path.join(BASEDIR, 'data', 'face_testdataset')
-        svm_stranger_testdataset = os.path.join(BASEDIR, 'data', 'stranger_testdataset')
-        if not os.path.exists(svm_face_dataset):
-            os.mkdir(svm_face_dataset)
-        if not os.path.exists(svm_face_embedding):
-            os.mkdir(svm_face_embedding)
-        if not os.path.exists(svm_tmp_dir):
-            os.makedirs(svm_tmp_dir)
-        if not os.path.exists(svm_face_testdataset):
-            os.mkdir(svm_face_testdataset)
-        if not os.path.exists(svm_stranger_testdataset):
-            os.mkdir(svm_stranger_testdataset)
+        if SVM_CLASSIFIER_ENABLED:
+            svm_face_dataset = os.path.join(BASEDIR, 'data', 'face_dataset')
+            svm_face_embedding = os.path.join(BASEDIR, 'data', 'face_embedding')
+            svm_tmp_dir = os.path.join(BASEDIR, 'data', 'faces', 'noname', 'person')
+            svm_face_testdataset = os.path.join(BASEDIR, 'data', 'face_testdataset')
+            svm_stranger_testdataset = os.path.join(BASEDIR, 'data', 'stranger_testdataset')
+            if not os.path.exists(svm_face_dataset):
+                os.mkdir(svm_face_dataset)
+            if not os.path.exists(svm_face_embedding):
+                os.mkdir(svm_face_embedding)
+            if not os.path.exists(svm_tmp_dir):
+                os.makedirs(svm_tmp_dir)
+            if not os.path.exists(svm_face_testdataset):
+                os.mkdir(svm_face_testdataset)
+            if not os.path.exists(svm_stranger_testdataset):
+                os.mkdir(svm_stranger_testdataset)
+    except Exception as e:
+        print(e)
 
 def updatePeopleImgURL(ownerid, url, embedding, uuid, objid, img_type, accuracy, fuzziness, sqlId, style, img_ts, tid,
                        p_ids, waiting):

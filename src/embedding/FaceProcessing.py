@@ -191,6 +191,8 @@ def _FaceProcessingImageData2(img):
     global mod2
     global mod3
 
+    embedding = None
+
     nimg = np.transpose(img, (2,0,1))
     resize_img = misc.imresize(nimg, [112, 112], interp='bilinear')
     if mod2 is not None:
