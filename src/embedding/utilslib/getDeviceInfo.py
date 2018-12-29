@@ -90,7 +90,7 @@ def get_groupid(uuid):
         # everything is fine
         if 200 == response.getcode():
             result = response.readline()
-            groupid=result.split(',')
+            groupid=result.decode().split(',')
             for i in range(len(groupid)):
                 if len(groupid[i])>0:
                     arr.append("/device/" + groupid[i])

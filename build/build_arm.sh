@@ -15,6 +15,14 @@ rm -rf .ro_serialno
 rm -rf .groupid.txt
 rm -rf sharpai-app.tgz
 
+if [ ! -d ../model ] || [ ! -f ../model/net2 ] || [ ! -f ../model/net2.params ] || [ ! -f ../model/net2.tar ]; then
+    echo "not found model"
+    exit
+fi
+if [ -f ../model/net2.tar.so ];then
+    rm -rf ../model/net2.tar.so
+fi
+
 mkdir -p $runtime/bin
 cp patchs/function.py /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/_ffi/_ctypes/function.py
 cp patchs/ndarray.py /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/_ffi/_ctypes/ndarray.py

@@ -4,6 +4,9 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PREFIX/lib:/system/vendor/lib/egl
 export DATA_RUNTIME_FOLDER=../model
 export DEVICE_UUID_FILEPATH=/data/data/com.termux/files/home/.ro_serialno
 export DEVICE_GROUP_ID_FILEPATH=/data/data/com.termux/files/home/.groupid.txt
+export CLUSTER_REDIS_ADDRESS=localhost
+export CLUSTER_REDIS_PORT=6379
+export CLUSTER_CONCURRENCY=1
 #export LD_PRELOAD=$LD_PRELOAD:libatomic.so:libcutils.so
 cd bin
 while [ 1 ]

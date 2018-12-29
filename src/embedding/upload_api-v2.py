@@ -1670,6 +1670,8 @@ def extract_v2(image):
     if current_groupid is None:
         return json.dumps({"embedding_path":""})
     embedding = FaceProcessing.FaceProcessingBase64ImageData2(imgstring)
+    embedding_path=''
+    embedding_str=''
     if embedding is not None:
         if type(trackerid) is not str:
             trackerid = str(trackerid)

@@ -89,7 +89,7 @@ class FaceFilterClass():
     def save_static_image(self, cameraId, motion_result, image_path, min_value, max_value):
         try:
             print('motion_result={}, ({}, {}) image_path={}'.format(motion_result, min_value, max_value, image_path))
-            image_length = os.stat(image_path)
+            image_length = os.stat(image_path).st_size
             if os.path.isfile(image_path) is False or image_length <= 0:
                 print('Error: image_path({}) is not file or file size is zero {}, length={}'.format(image_path, image_length))
                 return
@@ -144,9 +144,13 @@ class FaceFilterClass():
             if self.cv2_major == '2':
                 contours, hierarchy = cv2.findContours(diff, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             else:
-                image, contours, hierarchy = cv2.findContours(diff, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                contours, hierarchy = cv2.findContours(diff, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             rects = []
-            min_value = sys.maxint
+            try:
+                min_value = sys.maxint
+            except:
+                min_value = sys.maxsize
+
             max_value = 0
             for c in contours:
                 # if the contour is too small, ignore it
@@ -180,7 +184,7 @@ class FaceFilterClass():
             result = False
             rects = []
             static_image_path = self.get_static_image_path(cameraId)
-            static_image_length = os.stat(static_image_path)
+            static_image_length = os.stat(static_image_path).st_size
             print("template_matching: static_image_path={}, static_image_length={}".format(static_image_path, static_image_length))
             if not os.path.isfile(static_image_path) or static_image_length <= 0:
                 print('template_matching: error, static_image_length({}) is not file or file size is zero {}, length={}'.format(static_image_length, static_image_length))
