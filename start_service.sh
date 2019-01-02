@@ -5,6 +5,7 @@ redis-server --maxmemory 20mb --maxmemory-policy allkeys-lru --save "" --appendo
 mosquitto &
 
 cd src/embedding
+cp -f judgeutil.so_termux-linux-aarch64 judgeutil.so
 ./start.sh &
 
 cd -

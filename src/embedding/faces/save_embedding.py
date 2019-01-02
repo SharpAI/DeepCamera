@@ -194,11 +194,10 @@ def save_image_denoise(img, img_path):
     misc.imsave(img_path, img)
 
 def get_embedding_path(img_path):
-    # embedding_dir_path = img_path.rsplit('/', 1)[0].replace(img_dir, embedding_dir)
-    #if not os.path.exists(embedding_dir_path):
-    #    os.makedirs(embedding_dir_path)
-    embedding_path = img_path+'.txt'
-    print("-"*10, embedding_path)
+    embedding_dir_path = img_path.rsplit('/', 1)[0].replace(img_dir, embedding_dir)
+    if not os.path.exists(embedding_dir_path):
+        os.makedirs(embedding_dir_path)
+    embedding_path = img_path.replace(img_dir, embedding_dir) + '.txt'
     return embedding_path
 
 
