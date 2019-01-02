@@ -69,6 +69,9 @@ function startserver()
     if [ $(ps aux | grep \[s]tart_detector.sh | wc -l) -eq 0 ]; then
         $PREFIX/bin/bash ./start_detector.sh &
     fi
+    if [ $(ps aux | grep \[s]tart_monitor.sh | wc -l) -eq 0 ]; then
+        $PREFIX/bin/bash ./start_monitor.sh &
+    fi
 }
 
 checkUUID

@@ -3,6 +3,9 @@
   "version": "0.1.1",
   "description": "",
   "main": "index.js",
+  "scripts": {
+    "webpack": "webpack --display-error-details"
+  },
   "dependencies": {
     "crypto-js": "^3.1.9-1",
     "cryptojs": "^2.5.3",
@@ -10,6 +13,9 @@
     "ddp-login": "^1.0.10",
     "dockerode": "^2.5.7",
     "md5": "^2.2.1",
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.1.2",
+    "webpack-node-externals": "^1.7.2",
     "ws": "^6.1.0",
     "yamljs": "^0.3.0"
   }

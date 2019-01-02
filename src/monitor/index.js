@@ -28,6 +28,7 @@ var DOCKER_COMPOSE_YML = process.env.DOCKER_COMPOSE_YML || '../docker-compose.ym
 var RUNTIME_DIR = process.env.RUNTIME_DIR || '../'
 var RESTART_TIMEOUT = process.env.RESTART_TIMEOUT || 10
 var DOCKER_COMPOSE_YML_FILENAME = process.env.DOCKER_COMPOSE_YML_FILENAME || 'docker-compose.yml'
+var DOCKER_SOCK = '/var/run/docker.sock'
 
 function get_device_uuid(cb){
   fs.readFile(DEVICE_UUID_FILE, function (err,data) {
@@ -327,7 +328,7 @@ function cpu_mem_uptime_temp(cb) {
         if(typename.length < 1 && temp_val.length < 1)
             continue;
 
-        if(typename.startsWith("soc-thermal")) {
+        if(typename.startsWith("soc-thermal") || typename.startsWith("exynos-therm")) {
             temp.cpu = temp_val;
         } else if(typename.startsWith("gpu-thermal")) {
             temp.gpu = temp_val;
@@ -338,9 +339,10 @@ function cpu_mem_uptime_temp(cb) {
 }
 
 function get_docker_version(filepath, cb) {
+    var exists = fs.existsSync(DOCKER_SOCK);
     var ymlexists = fs.existsSync(filepath);
-    if(!ymlexists)
-         return cb && cb("yml not found", null)
+    if(!exists || !ymlexists)
+         return cb && cb("yml not found, or docker not install", null)
     var data = null;
     try{
         data = YAML.parse(fs.readFileSync(filepath).toString());
@@ -422,6 +424,10 @@ var status = {
     cfg: {}
 }
 function restart_docker_compose(){
+    var exists = fs.existsSync(DOCKER_SOCK);
+    if(!exists) {
+        return;
+    }
     var command = `cd ${RUNTIME_DIR} && docker-compose -f ${DOCKER_COMPOSE_YML_FILENAME} down && docker-compose -f ${DOCKER_COMPOSE_YML_FILENAME} up`
     console.log(command)
     exec(command, function(err, stdout, stderr) {
@@ -449,7 +455,7 @@ function connectToFlower(){
            console.log('face detected')
          }
       } else if(result.hostname == "celery@embedding"){
-         if(result.result.test(/embedding_str/)){
+         if(result.result.indexOf('embedding_str') > -1){
            console.log('embedded_v2')
            return
          }

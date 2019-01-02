@@ -1,5 +1,6 @@
 #!/bin/bash
 
+cpwd=$(pwd)
 
 redis-server --maxmemory 20mb --maxmemory-policy allkeys-lru --save "" --appendonly no --dbfilename "" &
 mosquitto &
@@ -15,6 +16,10 @@ cd src/face_detection
 cd -
 cd src/detector
 ./start.sh &
+
+pushd ${cpwd}/src/monitor/
+    ./monitorrun_termux.sh &
+popd
 
 while [ 1 ]
 do

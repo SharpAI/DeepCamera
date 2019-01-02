@@ -66,6 +66,7 @@ pushd ${runtime}"/bin"
 popd
 
 bash ./build_detector.sh ${buildpath}
+bash ./build_monitor.sh  ${buildpath}
 
 
 #build for arch-linux
