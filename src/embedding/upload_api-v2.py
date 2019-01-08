@@ -127,6 +127,9 @@ deepeye = Celery('upload_api-v2',
     backend='redis://'+CLUSTER_REDIS_ADDRESS+':'+CLUSTER_REDIS_PORT+'/0')
 deepeye.count = 1
 
+# run as worker only
+CLUSTER_WORKERONLY = os.getenv('CLUSTER_WORKERONLY', False)
+
 SAVE_ORIGINAL_FACE = False
 original_face_img_path = os.path.join(BASEDIR, 'data', 'original_face_img')
 if not os.path.exists(original_face_img_path):
@@ -1676,7 +1679,10 @@ def extract_v2(image):
         if type(trackerid) is not str:
             trackerid = str(trackerid)
 
-        embedding_path = save_embedding.get_embedding_path(imgpath)
+        if CLUSTER_WORKERONLY:
+            embedding_path = save_embedding.get_embedding_path_for_worker(imgpath)
+        else:
+            embedding_path = save_embedding.get_embedding_path(imgpath)
         embedding_str = save_embedding.convert_embedding_to_string(embedding)
 
     return json.dumps({'embedding_path': embedding_path,'embedding_str':embedding_str})

@@ -200,6 +200,9 @@ def get_embedding_path(img_path):
     embedding_path = img_path.replace(img_dir, embedding_dir) + '.txt'
     return embedding_path
 
+def get_embedding_path_for_worker(img_path):
+    embedding_path = img_path+'.txt'
+    return embedding_path
 
 def create_embedding_string(embedding, embedding_path):
     embedding_string = ','.join(str(x) for x in embedding)
