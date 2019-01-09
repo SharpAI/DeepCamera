@@ -38,7 +38,7 @@ function startserver()
     cd /data/data/com.termux/files/home/runtime
 
     if [ $(ps aux | grep \[r]edis-server | wc -l) -eq 0 ]; then
-        redis-server --maxmemory 80mb --maxmemory-policy allkeys-lru --save "" --appendonly no --dbfilename "" &
+        redis-server --maxmemory 80mb --maxmemory-policy allkeys-lru --save "" --appendonly no --dbfilename "" --protected-mode no --bind 0.0.0.0 &
     fi
 
     if [ $(ps aux | grep \[m]osquitto | wc -l) -eq 0 ]; then
