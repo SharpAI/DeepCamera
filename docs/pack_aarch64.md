@@ -49,3 +49,5 @@ creating sharpai-app.tgz ...
 
 ## 3 生成7420上面安装的apk
 把上面生成的sharpai-app-aarch64.tgz拷贝到PC上，放到这个目录hotShare/AndroidPorting/Launcher/app/src/main/assets/ 同时这个目录还要有7420对应的sharpai-base.tgz 编译好之后的apk文件就可以安装到7420上
+
+ 编译apk时候使用的key https://github.com/solderzzc/hotShare/blob/sharpai/hotShareMobile/keystore
