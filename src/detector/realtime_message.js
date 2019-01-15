@@ -1,7 +1,8 @@
 var mqtt = require('mqtt')
-var client  = mqtt.connect('mqtt://broker')
 var redis = require("redis")
 var request = require('requestretry')
+var brokerhost = process.env.BROKERHOST || 'mqtt://broker'
+var client  = mqtt.connect(brokerhost)
 var ON_DEBUG = false
 function GetEnvironmentVarInt(varname, defaultvalue)
 {
