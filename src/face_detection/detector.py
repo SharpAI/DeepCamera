@@ -11,6 +11,7 @@ import face_preprocess
 import time
 
 minsize = int(os.getenv("MINIMAL_FACE_RESOLUTION", default="100"))  # minimum size of face, 100 for 1920x1080 resolution, 70 for 1280x720.
+threads_number = int(os.getenv("THREADS_NUM_FACE_DETECTOR", default="1"))
 image_size = 160
 margin = 16
 BLURY_THREHOLD = 5
@@ -18,7 +19,7 @@ BLURY_THREHOLD = 5
 m.init('./model')
 m.set_minsize(minsize)
 m.set_threshold(0.6,0.7,0.8)
-m.set_num_threads(1)
+m.set_num_threads(threads_number)
 
 def get_filePath_fileName_fileExt(filename):
     (filepath,tempfilename) = os.path.split(filename)
