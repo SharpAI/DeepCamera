@@ -39,13 +39,10 @@ $ git clone https://github.com/solderzzc/sharpai
 ```
 $ cd sharpai/
 $ ./setup_arm32.sh
-$ cd build/
-$ bash build_arm.sh
 
 $ cd
-$ ./arch/startarch 
 $ cd sharpai/build/
-$ ./build_arm.sh  .
+$ ./build_arm.sh  ./
 
 -rw------- 1 u0_a54 u0_a54 415M Dec 26 14:38 sharpai-app.tgz
 ```
