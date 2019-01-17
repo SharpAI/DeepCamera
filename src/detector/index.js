@@ -265,7 +265,7 @@ function save_image_for_delayed_process(cameraId, file_path, force_saving){
   var current_face_count = getCurrentFaceCount(cameraId)
   var current_tracker_id = getCurrentTrackerId(cameraId)
   if(current_face_count > 0){
-    ON_DEBUG && console.log('TODO: save and send to no priority task, faces: '+current_person_count + ' camera: '+cameraId)
+    ON_DEBUG && console.log('TODO: save and send to no priority task, faces: '+current_face_count + ' camera: '+cameraId)
     var ts = new Date().getTime()
     waitqueue.waitQueueInsert({'cameraId': cameraId, 'filepath': file_path,
       'ts': ts, 'trackerid':current_tracker_id})
@@ -319,7 +319,7 @@ function getFaceRecognitionTaskList(cameraId,cropped_images,tracking_info,curren
   }
   var time_diff = (new Date() - current_tracker_id)/1000
 
-  console.log('Tracking lasting for %ds, I like this logic game ',time_diff,cropped_images,tracking_info)
+  ON_DEBUG && console.log('Tracking lasting for %ds, I like this logic game ',time_diff,cropped_images,tracking_info)
   var face_list = []
   cropped_images.sort(function(a,b){
     var area_a = a.height * a.width;
@@ -329,17 +329,17 @@ function getFaceRecognitionTaskList(cameraId,cropped_images,tracking_info,curren
   cropped_images.forEach(function(item){
     if(RESTRICT_RECOGNITON_MODE && item.style !== 'front'){
       deepeye.delete_image(item.path)
-      console.log('Do not use side face')
+      ON_DEBUG && console.log('Do not use side face')
       return
     }
     if(item.width < MINIMAL_FACE_RESOLUTION || item.height < MINIMAL_FACE_RESOLUTION){
-      console.log('Do not use smaller face than %d',MINIMAL_FACE_RESOLUTION)
+      ON_DEBUG && console.log('Do not use smaller face than %d',MINIMAL_FACE_RESOLUTION)
       deepeye.delete_image(item.path)
       return
     }
     if(BIGGEST_FACE_ONLY_MODE){
       if(face_list.length >=1){
-          console.log('BIGGEST_FACE_ONLY_MODE, skipped one face')
+          ON_DEBUG && console.log('BIGGEST_FACE_ONLY_MODE, skipped one face')
           deepeye.delete_image(item.path)
           return
       }

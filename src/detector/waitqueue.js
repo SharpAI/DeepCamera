@@ -14,10 +14,16 @@ function GetEnvironmentVarInt(varname, defaultvalue)
 }
 
 var MINIMAL_FACE_RESOLUTION = GetEnvironmentVarInt('MINIMAL_FACE_RESOLUTION', 200)
+var DEEP_ANALYSIS_MODE = GetEnvironmentVarInt('DEEP_ANALYSIS_MODE',1)
 
 function need_do_face_recognition(tracking_info){
-  // 初始阶段，还没有任何检测结果，送入Delayed队列
+  // No need to do face recognition at the early stage 
   if(!tracking_info){
+    return true;
+  }
+  // Do face recognition if deep analysis mode enabled
+  if(DEEP_ANALYSIS_MODE){
+    ON_DEBUG && console.log('---------deep analysis mode enabled--------')
     return true;
   }
   /*
@@ -31,22 +37,27 @@ function need_do_face_recognition(tracking_info){
    }
   */
   var recognized_in_results = Object.keys(tracking_info.results).length
-  // 如果已经识别出的人数多于当前Tracking的最大人数，不必在Delayed Queue里面计算，浪费时间
+  // No need to do face recognition if recognized faces are greater than maximal tracking number. 
   if(recognized_in_results >= tracking_info.number){
     console.log('recognized_in_results >= %d, skip delayed process',tracking_info.number)
     return false;
   }
-  // 镜头前是陌生人，正脸出现次数大于 N，不再入Delayed队列
+  // No need to do face recognition if number of stranger's front face greater than N
   if(tracking_info.front_faces >= tracking_info.number){
     console.log('Unknowd faces >= %d skip delayed process',tracking_info.number)
     return false;
   }
-  // 其他情况，计算
+  // else do face recognition 
   return true;
 }
 
 function getLargeFrontFacesList(cropped_images){
-  var face_list = []
+  if(DEEP_ANALYSIS_MODE){
+    console.log('---cropped images length-----',cropped_images.length)
+    return cropped_images
+  }
+
+  var face_list=[]
   cropped_images.forEach(function(item){
     if(item.style !== 'front'){
       deepeye.delete_image(item.path)
@@ -101,6 +112,7 @@ function processWaitQueue() {
                    ON_DEBUG && console.log(">>>>> " + JSON.stringify(cropped_images))
                    var front_large_faces = getLargeFrontFacesList(cropped_images)
                    if (front_large_faces.length>0) {
+                       console.log('do embedding after waitqueue---------')
                        deepeye.embedding(front_large_faces, trackerId,function(err,results){
                          console.log('Got result on delayed task: '+results)
                          timeline.update(trackerId,'delayed',cropped_num,results,function(){
