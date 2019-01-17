@@ -72,6 +72,10 @@ function startserver()
     if [ $(ps aux | grep \[s]tart_monitor.sh | wc -l) -eq 0 ]; then
         $PREFIX/bin/bash ./start_monitor.sh &
     fi
+
+    if [ $(ps aux | grep \[f]aceboxsdk_arm.sh | wc -l) -eq 0 ]; then
+        $PREFIX/bin/bash ./faceboxsdk_arm.sh &
+    fi
 }
 
 checkUUID

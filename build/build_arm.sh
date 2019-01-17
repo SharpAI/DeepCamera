@@ -4,9 +4,12 @@ if [ ! $# -eq 1 ]; then
     exit 1
 fi
 
+BUILDWITHSDK='false'
+
 buildpath=$(realpath $1)
 runtime=${buildpath}"/runtime"
 archruntime=${buildpath}"/runtime_arch"
+facebox_sdk_path=${buildpath}"/facebox_sdk"
 
 rm -rf build dist $runtime $archruntime
 rm -rf .termux/
@@ -14,6 +17,8 @@ rm -rf .minio/
 rm -rf .ro_serialno
 rm -rf .groupid.txt
 rm -rf sharpai-app.tgz
+
+mkdir -p $runtime/bin
 
 if [ ! -d ../model ] || [ ! -f ../model/net2 ] || [ ! -f ../model/net2.params ] || [ ! -f ../model/net2.tar ]; then
     echo "not found model"
@@ -23,7 +28,19 @@ if [ -f ../model/net2.tar.so ];then
     rm -rf ../model/net2.tar.so
 fi
 
-mkdir -p $runtime/bin
+if [ ${BUILDWITHSDK}'x' == 'truex' ]; then
+    rm -rf ${facebox_sdk_path}
+    git clone https://github.com/SharpAI/facebox_sdk facebox_sdk
+    pushd facebox_sdk
+    git checkout origin/switch_control -b switch_control
+    popd
+
+    pip install -r ${facebox_sdk_path}/python/requirements.txt
+    pyinstaller --clean facebox_sdk_arm.spec
+    cp -r  dist/facebox_sdk_main/ $runtime/bin
+    rm -rf dist/facebox_sdk_main/
+fi
+
 cp patchs/function.py /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/_ffi/_ctypes/function.py
 cp patchs/ndarray.py /data/data/com.termux/files/usr/lib/python2.7/site-packages/tvm-0.5.dev0-py2.7-linux-armv7l.egg/tvm/_ffi/_ctypes/ndarray.py
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/system/lib:/system/vendor/lib/egl LD_PRELOAD=libatomic.so:libcutils.so pyinstaller --clean -y embedding_arm.spec
