@@ -20,19 +20,36 @@ $ wget http://192.168.254.16:8080/usr_dev_root_armv7_1126_2018.tgz
 $ wget http://192.168.254.16:8080/arch_dev_root_1203_2018_final.tgz
 
 $ tar -zxmf usr_dev_root_armv7_1126_2018.tgz
-$ cd ..
+$ cd /data/data/com.termux/files
 $ mv home/usr_dev_root_armv7_1126_2018.tgz .
 $ ls
 home                              usr                               usr_dev_root_armv7_1126_2018.tgz
 $ tar -zxmf usr_dev_root_armv7_1126_2018.tgz
 $ rm usr_dev_root_armv7_1126_2018.tgz
 
-$ cd
+$ cd /data/data/com.termux/files/home
 $ tar -zxvmf arch_dev_root_1203_2018_final.tgz
+$ rm -rf arch_dev_root_1203_2018_final.tgz
 
 
-$ cd 
+$ cd /data/data/com.termux/files/home
 $ git clone https://github.com/solderzzc/sharpai
+```
+#### 如果需要把facebox_sdk添加一起编译，按照下面这个修改，如果不需要下面这个修改跳过
+```
+diff --git a/build/build_arm.sh b/build/build_arm.sh
+index de28e98..3e32bf7 100755
+--- a/build/build_arm.sh
++++ b/build/build_arm.sh
+@@ -4,7 +4,7 @@ if [ ! $# -eq 1 ]; then
+     exit 1
+ fi
+ 
+-BUILDWITHSDK='false'
++BUILDWITHSDK='true'
+ 
+ buildpath=$(realpath $1)
+ runtime=${buildpath}"/runtime"
 ```
 
 ### 2 在盒子上生成sharpai-app.tgz
@@ -52,3 +69,13 @@ $ ./build_arm.sh  ./
 同时这个目录还要有sharpai-base.tgz
 编译好之后的apk文件就可以安装到rk3288上
 编译apk时候使用的key https://github.com/solderzzc/hotShare/blob/sharpai/hotShareMobile/keystore
+
+```
+rk3288 不包含SDK版本使用这个sharpai-base.tgz作为编译时候的sharpai-base.tgz：
+链接: https://pan.baidu.com/s/1UJQNBRMg5PEnI5Q1uMTk5A 提取码: er84
+
+rk3288 包含SDK版本使用这个sharpai-base-tsudo.tgz作为编译时候的sharpai-base.tgz：
+接: https://pan.baidu.com/s/1xt2KaamCqgx3bZv0xsVWUA 提取码: 3ph2
+
+区别只是SDK版本安装了tsu
+```

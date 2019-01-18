@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+if [ ! -e bin/facebox_sdk_main ];then
+    exit 0
+fi
+
 cd bin/facebox_sdk_main
 while [ 1 ]
 do
