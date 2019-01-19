@@ -141,7 +141,8 @@ def save2gst_autolabel(person_id, persons):
     #gst_api_url = 'http://192.168.1.73:3000/restapi/workai'
     #workAIweb_url = 'http://192.168.1.123:3000/restapi/workai'
     #gst_api_url = 'http://workaihost.tiegushi.com/restapi/workai_computeaccu'
-    gst_api_url = 'http://192.168.103.17:4000/restapi/workai_autolabel'
+    gst_api_url = host + 'restapi/workai_autolabel'
+    #gst_api_url = 'http://192.168.103.17:4000/restapi/workai_autolabel'
     #gst_api_url = 'http://192.168.103.6:4000/restapi/workai_unknown'
 
     current_groupid = get_current_groupid()
