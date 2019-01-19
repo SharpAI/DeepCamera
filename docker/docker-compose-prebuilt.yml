@@ -91,6 +91,7 @@ services:
     container_name: "workaipython"
     env_file:
       - ./cluster.env
+      - ./production_1.env
     environment:
       RUNTIME_BASEDIR: "/data/runtime/src/"
     restart: always

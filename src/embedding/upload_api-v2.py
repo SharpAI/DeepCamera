@@ -685,11 +685,17 @@ def disposeFinalSyncDatasetsThreadFunc(device_id, toid):
                             willRemoveCount = willRemoveCount+1
                             print("image_path({}) only in local, remove it.".format(image_path))
                             if image_path and os.path.exists(image_path):
-                                os.remove(image_path)
+                                if os.path.isfile(image_path):
+                                    os.remove(image_path)
+                                elif os.path.isdir(image_path):
+                                    shutil.rmtree(image_path)
                                 print("Remove image_path={}".format(image_path))
                             embedding_path = save_embedding.get_embedding_path(image_path)
                             if embedding_path and os.path.isfile(embedding_path):
-                                os.remove(embedding_path)
+                                if os.path.isfile(embedding_path):
+                                    os.remove(embedding_path)
+                                elif os.path.isdir(embedding_path):
+                                    shutil.rmtree(embedding_path)
                             if len(device_id) > 1 and len(toid) > 1:
                                 message = 'image_path({}) only in local, remove it.'.format(image_path)
                                 print(message)

@@ -15,6 +15,8 @@ import numpy as np
 from utilslib.save2gst import generate_protocol_string
 import classifier_classify_new as classifier
 from faces import save_embedding
+import object_track
+import copy
 
 all_face_index = 0 #每当识别出一个人脸就+1，当2个人同时出现在图片里面并且都不认识，需要区分开来
 
@@ -128,6 +130,7 @@ def upload_forecast_result(key, forecast_result, json_data, num_p):
 def face_recognition_on_embedding(align_image_path, embedding, totalPeople, blury, uuid,
                                    current_groupid, style, trackerId,
                                    timestamp1, ts, embedding_path):
+    object_track.process_cancel_timer()
     img_objid = trackerId
     print("img_objid = {}".format(img_objid))
     print("number of people=%d" % (totalPeople))
@@ -185,6 +188,18 @@ def face_recognition_on_embedding(align_image_path, embedding, totalPeople, blur
     _,api_url,payload = upload_forecast_result(key, forecast_result, json_data, number_people)
     json_data['key'] = key
     json_data['face_fuzziness'] = blury
+    if totalPeople == 1:
+        track_faces_array = []
+        forecast_result_copy = copy.deepcopy(forecast_result)
+        if 'embedding_string' in forecast_result_copy:
+            del forecast_result_copy['embedding_string']
+        forecast_result_copy["key"] = key
+        forecast_result_copy["url"] = 'http://aioss.tiegushi.com/' + key
+        forecast_result_copy["class_name"] = forecast_result_copy['face_id']
+        forecast_result_copy['score'] = forecast_result_copy['face_accuracy']
+        track_faces_array.append(forecast_result_copy)
+        print("track_faces_array={}".format(track_faces_array))
+        object_track.process_object_track(align_image_path, ts, track_faces_array)
 
     return json_data, {'api_url':api_url,'payload':payload}
 def get_empty_faceid(current_groupid, uuid, embedding,

@@ -8,6 +8,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_script import Manager, Server
 from flask_migrate import Migrate, MigrateCommand
+from sqlalchemy.types import PickleType, Text, String, Integer, DateTime, TypeDecorator, Integer, BLOB
 
 BASEDIR = os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__)))
 # UPLOAD_FOLDER = os.path.join(BASEDIR, 'image')
@@ -25,6 +26,27 @@ migrate = Migrate(app=app, db=db)
 manager.add_command('db', MigrateCommand)
 # manager.add_command('runserver', Server(host='0.0.0.0', port=5000))
 
+class JSONType(PickleType):
+    '''
+        JSON DB type is used to store JSON objects in the database
+    '''
+
+    impl = BLOB
+
+    def __init__(self, *args, **kwargs):
+
+        #kwargs['pickler'] = json
+        super(JSONType, self).__init__(*args, **kwargs)
+
+    def process_bind_param(self, value, dialect):
+        if value is not None:
+            value = json.dumps(value, ensure_ascii=True)
+        return value
+
+    def process_result_value(self, value, dialect):
+        if value is not None:
+            value = json.loads(value)
+        return value
 
 class People(db.Model):
     __tablename__ = 'people'
@@ -121,6 +143,20 @@ class Frame(db.Model):
                        self.img_path, self.img_style, self.accuracy, self.url,
                        self.num_face, self.tracking_id, self.device_id, self.time_stamp,
                        self.tracking_flag)
+
+class TrackImageSet(db.Model):
+    __tabelname__ = 'TrackImageSetDB'
+    id = db.Column(db.Integer, primary_key=True)
+    track_id = db.Column(db.Integer)
+    facecnt = db.Column(db.Integer)
+    #isNotify = db.Column(db.Integer)
+    ts = db.Column(db.String(64))
+    image_path = db.Column(db.String(512), index=True)
+    faces_array = db.Column(JSONType)
+
+    def __repr__(self):
+        return '<TrackImageSetDB id={} ts={} faces={}>'.format(self.id, self.image_path, self.ts, self.faces_array)
+
 
 if __name__ == '__main__':
     db.create_all()
