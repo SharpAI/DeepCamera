@@ -65,7 +65,7 @@ $ ./build_arm.sh  ./
 ```
 
 ### 3 生成apk
-把上面生成的sharpai-app.tgz拷贝到PC上，放到这个目录hotShare/AndroidPorting/Launcher/app/src/main/assets/
+把上面生成的sharpai-app.tgz拷贝到PC上，放到这个目录hotShare/AndroidPorting/Launcher/app/src/main/assets/sharpai-app.tgz
 同时这个目录还要有sharpai-base.tgz
 编译好之后的apk文件就可以安装到rk3288上
 编译apk时候使用的key https://github.com/solderzzc/hotShare/blob/sharpai/hotShareMobile/keystore
