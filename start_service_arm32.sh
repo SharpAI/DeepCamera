@@ -3,21 +3,30 @@
 export LD_LIBRARY_PATH=$LD_LIBRARY:/system/lib:/system/vendor/lib:/system/vendor/lib/egl:$PREFIX/lib
 export LD_PRELOAD=$LD_PRELOAD:libatomic.so:libcutils.so
 
-redis-server --maxmemory 20mb --maxmemory-policy allkeys-lru --save "" --appendonly no --dbfilename "" &
-mosquitto &
+export UUIDFILE=/data/data/com.termux/files/home/.ro_serialno
+export GROUPFILE=/data/data/com.termux/files/home/.groupid.txt
 
+redis-server --maxmemory 80mb --maxmemory-policy allkeys-lru --save "" --appendonly no --dbfilename "" &
 mosquitto &
 
 cd src/embedding
-./start.sh &
+./embedding_arm.sh &
+./classifier_worker_arm.sh &
+./classifier_restserver_arm.sh &
+./param_arm.sh &
 
+#./minio_arm.sh &
 cd -
 cd src/face_detection
-./start.sh &
+./worker_arm.sh &
 
 cd -
 cd src/detector
-./start.sh &
+./start_detector.sh &
+
+cd -
+cd src/monitor
+./start_monitor.sh &
 
 while [ 1 ]
 do
