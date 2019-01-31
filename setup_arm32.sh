@@ -16,3 +16,6 @@ cd -
 cd src/monitor
 npm install
 
+cd -
+cd src/flower
+pip2 install -r requirements.txt
