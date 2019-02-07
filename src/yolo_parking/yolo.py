@@ -3,20 +3,17 @@ import tvm
 import time
 import convert
 import cv2
-import json
 
-from scipy import misc
 from darknet import __darknetffi__
 from tvm.contrib import graph_runtime
-from cffi import FFI
 
 
-def get_data(net, img_path, LIB):
+def get_data(img_path, LIB):
     start = time.time()
     orig_image = LIB.load_image_color(img_path.encode('utf-8'), 0, 0)
     img_w = orig_image.w
     img_h = orig_image.h
-    img = LIB.letterbox_image(orig_image, net.w, net.h)
+    img = LIB.letterbox_image(orig_image, 608, 608)
     LIB.free_image(orig_image)
     done = time.time()
     print('1: Image Load run {}'.format((done - start)))
@@ -72,28 +69,30 @@ def compute_overlaps(boxes1, boxes2):
 class Yolo():
     def __init__(self):
         ctx = tvm.cl(0)
-        ffi = FFI()
 
         self.darknet_lib = __darknetffi__.dlopen('../../model/yolo/libdarknet.so')
-        self.net = self.darknet_lib.load_network("../../model/yolo/yolov2.cfg", ffi.NULL, 0)
 
         lib = tvm.module.load('../../model/yolo/yolov2.tar')
         graph = open("../../model/yolo/yolov2").read()
         params = bytearray(open("../../model/yolo/yolov2.params", "rb").read())
         self.mod = graph_runtime.create(graph, lib, ctx)
         self.mod.load_params(params)
+        print("mod load params successfully")
 
         self.parked_car_boxes = None
         self.free_space_frames = 0
         self.frame_index = 0
 
     def get_car_boxes(self, filename):
-        im_w, im_h, data = get_data(self.net, filename, self.darknet_lib)
-        print(data.shape)
+        im_w, im_h, data = get_data(filename, self.darknet_lib)
+
         self.mod.set_input('data', tvm.nd.array(data.astype('float32')))
+
+        print("run", data.shape)
         self.mod.run()
+        print("get_output")
         tvm_out = self.mod.get_output(0).asnumpy().flatten()
-        # print(tvm_out.shape)
+        print("tvm_out", tvm_out.shape)
         result = convert.calc_result(im_w, im_h, tvm_out)
 
         result_lines = result.splitlines()
@@ -117,6 +116,8 @@ class Yolo():
     def detect(self, image_path):
 
         img = cv2.imread(image_path)
+        print("img.image_path", image_path)
+        print("img.shape", img.shape)
 
         if self.parked_car_boxes is None:
             # This is the first frame of video - assume all the cars detected are in parking spaces.
@@ -167,7 +168,7 @@ class Yolo():
                 cv2.putText(img, str(max_IoU_overlap), (x1 + 6, y2 - 6), font, 0.3, (255, 255, 255))
 
             cv2.imwrite("parking-"+str(self.frame_index)+".jpg", img)
-
+            print("imwrite ", "parking-"+str(self.frame_index)+".jpg")
             # If at least one space was free, start counting frames
             # This is so we don't alert based on one frame of a spot being open.
             # This helps prevent the script triggered on one bad detection.
@@ -193,7 +194,5 @@ if __name__ == "__main__":
     yolo = Yolo()
     yolo.detect("frame-1-0000.jpg")
     yolo.detect("frame-1-0000.jpg")
-    yolo.detect("frame-2-0000.jpg")
-    yolo.detect("frame-3-0000.jpg")
-    yolo.detect("frame-4-0000.jpg")
+
 
