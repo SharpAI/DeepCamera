@@ -5,14 +5,12 @@ from __future__ import print_function
 
 import os
 import json
-import time
 
 from celery import Celery
 from celery.signals import worker_process_init
 from celery.concurrency import asynpool
 from yolo import Yolo
-from face_filter import FaceFilterClass
-from scipy import misc
+
 
 # deeepeye
 asynpool.PROC_ALIVE_TIMEOUT = 60.0  # set this long enough
@@ -47,4 +45,5 @@ deepeye.conf.task_routes = {
 }
 
 if __name__ == '__main__':
+
     deepeye.start()

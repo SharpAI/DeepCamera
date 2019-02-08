@@ -1,10 +1,12 @@
-1. compile yolov2.tar, yolov2, yolov2.params in 7420
+1. compile yolov2.tar, yolov2, yolov2.params in 3228
    docker run -v `pwd`/test:/export -it solderzzc/rocketchat:tvm_06152018_x86 /bin/bash
-   in docker, run github/fast_ai/yolo_parking/convert_tvm_7420.py  
+   in docker, run github/fast_ai/yolo_parking/convert_tvm_3228.py  
 
-2. need recompile _convert.so, replace github/fast_ai/fast_od/convert/src/convert.c with this convert.c and then compile.
+2. need recompile _convert.so, in github/fast_ai/yolo_parking/convert/ then compile.
+   on board 3228 
+   python2 compile.py 
 
-3. in 7420 board
+3. on 3228 board
   copy converted yolov2.tar, yolov2, yolov2.params, yolov2.cfg, libdarknet.so to model/yolo directory
   replace new compiled _convert.so
   
