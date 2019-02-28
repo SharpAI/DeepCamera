@@ -61,10 +61,15 @@ def installncftpThreadFunc(device_id='', toid=''):
     try:
         if len(device_id) > 1 and len(toid) > 1:
             sendMessage2Group(device_id, toid, 'Received installncftp command, doing...')
-        out_put = subprocess.check_output(['apt-get', 'update'])
-        print("installncftpThreadFunc: apt-get update")
-        out_put = subprocess.check_output(['apt-get', 'install', '-y', 'ncftp'])
-        print("installncftpThreadFunc: install ncftpput result is {}".format(out_put))
+        # out_put = subprocess.check_output(['apt-get', 'update'])
+        # print("installncftpThreadFunc: apt-get update")
+
+        if "sharpai.log" in os.listdir(os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR', os.path.join(os.path.dirname(__file__),os.path.pardir)), os.path.pardir))):
+            out_put = subprocess.check_output(['apt-get', 'install', "-y", 'lftp'])
+            print("installncftpThreadFunc: install lftp result is {}".format(out_put))
+        else:
+            out_put = subprocess.check_output(['apt-get', 'install', "-y", 'ncftp'])
+            print("installncftpThreadFunc: install ncftpput result is {}".format(out_put))
         if len(device_id) > 1 and len(toid) > 1:
             sendMessage2Group(device_id, toid, 'install tools suc {}, {}'.format(out_put, device_id))
     except OSError as e:
@@ -78,7 +83,16 @@ def uploadLogsThreadFunc(device_id='', toid=''):
     if len(device_id) > 1 and len(toid) > 1:
         sendMessage2Group(device_id, toid, 'Received uploadlogs command, doing...')
 
-    BASEPATH = os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.join(os.path.dirname(__file__),os.path.pardir))))
+    IS_RK3288 = False
+    if "sharpai.log" in os.listdir(os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR', os.path.join(os.path.dirname(__file__),os.path.pardir)), os.path.pardir))):
+        IS_RK3288 = True
+    print("IS_RK3288 {}".format(IS_RK3288))
+
+    if IS_RK3288:
+        BASEPATH = os.path.join(os.getenv('RUNTIME_BASEDIR', "/data/data/com.termux/files/home/runtime"), os.path.pardir)
+    else:
+        BASEPATH = os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.join(os.path.dirname(__file__),os.path.pardir))))
+
     device_id = get_deviceid()
     log_dir = os.path.join(BASEPATH, 'docker_logs')
     timestamp = int(round(time.time() * 1000))
@@ -95,6 +109,30 @@ def uploadLogsThreadFunc(device_id='', toid=''):
             sendMessage2Group(device_id, toid, 'Upload log catch error: {}, {}'.format(e, device_id))
         return
 
+    if IS_RK3288:
+        try:
+            out_put = subprocess.check_output(['cp', os.path.join(BASEPATH, "sharpai.log"), log_dir])
+            out_put = subprocess.check_output(['tar', '-cjf', tar_log_file_path, log_dir])
+            print("uploadLogThreadFunc: tar result is {}".format(out_put))
+            print("uploadLogThreadFunc: lftp uploading...")
+
+            upload_str = "lftp -c 'put " + tar_log_file_path + " -o ftp://swftp2:swftp2@sengftp2.actiontec.com/space4sw/frank/'"
+            out_put = subprocess.check_output(upload_str, shell=True)
+            print("uploadLogThreadFunc: lftp upload result is {}".format(out_put))
+
+            # out_put = subprocess.check_output(['rm', '-rf', tar_log_file_path, log_dir])
+            if len(device_id) > 1 and len(toid) > 1:
+                sendMessage2Group(device_id, toid, 'Upload log done: {}, {}'.format(out_put, device_id))
+        except Exception as e:
+            print "uploadLogThreadFunc Error: "
+            print(e)
+            if len(device_id) > 1 and len(toid) > 1:
+                sendMessage2Group(device_id, toid, 'Upload log catch error: {}, {}'.format(e, device_id))
+        finally:
+            out_put = subprocess.check_output(['rm', '-rf', tar_log_file_path, log_dir])
+            print("delete {}, {}".format(tar_log_file_path, log_dir))
+        return
+
     try:
         client = docker.DockerClient(base_url='unix://var/run/docker.sock', timeout=10)
         lists = client.containers.list(all=True)
@@ -107,9 +145,10 @@ def uploadLogsThreadFunc(device_id='', toid=''):
         out_put = subprocess.check_output(['tar', '-cjf', tar_log_file_path, log_dir])
         print("uploadLogThreadFunc: tar result is {}".format(out_put))
         print("uploadLogThreadFunc: ncftpput uploading...")
+        print(os.path.exists(tar_log_file_path))
         out_put = subprocess.check_output(['ncftpput', '-u', 'swftp2', '-p', 'swftp2', '-m', '-R', '-z', 'sengftp2.actiontec.com', 'space4sw/frank/', tar_log_file_path])
         print("uploadLogThreadFunc: ncftpput result is {}".format(out_put))
-        out_put = subprocess.check_output(['rm', '-rf', tar_log_file_path, log_dir])
+        # out_put = subprocess.check_output(['rm', '-rf', tar_log_file_path, log_dir])
         if len(device_id) > 1 and len(toid) > 1:
             sendMessage2Group(device_id, toid, 'Upload log done: {}, {}'.format(out_put, device_id))
     except Exception as e:
@@ -117,11 +156,18 @@ def uploadLogsThreadFunc(device_id='', toid=''):
         print(e)
         if len(device_id) > 1 and len(toid) > 1:
             sendMessage2Group(device_id, toid, 'Upload log catch error: {}, {}'.format(e, device_id))
+    finally:
+        out_put = subprocess.check_output(['rm', '-rf', tar_log_file_path, log_dir])
+        print("delete {}, {}".format(tar_log_file_path, log_dir))
     return
 
 def uploadTrainThreadFunc(device_id='', toid=''):
     if len(device_id) > 1 and len(toid) > 1:
         sendMessage2Group(device_id, toid, 'Received uploadtraindata command, doing...')
+    IS_RK3288 = False
+    if "sharpai.log" in os.listdir(os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR', os.path.join(os.path.dirname(__file__),os.path.pardir)), os.path.pardir))):
+        IS_RK3288 = True
+    print("IS_RK3288 {}".format(IS_RK3288))
     BASEPATH = os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.join(os.path.dirname(__file__),os.path.pardir))))
     device_id = get_deviceid()
     current_groupid = get_current_groupid()
@@ -132,9 +178,15 @@ def uploadTrainThreadFunc(device_id='', toid=''):
         print("uploadTrainThreadFunc: tar -cjf {} {}".format(tar_group_file_path, group_file_path))
         out_put = subprocess.check_output(['tar', '-cjf', tar_group_file_path, group_file_path])
         print("uploadTrainThreadFunc: tar result is {}".format(out_put))
-        print("uploadTrainThreadFunc: ncftpput uploading...")
-        out_put = subprocess.check_output(['ncftpput', '-u', 'swftp2', '-p', 'swftp2', '-m', '-R', '-z', 'sengftp2.actiontec.com', 'space4sw/frank/', tar_group_file_path])
-        print("uploadTrainThreadFunc: ncftpput result is {}".format(out_put))
+        if IS_RK3288:
+            print("uploadLogThreadFunc: lftp uploading...")
+            upload_str = "lftp -c 'put " + tar_group_file_path + " -o ftp://swftp2:swftp2@sengftp2.actiontec.com/space4sw/frank/'"
+            out_put = subprocess.check_output(upload_str, shell=True)
+            print("uploadLogThreadFunc: lftp upload result is {}".format(out_put))
+        else:
+            print("uploadTrainThreadFunc: ncftpput uploading...")
+            out_put = subprocess.check_output(['ncftpput', '-u', 'swftp2', '-p', 'swftp2', '-m', '-R', '-z', 'sengftp2.actiontec.com', 'space4sw/frank/', tar_group_file_path])
+            print("uploadTrainThreadFunc: ncftpput result is {}".format(out_put))
         if len(device_id) > 1 and len(toid) > 1:
             sendMessage2Group(device_id, toid, 'Upload train data done: {}, {}, {}'.format(out_put, current_groupid, device_id))
     except OSError as e:
@@ -147,6 +199,10 @@ def uploadTrainThreadFunc(device_id='', toid=''):
 def uploadTestThreadFunc(device_id='', toid=''):
     if len(device_id) > 1 and len(toid) > 1:
         sendMessage2Group(device_id, toid, 'Received uploadtestdata command, doing...')
+    IS_RK3288 = False
+    if "sharpai.log" in os.listdir(os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR', os.path.join(os.path.dirname(__file__),os.path.pardir)), os.path.pardir))):
+        IS_RK3288 = True
+    print("IS_RK3288 {}".format(IS_RK3288))
     BASEPATH = os.path.abspath(os.path.join(os.getenv('RUNTIME_BASEDIR',os.path.join(os.path.dirname(__file__),os.path.pardir))))
     device_id = get_deviceid()
     current_groupid = get_current_groupid()
@@ -157,9 +213,15 @@ def uploadTestThreadFunc(device_id='', toid=''):
         print("uploadTestThreadFunc: tar -cjf {} {}".format(tar_group_file_path, group_file_path))
         out_put = subprocess.check_output(['tar', '-cjf', tar_group_file_path, group_file_path])
         print("uploadTestThreadFunc: tar result is {}".format(out_put))
-        print("uploadTestThreadFunc: ncftpput uploading...")
-        out_put = subprocess.check_output(['ncftpput', '-u', 'swftp2', '-p', 'swftp2', '-m', '-R', '-z', 'sengftp2.actiontec.com', 'space4sw/frank/', tar_group_file_path])
-        print("uploadTestThreadFunc: ncftpput result is {}".format(out_put))
+        if IS_RK3288:
+            print("uploadLogThreadFunc: lftp uploading...")
+            upload_str = "lftp -c 'put " + tar_group_file_path + " -o ftp://swftp2:swftp2@sengftp2.actiontec.com/space4sw/frank/'"
+            out_put = subprocess.check_output(upload_str, shell=True)
+            print("uploadLogThreadFunc: lftp upload result is {}".format(out_put))
+        else:
+            print("uploadTestThreadFunc: ncftpput uploading...")
+            out_put = subprocess.check_output(['ncftpput', '-u', 'swftp2', '-p', 'swftp2', '-m', '-R', '-z', 'sengftp2.actiontec.com', 'space4sw/frank/', tar_group_file_path])
+            print("uploadTestThreadFunc: ncftpput result is {}".format(out_put))
         if len(device_id) > 1 and len(toid) > 1:
             sendMessage2Group(device_id, toid, 'Upload test data done: {}, {}, {}'.format(out_put, current_groupid, device_id))
     except OSError as e:
