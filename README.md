@@ -1,5 +1,5 @@
 
-# [How to test on PC]
+# How to test on PC
 ```
 git clone https://github.com/SharpAI/sharpai
 cd sharpai/docker
