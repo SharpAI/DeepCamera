@@ -14,7 +14,7 @@ docker-compose -f docker-compose-x86.yml up
 ## 1. Download Termux Modified Version on PC
 
 ```
-git clone https://github.com/solderzzc/hotShare -b android_porting
+git clone https://github.com/SharpAI/mobile_app_server -b android_porting
 ```
 
 ## 2. Add authorized key
@@ -57,22 +57,22 @@ tar -xvf usr_aarch64_dev_1204_2018.tgz
 
 ## 6. Run Sharp AI Code
 
-### 下载代码
+### Download Source Code
 ```
-git clone https://github.com/solderzzc/sharpai
+git clone https://github.com/SharpAI/sharpai
 cd sharpai
 ./setup.sh (rk3288 运行 ./setup_arm32.sh)
 ```
 
 
-### 运行服务
+### Start Service
 ```
 ./start_service.sh
 ```
 
-## RTSP 输入源
+## RTSP Input
 
-使用RTSP Decoder
+Use RTSP Decoder
 
 # 编译，打包
 
@@ -89,18 +89,15 @@ CFLAGS="-I/data/data/com.termux/files/usr/include/libandroid-support" LDFLAGS="-
 
 ```
 cd build
-bash ./build_aarch64.sh runtime存储的全路径
+bash ./build_aarch64.sh runtime's path
 ```
 
 ## Run
 
 ```
-cd runtime存储的全路径/runtime
+cd [runtime full path]/runtime
 bash ./start_aarch64.sh
 ```
-
-## [移植过程](https://github.com/solderzzc/hotShare/issues/3239)
-
 
 # SharpAI on Android ARM32(RK3288)
 
