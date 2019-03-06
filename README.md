@@ -1,4 +1,11 @@
 
+# [How to test on PC]
+```
+git clone https://github.com/SharpAI/sharpai
+cd sharpai/docker
+docker-compose -f docker-compose-x86.yml up
+```
+
 # [Runtime On AARCH64](docs/Runtime_AARCH64.md)
 
 
