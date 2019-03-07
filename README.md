@@ -1,3 +1,13 @@
+# What's SharpAI
+Full stack system for the deep learning edge computing devices, espeicailly set-up-box off the shell with image burning or Android apk installation.
+
+# Supported Device
+- [x] X86
+- [x] Rockchip RK3399 (Linux)
+- [x] Rockchip RK3288 (Android)
+- [x] Samsung 7420 (Android)
+- [x] Rockchip RK3399 (Android)
+
 ![screen shot 2019-03-07 at 4 03 59 pm](https://user-images.githubusercontent.com/3085564/53941268-a0781b80-40f2-11e9-8cc6-6295c3a39c96.png)
 
 ![screen shot 2019-03-07 at 2 41 28 pm](https://user-images.githubusercontent.com/3085564/53937113-1a0a0c80-40e7-11e9-96d6-1ab215c7db72.png)
