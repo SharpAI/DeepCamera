@@ -1,3 +1,9 @@
+# ARM GPU / Nvidia GPU benchmark
+![screen shot 2019-03-07 at 11 27 22 am](https://user-images.githubusercontent.com/3085564/53930362-fdaca680-40cb-11e9-8303-d538315d9021.png)
+
+# How sharpai improve performance
+
+![screen shot 2019-03-07 at 11 30 54 am](https://user-images.githubusercontent.com/3085564/53930505-7c094880-40cc-11e9-939a-1368cc557a0c.png)
 
 # How to test on PC
 ```
