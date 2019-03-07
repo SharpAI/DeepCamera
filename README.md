@@ -1,6 +1,18 @@
 # What's SharpAI
 Full stack system for the deep learning edge computing devices, espeicailly set-up-box off the shell with image burning or Android apk installation.
 
+# Feature List
+- [x] Hige accurate Face Recognition
+- [x] Face Detection
+- [x] Infrence on ARM Mali GPU
+- [x] Support Android TF Lite(GPU/CPU/NPU)
+- [x] Support open source embedded linux
+- [x] Control from mobile application
+- [x] Management System for devices
+- [x] Push Notification to Mobile Device
+- [x] Object Detection
+- [x] Distributed System based on celery
+
 # Supported Device
 - [x] X86
 - [x] Rockchip RK3399 (Linux)
