@@ -12,6 +12,10 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 - [x] Push Notification to Mobile Device
 - [x] Object Detection
 - [x] Distributed System based on celery
+- [x] Plugin to process video by Shinobi CCTV
+- [x] Application on Android to decode video with hw acc
+- [x] Motion Detection with Android GPU
+- [x] Lable and train from Mobile to Edge Device
 
 # Supported Device
 - [x] X86
