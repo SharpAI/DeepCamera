@@ -18,6 +18,7 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 - [x] Lable and train from Mobile to Edge Device
 
 # Supported Device
+- [ ] Raspberry Pi
 - [x] X86
 - [x] Rockchip RK3399 (Linux)
 - [x] Rockchip RK3288 (Android)
