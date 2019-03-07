@@ -4,7 +4,7 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 # Feature List
 - [x] Hige accurate Face Recognition
 - [x] Face Detection
-- [x] Infrence on ARM Mali GPU
+- [x] Inference on ARM Mali GPU
 - [x] Support Android TF Lite(GPU/CPU/NPU)
 - [x] Support open source embedded linux
 - [x] Control from mobile application
