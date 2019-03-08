@@ -107,7 +107,7 @@ ssh -p 8022 username@192.168.x.x
 
 ### ON PC
 
-百度云盘
+baidu cloud
 
 `uploading`
 
@@ -141,9 +141,9 @@ cd sharpai
 
 Use RTSP Decoder
 
-# 编译，打包
+# Compile，Package
 
-## 安装Pyinstaller
+## Install Pyinstaller
 ```
 pip2 download pyinstaller
 tar -xjvf PyInstaller-3.4.tar.bz2
@@ -170,23 +170,23 @@ bash ./start_aarch64.sh
 
 ## Development
 
-因为RK3288的data只有3G，需要加一个SD卡，一旦编译完毕，可以 tar 到备份SD卡，本地做删除，才有空间继续编译开发。
+only 3G data space for Rk3288，need an extra SD card，can be backup to SD card after compiling for more space.
 
-### Termux的执行环境（开发用）
+### developing environment of Termux
 #### usr_dev_root_1128_2018.tgz
-#### 包含了除SVM之外的编译运行依赖，这是开发用的
+#### including all libraries for development except SVM.
 链接:https://pan.baidu.com/s/1MjlCUiiUVf0z_ILoZ7y44w  密码:3rh7
 
-空间不够了，这样节省一些：
+for more space：
 ```
 pkg uninstall gcc-6 gcc-7 gcc-8
 ```
 
 Use sharpai/build/build_arm.sh to Build
 
-### Arch Linux的执行环境（开发用）
+### Developing environment on Arch Linux
 #### arch_dev_root.tgz
-#### ARCH Linux才能够正常使用scikit-learn(SVM),原因没查出来
+#### scikit-learn(SVM) only works on ARCH Linux
 
 链接:https://pan.baidu.com/s/1TJzKemhjfk_CWqbxaz7nvw  密码:b5cg
 
@@ -202,7 +202,7 @@ bash setupTermuxArch.sh
 ```
 Use `sharpai/build/build_arm_svc.sh` to Build
 
-## 打包后的程序运行环境（产品发布用）
+## running environment after packaging（for release）
 
 ### Termux Runtime:    runtime_termux_armv7.tgz
 
