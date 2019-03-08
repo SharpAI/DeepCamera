@@ -38,14 +38,26 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 # Demo
 ![demo](https://github.com/SharpAI/DeepCamera/blob/master/screenshots/demo.gif)
 
-# How to use it
+# How to Run on Edge Device
 
 ## Install Prebuilt Image on tested hardware
 https://github.com/SharpAI/facebox_sdk
 
 ## [Run on RK3288 with Android 5.1](docs/RunOnRK3288.md)
+## Run on X86 Laptop Docker
 
-## Run on Laptop
+```
+git clone https://github.com/SharpAI/DeepCamera
+cd sharpai/docker
+docker-compose -f docker-compose-x86.yml up
+```
+Then you need to follow Shinobi's document to connect to ip:8080
+## Run on RockPro64 Android 7.1
+coming soon
+
+# How to configure on Mobile APP
+coming soon
+# How to deploy server on your server
 coming soon
 
 ## Call For Help
@@ -64,13 +76,6 @@ coming soon
 ![screen shot 2019-03-07 at 11 27 22 am](https://user-images.githubusercontent.com/3085564/53930362-fdaca680-40cb-11e9-8303-d538315d9021.png)
 
 ![screen shot 2019-03-07 at 11 30 54 am](https://user-images.githubusercontent.com/3085564/53930505-7c094880-40cc-11e9-939a-1368cc557a0c.png)
-
-# How to test on PC
-```
-git clone https://github.com/SharpAI/DeepCamera
-cd sharpai/docker
-docker-compose -f docker-compose-x86.yml up
-```
 
 # [Runtime On AARCH64](docs/Runtime_AARCH64.md)
 
