@@ -43,6 +43,11 @@ coming soon
 ## Run on Laptop
 coming soon
 
+## Call For Help
+
+- [ ] Documents, A LOT OF DOCUMENTS, we already deploy our deep camera in industry leading company but we don't have extra resource to build up community friendly documents.
+- [ ] Tutorial on youtube, we can build up some of them, only if with your help, we can success.
+
 ![screen shot 2019-03-07 at 4 03 59 pm](https://user-images.githubusercontent.com/3085564/53941268-a0781b80-40f2-11e9-8cc6-6295c3a39c96.png)
 
 ![screen shot 2019-03-07 at 2 41 28 pm](https://user-images.githubusercontent.com/3085564/53937113-1a0a0c80-40e7-11e9-96d6-1ab215c7db72.png)
