@@ -184,7 +184,7 @@ only 3G data space for Rk3288，need an extra SD card，can be backup to SD card
 ### developing environment of Termux
 #### usr_dev_root_1128_2018.tgz
 #### including all libraries for development except SVM.
-链接:https://pan.baidu.com/s/1MjlCUiiUVf0z_ILoZ7y44w  密码:3rh7
+link:https://pan.baidu.com/s/1MjlCUiiUVf0z_ILoZ7y44w  password:3rh7
 
 for more space：
 ```
@@ -197,7 +197,7 @@ Use sharpai/build/build_arm.sh to Build
 #### arch_dev_root.tgz
 #### scikit-learn(SVM) only works on ARCH Linux
 
-链接:https://pan.baidu.com/s/1TJzKemhjfk_CWqbxaz7nvw  密码:b5cg
+link:https://pan.baidu.com/s/1TJzKemhjfk_CWqbxaz7nvw  password:b5cg
 
 ```
 cd ~
@@ -216,17 +216,17 @@ Use `sharpai/build/build_arm_svc.sh` to Build
 ### Termux Runtime:    runtime_termux_armv7.tgz
 
 
-链接:https://pan.baidu.com/s/136d1nVtPfQrrxqCZWjebLA  密码:5e53
+link:https://pan.baidu.com/s/136d1nVtPfQrrxqCZWjebLA  password:5e53
 
-### 编译后的可执行程序
-链接:https://pan.baidu.com/s/1x71O1npURpMvQCv-jQ4Fwg  密码:qyex
+### Built Application
+link:https://pan.baidu.com/s/1x71O1npURpMvQCv-jQ4Fwg  password:qyex
 ```
 cd ~
 tar -zxvf runtime_all_armv7.tgz
 ```
 
 ### Arch Linux Runtime: runtime_arch_linux_armv7.tgz
-链接:https://pan.baidu.com/s/16ta4yC_mp6AOrhMyCs6N0w  密码:xwdr
+link:https://pan.baidu.com/s/16ta4yC_mp6AOrhMyCs6N0w  password:xwdr
 
 ```
 cd ~
