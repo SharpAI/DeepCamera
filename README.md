@@ -24,6 +24,7 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 - [x] Rockchip RK3288 (Android)
 - [x] Samsung 7420 (Android)
 - [x] Rockchip RK3399 (Android)
+- [x] Linux/Android Has OpenCL (TVM Supported)
 
 # Supported Camera
 - [x] Dahua Camera
