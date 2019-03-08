@@ -47,7 +47,7 @@ coming soon
 
 - [ ] Documents, A LOT OF DOCUMENTS, we already deploy our deep camera in industry leading company but we don't have extra resource to build up community friendly documents.
 - [ ] Tutorial on youtube, we can build up some of them, only if with your help, we can success together.
-- [ ] Translation (i18p), we did deploy our production in China MainLand, much of our resource is in Chinese, need your help to translate, especially the Mobile APP built with Meteor https://github.com/SharpAI/mobile_app_server
+- [ ] Translation, we did deploy our production in China MainLand, much of our resource is in Chinese, need your help to translate, especially the Mobile APP built with Meteor https://github.com/SharpAI/mobile_app_server  (need i18n selection based on system language)
 - [ ] Remove unused code/project in https://github.com/SharpAI/mobile_app_server
 - [ ] PR, more than welcome, anything :)
 - [ ] Meetup hosts, in Silicon Valley
