@@ -32,6 +32,9 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 - [x] Shinobi CCTV Supported Devices
 - [x] Screen Captured from Android Camera preview application
 
+# Slack Channel
+[Click to join sharpai slack channel](http://sharpai.slack.com)
+
 # Demo
 ![demo](https://github.com/SharpAI/DeepCamera/blob/master/screenshots/demo.gif)
 
