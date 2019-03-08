@@ -51,7 +51,8 @@ git clone https://github.com/SharpAI/DeepCamera
 cd sharpai/docker
 docker-compose -f docker-compose-x86.yml up
 ```
-Then you need to follow Shinobi's document to connect to ip:8080  
+Then you need to follow [Shinobi's document](https://shinobi.video) to add camera.   
+http://ip:8080  
 Default username/password:   
 username: user@sharpaibox.com  
 password: SharpAI2018    
