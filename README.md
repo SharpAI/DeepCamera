@@ -32,6 +32,9 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 - [x] Shinobi CCTV Supported Devices
 - [x] Screen Captured from Android Camera preview application
 
+# Demo
+![demo](https://user-images.githubusercontent.com/3085564/54013313-99651200-41b3-11e9-8183-33da222ff267.gif)
+
 # How to use it
 
 ## Install Prebuilt Image on tested hardware
