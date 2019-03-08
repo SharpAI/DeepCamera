@@ -50,6 +50,7 @@ coming soon
 - [ ] Translation (i18p), we did deploy our production in China MainLand, much of our resource is in Chinese, need your help to translate, especially the Mobile APP built with Meteor https://github.com/SharpAI/mobile_app_server
 - [ ] Remove unused code/project in https://github.com/SharpAI/mobile_app_server
 - [ ] PR, more than welcome, anything :)
+- [ ] Meetup hosts, in Silicon Valley
 
 ![screen shot 2019-03-07 at 4 03 59 pm](https://user-images.githubusercontent.com/3085564/53941268-a0781b80-40f2-11e9-8cc6-6295c3a39c96.png)
 
