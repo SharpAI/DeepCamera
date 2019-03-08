@@ -40,7 +40,7 @@ https://github.com/SharpAI/facebox_sdk
 coming soon
 
 ## Run on Laptop
-comming soon
+coming soon
 
 ![screen shot 2019-03-07 at 4 03 59 pm](https://user-images.githubusercontent.com/3085564/53941268-a0781b80-40f2-11e9-8cc6-6295c3a39c96.png)
 
