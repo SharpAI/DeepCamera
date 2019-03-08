@@ -62,7 +62,7 @@ coming soon
 
 # How to test on PC
 ```
-git clone https://github.com/SharpAI/sharpai
+git clone https://github.com/SharpAI/DeepCamera
 cd sharpai/docker
 docker-compose -f docker-compose-x86.yml up
 ```
