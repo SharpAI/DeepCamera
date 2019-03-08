@@ -62,8 +62,8 @@ coming soon
 
 # How to configure on Mobile APP
 coming soon
-# How to deploy server on your server
-coming soon
+
+# [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
 
 ## Call For Help
 
