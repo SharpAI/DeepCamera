@@ -43,8 +43,7 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 ## Install Prebuilt Image on tested hardware
 https://github.com/SharpAI/facebox_sdk
 
-## Build From Source
-coming soon
+## [Run on RK3288 with Android 5.1](docs/RunOnRK3288.md)
 
 ## Run on Laptop
 coming soon
