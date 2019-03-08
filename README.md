@@ -20,10 +20,10 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 # Supported Device
 - [ ] Raspberry Pi
 - [x] X86
-- [x] Rockchip RK3399 (Linux)
-- [x] Rockchip RK3288 (Android)
-- [x] Samsung 7420 (Android)
-- [x] Rockchip RK3399 (Android)
+- [x] Rockchip RK3399 (Linux, set-up-box H96 Max)
+- [x] Rockchip RK3288 (Android, set-up-box)
+- [x] Samsung 7420 (Android, Mobile)
+- [x] Rockchip RK3399 (Android RockPro64 doc release soon)
 - [x] Linux/Android Has OpenCL (TVM Supported)
 
 # Supported Camera
