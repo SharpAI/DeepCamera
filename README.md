@@ -2,11 +2,10 @@
 Full stack system for the deep learning edge computing devices, espeicailly set-up-box off the shell with image burning or Android apk installation.
 
 ## Data labeling on Mobile, no data scientist involed
-![image](screenshots/lifecycle.png)
 ## Train/Deploy model for edge device(Embedded System)
 ## Power efficient, Easy scalable, Production ready
 
-# Deep Camera is application of SharpAI
+![image](screenshots/lifecycle.png)
 
 # Feature List
 - [x] High accurate Face Recognition
