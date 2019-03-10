@@ -135,9 +135,18 @@ tar -xvf usr_aarch64_dev_1204_2018.tgz
 
 ### Download Source Code
 ```
-git clone https://github.com/SharpAI/sharpai
-cd sharpai
-./setup.sh (rk3288 运行 ./setup_arm32.sh)
+git clone https://github.com/SharpAI/DeepCamera
+cd DeepCamera
+```
+
+#### AArch64 (RK3399/7420 ...)
+```
+./setup.sh
+```
+
+#### Arm32 (RK3288)
+```
+./setup_arm32.sh
 ```
 
 
