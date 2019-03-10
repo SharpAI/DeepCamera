@@ -1,6 +1,8 @@
 # What's SharpAI
 Full stack system for the deep learning edge computing devices, espeicailly set-up-box off the shell with image burning or Android apk installation.
 
+## SharpAI implement full deep learning life cycle 
+![image](screenshots/lifecycle.png)
 # Feature List
 - [x] High accurate Face Recognition
 - [x] Face Detection
