@@ -62,6 +62,8 @@ password: SharpAI2018
 
 ## Run on RockPro64 Android 7.1
 coming soon
+## Run on Raspberry Pi
+coming soon
 
 # [How to configure on Mobile APP](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
 
