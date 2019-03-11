@@ -44,7 +44,20 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 # Demo
 ![demo](https://github.com/SharpAI/DeepCamera/blob/master/screenshots/demo.gif)
 
-# How to Run on Edge Device
+# How to Run DeepCamera
+## Generate/Get Serial No
+### Android
+After install Launcher(Modified Termux), the serial_no will be placed:
+`/data/data/com.termux/files/home/.ro_serialno`
+### Linux
+Get your Mac Address(1e:20:34:10:24:21)
+```
+cd DeepCamera
+echo 1e2034102421 > /docker/workaipython/ro_serialno
+```
+### Then generate text type QR code with serial_no you just got
+
+# How to Run DeepCamera on Edge Device
 
 ## [Run on RK3399 with linux/docker](https://github.com/SharpAI/facebox_sdk)
 ## [Run on RK3288 with Android 5.1](docs/RunOnRK3288.md)
