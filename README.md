@@ -25,7 +25,7 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 
 # Supported Device
 - [ ] Raspberry Pi
-- [x] X86
+- [x] X86 (Linux/Ubuntu, Mac OS X, Windows(not tested) through Docker)
 - [x] Rockchip RK3399 (Linux, set-up-box H96 Max)
 - [x] Rockchip RK3288 (Android, set-up-box)
 - [x] Samsung 7420 (Android, Mobile)
