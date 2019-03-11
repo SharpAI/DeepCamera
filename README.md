@@ -30,7 +30,7 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 - [x] Samsung 7420 (Android, Mobile)
 - [x] Rockchip RK3399 (Android RockPro64 doc release soon)
 - [x] Linux/Android Has OpenCL (TVM Supported)
-- [ ] Raspberry Pi [WIP](DeepCamera/docs/RunOnRaspberryPi.md)
+- [ ] Raspberry Pi [WIP](docs/RunOnRaspberryPi.md)
 
 # Supported Camera
 - [x] Dahua Camera
