@@ -44,7 +44,12 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 # Demo
 ![demo](https://github.com/SharpAI/DeepCamera/blob/master/screenshots/demo.gif)
 
-# How to Run DeepCamera
+# Purchase Dev Kit for easily startup
+Run from code is time consuming task even with experts' supporting, we are considering to provide full set of development kit to easy the setup effort you may face to. 
+[Please thumb up if you want one](https://github.com/SharpAI/DeepCamera/issues/8)
+
+# How to Run DeepCamera From Source Code
+
 ## Generate/Get Serial No
 ### Android
 After install Launcher(Modified Termux), the serial_no will be placed:
@@ -57,13 +62,13 @@ echo 1e2034102421 > /docker/workaipython/ro_serialno
 ```
 ### Then generate text type QR code with serial_no you just got
 
-# How to Run DeepCamera on Edge Device
+## How to Run DeepCamera on Edge Device
 
-## [Run on RK3399 with linux/docker](https://github.com/SharpAI/facebox_sdk)
-## [Run on RK3288 with Android 5.1](docs/RunOnRK3288.md)
-## Run on X86 Laptop Docker
+### [Run on RK3399 with linux/docker](https://github.com/SharpAI/facebox_sdk)
+### [Run on RK3288 with Android 5.1](docs/RunOnRK3288.md)
+### Run on X86 Laptop Docker
 
-### Use prebuilt docker images
+#### Use prebuilt docker images
 ```
 git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera/docker
@@ -75,7 +80,7 @@ Default username/password:
 username: user@sharpaibox.com  
 password: SharpAI2018    
 
-### Build docker images on your local machine
+#### Build docker images on your local machine
 ```
 git clone https://github.com/SharpAI/ImageBuilder-DeepLearning -b android_porting
 cd ImageBuilder-DeepLearning/Docker-DeepEye/workai/
@@ -89,16 +94,16 @@ git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera/docker
 docker-compose -f docker-compose-x86.yml up
 ```
-## Run on RockPro64 Android 7.1
+### Run on RockPro64 Android 7.1
 coming soon
-## Run on Raspberry Pi
+### Run on Raspberry Pi
 coming soon
 
-# [How to configure on Mobile APP](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
+## [How to configure on Mobile APP](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
 
-# [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
+## [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
 
-## Call For Help
+# Call For Help
 
 - [ ] Documents, A LOT OF DOCUMENTS, we already deploy our deep camera in industry leading company but we don't have extra resource to build up community friendly documents.
 - [ ] Tutorial on youtube, we can build up some of them, only if with your help, we can success together.
@@ -114,6 +119,7 @@ coming soon
 ![screen shot 2019-03-07 at 11 27 22 am](https://user-images.githubusercontent.com/3085564/53930362-fdaca680-40cb-11e9-8303-d538315d9021.png)
 
 ![screen shot 2019-03-07 at 11 30 54 am](https://user-images.githubusercontent.com/3085564/53930505-7c094880-40cc-11e9-939a-1368cc557a0c.png)
+
 
 # [Runtime On AARCH64](docs/Runtime_AARCH64.md)
 
