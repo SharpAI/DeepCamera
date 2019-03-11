@@ -46,12 +46,9 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 
 # How to Run on Edge Device
 
-## Install Prebuilt Image on tested hardware
-https://github.com/SharpAI/facebox_sdk
-
+## [Run on RK3399 with linux/docker](https://github.com/SharpAI/facebox_sdk)
 ## [Run on RK3288 with Android 5.1](docs/RunOnRK3288.md)
 ## Run on X86 Laptop Docker
-
 ```
 git clone https://github.com/SharpAI/DeepCamera
 cd sharpai/docker
