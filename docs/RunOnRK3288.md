@@ -14,9 +14,12 @@
 > Connect Udisk into RK3288 Android 5.1, then install
 
 #### 1-2-2 from adb 
+
 The following figure：
 
-![image.png](https://cdn.nlark.com/yuque/0/2019/png/170897/1552229210075-a6ab9acf-76b9-4bf4-82d5-45bd4a492622.png#align=left&display=inline&height=251&name=image.png&originHeight=502&originWidth=1378&size=676244&status=done&width=689)
+![image.png](https://cdn.nlark.com/yuque/0/2019/png/170897/1552229210075-a6ab9acf-76b9-4bf4-82d5-45bd4a492622.png)
+
+
 
 ```
 adb install sharpai-norootfs-lambda_key.apk
@@ -36,6 +39,25 @@ Connect to RK3288 through IP
 ```
 $ ssh -p 8022 xxx.xxx.xxx.xxx
 
+```
+
+If SSH connection fails, need to put the public key content appended to the box on the local computer.
+
+/.ssh/id_rsa.pub >> data/data/com.termux/files/home/.ssh/authorized_keys.
+
+Refer to the link：[https://www.jianshu.com/p/2e6c8152a2ba](https://www.jianshu.com/p/2e6c8152a2ba)
+
+```
+
+adb root
+
+adb push /.ssh/id_rsa.pub /data/data/com.termux/files/home/.ssh/id_rsa.pub
+
+adb shell
+
+cd data/data/com.termux/files/home/.ssh/
+
+cat ./id_rsa.pub >> authorized_keys
 ```
 
 
