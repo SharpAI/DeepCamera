@@ -43,7 +43,7 @@ $ ssh -p 8022 xxx.xxx.xxx.xxx
 
 If SSH connection fails, need to put the public key content appended to the box on the local computer.
 
-/.ssh/id_rsa.pub >> data/data/com.termux/files/home/.ssh/authorized_keys.
+~/.ssh/id_rsa.pub >> data/data/com.termux/files/home/.ssh/authorized_keys.
 
 Refer to the link：[https://www.jianshu.com/p/2e6c8152a2ba](https://www.jianshu.com/p/2e6c8152a2ba)
 
@@ -51,7 +51,7 @@ Refer to the link：[https://www.jianshu.com/p/2e6c8152a2ba](https://www.jianshu
 
 adb root
 
-adb push /.ssh/id_rsa.pub /data/data/com.termux/files/home/.ssh/id_rsa.pub
+adb push ~/.ssh/id_rsa.pub /data/data/com.termux/files/home/.ssh/id_rsa.pub
 
 adb shell
 
