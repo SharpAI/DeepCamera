@@ -61,9 +61,9 @@ cat ./id_rsa.pub >> authorized_keys
 ```
 
 
-#### 1-2-4 Update apt source of termux to ensure the installation of graphicsmagick
+#### 1-2-4 Update apt source of ssh to ensure the installation of graphicsmagick
 ```
-$ adb shell
+
 $ rm -rf /data/data/com.termux/files/usr/var/lib/apt/*
 $ apt-get update
 
