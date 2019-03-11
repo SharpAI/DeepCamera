@@ -18,3 +18,10 @@ https://docs.docker.com/install/linux/linux-postinstall/
 ```
 sudo apt install docker-compose
 ```
+
+## Get Deep Camera Source Code
+
+```
+git clone https://github.com/SharpAI/DeepCamera -b raspberry
+
+```
