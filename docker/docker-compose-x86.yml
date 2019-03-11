@@ -75,7 +75,7 @@ services:
         max-size: "10m"
         max-file: "10"
     volumes:
-      - ./ro_serialno:/dev/ro_serialno
+      - ./workaipython/ro_serialno:/dev/ro_serialno
       - ./groupid.txt:/data/usr/com.deep.workai/cache/groupid.txt
       - ./runtime/cache:/data/runtime/cache
       - ./runtime/images:/opt/nvr/detector/images
@@ -104,7 +104,7 @@ services:
       - 5000:5000
       - 5050:5050
     volumes:
-      - ./ro_serialno:/dev/ro_serialno
+      - ./workaipython/ro_serialno:/dev/ro_serialno
       - ./groupid.txt:/data/usr/com.deep.workai/cache/groupid.txt
       - ./runtime/cache:/data/runtime/cache
       - ./runtime/data:/data/runtime/src/data
@@ -138,7 +138,7 @@ services:
       HOST_ADDRESS: "workaihost.tiegushi.com"
       HOST_PORT: 80
     volumes:
-      - ./ro_serialno:/dev/ro_serialno
+      - ./workaipython/ro_serialno:/dev/ro_serialno
       - ./groupid.txt:/data/usr/com.deep.workai/cache/groupid.txt
       - ../src/monitor/index.js:/opt/index.js
       - ../src/monitor/package.json:/opt/package.json
@@ -172,7 +172,7 @@ services:
       - workaipython:workaipython
       - broker:broker
     volumes:
-      - ./ro_serialno:/dev/ro_serialno
+      - ./workaipython/ro_serialno:/dev/ro_serialno
       - ./groupid.txt:/data/usr/com.deep.workai/cache/groupid.txt
       - ./runtime/images:/opt/nvr/detector/images
       - ./runtime/face_motion:/opt/nvr/detector/face_motion
