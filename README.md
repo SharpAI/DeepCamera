@@ -257,4 +257,5 @@ bash setupTermuxArch.sh
 
 ```
  
-
+# APIs doc for app server
+[Click to see APIs document](https://github.com/SharpAI/mobile_app_server/tree/android_porting/rest_api_sdk)
