@@ -39,7 +39,7 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 - [x] Screen Captured from Android Camera preview application
 
 # Slack Channel
-[Click to join sharpai slack channel](http://sharpai.slack.com)
+[Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
 # Demo
 ![demo](https://github.com/SharpAI/DeepCamera/blob/master/screenshots/demo.gif)
