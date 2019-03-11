@@ -49,9 +49,11 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 ## [Run on RK3399 with linux/docker](https://github.com/SharpAI/facebox_sdk)
 ## [Run on RK3288 with Android 5.1](docs/RunOnRK3288.md)
 ## Run on X86 Laptop Docker
+
+### Use prebuilt docker images
 ```
 git clone https://github.com/SharpAI/DeepCamera
-cd sharpai/docker
+cd DeepCamera/docker
 docker-compose -f docker-compose-x86.yml up
 ```
 Then you need to follow [Shinobi's document](https://shinobi.video) to add camera.   
@@ -60,6 +62,20 @@ Default username/password:
 username: user@sharpaibox.com  
 password: SharpAI2018    
 
+### Build docker images on your local machine
+```
+git clone https://github.com/SharpAI/ImageBuilder-DeepLearning -b android_porting
+cd ImageBuilder-DeepLearning/Docker-DeepEye/workai/
+./build_x86_dockers.sh
+```
+
+Then run DeepCamera, will use local docker images
+
+```
+git clone https://github.com/SharpAI/DeepCamera
+cd DeepCamera/docker
+docker-compose -f docker-compose-x86.yml up
+```
 ## Run on RockPro64 Android 7.1
 coming soon
 ## Run on Raspberry Pi
