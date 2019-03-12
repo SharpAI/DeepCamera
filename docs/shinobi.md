@@ -1,5 +1,7 @@
 ### 1. Open your shinobi page on web browser
-device_ip:8080
+http://device_ip:8080
+- username: user@sharpaibox.com
+- password: SharpAI2018
 ### 2. Go to configuration
 ![shinobi](https://github.com/SharpAI/DeepCamera/blob/master/screenshots/shinobi_page.png)
 ![config](https://github.com/SharpAI/DeepCamera/blob/master/screenshots/shinobi_config.png)
