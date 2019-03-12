@@ -19,6 +19,23 @@ https://docs.docker.com/install/linux/linux-postinstall/
 sudo apt install docker-compose
 ```
 
+## Enable swap to get rid of freezed
+
+[Reference](https://raspberrypi.stackexchange.com/questions/70/how-to-set-up-swap-space)
+
+```
+apt-get install dphys-swapfile
+vi /etc/dphys-swapfile
+```
+Set swap to 2048M
+```
+CONF_SWAPSIZE=2048
+```
+
+Restart service
+```
+/etc/init.d/dphys-swapfile restart
+```
 ## Get Deep Camera Source Code
 
 ```
