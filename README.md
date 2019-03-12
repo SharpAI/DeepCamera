@@ -1,4 +1,6 @@
 # What's SharpAI DeepCamera
+Deep Learning video processing surveillance on ARM GPU for face recognition and much more on the way. Turn digital camera into AI-powered camera. Production level platform for edge AI using ARM GPU/NPU, leveraging AutoML. The first world-class Edge AI full stack platform for developer/kids/home/SMB/enterprise/cloud, baking by community.
+
 Full stack system for the deep learning edge computing devices, espeicailly set-up-box off the shell with image burning or Android apk installation.
 
 ## Data labeling on Mobile, no data scientist involed
