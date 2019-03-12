@@ -44,14 +44,36 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 # Demo
 ![demo](https://github.com/SharpAI/DeepCamera/blob/master/screenshots/demo.gif)
 
-# How to Run on Edge Device
+# Purchase Dev Kit for easily startup
+Run from code is time consuming task even with experts' supporting, we are considering to provide full set of development kit to easy the setup effort you may face to. 
+[Please thumb up if you want one](https://github.com/SharpAI/DeepCamera/issues/8)
+### How it works from end user's point of view, green parts are done if using Dev Kit
+![From end user's view](screenshots/on_app_end_user.png)
 
-## [Run on RK3399 with linux/docker](https://github.com/SharpAI/facebox_sdk)
-## [Run on RK3288 with Android 5.1](docs/RunOnRK3288.md)
-## Run on X86 Laptop Docker
+# How to Run DeepCamera From Source Code
+
+## Generate/Get Serial No
+### Android
+After install Launcher(Modified Termux), the serial_no will be placed:
+`/data/data/com.termux/files/home/.ro_serialno`
+### Linux
+Get your Mac Address(1e:20:34:10:24:21)
+```
+cd DeepCamera
+echo 1e2034102421 > docker/workaipython/ro_serialno
+```
+### Then generate text type QR code with serial_no you just got
+
+## How to Run DeepCamera on Edge Device
+
+### [Run on RK3399 with linux/docker](https://github.com/SharpAI/facebox_sdk)
+### [Run on RK3288 with Android 5.1](docs/RunOnRK3288.md)
+### Run on X86 Laptop Docker
+
+#### Use prebuilt docker images
 ```
 git clone https://github.com/SharpAI/DeepCamera
-cd sharpai/docker
+cd DeepCamera/docker
 docker-compose -f docker-compose-x86.yml up
 ```
 Then you need to follow [Shinobi's document](https://shinobi.video) to add camera.   
@@ -60,16 +82,30 @@ Default username/password:
 username: user@sharpaibox.com  
 password: SharpAI2018    
 
-## Run on RockPro64 Android 7.1
+#### Build docker images on your local machine
+```
+git clone https://github.com/SharpAI/ImageBuilder-DeepLearning -b android_porting
+cd ImageBuilder-DeepLearning/Docker-DeepEye/workai/
+./build_x86_dockers.sh
+```
+
+Then run DeepCamera, will use local docker images
+
+```
+git clone https://github.com/SharpAI/DeepCamera
+cd DeepCamera/docker
+docker-compose -f docker-compose-x86.yml up
+```
+### Run on RockPro64 Android 7.1
 coming soon
-## Run on Raspberry Pi
+### Run on Raspberry Pi
 coming soon
 
-# [How to configure on Mobile APP](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
+## [How to configure on Mobile APP](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
 
-# [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
+## [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
 
-## Call For Help
+# Call For Help
 
 - [ ] Documents, A LOT OF DOCUMENTS, we already deploy our deep camera in industry leading company but we don't have extra resource to build up community friendly documents.
 - [ ] Tutorial on youtube, we can build up some of them, only if with your help, we can success together.
@@ -85,175 +121,6 @@ coming soon
 ![screen shot 2019-03-07 at 11 27 22 am](https://user-images.githubusercontent.com/3085564/53930362-fdaca680-40cb-11e9-8303-d538315d9021.png)
 
 ![screen shot 2019-03-07 at 11 30 54 am](https://user-images.githubusercontent.com/3085564/53930505-7c094880-40cc-11e9-939a-1368cc557a0c.png)
-
-# [Runtime On AARCH64](docs/Runtime_AARCH64.md)
-
-
-# SharpAI On Android AARCH64
-
-## 1. Download Termux Modified Version on PC
-
-```
-git clone https://github.com/SharpAI/mobile_app_server -b android_porting
-```
-
-## 2. Add authorized key
-
-Copy your pc ~/.ssh/id_rsa.pub to android ~/.ssh/authorized_keys (using ssh to connect android device)
-
-AndroidPorting/Launcher/app/src/main/assets/authorized_keys
-
-## 3. Setup on Android
-
-```
-pkg install openssh
-sshd
-```
-
-## 4. Then Remote access it for easy
-
-```
-ssh -p 8022 username@192.168.x.x
-```
-
-## 5. Install Base Root File System
-
-### ON PC
-
-baidu cloud
-
-`uploading`
-
-```
-scp -P 8022 usr_aarch64_dev_1204_2018.tgz a@192.168.x.x:/data/data/com.termux/files/
-```
-
-### On Android
-```
-cd /data/data/com.termux/files
-tar -xvf usr_aarch64_dev_1204_2018.tgz
-```
-
-
-## 6. Run Sharp AI Code
-
-### Download Source Code
-```
-git clone https://github.com/SharpAI/DeepCamera
-cd DeepCamera
-```
-
-#### AArch64 (RK3399/7420 ...)
-```
-./setup.sh
-```
-
-#### Arm32 (RK3288)
-```
-./setup_arm32.sh
-```
-
-
-### Start Service
-```
-./start_service.sh
-```
-
-## RTSP Input
-
-Use RTSP Decoder
-
-# Compile，Package
-
-## Install Pyinstaller
-```
-pip2 download pyinstaller
-tar -xjvf PyInstaller-3.4.tar.bz2
-cd PyInstaller-3.4
-sed -i'' -e 's#"/usr/tmp"#"/data/data/com.termux/files/usr/tmp"#g' bootloader/src/pyi_utils.c
-CFLAGS="-I/data/data/com.termux/files/usr/include/libandroid-support" LDFLAGS="-landroid-support" pip2 install .
-```
-
-## Build
-
-```
-cd build
-bash ./build_aarch64.sh runtime's path
-```
-
-## Run
-
-```
-cd [runtime full path]/runtime
-bash ./start_aarch64.sh
-```
-
-# SharpAI on Android ARM32(RK3288)
-
-## Development
-
-only 3G data space for Rk3288，need an extra SD card，can be backup to SD card after compiling for more space.
-
-### developing environment of Termux
-#### usr_dev_root_1128_2018.tgz
-#### including all libraries for development except SVM.
-link:https://pan.baidu.com/s/1MjlCUiiUVf0z_ILoZ7y44w  password:3rh7
-
-for more space：
-```
-pkg uninstall gcc-6 gcc-7 gcc-8
-```
-
-Use sharpai/build/build_arm.sh to Build
-
-### Developing environment on Arch Linux
-#### arch_dev_root.tgz
-#### scikit-learn(SVM) only works on ARCH Linux
-
-link:https://pan.baidu.com/s/1TJzKemhjfk_CWqbxaz7nvw  password:b5cg
-
-```
-cd ~
-tar -zxvf arch_dev_root.tgz
-
-wget https://sdrausty.github.io/TermuxArch/setupTermuxArch.sh
-bash setupTermuxArch.sh
-```
-```
-./arch/startarch
-```
-Use `sharpai/build/build_arm_svc.sh` to Build
-
-## running environment after packaging（for release）
-
-### Termux Runtime:    runtime_termux_armv7.tgz
-
-
-link:https://pan.baidu.com/s/136d1nVtPfQrrxqCZWjebLA  password:5e53
-
-### Built Application
-link:https://pan.baidu.com/s/1x71O1npURpMvQCv-jQ4Fwg  password:qyex
-```
-cd ~
-tar -zxvf runtime_all_armv7.tgz
-```
-
-### Arch Linux Runtime: runtime_arch_linux_armv7.tgz
-link:https://pan.baidu.com/s/16ta4yC_mp6AOrhMyCs6N0w  password:xwdr
-
-```
-cd ~
-tar -zxvf runtime_arch_linux_armv7.tgz
-
-wget https://sdrausty.github.io/TermuxArch/setupTermuxArch.sh
-bash setupTermuxArch.sh
-```
-
-
-```
-./arch/startarch c "cd /data/data/com.termux/files/home/runtime_arch/bin && ./classifier "
-
-```
  
 # APIs doc for app server
 [Click to see APIs document](https://github.com/SharpAI/mobile_app_server/tree/android_porting/rest_api_sdk)
