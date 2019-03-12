@@ -58,7 +58,7 @@ services:
       CELERY_BROKER_URL: redis://redis/0
       CELERY_RESULT_BACKEND: redis://redis/0
   face_detector:
-    command: sh -c "cd /root/detection && pip install -r requirements.txt && python test.py && ./start.sh"
+    command: sh -c "cd /root/detection && pip install -r requirements.txt && pip install kombu==4.1.0 && pip install celery==4.1.0 && python test.py && ./start.sh"
     image: solderzzc/face_detection:2018
     container_name: "face_detector"
     restart: always
@@ -82,7 +82,7 @@ services:
       - ./runtime/frames:/opt/nvr/videos/frames
       - ../src/face_detection:/root/detection
   workaipython:
-    command: sh -c "cd /data/runtime/src/ && pip install -r requirements.txt && ./start_embedding_only.sh"
+    command: sh -c "cd /data/runtime/src/ && pip install -r requirements.txt && pip install kombu==4.1.0 && pip install celery==4.1.0 && ./start_embedding_only.sh"
     image: solderzzc/sharpai_runtime:tf1.8
     container_name: "workaipython"
     env_file:
@@ -120,7 +120,7 @@ services:
       - "redis"
       - "broker"
       - "workaipython"
-    command: "npm install && sleep 10000 && node /opt/index.js"
+    command: sh -c "cd /opt/ && npm install && sleep 10000 && node /opt/index.js"
     image: solderzzc/monitor:2018
     logging:
       driver: json-file
@@ -182,6 +182,8 @@ services:
       - ../src/detector/deepeye.js:/opt/nvr/detector/deepeye.js
       - ../src/detector/index.js:/opt/nvr/detector/index.js
       - ../src/detector/motion.js:/opt/nvr/detector/motion.js
+      - ../src/detector/upload_listener.js:/opt/nvr/detector/upload_listener.js
+      - ../src/detector/config:/opt/nvr/detector/config
       #- ../src/detector/maintainer.js:/opt/nvr/detector/maintainer.js
       - ../src/detector/workai-v2.js:/opt/nvr/detector/workai-v2.js
       - ../src/detector/workai.js:/opt/nvr/detector/workai.js
