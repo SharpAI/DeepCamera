@@ -26,13 +26,13 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 - [x] Lable and train from Mobile to Edge Device
 
 # Supported Device
+- [x] Raspberry Pi
 - [x] X86 (Linux/Ubuntu, Mac OS X, Windows(not tested) through Docker)
 - [x] Rockchip RK3399 (Linux, set-up-box H96 Max)
 - [x] Rockchip RK3288 (Android, set-up-box)
 - [x] Samsung 7420 (Android, Mobile)
 - [x] Rockchip RK3399 (Android RockPro64 doc release soon)
 - [x] Linux/Android Has OpenCL (TVM Supported)
-- [ ] Raspberry Pi [WIP](docs/RunOnRaspberryPi.md)
 
 # Supported Camera
 - [x] Dahua Camera
