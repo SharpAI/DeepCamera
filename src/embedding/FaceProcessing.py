@@ -108,7 +108,15 @@ def get_model(ctx, image_size, model_str, layer):
 def init_embedding_processor():
     global mod2
     global mod3
-    if os.path.isfile(DATA_RUNTIME_FOLDER+'/net2'):
+    if os.path.isfile(DATA_RUNTIME_FOLDER+'/model-y1-test2'):
+        global mx
+        import mxnet as mx
+        ctx = mx.cpu(0)
+        mod3 = get_model(ctx, [112,112], '/root/model-y1-test2/model,0', 'fc1')
+        print('loaded y1-test2')
+        return mod3
+
+    elif os.path.isfile(DATA_RUNTIME_FOLDER+'/net2'):
         global __t
         global graph_runtime
         import tvm as __t
