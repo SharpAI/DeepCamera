@@ -5,7 +5,7 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 
 ## Data labeling on Mobile, no data scientist involed
 ## Automatically train/deploy model for edge device(Embedded/Android/X86 system)
-## Power efficient, Easy scalable, Production ready
+## Power efficient, Easy scalable, Production ready, Mobile first
 
 ![image](screenshots/lifecycle.png)
 
