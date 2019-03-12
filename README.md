@@ -47,6 +47,8 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 # Purchase Dev Kit for easily startup
 Run from code is time consuming task even with experts' supporting, we are considering to provide full set of development kit to easy the setup effort you may face to. 
 [Please thumb up if you want one](https://github.com/SharpAI/DeepCamera/issues/8)
+### How it works from end user's point of view, green parts are done if using Dev Kit
+![From end user's view](screenshots/on_app_end_user.png)
 
 # How to Run DeepCamera From Source Code
 
