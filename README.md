@@ -1,4 +1,4 @@
-# What's SharpAI
+# What's SharpAI DeepCamera
 Full stack system for the deep learning edge computing devices, espeicailly set-up-box off the shell with image burning or Android apk installation.
 
 ## Data labeling on Mobile, no data scientist involed
