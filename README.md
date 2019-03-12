@@ -65,7 +65,7 @@ cd DeepCamera
 echo 1e2034102421 > docker/workaipython/ro_serialno
 ```
 ## 2. Then generate text type QR code with serial_no you just got
-[QR code Generator En](https://www.qr-code-generator.com)
+[QR code Generator En](https://www.qr-code-generator.com)  
 [QR code Generator Chn](https://cli.im/)
 
 ## 3. How to Run DeepCamera on Edge Device
