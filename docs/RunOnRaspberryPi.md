@@ -39,6 +39,11 @@ Restart service
 ## Get Deep Camera Source Code
 
 ```
-git clone https://github.com/SharpAI/DeepCamera -b raspberry
-
+git clone https://github.com/SharpAI/DeepCamera -b pi
+cd DeepCamera/docker
+./run-deepeye-raspberrypi.sh start
 ```
+
+Then follow the instruction on the [main readme](https://github.com/SharpAI/DeepCamera#how-to-run-deepcamera-from-source-code)
+
+
