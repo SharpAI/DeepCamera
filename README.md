@@ -58,7 +58,7 @@ After install Launcher(Modified Termux), the serial_no will be placed:
 Get your Mac Address(1e:20:34:10:24:21)
 ```
 cd DeepCamera
-echo 1e2034102421 > /docker/workaipython/ro_serialno
+echo 1e2034102421 > docker/workaipython/ro_serialno
 ```
 ### Then generate text type QR code with serial_no you just got
 
