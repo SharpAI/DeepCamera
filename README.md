@@ -98,10 +98,8 @@ cd DeepCamera/docker
 docker-compose -f docker-compose-x86.yml up
 ```
 
-### 3.4 Run on RockPro64 Android 7.1
-coming soon
-
-### 3.5 Run on Raspberry Pi
+### 3.4 [Run on Raspberry Pi](docs/RunOnRaspberryPi.md)
+### 3.5 Run on RockPro64 Android 7.1
 coming soon
 
 ## 4. Link to Your Camera
