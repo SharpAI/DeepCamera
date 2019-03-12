@@ -66,10 +66,9 @@ echo 1e2034102421 > docker/workaipython/ro_serialno
 
 ## How to Run DeepCamera on Edge Device
 
-### [Run on RK3399 with linux/docker](https://github.com/SharpAI/facebox_sdk)
-### [Run on RK3288 with Android 5.1](docs/RunOnRK3288.md)
+### [Run on Rockchip RK3399 with linux/docker](https://github.com/SharpAI/facebox_sdk)
+### [Run on Rockchip RK3288 with Android 5.1](docs/RunOnRK3288.md)
 ### Run on X86 Laptop Docker
-
 #### Use prebuilt docker images
 ```
 git clone https://github.com/SharpAI/DeepCamera
@@ -81,7 +80,6 @@ http://ip:8080
 Default username/password:   
 username: user@sharpaibox.com  
 password: SharpAI2018    
-
 #### Build docker images on your local machine
 ```
 git clone https://github.com/SharpAI/ImageBuilder-DeepLearning -b android_porting
@@ -100,13 +98,9 @@ docker-compose -f docker-compose-x86.yml up
 coming soon
 ### Run on Raspberry Pi
 coming soon
-
 ## [How to configure on Mobile APP](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
-
 ## [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
-
 # Call For Help
-
 - [ ] Documents, A LOT OF DOCUMENTS, we already deploy our deep camera in industry leading company but we don't have extra resource to build up community friendly documents.
 - [ ] Tutorial on youtube, we can build up some of them, only if with your help, we can success together.
 - [ ] Translation, we did deploy our production in China, much of our resource is in Chinese, need your help to translate, especially the Mobile APP built with Meteor https://github.com/SharpAI/mobile_app_server  (need i18n selection based on system language)
