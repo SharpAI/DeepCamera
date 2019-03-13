@@ -25,3 +25,13 @@ sshd
 ssh -p 8022 a@Android_IP
 ```
 
+## Install development rootfs(Launcher_Termux ssh environment)
+
+```
+pkg update
+pkg install wget
+cd /data/data/com.termux/files
+wget https://github.com/SharpAI/DeepCamera/releases/download/1.1/usr_aarch64_dev_1204_2018.tgz
+tar -zxf usr_aarch64_dev_1204_2018.tgz
+```
+#### you can delete usr_aarch64_dev_1204_2018.tgz to save space or just keep it
