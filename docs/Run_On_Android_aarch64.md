@@ -35,3 +35,13 @@ wget https://github.com/SharpAI/DeepCamera/releases/download/1.1/usr_aarch64_dev
 tar -zxf usr_aarch64_dev_1204_2018.tgz
 ```
 #### you can delete usr_aarch64_dev_1204_2018.tgz to save space or just keep it
+
+## Test if working
+
+### Following works on Rockpro64 Android 7.1.2, please report issue if you have runtime warning
+```
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PREFIX/lib64:/system/lib64:/system/vendor/lib64/egl:/system/vendor/lib64 LD_PRELOAD=$LD_PRELOAD:/system/lib64/libcrypto.so:/system/lib64/libcompiler_rt.so python2
+
+import tvm
+import mxnet
+```
