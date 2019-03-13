@@ -45,3 +45,9 @@ LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PREFIX/lib64:/system/lib64:/system/vendor/lib6
 import tvm
 import mxnet
 ```
+```
+>>> tvm.__version__
+'0.5.dev'
+>>> mxnet.__version__
+'0.10.1'
+```
