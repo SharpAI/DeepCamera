@@ -70,22 +70,23 @@ echo 1e2034102421 > docker/workaipython/ro_serialno
 
 ## 3. How to Run DeepCamera on Edge Device
 
-### 3.1 Run on Rockchip RK3399 with linux/docker
-#### 3.1.1 Use prebuilt docker images
+### 3.1 [Run on Android(5.1+ aarch64)](docs/Run_On_Android_aarch64.md)
+### 3.2 Run on Rockchip RK3399 with linux/docker
+#### 3.2.1 Use prebuilt docker images
 ```
 git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera/docker  
 sudo ./run-deepeye-prebuilt.sh start
 ```
-### 3.2 [Run on Rockchip RK3288 with Android 5.1](docs/RunOnRK3288.md)
-### 3.3 Run on X86 Laptop Docker
-#### 3.3.1 Use prebuilt docker images
+### 3.3 [Run on Rockchip RK3288 with Android 5.1](docs/RunOnRK3288.md)
+### 3.4 Run on X86 Laptop Docker
+#### 3.4.1 Use prebuilt docker images
 ```
 git clone https://github.com/SharpAI/DeepCamera -b pc_version
 cd DeepCamera/docker
 sudo ./run-deepeye-x86.sh start #make sure Serial No is in docker/workaipython/ro_serialno
 ```   
-#### 3.3.2 Build docker images on your local machine
+#### 3.4.2 Build docker images on your local machine
 ```
 git clone https://github.com/SharpAI/ImageBuilder-DeepLearning -b android_porting
 cd ImageBuilder-DeepLearning/Docker-DeepEye/workai/
@@ -99,9 +100,7 @@ cd DeepCamera/docker
 docker-compose -f docker-compose-x86.yml up
 ```
 
-### 3.4 [Run on Raspberry Pi](docs/RunOnRaspberryPi.md)
-### 3.5 Run on RockPro64 Android 7.1
-coming soon
+### 3.5 [Run on Raspberry Pi](docs/RunOnRaspberryPi.md)
 
 ## 4. Link to Your Camera 
 
