@@ -114,13 +114,12 @@ password: SharpAI2018
 
 ### 4.2 Android(Dahua SDK Configure)
 Code is [here](https://github.com/SharpAI/RTSP_Decoder_IJKPlayer/blob/od_gl_based/android/ijkplayer/ijkplayer-example/src/main/java/tv/danmaku/ijk/media/example/activities/CameraScanActivity.java#L147)
-Document is on the way..
 
-### 4.3 Android(RTSP url configure)
-Comming soon
-
-### 4.4 Android screen capture
+### 4.3 Android screen capture
 Code is [here](https://github.com/SharpAI/ScreenCapture)
+
+### 4.4 Android(RTSP url config)
+Comming soon
 
 ## [How to configure on Mobile APP](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
 ## [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
