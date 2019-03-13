@@ -103,13 +103,24 @@ docker-compose -f docker-compose-x86.yml up
 ### 3.5 Run on RockPro64 Android 7.1
 coming soon
 
-## 4. Link to Your Camera
+## 4. Link to Your Camera 
+
+### 4.1 Linux/Docker System
 Then you need to follow [Shinobi's document](https://shinobi.video) to add camera. or [click to see our tutorial](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)
 
 Shinobi login page(device_ip:8080):   
 username: user@sharpaibox.com  
 password: SharpAI2018 
 
+### 4.2 Android(Dahua SDK Configure)
+Code is [here](https://github.com/SharpAI/RTSP_Decoder_IJKPlayer/blob/od_gl_based/android/ijkplayer/ijkplayer-example/src/main/java/tv/danmaku/ijk/media/example/activities/CameraScanActivity.java#L147)
+Document is on the way..
+
+### 4.3 Android(RTSP url configure)
+Comming soon
+
+### 4.4 Android screen capture
+Code is [here](https://github.com/SharpAI/ScreenCapture)
 
 ## [How to configure on Mobile APP](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
 ## [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
