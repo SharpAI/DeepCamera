@@ -2,9 +2,9 @@
 ## Tested Device
 |Chipset|Memory Size|GPU Model|Device Model|System|
 |:-----:|:---------:|:-------:|:----------:|:----:|
-|Rockchip RK3399|4GB|T760 MP4|Set-up-box|Android 7.1.2|
-|Samsung 7420|3GB|Mali-T760MP8|VR on avl7420|Android 6.0.1|
-|Samsung 7420|3GB|Mali-T760MP8|SM-G920A|Android 7.0|
+|Rockchip RK3399|4GB|Mali-T760 MP4|Set-up-box|Android 7.1.2|
+|Samsung 7420|3GB|Mali-T760 MP8|VR on avl7420|Android 6.0.1|
+|Samsung 7420|3GB|Mali-T760 MP8|SM-G920A|Android 7.0|
 
 ## Get Launcher_Termux source code
 ```
