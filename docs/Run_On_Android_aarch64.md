@@ -44,9 +44,22 @@ tar -zxf usr_aarch64_dev_1204_2018.tgz
 
 ## Test if working
 
-### Following works on Rockpro64 Android 7.1.2, please report issue if you have runtime warning
+### Following works on Rockpro64 Android 7.1.2 / MTK6797 Android 8.0.0, please report issue if you have runtime warning
 ```
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PREFIX/lib64:/system/lib64:/system/vendor/lib64/egl:/system/vendor/lib64 LD_PRELOAD=$LD_PRELOAD:/system/lib64/libcrypto.so:/system/lib64/libcompiler_rt.so python2
+
+import tvm
+import mxnet
+```
+```
+>>> tvm.__version__
+'0.5.dev'
+>>> mxnet.__version__
+'0.10.1'
+```
+### Following works on Huawei Honor 10 Android 8.1.0
+```
+LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64:/system/vendor/lib64/egl:/system/vendor/lib64 python2
 
 import tvm
 import mxnet

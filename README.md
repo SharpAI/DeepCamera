@@ -46,13 +46,8 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 # Demo
 ![demo](https://github.com/SharpAI/DeepCamera/blob/master/screenshots/demo.gif)
 
-# Purchase Dev Kit for easily startup
-Run from code is time consuming task even with experts' supporting, we are considering to provide full set of development kit to easy the setup effort you may face to. 
-[Please thumb up if you want one](https://github.com/SharpAI/DeepCamera/issues/8)
-### How it works from end user's point of view, green parts are done if using Dev Kit
-![From end user's view](screenshots/on_app_end_user.png)
-
 # How to Run DeepCamera From Source Code
+![From end user's view](screenshots/on_app_end_user.png)
 
 ## 1. Generate/Get Serial No
 ### Android
@@ -119,6 +114,12 @@ Code is [here](https://github.com/SharpAI/ScreenCapture)
 
 ### 4.4 Android(RTSP url config)
 Comming soon
+
+# Survey: Do you want to have Dev Kit for easily startup
+We are considering to provide full set of development kit to easy the setup effort you may face to. 
+[Please thumb up if you want one](https://github.com/SharpAI/DeepCamera/issues/8)
+### How it works from end user's point of view, green parts are done if using Dev Kit
+![From end user's view](screenshots/on_app_end_user.png)
 
 ## [How to configure on Mobile APP](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
 ## [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
