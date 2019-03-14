@@ -106,6 +106,8 @@ Shinobi login page(device_ip:8080):
 username: user@sharpaibox.com  
 password: SharpAI2018 
 
+You can also [turn Mac Camera into RTSP camera(not tested)](https://www.tribler.org/MacWebcam/)
+
 ### 4.2 Android(Dahua SDK Configure)
 Code is [here](https://github.com/SharpAI/RTSP_Decoder_IJKPlayer/blob/od_gl_based/android/ijkplayer/ijkplayer-example/src/main/java/tv/danmaku/ijk/media/example/activities/CameraScanActivity.java#L147)
 
