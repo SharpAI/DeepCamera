@@ -69,6 +69,7 @@ import mxnet
 '0.5.dev'
 >>> mxnet.__version__
 '0.10.1'
+```
 
 ## Get the source code of DeepCamera
 ```
