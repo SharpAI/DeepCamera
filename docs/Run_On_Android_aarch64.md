@@ -4,8 +4,8 @@
 |:-----:|:---------:|:-------:|:----------:|:----:|
 |Rockchip RK3399|4GB|Mali-T760 MP4|Set-up-box|Android 7.1.2|
 |Rockchip RK3399|4GB|Mali-T760 MP4|Rockpro64|Android 7.1.2|
-|Samsung 7420|3GB|Mali-T760 MP8|VR on avl7420|Android 6.0.1|
-|Samsung 7420|3GB|Mali-T760 MP8|SM-G920A|Android 7.0|
+|Samsung Exynos 7420|3GB|Mali-T760 MP8|VR on avl7420|Android 6.0.1|
+|Samsung Exynos 7420|3GB|Mali-T760 MP8|SM-G920A|Android 7.0|
 |MediaTek MT6797|3GB|Mali-T880 MP4|Chuwi Hi9 Pro Tablet|Android 8.0.0|
 |HiSilicon Kirin 970|4GB|Mali-G72 MP12 + NPU|Huawei Honor 10|Android 8.1.2|
 
@@ -47,20 +47,7 @@ tar -zxf usr_aarch64_dev_1204_2018.tgz
 
 ## Test if working
 
-### Following works on Rockpro64 Android 7.1.2 / MTK6797 Android 8.0.0, please report issue if you have runtime warning
-```
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PREFIX/lib64:/system/lib64:/system/vendor/lib64/egl:/system/vendor/lib64 LD_PRELOAD=$LD_PRELOAD:/system/lib64/libcrypto.so:/system/lib64/libcompiler_rt.so python2
-
-import tvm
-import mxnet
-```
-```
->>> tvm.__version__
-'0.5.dev'
->>> mxnet.__version__
-'0.10.1'
-```
-### Following works on Huawei Honor 10 Android 8.1.0
+### please report issue if you have runtime warning
 ```
 LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64:/system/vendor/lib64/egl:/system/vendor/lib64 python2
 
@@ -73,7 +60,6 @@ import mxnet
 >>> mxnet.__version__
 '0.10.1'
 ```
-
 ## Get the source code of DeepCamera
 ```
 cd
