@@ -59,5 +59,5 @@ git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera
 ./setup.sh
 cd build
-./build_aarch64.sh ~/build/
+./build_aarch64.sh ./
 ```
