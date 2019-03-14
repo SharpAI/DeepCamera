@@ -3,8 +3,11 @@
 |Chipset|Memory Size|GPU Model|Device Model|System|
 |:-----:|:---------:|:-------:|:----------:|:----:|
 |Rockchip RK3399|4GB|Mali-T760 MP4|Set-up-box|Android 7.1.2|
+|Rockchip RK3399|4GB|Mali-T760 MP4|Rockpro64|Android 7.1.2|
 |Samsung 7420|3GB|Mali-T760 MP8|VR on avl7420|Android 6.0.1|
 |Samsung 7420|3GB|Mali-T760 MP8|SM-G920A|Android 7.0|
+|MediaTek MT6797|3GB|Mali-T880 MP4|Chuwi Hi9 Pro Tablet|Android 8.0.0|
+|HiSilicon Kirin 970|4GB|Mali-G72 MP12 + NPU|Huawei Honor 10|Android 8.1.2|
 
 ## Get Launcher_Termux source code
 ```
