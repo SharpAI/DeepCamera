@@ -51,3 +51,12 @@ import mxnet
 >>> mxnet.__version__
 '0.10.1'
 ```
+
+## Get the source code of DeepCamera
+```
+git clone https://github.com/SharpAI/DeepCamera
+cd DeepCamera
+./setup.sh
+mkdir ~/build
+./build_aarch64.sh ~/build/
+```
