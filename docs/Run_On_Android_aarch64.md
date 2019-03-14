@@ -61,3 +61,10 @@ cd DeepCamera
 cd build
 ./build_aarch64.sh ./
 ```
+
+## Install the built code
+
+```
+cd DeepCamera/build
+tar -zxmf sharpai-app-aarch64.tgz -C ~
+```
