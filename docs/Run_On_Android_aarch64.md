@@ -68,3 +68,11 @@ cd build
 cd DeepCamera/build
 tar -zxmf sharpai-app-aarch64.tgz -C ~
 ```
+
+## Run the built code
+
+```
+cd /data/data/com.termux/files/home/runtime
+termux-wake-lock
+setsid bash ~/runtime/start_aarch64.sh
+```
