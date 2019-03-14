@@ -54,9 +54,10 @@ import mxnet
 
 ## Get the source code of DeepCamera
 ```
+mkdir ~/build
 git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera
 ./setup.sh
-mkdir ~/build
+cd build
 ./build_aarch64.sh ~/build/
 ```
