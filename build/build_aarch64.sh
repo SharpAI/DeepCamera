@@ -25,7 +25,6 @@ fi
 mkdir -p $runtime/bin/model
 
 pyinstaller --clean -y classifier_server.spec
-cp -f ../src/embedding/judgeutil.so_termux-linux-aarch64 dist/classifier/judgeutil.so
 cp -rf dist/classifier/* runtime/bin/
 rm -rf dist/classifier/*
 
@@ -82,7 +81,7 @@ touch .groupid.txt
 
 cp ../src/minio/config.json .minio/
 cp scripts/termux_boot_sharpai_aarch64.sh .termux/boot/
-chmod a+rx .termux/boot/termux_boot_sharpai_arm.sh
+chmod a+rx .termux/boot/termux_boot_sharpai_aarch64.sh
 
 echo "creating sharpai-app.tgz ..."
 tar -czmf sharpai-app-aarch64.tgz .minio .ro_serialno .groupid.txt .termux runtime
