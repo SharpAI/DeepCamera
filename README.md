@@ -7,7 +7,7 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 ## Automatically train/deploy model for edge device(Embedded/Android/X86 system)
 ## Power efficient, Easy scalable, Production ready, Mobile first
 
-![image](screenshots/lifecycle.png)
+![image](screenshots/lifecycle_mac.png)
 
 # Feature List
 - [x] High accurate Face Recognition
