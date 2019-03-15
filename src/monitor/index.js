@@ -323,8 +323,16 @@ function cpu_mem_uptime_temp(cb) {
         if(!exists)
             continue;
 
-        var typename = fs.readFileSync(type_file, 'utf8').replace(/[\r\n]/g,"");
-        var temp_val = fs.readFileSync(temp_file, 'utf8').replace(/[\r\n]/g,"");
+        var typename = ''
+        var temp_val = ''
+        try {
+            typename = fs.readFileSync(type_file, 'utf8').replace(/[\r\n]/g,"");
+            temp_val = fs.readFileSync(temp_file, 'utf8').replace(/[\r\n]/g,"");
+        }
+        catch(err) {
+            console.log("read TEMP failed ", err)
+        }
+
         if(typename.length < 1 && temp_val.length < 1)
             continue;
 
