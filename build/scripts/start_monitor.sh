@@ -17,7 +17,7 @@ while true; do
     #disable watchtower before startup index.js
     #rm -rf ${AUTO_UPDATE_FILE}
     pushd monitor
-        node main.bin.js\
+        node main.bin.js
     popd
     #popd
     echo "exit index.js"
