@@ -2,7 +2,7 @@
 ## Tested Device
 |Chipset|Memory Size|GPU Model|Device Model|System|Issue|
 |:-----:|:---------:|:-------:|:----------:|:----:|:---:|
-|Rockchip RK3399|4GB|Mali-T760 MP4|Set-up-box|Android 7.1.2||
+|Rockchip RK3399|4GB|Mali-T760 MP4|H96 MAX|Android 7.1.2||
 |Rockchip RK3399|4GB|Mali-T760 MP4|Rockpro64|Android 7.1.2||
 |Samsung Exynos 7420|3GB|Mali-T760 MP8|VR on avl7420|Android 6.0.1||
 |Samsung Exynos 7420|3GB|Mali-T760 MP8|SM-G920A|Android 7.0||

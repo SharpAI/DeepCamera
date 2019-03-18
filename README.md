@@ -123,7 +123,12 @@ We are considering to provide full set of development kit to easy the setup effo
 ### How it works from end user's point of view, green parts are done if using Dev Kit
 ![From end user's view](screenshots/on_app_end_user.png)
 
-## [How to configure on Mobile APP](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
+## [How to configure on Mobile APP, Chinese Version](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
+
+## Application in English(Beta Test)
+Android: https://www.pgyer.com/app/install/0e87e08c72a232e8f39a6a7c76222038
+iOS: https://testflight.apple.com/join/8LXGgu3q
+
 ## [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
 # Call For Help
 - [ ] Documents, A LOT OF DOCUMENTS, we already deploy our deep camera in industry leading company but we don't have extra resource to build up community friendly documents.
