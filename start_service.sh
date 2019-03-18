@@ -14,8 +14,9 @@ cd -
 
 cd src/detector
 $PREFIX/bin/bash ./start_android_aarch64.sh &
+cd -
 
-cd src/monitor/
+cd src/monitor
     $PREFIX/bin/bash ./start_android_aarch64.sh &
 cd -
 
