@@ -5,7 +5,7 @@ redis-server --maxmemory 40mb --maxmemory-policy allkeys-lru --save "" --appendo
 mosquitto &
 
 cd src/embedding
-$PREFIX/bin/bash ./start_andrid_aarch64.sh &
+$PREFIX/bin/bash ./start_android_aarch64.sh &
 cd -
 
 cd src/face_detection
