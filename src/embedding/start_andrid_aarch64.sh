@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ ! -d ${RUNTIME_BASEDIR} ];then
+    mkdir -p ${RUNTIME_BASEDIR}
+fi
+
+python2 parameter_server.py &
+python2 migrate_db.py db upgrade
+
+TASKER=restserver REDIS_ADDRESS=localhost python2 classifier_rest_server.py &
+TASKER=worker WORKER_TYPE=classify python2 classifier_rest_server.py worker --loglevel INFO -E -n classify -c 1 -Q classify &
+
+while [ 1 ]
+do
+  LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64 python2 upload_api-v2.py worker --loglevel INFO -E -n embedding -c 1 -Q embedding
+done
