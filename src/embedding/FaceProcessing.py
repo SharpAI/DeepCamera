@@ -111,27 +111,38 @@ def init_embedding_processor():
     if os.path.isfile(DATA_RUNTIME_FOLDER+'/net2'):
         global __t
         global graph_runtime
-        import tvm as __t
-        from tvm.contrib import graph_runtime
-        loaded_lib = None
-        if os.path.isfile(DATA_RUNTIME_FOLDER+'/net2.tar.so'):
-            loaded_lib = __t.module.load(DATA_RUNTIME_FOLDER+'/net2.tar.so')
-        else:
-            loaded_lib = __t.module.load(DATA_RUNTIME_FOLDER+'/net2.tar')
-        loaded_json = open(DATA_RUNTIME_FOLDER+"/net2").read()
-        loaded_params = bytearray(open(DATA_RUNTIME_FOLDER+"/net2.params", "rb").read())
+        try:
+            import tvm as __t
+            from tvm.contrib import graph_runtime
+            loaded_lib = None
+            if os.path.isfile(DATA_RUNTIME_FOLDER+'/net2.tar.so'):
+                loaded_lib = __t.module.load(DATA_RUNTIME_FOLDER+'/net2.tar.so')
+            else:
+                loaded_lib = __t.module.load(DATA_RUNTIME_FOLDER+'/net2.tar')
+            loaded_json = open(DATA_RUNTIME_FOLDER+"/net2").read()
+            loaded_params = bytearray(open(DATA_RUNTIME_FOLDER+"/net2.params", "rb").read())
 
-        ctx = __t.cl(0)
+            ctx = __t.cl(0)
 
-        mod2 = graph_runtime.create(loaded_json, loaded_lib, ctx)
-        mod2.load_params(loaded_params)
-        return mod2
+            mod2 = graph_runtime.create(loaded_json, loaded_lib, ctx)
+            mod2.load_params(loaded_params)
+            return mod2
+        except:
+            print('error of loading net2')
+            mod2 = None
+            if os.path.isfile(DATA_RUNTIME_FOLDER+'/model-0000.params'):
+                global mx
+                import mxnet as mx
+                ctx = mx.cpu(0)
+                mod3 = get_model(ctx, [112,112], DATA_RUNTIME_FOLDER+'/model,0', 'fc1')
+                print('backup model loaded')
+                return mod3
     elif os.path.isfile('/root/model-r50-am-lfw/model-0000.params'):
         global mx
         import mxnet as mx
         ctx = mx.cpu(0)
         mod3 = get_model(ctx, [112,112], '/root/model-r50-am-lfw/model,0', 'fc1')
-        print('no existing model, nothing to do')
+        print('backup model loaded')
         return mod3
 
 def FaceProcessingOne(imgpath,sess,graph):

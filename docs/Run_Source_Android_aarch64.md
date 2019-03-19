@@ -73,21 +73,5 @@ cd
 git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera
 ./setup.sh
-cd build
-./build_aarch64.sh ./
-```
-
-## Install the built code
-
-```
-cd DeepCamera/build
-tar -zxmf sharpai-app-aarch64.tgz -C ~
-```
-
-## Run the built code
-
-```
-cd /data/data/com.termux/files/home/runtime
-termux-wake-lock
-setsid bash ~/runtime/start_aarch64.sh
+./start_service.sh
 ```
