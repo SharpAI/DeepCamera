@@ -40,10 +40,10 @@ ssh -p 8022 a@Android_IP
 pkg update
 pkg install wget
 cd /data/data/com.termux/files
-wget https://github.com/SharpAI/DeepCamera/releases/download/1.1/usr_aarch64_dev_1204_2018.tgz
-tar -zxf usr_aarch64_dev_1204_2018.tgz
+wget https://github.com/SharpAI/DeepCamera/releases/download/1.1/usr_aarch64_dev_0318_2019.tgz
+tar -zxf usr_aarch64_dev_0318_2019.tgz
 ```
-#### you can delete usr_aarch64_dev_1204_2018.tgz to save space or just keep it
+#### you can delete usr_aarch64_dev_0318_2019.tgz to save space or just keep it
 
 ## Test if working
 
@@ -52,13 +52,20 @@ tar -zxf usr_aarch64_dev_1204_2018.tgz
 LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64:/system/vendor/lib64/egl:/system/vendor/lib64 python2
 
 import tvm
-import mxnet
 ```
 ```
 >>> tvm.__version__
 '0.5.dev'
+```
+### please report issue if you have runtime warning
+```
+LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64 python2
+
+import mxnet
+```
+```
 >>> mxnet.__version__
-'0.10.1'
+'0.15.0'
 ```
 ## Get the source code of DeepCamera
 ```
