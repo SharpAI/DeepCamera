@@ -7,7 +7,7 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 ## Automatically train/deploy model for edge device(Embedded/Android/X86 system)
 ## Power efficient, Easy scalable, Production ready, Mobile first
 
-![image](screenshots/lifecycle.png)
+![image](screenshots/lifecycle_mac.png)
 
 # Feature List
 - [x] High accurate Face Recognition
@@ -46,18 +46,13 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 # Demo
 ![demo](https://github.com/SharpAI/DeepCamera/blob/master/screenshots/demo.gif)
 
-# Purchase Dev Kit for easily startup
-Run from code is time consuming task even with experts' supporting, we are considering to provide full set of development kit to easy the setup effort you may face to. 
-[Please thumb up if you want one](https://github.com/SharpAI/DeepCamera/issues/8)
-### How it works from end user's point of view, green parts are done if using Dev Kit
-![From end user's view](screenshots/on_app_end_user.png)
-
 # How to Run DeepCamera From Source Code
+![From end user's view](screenshots/on_app_end_user.png)
 
 ## 1. Generate/Get Serial No
 ### Android
-After install Launcher(Modified Termux), the serial_no will be placed:
-`/data/data/com.termux/files/home/.ro_serialno`
+After install Launcher(Modified Termux), QR Code is placed on screen.
+
 ### Linux/MacOS
 Get your Mac Address(1e:20:34:10:24:21)
 ```
@@ -70,7 +65,7 @@ echo 1e2034102421 > docker/workaipython/ro_serialno
 
 ## 3. How to Run DeepCamera on Edge Device
 
-### 3.1 [Run on Android(5.1+ aarch64)](docs/Run_On_Android_aarch64.md)
+### 3.1 [Run on Android(5.1+ aarch64)](docs/Run_Source_Android_aarch64.md)
 ### 3.2 Run on Rockchip RK3399 with linux/docker
 #### 3.2.1 Use prebuilt docker images
 ```
@@ -111,6 +106,8 @@ Shinobi login page(device_ip:8080):
 username: user@sharpaibox.com  
 password: SharpAI2018 
 
+You can also [turn Mac Camera into RTSP camera(not tested)](https://www.tribler.org/MacWebcam/)
+
 ### 4.2 Android(Dahua SDK Configure)
 Code is [here](https://github.com/SharpAI/RTSP_Decoder_IJKPlayer/blob/od_gl_based/android/ijkplayer/ijkplayer-example/src/main/java/tv/danmaku/ijk/media/example/activities/CameraScanActivity.java#L147)
 
@@ -120,7 +117,18 @@ Code is [here](https://github.com/SharpAI/ScreenCapture)
 ### 4.4 Android(RTSP url config)
 Comming soon
 
-## [How to configure on Mobile APP](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
+# Survey: Do you want to have Dev Kit for easily startup
+We are considering to provide full set of development kit to easy the setup effort you may face to. 
+[Please thumb up if you want one](https://github.com/SharpAI/DeepCamera/issues/8)
+### How it works from end user's point of view, green parts are done if using Dev Kit
+![From end user's view](screenshots/on_app_end_user.png)
+
+## [How to configure on Mobile APP, Chinese Version](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
+
+## Application in English(Beta Test)
+Android: https://www.pgyer.com/app/install/0e87e08c72a232e8f39a6a7c76222038
+iOS: https://testflight.apple.com/join/8LXGgu3q
+
 ## [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
 # Call For Help
 - [ ] Documents, A LOT OF DOCUMENTS, we already deploy our deep camera in industry leading company but we don't have extra resource to build up community friendly documents.

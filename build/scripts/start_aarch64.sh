@@ -74,5 +74,5 @@ function startserver()
     fi
 }
 
-checkUUID
+#checkUUID
 startserver

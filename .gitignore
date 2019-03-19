@@ -5,3 +5,8 @@ runtime
 build/build/*
 build/dist/*
 build/runtime_arch
+build/*
+*node_modules/*
+test/node_modules/*
+*.tgz
+.DS_Store

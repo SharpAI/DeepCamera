@@ -25,7 +25,6 @@ fi
 mkdir -p $runtime/bin/model
 
 pyinstaller --clean -y classifier_server.spec
-#cp -f ../src/embedding/judgeutil.so_termux-linux-aarch64 dist/classifier/judgeutil.so
 cp -rf dist/classifier/* runtime/bin/
 rm -rf dist/classifier/*
 
