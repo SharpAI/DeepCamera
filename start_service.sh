@@ -22,6 +22,6 @@ cd -
 
 while [ 1 ]
 do
-  flower --port=5556
+  flower --port=5556 --address=0.0.0.0
   sleep 20
 done
