@@ -293,19 +293,23 @@ function cpu_mem_uptime_temp(cb) {
 
     /*CPU*/
     var cpus = os.cpus();
-    for(var i=0;i<cpus.length;i++) {
-        var cpu = cpus[i];
-        var usage = 0;
-        if (cpu && cpu.times) {
-          var total = 1;
-          var idle = 0;
-          total = cpu.times.user + cpu.times. user+ cpu.times.nice + cpu.times.sys + cpu.times.idle + cpu.times.irq;
-          idle = cpu.times.idle;
-          usage = (1 - (idle/total)).toFixed(2);
-        }
-        cpu_average += Number(usage);
+    if(typeof cpus === 'undefined'){
+      cpu_average = 'N/A';
+    } else {
+      for(var i=0;i<cpus.length;i++) {
+          var cpu = cpus[i];
+          var usage = 0;
+          if (cpu && cpu.times) {
+            var total = 1;
+            var idle = 0;
+            total = cpu.times.user + cpu.times. user+ cpu.times.nice + cpu.times.sys + cpu.times.idle + cpu.times.irq;
+            idle = cpu.times.idle;
+            usage = (1 - (idle/total)).toFixed(2);
+          }
+          cpu_average += Number(usage);
+      }
+      cpu_average = (cpu_average/cpus.length).toFixed(2);
     }
-    cpu_average = (cpu_average/cpus.length).toFixed(2);
 
     /*MEM*/
     mem.free = os.freemem();
