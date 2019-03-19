@@ -51,8 +51,8 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 
 ## 1. Generate/Get Serial No
 ### Android
-After install Launcher(Modified Termux), the serial_no will be placed:
-`/data/data/com.termux/files/home/.ro_serialno`
+After install Launcher(Modified Termux), QR Code is placed on screen.
+
 ### Linux/MacOS
 Get your Mac Address(1e:20:34:10:24:21)
 ```
@@ -65,7 +65,7 @@ echo 1e2034102421 > docker/workaipython/ro_serialno
 
 ## 3. How to Run DeepCamera on Edge Device
 
-### 3.1 [Run on Android(5.1+ aarch64)](docs/Run_On_Android_aarch64.md)
+### 3.1 [Run on Android(5.1+ aarch64)](docs/Run_Source_Android_aarch64.md)
 ### 3.2 Run on Rockchip RK3399 with linux/docker
 #### 3.2.1 Use prebuilt docker images
 ```
