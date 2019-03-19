@@ -12,5 +12,5 @@ TASKER=worker WORKER_TYPE=classify python2 classifier_rest_server.py worker --lo
 
 while [ 1 ]
 do
-  LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64 python2 upload_api-v2.py worker --loglevel INFO -E -n embedding -c 1 -Q embedding
+  LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64:/system/vendor/lib64/egl:/system/vendor/lib64 WORKER_TYPE=embedding python2 upload_api-v2.py worker --loglevel INFO -E -n embedding -c 1 -Q embedding
 done
