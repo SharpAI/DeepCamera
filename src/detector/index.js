@@ -568,7 +568,7 @@ const app = express();
 const router = express.Router();
 const port = 3000;
 
-app.get('/', (request, response) => response.send('hello world'));
+app.get('/', (request, response) => response.send('SharpAI, empower Edge AI'));
 
 app.use('/api', router);
 

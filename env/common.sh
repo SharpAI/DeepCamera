@@ -27,6 +27,7 @@ export ENABLE_STATIC_OBJECT_FILTER=false
 export CLUSTER_REDIS_ADDRESS=localhost
 export CLUSTER_REDIS_PORT=6379
 export REDIS_HOST=localhost
+export REDIS_ADDRESS=localhost
 export FLOWER_ADDRESS=localhost
 export FLOWER_PORT=5556
 export BROKERHOST='mqtt://localhost'

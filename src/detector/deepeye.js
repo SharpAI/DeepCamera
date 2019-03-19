@@ -505,8 +505,9 @@ function embedding_only_task(task_info, cb) {
           if(result.result){
             var json = JSON.parse(result.result)
             ON_DEBUG && console.log(json)
-            fs.writeFileSync(json.embedding_path,json.embedding_str);
-            task_info.embedding_path = json.embedding_path
+            var embedding_tmp_path = task_info.path+'.txt'
+            fs.writeFileSync(embedding_tmp_path,json.embedding_str);
+            task_info.embedding_path = embedding_tmp_path
             delete task_info.base64data
             return classify_task(task_info,cb)
             //return cb && cb(null, json)

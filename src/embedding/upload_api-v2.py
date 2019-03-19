@@ -1671,21 +1671,17 @@ def extract_v2(image):
     current_groupid = get_current_groupid()
 
     if current_groupid is None:
-        return json.dumps({"embedding_path":""})
+        return json.dumps({"embedding_path":"","error":"please join group"})
     embedding = FaceProcessing.FaceProcessingBase64ImageData2(imgstring)
     embedding_path=''
     embedding_str=''
     if embedding is not None:
         if type(trackerid) is not str:
             trackerid = str(trackerid)
-
-        if CLUSTER_WORKERONLY:
-            embedding_path = save_embedding.get_embedding_path_for_worker(imgpath)
-        else:
-            embedding_path = save_embedding.get_embedding_path(imgpath)
         embedding_str = save_embedding.convert_embedding_to_string(embedding)
-
-    return json.dumps({'embedding_path': embedding_path,'embedding_str':embedding_str})
+        return json.dumps({"embedding_str":embedding_str})
+    else:
+        return json.dumps({"error":"please check your configuration"})
 
 deepeye.conf.task_routes = {
     'upload_api-v2.extract_v2': {'queue': 'embedding'}
