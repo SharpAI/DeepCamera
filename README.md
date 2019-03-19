@@ -31,7 +31,7 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 - [x] Rockchip RK3399 (Linux, set-up-box H96 Max)
 - [x] Rockchip RK3288 (Android, set-up-box)
 - [x] Samsung 7420 (Android, Mobile)
-- [x] Rockchip RK3399 (Android RockPro64 doc release soon)
+- [x] Rockchip RK3399 (Android, RockPro64)
 - [x] Linux/Android Has OpenCL
 
 # Supported Camera
