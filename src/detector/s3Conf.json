@@ -1,0 +1,46 @@
+{
+    "Config": {
+        "endPoint": "30.207.63.231",
+        "port": 7480,
+        "useSSL": false,
+        "accessKey": "Vh0snNA4Orv3emBj",
+        "secretKey": "d7p2eNO8GuMl1GtIZ0at4wPDyED4Nz",
+        "bucketName": "sharpai",
+        "region": "us-east-1"
+    },
+    "Policy": {
+        "Version": "2012-10-17",
+        "Statement": [{
+                "Action": [
+                    "s3:GetBucketLocation",
+                    "s3:ListBucket"
+                ],
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": [
+                        "*"
+                    ]
+                },
+                "Resource": [
+                    "arn:aws:s3:::sharpai"
+                ],
+                "Sid": ""
+            },
+            {
+                "Action": [
+                    "s3:GetObject"
+                ],
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": [
+                        "*"
+                    ]
+                },
+                "Resource": [
+                    "arn:aws:s3:::sharpai/*"
+                ],
+                "Sid": ""
+            }
+        ]
+    }
+}
