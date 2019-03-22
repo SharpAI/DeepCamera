@@ -4,10 +4,8 @@
 
 ### 1-1 get modified termux apk (Built from [here](https://github.com/SharpAI/mobile_app_server/tree/android_porting/AndroidPorting/Launcher))
 
-#### 1-1-1 From Baidu (sharpai-norootfs-lambda_key.apk)
-> Link: https://pan.baidu.com/s/1ic3jEItCNG8mgJQPlHBYhg Password: mq9p
-#### 1-1-2 termux Compile
-> Use Android studio to build https://github.com/SharpAI/mobile_app_server/tree/android_porting/AndroidPorting/Launcher
+#### 1-1-1 [SharpAI-LauncherTermux.apk](https://github.com/SharpAI/DeepCamera/releases/download/1.1/SharpAI-LauncherTermux.apk)
+#### 1-1-2 [Source Code](https://github.com/SharpAI/Launcher_Termux)
 
 ### 1-2 Install modified termux apk
 #### 1-2-1 from u disk
@@ -19,10 +17,8 @@ The following figure：
 
 ![image.png](https://cdn.nlark.com/yuque/0/2019/png/170897/1552229210075-a6ab9acf-76b9-4bf4-82d5-45bd4a492622.png)
 
-
-
 ```
-adb install sharpai-norootfs-lambda_key.apk
+adb install SharpAI-LauncherTermux.apk
 ```
 
 #### 1-2-3 install openssh termux 
