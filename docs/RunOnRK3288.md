@@ -2,7 +2,7 @@
 
 ## 1 Prepare RK3288 Environment（Connect dev box and workstation in the same network）
 
-### 1-1 get modified termux apk (Built from [here](https://github.com/SharpAI/mobile_app_server/tree/android_porting/AndroidPorting/Launcher))
+### 1-1 Install SharpAI LauncherTermux
 
 #### 1-1-1 [SharpAI-LauncherTermux.apk](https://github.com/SharpAI/DeepCamera/releases/download/1.1/SharpAI-LauncherTermux.apk)
 #### 1-1-2 [Source Code](https://github.com/SharpAI/Launcher_Termux)
