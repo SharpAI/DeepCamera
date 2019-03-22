@@ -100,17 +100,18 @@ openssh RK3288 box
 
 ```
 cd /data/data/com.termux/files/
-tar -zxvmf usr_dev_root_armv7_1126_2018.tgz
+tar -zxmf usr_dev_root_armv7_1126_2018.tgz
 rm -f usr_dev_root_armv7_1126_2018.tgz
 
 cd /data/data/com.termux/files/home
-tar -zxvmf arch_dev_root_1203_2018_final.tgz
+tar -zxmf arch_dev_root_1203_2018_final.tgz
 rm -f arch_dev_root_1203_2018_final.tgz
 ```
 #### 1-3-2 Through Github
 ```
+pkg install wget
 cd /data/data/com.termux/files/
-wget https://github.com/SharpAI/DeepCamera/releases/download/1.1/usr_dev_root_armv7_1126_2018.tgz
+$PRIFIX/bin/wget https://github.com/SharpAI/DeepCamera/releases/download/1.1/usr_dev_root_armv7_1126_2018.tgz
 tar -zxmf usr_dev_root_armv7_1126_2018.tgz
 ```
 
@@ -121,7 +122,7 @@ rm -f usr_dev_root_armv7_1126_2018.tgz
 
 ```
 cd /data/data/com.termux/files/home
-wget https://github.com/SharpAI/DeepCamera/releases/download/1.1/arch_dev_root_1203_2018_final.tgz
+$PRIFIX/bin/wget https://github.com/SharpAI/DeepCamera/releases/download/1.1/arch_dev_root_1203_2018_final.tgz
 tar -zxmf arch_dev_root_1203_2018_final.tgz
 ```
 
