@@ -72,42 +72,6 @@ $ apt-get update
 
 ### 1-3 Install Source Code 
 
-#### 1-3-1 Through PC
-Download based root fs and arch linux fs
-
-> usr_dev_root_armv7_1126_2018.tgz
-link: https://pan.baidu.com/s/18GwmAj04ylqg1AYS5T5BQA password:0w8a
-arch_dev_root_1203_2018_final.tgz
-link: https://pan.baidu.com/s/1FdaTiqjuLKEr7ZvKw2JF4g password:hvlz
-
-Upload them onto RK3288 box by adb
-
-The following figure：
-
-![image.png](https://cdn.nlark.com/yuque/0/2019/png/170897/1552229234603-331832f7-4af1-48be-bcfe-0bc93489841f.png#align=left&display=inline&height=157&name=image.png&originHeight=314&originWidth=1476&size=600996&status=done&width=738)
-
-```
-adb root
-
-adb push usr_dev_root_armv7_1126_2018.tgz data/data/com.termux/files/usr_dev_root_armv7_1126_2018.tgz
-
-adb push arch_dev_root_1203_2018_final.tgz /data/data/com.termux/files/home/arch_dev_root_1203_2018_final.tgz
-```
-> reference https://developer.android.com/studio/command-line/adb?hl=en-us
-
-
-openssh RK3288 box
-
-```
-cd /data/data/com.termux/files/
-tar -zxmf usr_dev_root_armv7_1126_2018.tgz
-rm -f usr_dev_root_armv7_1126_2018.tgz
-
-cd /data/data/com.termux/files/home
-tar -zxmf arch_dev_root_1203_2018_final.tgz
-rm -f arch_dev_root_1203_2018_final.tgz
-```
-#### 1-3-2 Through Github
 ```
 pkg install wget
 cd /data/data/com.termux/files/
@@ -136,33 +100,9 @@ rm -f arch_dev_root_1203_2018_final.tgz
 ```
 $ cd /data/data/com.termux/files/home
 $ git clone https://github.com/SharpAI/DeepCamera
+cd DeepCamera
+./setup_arm32.sh
 ```
-
-If you want to install a face model，download the model-armv7a.tgz
-
-> link: [https://pan.baidu.com/s/1YQENe4f0wDx7RMi3fZ5G2w](https://pan.baidu.com/s/1YQENe4f0wDx7RMi3fZ5G2w)  password:5ekz
-
-
-upload, untar, remove
-
-```
-$ cd /data/data/com.termux/files/home/DeepCamera
-$ tar -zxvmf model-armv7a.tgz
-$ rm -f model-armv7a.tgz
-```
-
-If you want to install human model，download the model-rk3288-termux.tgz
-
-> link: [https://pan.baidu.com/s/1ic3jEItCNG8mgJQPlHBYhg](https://pan.baidu.com/s/1ic3jEItCNG8mgJQPlHBYhg) password: mq9p
-
-upload, untar, remove
-
-```
-$ cd /data/data/com.termux/files/home/DeepCamera
-$ tar -zxvmf model-rk3288-termux.tgz
-$ rm -f model-rk3288-termux.tgz
-```
-
 
 Install must have dependencies
 ```
