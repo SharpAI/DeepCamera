@@ -11,7 +11,7 @@
 
 ## Get Launcher_Termux source code
 ```
-git clone https://github.com/SharpAI/Launcher_Termux
+git clone https://github.com/SharpAI/Launcher_Termux -b dev
 ```
 
 ## Config authorized_keys for ssh
