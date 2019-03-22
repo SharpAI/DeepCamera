@@ -71,6 +71,8 @@ $ apt-get update
 
 
 ### 1-3 Install Source Code 
+
+#### 1-3-1 Through PC
 Download based root fs and arch linux fs
 
 > usr_dev_root_armv7_1126_2018.tgz
@@ -105,6 +107,28 @@ cd /data/data/com.termux/files/home
 tar -zxvmf arch_dev_root_1203_2018_final.tgz
 rm -f arch_dev_root_1203_2018_final.tgz
 ```
+#### 1-3-2 Through Github
+```
+cd /data/data/com.termux/files/
+wget https://github.com/SharpAI/DeepCamera/releases/download/1.1/usr_dev_root_armv7_1126_2018.tgz
+tar -zxmf usr_dev_root_armv7_1126_2018.tgz
+```
+
+##### Remove if you want to save space
+```
+rm -f usr_dev_root_armv7_1126_2018.tgz
+```
+
+```
+cd /data/data/com.termux/files/home
+wget https://github.com/SharpAI/DeepCamera/releases/download/1.1/arch_dev_root_1203_2018_final.tgz
+tar -zxmf arch_dev_root_1203_2018_final.tgz
+```
+
+##### Remove if you want to save space
+```
+rm -f arch_dev_root_1203_2018_final.tgz
+```
 
 
 ## 2 Prepare source code runtime
@@ -112,7 +136,6 @@ rm -f arch_dev_root_1203_2018_final.tgz
 $ cd /data/data/com.termux/files/home
 $ git clone https://github.com/SharpAI/DeepCamera
 ```
-
 
 If you want to install a face model，download the model-armv7a.tgz
 
@@ -138,7 +161,6 @@ $ cd /data/data/com.termux/files/home/DeepCamera
 $ tar -zxvmf model-rk3288-termux.tgz
 $ rm -f model-rk3288-termux.tgz
 ```
-
 
 
 Install must have dependencies
