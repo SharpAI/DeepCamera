@@ -104,14 +104,7 @@ Install must have dependencies
 ```
 $ pip2 uninstall scipy
 $ apt-get install python2-scipy
-
 $ apt-get install graphicsmagick
-
-$ cd /data/data/com.termux/files/home/DeepCamera/src/flower/
-$ pip2 install -r requirements.txt
-
-$ cd /data/data/com.termux/files/home/DeepCamera/src/detector/
-$ npm install
 ```
 
 
@@ -131,3 +124,10 @@ Add following line to files:
 files：
 > /data/data/com.termux/files/usr/lib/python2.7/site-packages/scipy-1.2.0-py2.7-linux-armv8l.egg/scipy/stats/_continuous_distns.py
 /data/data/com.termux/files/usr/lib/python2.7/site-packages/scipy-1.2.0-py2.7-linux-armv8l.egg/scipy/stats/_stats_mstats_common.py
+
+
+```
+LD_LIBRARY_PATH=/system/lib:$LD_LIBRARY_PATH:$PREFIX/lib:/system/vendor/lib/egl:/system/vendor/lib LD_PRELOAD=$LD_PRELOAD:libatomic.so:libcutils.so python2
+
+import tvm
+```
