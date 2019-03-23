@@ -22,6 +22,7 @@ from scipy import interpolate
 from scipy.misc import imread, imresize
 import sklearn.preprocessing
 
+global mx
 global globGraph
 globGraph = None
 global mod
@@ -32,6 +33,7 @@ mod3 = None
 DEBUG = False
 
 DATA_RUNTIME_FOLDER = os.getenv('DATA_RUNTIME_FOLDER', '/data/runtime')
+HAS_OPENCL = os.getenv('HAS_OPENCL', 'true')
 
 def load_graph(frozen_graph_filename):
     return None
@@ -108,6 +110,25 @@ def get_model(ctx, image_size, model_str, layer):
 def init_embedding_processor():
     global mod2
     global mod3
+
+    if HAS_OPENCL == 'false':
+        global mx
+        import mxnet as mx
+        print('need init mxnet')
+
+        mod2 = None
+        if os.path.isfile(DATA_RUNTIME_FOLDER+'/model-0000.params'):
+            ctx = mx.cpu(0)
+            mod3 = get_model(ctx, [112,112], DATA_RUNTIME_FOLDER+'/model,0', 'fc1')
+            print('backup model loaded')
+            return mod3
+
+        mod = FaceProcessing.init_embedding_processor()
+        print("start to warm up")
+        embedding = featureCalculation2(os.path.join(BASEDIR,"image","Mike_Alden_0001_tmp.png"))
+        print("warmed up")
+        return mod3
+
     if os.path.isfile(DATA_RUNTIME_FOLDER+'/net2'):
         global __t
         global graph_runtime

@@ -130,6 +130,7 @@ deepeye.count = 1
 # run as worker only
 CLUSTER_WORKERONLY = os.getenv('CLUSTER_WORKERONLY', False)
 
+HAS_OPENCL = os.getenv('HAS_OPENCL', 'true')
 SAVE_ORIGINAL_FACE = False
 original_face_img_path = os.path.join(BASEDIR, 'data', 'original_face_img')
 if not os.path.exists(original_face_img_path):
@@ -141,6 +142,14 @@ SVM_TRAIN_WITHOUT_CATEGORY=True
 SVM_HIGH_SCORE_WITH_DB_CHECK=True
 
 counter = 0
+
+if HAS_OPENCL == 'false':
+    print('need init mxnet')
+    mod = FaceProcessing.init_embedding_processor()
+    print("start to warm up")
+    embedding = FaceProcessing.FaceProcessingImageData2(os.path.join(BASEDIR,"image","Mike_Alden_0001_tmp.png"))
+    print("warmed up")
+
 
 def featureCalculation(imgpath):
     img = misc.imread(os.path.expanduser(imgpath))
@@ -1638,11 +1647,11 @@ def setup(sender=None, **kwargs):
         check_groupid_changed()
         init_fs()
 
-
-        mod = FaceProcessing.init_embedding_processor()
-        print("start to warm up")
-        embedding = featureCalculation2(os.path.join(BASEDIR,"image","Mike_Alden_0001_tmp.png"))
-        print("warmed up")
+        if HAS_OPENCL == 'true':
+            mod = FaceProcessing.init_embedding_processor()
+            print("start to warm up")
+            embedding = featureCalculation2(os.path.join(BASEDIR,"image","Mike_Alden_0001_tmp.png"))
+            print("warmed up")
         #if embedding is not None:
         #    print("worker embedding ready")
 
