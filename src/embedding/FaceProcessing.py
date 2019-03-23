@@ -123,12 +123,6 @@ def init_embedding_processor():
             mod3 = get_model(ctx, [112,112], DATA_RUNTIME_FOLDER+'/model,0', 'fc1')
             print('backup model loaded')
             return mod3
-
-        mod = FaceProcessing.init_embedding_processor()
-        print("start to warm up")
-        embedding = featureCalculation2(os.path.join(BASEDIR,"image","Mike_Alden_0001_tmp.png"))
-        print("warmed up")
-        return mod3
     else:
         print('has opencl supporting')
 
