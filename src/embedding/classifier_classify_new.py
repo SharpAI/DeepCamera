@@ -366,7 +366,7 @@ def train_svm_with_embedding(args_list):
         judge_paths = paths
         judge_labels = labels
     judge_nrof_images = len(judge_paths)
-    if HAS_OPENCL == 'true:
+    if HAS_OPENCL == 'true':
         judge_emb_array = np.zeros((judge_nrof_images, 512))
     else:
         judge_emb_array = np.zeros((judge_nrof_images, 128))
