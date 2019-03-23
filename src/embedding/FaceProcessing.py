@@ -23,6 +23,7 @@ from scipy.misc import imread, imresize
 import sklearn.preprocessing
 
 global mx
+mx = None
 global globGraph
 globGraph = None
 global mod
@@ -128,6 +129,8 @@ def init_embedding_processor():
         embedding = featureCalculation2(os.path.join(BASEDIR,"image","Mike_Alden_0001_tmp.png"))
         print("warmed up")
         return mod3
+    else:
+        print('has opencl supporting')
 
     if os.path.isfile(DATA_RUNTIME_FOLDER+'/net2'):
         global __t
