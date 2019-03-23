@@ -12,7 +12,7 @@ TASKER=worker WORKER_TYPE=classify python2 classifier_rest_server.py worker --lo
 
 if [ "$HAS_OPENCL" = "false" ]
 then
-  LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64 python2 embedding_server.py
+  LD_LIBRARY_PATH=/system/lib64:$LD_LIBRARY_PATH:$PREFIX/lib64 python2 embedding_server.py &
 fi
 
 while [ 1 ]
