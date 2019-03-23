@@ -146,7 +146,6 @@ counter = 0
 if HAS_OPENCL == 'false':
     from embedding_client import get_remote_embedding
 
-
 def featureCalculation(imgpath):
     img = misc.imread(os.path.expanduser(imgpath))
     prewhitened = facenet.prewhiten(img)

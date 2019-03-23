@@ -1,6 +1,15 @@
 #!/bin/bash
 source ./env/common.sh
 
+if [ -f /system/vendor/lib64/libOpenCL.so ]
+then
+  export HAS_OPENCL=true
+  echo 'has opencl supporting'
+else
+  export HAS_OPENCL=false
+  echo 'no opencl supporting'
+fi
+
 redis-server --maxmemory 40mb --maxmemory-policy allkeys-lru --save "" --appendonly no --dbfilename "" &
 mosquitto &
 
