@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import os, json, time, sys, thread
+import os, json, time, sys, thread, base64
 import argparse
 import unicodedata
 import shutil
@@ -130,6 +130,7 @@ deepeye.count = 1
 # run as worker only
 CLUSTER_WORKERONLY = os.getenv('CLUSTER_WORKERONLY', False)
 
+HAS_OPENCL = os.getenv('HAS_OPENCL', 'true')
 SAVE_ORIGINAL_FACE = False
 original_face_img_path = os.path.join(BASEDIR, 'data', 'original_face_img')
 if not os.path.exists(original_face_img_path):
@@ -141,6 +142,10 @@ SVM_TRAIN_WITHOUT_CATEGORY=True
 SVM_HIGH_SCORE_WITH_DB_CHECK=True
 
 counter = 0
+
+if HAS_OPENCL == 'false':
+    from embedding_client import get_remote_embedding
+
 
 def featureCalculation(imgpath):
     img = misc.imread(os.path.expanduser(imgpath))
@@ -1623,7 +1628,12 @@ def getQueueName():
 
 def featureCalculation2(imgpath):
     embedding=None
-    embedding = FaceProcessing.FaceProcessingImageData2(imgpath)
+    if HAS_OPENCL == 'false':
+        with open(imgpath, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read())
+        embedding = get_remote_embedding(encoded_string)
+    else:
+        embedding = FaceProcessing.FaceProcessingImageData2(imgpath)
     return embedding
 
 @worker_process_init.connect()
@@ -1638,11 +1648,11 @@ def setup(sender=None, **kwargs):
         check_groupid_changed()
         init_fs()
 
-
-        mod = FaceProcessing.init_embedding_processor()
-        print("start to warm up")
-        embedding = featureCalculation2(os.path.join(BASEDIR,"image","Mike_Alden_0001_tmp.png"))
-        print("warmed up")
+        if HAS_OPENCL == 'true':
+            mod = FaceProcessing.init_embedding_processor()
+            print("start to warm up")
+            embedding = featureCalculation2(os.path.join(BASEDIR,"image","Mike_Alden_0001_tmp.png"))
+            print("warmed up")
         #if embedding is not None:
         #    print("worker embedding ready")
 
@@ -1672,7 +1682,10 @@ def extract_v2(image):
 
     if current_groupid is None:
         return json.dumps({"embedding_path":"","error":"please join group"})
-    embedding = FaceProcessing.FaceProcessingBase64ImageData2(imgstring)
+    if HAS_OPENCL == 'false':
+        embedding = get_remote_embedding(imgstring)
+    else:
+        embedding = FaceProcessing.FaceProcessingBase64ImageData2(imgstring)
     embedding_path=''
     embedding_str=''
     if embedding is not None:
