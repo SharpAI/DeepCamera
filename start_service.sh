@@ -1,6 +1,6 @@
 #!/bin/bash
 
-$PREFIX/bin/bash ./stop_all.sh
+#$PREFIX/bin/bash ./stop_all.sh
 
 source ./env/common.sh
 
