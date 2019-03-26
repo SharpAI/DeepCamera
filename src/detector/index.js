@@ -571,6 +571,7 @@ const port = 3000;
 app.get('/', (request, response) => response.send('SharpAI, empower Edge AI'));
 
 app.use('/api', router);
+app.use(express.json());
 
 router.get('/post', (request, response) => {
     file_url = request.originalUrl
@@ -583,4 +584,9 @@ router.get('/post', (request, response) => {
     }, 0)
     response.json({message: 'OK'});
 });
+
+app.post('/post2',function(request, response) {
+  console.log(request.body);
+  response.json({message: 'OK'});
+})
 app.listen(port,'0.0.0.0' ,() => console.log('Listening on port ',port));
