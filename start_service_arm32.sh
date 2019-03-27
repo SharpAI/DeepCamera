@@ -6,6 +6,15 @@ export LD_PRELOAD=$LD_PRELOAD:libatomic.so:libcutils.so
 export UUIDFILE=/data/data/com.termux/files/home/.ro_serialno
 export GROUPFILE=/data/data/com.termux/files/home/.groupid.txt
 
+if [ -f /system/vendor/lib/libOpenCL.so ] || [ -f /system/vendor/lib/egl/libGLES_mali.so ]
+then
+  export HAS_OPENCL=true
+  echo 'has opencl supporting'
+else
+  export HAS_OPENCL=false
+  echo 'no opencl supporting'
+fi
+
 redis-server --maxmemory 80mb --maxmemory-policy allkeys-lru --save "" --appendonly no --dbfilename "" &
 mosquitto &
 
