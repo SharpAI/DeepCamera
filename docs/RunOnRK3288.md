@@ -102,8 +102,6 @@ cd DeepCamera
 
 Install must have dependencies
 ```
-$ pip2 uninstall scipy
-$ apt-get install python2-scipy
 $ apt-get install graphicsmagick
 ```
 
@@ -113,17 +111,6 @@ $ apt-get install graphicsmagick
 $ cd /data/data/com.termux/files/home/DeepCamera
 $ ./start_service_arm32.sh
 ```
-
-> Fixed for runtime error
-Add following line to files:
-
-```
-# -*-coding:UTF-8 -*-
-```
-
-files：
-> /data/data/com.termux/files/usr/lib/python2.7/site-packages/scipy-1.2.0-py2.7-linux-armv8l.egg/scipy/stats/_continuous_distns.py
-/data/data/com.termux/files/usr/lib/python2.7/site-packages/scipy-1.2.0-py2.7-linux-armv8l.egg/scipy/stats/_stats_mstats_common.py
 
 
 ```
