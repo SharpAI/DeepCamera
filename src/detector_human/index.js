@@ -587,6 +587,20 @@ router.get('/post', (request, response) => {
 
 app.post('/post2',function(request, response) {
   console.log(request.body);
+  msg = request.body['msg'][0]
+  person_filename = msg['personImagePath']
+  person_count = msg['faceNum']
+  setTimeout(function(){
+       var start = new Date()
+       if(person_count==1){
+          console.log('faces are detected, change to face box!)
+       } 
+       else{
+	  // execute embedding calculation if only human_shape
+          console.log('only human shape, go to embedding stage!')
+          onframe("device", true, person_filename, person_count, start)
+       }
+  }, 0}
   response.json({message: 'OK'});
 })
 app.listen(port,'0.0.0.0' ,() => console.log('Listening on port ',port));
