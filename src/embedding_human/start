@@ -1,0 +1,4 @@
+#!/bin/bash
+/.start 5000  >& /dev/1.log5000 &
+
+

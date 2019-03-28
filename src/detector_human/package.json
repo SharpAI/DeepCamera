@@ -1,0 +1,66 @@
+{
+  "name": "workai",
+  "version": "1.0.0",
+  "description": "Work AI based plugin for NVR",
+  "main": "index.js",
+  "bin": "index.js",
+  "scripts": {
+    "webpack": "webpack --display-error-details",
+    "build": "cp conf.json dist/release/ && /bin/sh ./build.sh",
+    "build-package": "pkg package.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solderzzc/ImageBuilder-DeepLearning"
+  },
+  "bugs": {
+    "url": "https://github.com/solderzzc/DeepLearning/issues"
+  },
+  "homepage": "https://work-ai.github.io",
+  "dependencies": {
+    "ali-oss": "^6.0.1",
+    "aliyun-oss-upload-stream": "^1.3.0",
+    "aliyun-sdk": "^1.11.11",
+    "async": "^1.5.2",
+    "better-queue": "^3.8.7",
+    "bull": "^3.5.1",
+    "config": "^3.0.0",
+    "dockerode": "^2.5.4",
+    "download-file": "^0.1.5",
+    "express": "^4.16.3",
+    "file-loader": "^2.0.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "gm": "^1.23.1",
+    "minio": "^7.0.2",
+    "mkdirp": "^0.5.1",
+    "moment": "^2.20.1",
+    "mqtt": "^2.18.7",
+    "mv": "^2.1.1",
+    "nedb": "^1.8.0",
+    "node-celery": "^0.2.8",
+    "qiniu": "^7.1.3",
+    "readdir-absolute": "^1.0.1",
+    "redis": "^2.8.0",
+    "request": "^2.83.0",
+    "requestretry": "^3.0.1",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1"
+  },
+  "devDependencies": {
+    "bower-resolve-webpack-plugin": "^1.0.5",
+    "chai": "^3.5.0",
+    "json-loader": "^0.5.4",
+    "null-loader": "^0.1.1",
+    "optimize-js-plugin": "^0.0.4",
+    "shebang-loader": "0.0.1",
+    "sinon": "^1.17.7",
+    "standard": "^6.0.5",
+    "uglify-es": "3.1.6",
+    "webpack": "^4.x",
+    "webpack-cli": "^3.x",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "engines": {
+    "node": ">=4.0.0"
+  }
+}

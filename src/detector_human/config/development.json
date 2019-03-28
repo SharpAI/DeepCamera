@@ -1,0 +1,16 @@
+{
+  "config": {
+    "endPoint": "localhost",
+    "port": 9000,
+    "useSSL": false,
+    "accessKey": "QUA2IU17RHOKE6NUZ7T2",
+    "secretKey": "MQniMc5K3lsRbv9OPaUbJN9ft2eTQJ1rh4Yx6C17",
+    "bucket": "sharpai",
+    "destBucket": "images-processed",
+    "prefix": "",
+    "suffix": ".jpg",
+    "events": [
+      "s3:*:*"
+    ]
+  }
+}
