@@ -367,7 +367,7 @@ def train_svm_with_embedding(args_list):
         judge_labels = labels
     judge_nrof_images = len(judge_paths)
     if HAS_OPENCL == 'true':
-        judge_emb_array = np.zeros((judge_nrof_images, 512))
+        judge_emb_array = np.zeros((judge_nrof_images, 2048))
     else:
         judge_emb_array = np.zeros((judge_nrof_images, 128))
     for j in range(judge_nrof_images):
@@ -397,7 +397,7 @@ def train_svm_with_embedding(args_list):
     nrof_batches_per_epoch = int(math.ceil(1.0 * nrof_images / args.batch_size))
 
     if HAS_OPENCL == 'true':
-        emb_array = np.zeros((nrof_images, 512))
+        emb_array = np.zeros((nrof_images, 2048))
     else:
         emb_array = np.zeros((nrof_images, 128))
     for i in range(nrof_batches_per_epoch):
