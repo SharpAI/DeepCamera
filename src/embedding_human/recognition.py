@@ -397,7 +397,7 @@ def check_embedding_on_detected_person_forSVM_ByDir(current_groupid, embedding, 
             elif nrof_classes <= 10 and nrof_classes > 0:
                 threshold = 1.0
             '''
-            threshold = 0.42
+            threshold = 0.60
             if face_accuracy > threshold:
                 found = found+1
             if total >= 500:
@@ -452,7 +452,7 @@ class DataCollection(object):
                     "fuzziness_1": "40",
                     "fuzziness_2": "200",
                     "score_1": "0.90",
-                    "score_2": "0.40",
+                    "score_2": "0.70",
                     }
         if "_interval" in r:
             _freq = int(r["_interval"])
