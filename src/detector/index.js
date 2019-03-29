@@ -652,7 +652,7 @@ app.post('/post2',function(request, response) {
 	  // execute embedding calculation if only human_shape
           console.log('only human shape, human box will take over!')
        }
-  }, 0}
+  }, 0)
   response.json({message: 'OK'});
 })
 app.listen(port,'0.0.0.0' ,() => console.log('Listening on port ',port));
