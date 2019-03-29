@@ -1,8 +1,13 @@
 # [Quick Installation on Android](https://github.com/SharpAI/DeepCamera/releases/tag/v1.2.1)
+1. Install DeepCamera AI monitor on Android. https://github.com/SharpAI/DeepCamera/releases/download/v1.2.1/DeepCamera_03282019.apk
+2. Install mobile app to receive notification, name/labelling people(Beta test)
+Android: https://github.com/SharpAI/DeepCamera/releases/download/v1.2.1/sharpai-2.2.67-20190122181044.apk
+iOS: https://testflight.apple.com/join/8LXGgu3q
 
 To speed up the evaluation of DeepCamera platform, SharpAI Dev Team developed an Application to use Android Camera instead of surveillance camera, remove hardware dependency will speed up the evaluation procedure for developers.
 
 There would be some issues caused by Camera quality on the device, it always has better result if replace Android camera to surveillance camera but still, our Android AI camera is state-of-the-art production leveraging AutoML for Edge devices.
+
 
 
 ## Slack Channel
