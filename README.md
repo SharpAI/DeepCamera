@@ -19,8 +19,8 @@ Deep Learning video processing surveillance on ARM GPU for face recognition and 
 Full stack system for the deep learning edge computing devices, espeicailly set-up-box off the shell with image burning or Android apk installation.
 
 ## Data labeling on Mobile, no data scientist involed
-## Automatically train/deploy model for edge device(Embedded/Android/X86 system)
-## Power efficient, Easy scalable, Production ready, Mobile first
+## Train/deploy model without programming for edge device(Embedded/Android/X86 system)
+## Mobile first, Production ready, Easy scalable, Power efficient
 
 ![image](screenshots/lifecycle_mac.png)
 
@@ -41,14 +41,14 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 - [x] Lable and train from Mobile to Edge Device
 
 ## Supported/tested Device
+- [x] MediaTek MTK6797 (Android, Mobile/Tablet)
+- [x] Huawei Kirin 960/970/980 （Android, Mobile/Tablet)
+- [x] Samsung 7420 (Android, Mobile)
 - [x] Raspberry Pi
 - [x] X86 (Linux/Ubuntu, Mac OS X, Windows(not tested) through Docker)
 - [x] Rockchip RK3399 (Linux, set-up-box H96 Max)
-- [x] Rockchip RK3288 (Android, set-up-box)
-- [x] Samsung 7420 (Android, Mobile)
 - [x] Rockchip RK3399 (Android, RockPro64)
-- [x] MediaTek MTK6797 (Android, Mobile/Tablet)
-- [x] Huawei Kirin 960/970/980 （Android, Mobile/Tablet)
+- [x] Rockchip RK3288 (Android, set-up-box)
 - [x] ARM 64bit devices
 
 ## Supported Camera
