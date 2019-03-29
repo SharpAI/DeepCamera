@@ -557,6 +557,57 @@ var onframe = function(cameraId, motion_detected, file_path, person_count, start
     stop_current_tracking(cameraId)
   }
 }
+
+//onframe2 for integration
+var onframe2 = function(cameraId, motion_detected, face_file_path, person_file_path, person_count, start_ts){
+  ON_DEBUG && console.log('onframe '+ cameraId +' motion detected frame has motion: '+ motion_detected)
+  var previous_diff = new Date().getTime() - getOldTimeStamp(cameraId)
+  ON_DEBUG && console.log(previous_diff)
+  setOldTimeStamp(cameraId, new Date().getTime())
+
+  var current_tracker_id = false;
+
+  if(motion_detected === true){
+    if(is_in_tracking(cameraId)){
+      current_tracker_id = getCurrentTrackerId(cameraId)
+      // Better to extend it when person_count > 0 only,comment out here.
+      //extend_tracker_id_life_time(cameraId)
+    } else {
+      start_new_tracker_id(cameraId)
+    }
+
+    current_tracker_id = getCurrentTrackerId(cameraId)
+    // 现在是实时计算阶段，优先快和准要兼顾
+    if( delayed_for_face_detection === true &&
+      getFaceDetectInProcessingStatus(cameraId) === true ){
+
+      timeline.get_tracking_info(current_tracker_id,
+        function(error, tracking_info){
+          ON_DEBUG && console.log('to analysis tracking info to decide \
+              if save image for delayed processing: ',tracking_info)
+          if(need_save_to_delayed_process(tracking_info)){
+            save_image_for_delayed_process(cameraId,file_path)
+          } else {
+            ON_DEBUG && console.log('delete image due to no need save to delayed process')
+            deepeye.delete_image(file_path)
+          }
+      })
+
+      return;
+    }
+    timeline.get_tracking_info(current_tracker_id,function(error, tracking_info){
+      setFaceDetectInProcessingStatus(cameraId, true);
+      return do_face_detection(cameraId,file_path,person_count,
+        start_ts,tracking_info,current_tracker_id)
+    })
+  } else if(is_in_tracking(cameraId)){
+    // 由于现在没有使用Motion Detection，这里都不会进入
+    var current_tracker_id = getCurrentTrackerId(cameraId)
+    face_motions.clean_up_face_motion_folder(cameraId,current_tracker_id)
+    stop_current_tracking(cameraId)
+  }
+}
+
 motion.init(onframe)
 if(UPLOAD_IMAGE_SERVICE_ENABLED){
   upload_listener.init(onframe)
@@ -587,6 +638,21 @@ router.get('/post', (request, response) => {
 
 app.post('/post2',function(request, response) {
   console.log(request.body);
+  msg = request.body['msg'][0]
+  person_filename = msg['personImagePath']
+  person_count = msg['faceNum']
+  setTimeout(function(){
+       var start = new Date()
+       if(person_count==1){
+          face_filename = msg['faceImagePath']
+          console.log('faces are detected, go to embedding calculation')
+          onframe2("device", true, face_filename, person_filename, person_count, start)
+       } 
+       else{
+	  // execute embedding calculation if only human_shape
+          console.log('only human shape, human box will take over!')
+       }
+  }, 0}
   response.json({message: 'OK'});
 })
 app.listen(port,'0.0.0.0' ,() => console.log('Listening on port ',port));
