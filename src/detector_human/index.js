@@ -593,7 +593,7 @@ app.post('/post2',function(request, response) {
   setTimeout(function(){
        var start = new Date()
        if(person_count==1){
-          console.log('faces are detected, change to face box!)
+          console.log('faces are detected, change to face box!')
        } 
        else{
 	  // execute embedding calculation if only human_shape
