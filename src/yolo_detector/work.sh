@@ -1,0 +1,1 @@
+LD_PRELOAD=../../model/yolo/libdarknet.so LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PREFIX/lib64:/system/vendor/lib64/egl/:/data/data/com.termux/files/home/sharpai/model/yolo:/system/lib64 REDIS_HOST=localhost REDIS_PORT=6379 python2 work.py worker --loglevel INFO -E -n detect -c 1 -Q detect

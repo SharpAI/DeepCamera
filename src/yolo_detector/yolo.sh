@@ -1,0 +1,1 @@
+LD_PRELOAD=libdarknet.so LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PREFIX/lib64:/system/vendor/lib64/egl/:/data/data/com.termux/files/home/yunhai/pycharm_project_583/yolo:/system/lib64 python2 yolo.py

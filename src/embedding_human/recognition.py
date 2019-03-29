@@ -105,7 +105,7 @@ def upload_forecast_result(key, forecast_result, json_data, num_p):
     face_accuracy = forecast_result['face_accuracy']
     people_sqlId = forecast_result['people_sqlId']
     align_image_path = forecast_result['align_image_path']
-    img_style_str = forecast_result['img_style_str']
+    img_style_str = "human_shape"
     ts = forecast_result['ts']
     trackerId = forecast_result['trackerId']
     face_fuzziness = forecast_result['face_fuzziness']
@@ -113,7 +113,7 @@ def upload_forecast_result(key, forecast_result, json_data, num_p):
     p_ids = forecast_result['p_ids']
     embedding_string = forecast_result['embedding_string']
     #embedding_bytes = embedding_string.encode('utf-8')
-    img_type = forecast_result['img_type']
+    img_type = "human_shape"
     waiting = forecast_result['waiting']
     do_not_report_to_server = DO_NOT_REPORT_TO_SERVER
     uploadedimgurl = None

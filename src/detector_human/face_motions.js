@@ -262,11 +262,11 @@ function getAllFilesResults(files, tracker_id, cb){
         var img_info = {
               "faceid": item.face_id,
               "url": item.url,
-              "img_type": "face",
+              "img_type": "human_shape",
               "accuracy": item.accuracy,
               "fuzziness": item.face_fuzziness,
               "sqlid": "0",
-              "style": item.style
+              "style": "human_shape"
         }
         ret_info.push(img_info);
       }
@@ -294,11 +294,11 @@ function getAllFilesResultsNotRecognized(files, tracker_id, cb){
               "recognized": item.recognized,
               "faceid": item.face_id,
               "url": item.url,
-              "img_type": "face",
+              "img_type": "human_shape",
               "accuracy": item.accuracy,
               "fuzziness": item.face_fuzziness,
               "sqlid": "0",
-              "style": item.style
+              "style": "human_shape"
         }
         ret_info.push(img_info);
       }

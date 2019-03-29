@@ -150,7 +150,7 @@ if __name__ == '__main__':
 
     migration()
     #host="http://localhost:3000/restapi/datasync/token/" + str(group_id)
-    host = "http://workaihost.tiegushi.com/restapi/datasync/token/" + str(group_id)
+    host = "http://workaihost.tiegushi.com/restapi/humandatasync/token/" + str(group_id)
     result = None
     try:
         response = urlopen(host, timeout=10)
