@@ -13,6 +13,7 @@ else
   echo 'no opencl supporting'
 fi
 
+sshd &
 redis-server --maxmemory 40mb --maxmemory-policy allkeys-lru --save "" --appendonly no --dbfilename "" &
 mosquitto &
 
