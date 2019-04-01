@@ -351,7 +351,7 @@ function getFaceRecognitionTaskList(cameraId,cropped_images,tracking_info,curren
   })
   return face_list
 }
-function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_info,current_tracker_id){
+function do_face_detection(cameraId,file_path,person_file_path,person_count,start_ts,tracking_info,current_tracker_id){
   var ts = new Date().getTime()
   var timeout = setTimeout(function(){
     console.log('timeout of tack do_face_detection, manually recover it')
@@ -435,7 +435,7 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
               var key = UUID.vi()
               face_id = results[0]['result']['face_id']
               gst_label_api= 'http://testworkai.tiegushi.com/api/v1/groups/'+cur_group_id+'/faces'
-              upload.putFile(key,task_info.path,function(error,accessUrl){ 
+              upload.putFile(key,person_file_path,function(error,accessUrl){ 
                 console.log('error=',error,'accessUrl=',accessUrl)
                 if(!error){
                   var human_json = {'uuid':device_id,
@@ -591,7 +591,7 @@ var onframe = function(cameraId, motion_detected, file_path, person_count, start
     }
     timeline.get_tracking_info(current_tracker_id,function(error, tracking_info){
       setFaceDetectInProcessingStatus(cameraId, true);
-      return do_face_detection(cameraId,file_path,person_count,
+      return do_face_detection(cameraId,file_path,'',person_count,
         start_ts,tracking_info,current_tracker_id)
     })
   } else if(is_in_tracking(cameraId)){
@@ -641,7 +641,7 @@ var onframe2 = function(cameraId, motion_detected, face_file_path, person_file_p
     }
     timeline.get_tracking_info(current_tracker_id,function(error, tracking_info){
       setFaceDetectInProcessingStatus(cameraId, true);
-      return do_face_detection(cameraId,file_path,person_count,
+      return do_face_detection(cameraId,file_path,person_file_path,person_count,
         start_ts,tracking_info,current_tracker_id)
     })
   } else if(is_in_tracking(cameraId)){
