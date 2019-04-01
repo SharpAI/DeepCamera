@@ -1,9 +1,17 @@
-# [Quick demo on Android](https://github.com/SharpAI/DeepCamera/releases/tag/v1.2.1)
+# [Quick Installation on Android](https://github.com/SharpAI/DeepCamera/releases/tag/v1.2.1)
+1. Install DeepCamera AI monitor on Android. https://github.com/SharpAI/DeepCamera/releases/download/v1.2.1/DeepCamera_03282019.apk
+2. Install mobile app to receive notification, name/labelling people(Beta test)  
+Android: https://github.com/SharpAI/DeepCamera/releases/download/v1.2.1/sharpai-2.2.67-20190122181044.apk  
+iOS: https://testflight.apple.com/join/8LXGgu3q
 
 To speed up the evaluation of DeepCamera platform, SharpAI Dev Team developed an Application to use Android Camera instead of surveillance camera, remove hardware dependency will speed up the evaluation procedure for developers.
 
 There would be some issues caused by Camera quality on the device, it always has better result if replace Android camera to surveillance camera but still, our Android AI camera is state-of-the-art production leveraging AutoML for Edge devices.
 
+
+
+## Slack Channel
+[Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
 # What's SharpAI DeepCamera
 Deep Learning video processing surveillance on ARM GPU for face recognition and much more on the way. Turn digital camera into AI-powered camera. Production level platform for edge AI using ARM GPU/NPU, leveraging AutoML. The first world-class Edge AI full stack platform for developer/kids/home/SMB/enterprise/cloud, baking by community.
@@ -11,12 +19,12 @@ Deep Learning video processing surveillance on ARM GPU for face recognition and 
 Full stack system for the deep learning edge computing devices, espeicailly set-up-box off the shell with image burning or Android apk installation.
 
 ## Data labeling on Mobile, no data scientist involed
-## Automatically train/deploy model for edge device(Embedded/Android/X86 system)
-## Power efficient, Easy scalable, Production ready, Mobile first
+## Train/deploy model without programming for edge device(Embedded/Android/X86 system)
+## Mobile first, Production ready, Easy scalable, Power efficient
 
 ![image](screenshots/lifecycle_mac.png)
 
-# Feature List
+## Feature List
 - [x] High accurate Face Recognition
 - [x] Face Detection
 - [x] Inference on ARM Mali GPU
@@ -32,81 +40,49 @@ Full stack system for the deep learning edge computing devices, espeicailly set-
 - [x] Motion Detection with Android GPU
 - [x] Lable and train from Mobile to Edge Device
 
-# Supported Device
+## Supported/tested Device
+- [x] MediaTek MTK6797 (Android, Mobile/Tablet)
+- [x] Huawei Kirin 960/970/980 （Android, Mobile/Tablet)
+- [x] Samsung 7420 (Android, Mobile)
 - [x] Raspberry Pi
 - [x] X86 (Linux/Ubuntu, Mac OS X, Windows(not tested) through Docker)
 - [x] Rockchip RK3399 (Linux, set-up-box H96 Max)
-- [x] Rockchip RK3288 (Android, set-up-box)
-- [x] Samsung 7420 (Android, Mobile)
 - [x] Rockchip RK3399 (Android, RockPro64)
-- [x] Linux/Android Has OpenCL
+- [x] Rockchip RK3288 (Android, set-up-box)
+- [x] ARM 64bit devices
 
-# Supported Camera
+## Supported Camera
 - [x] Dahua Camera
 - [x] Hikvision Camera
 - [x] Shinobi CCTV Supported Devices
 - [x] Screen Captured from Android Camera preview application
 
-# Slack Channel
-[Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
-
-# Demo
+## Demo
 ![demo](https://github.com/SharpAI/DeepCamera/blob/master/screenshots/demo.gif)
 
-# How to Run DeepCamera From Source Code
-![From end user's view](screenshots/on_app_end_user.png)
+## How to develop on SharpAI DeepCamera
 
-## 1. Generate/Get Serial No
-### Android
-After install Launcher(Modified Termux), QR Code is placed on screen.
+You can develop on SharpAI DeepCamera almost on every devices.
 
-### Linux/MacOS
-Get your Mac Address(1e:20:34:10:24:21)
-```
-cd DeepCamera
-echo 1e2034102421 > docker/workaipython/ro_serialno
-```
-## 2. Then generate text type QR code with serial_no you just got
-[QR code Generator En](https://www.qr-code-generator.com)  
-[QR code Generator Chn](https://cli.im/)
-
-## 3. How to Run DeepCamera on Edge Device
-
-### 3.1 [Run on Android(5.1+ aarch64)](docs/Run_Source_Android_aarch64.md)
-### 3.2 Run on Rockchip RK3399 with linux/docker
-#### 3.2.1 Use prebuilt docker images
+### [How to Run DeepCamera on 64-bit Android From Source Code](docs/Run_Source_Android_aarch64.md)
+### [How to Run DeepCamera on 32-bit Android](docs/RunOnRK3288.md)
+### [Run on Raspberry Pi](docs/RunOnRaspberryPi.md)
+### Run on Embedded Linux with docker (Rockchip RK3399)
 ```
 git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera/docker  
 sudo ./run-deepeye-prebuilt.sh start
 ```
-### 3.3 [Run on Rockchip RK3288 with Android 5.1](docs/RunOnRK3288.md)
-### 3.4 Run on X86 Laptop Docker
-#### 3.4.1 Use prebuilt docker images
+### Run on X86 Laptop Docker
 ```
 git clone https://github.com/SharpAI/DeepCamera -b pc_version
 cd DeepCamera/docker
 sudo ./run-deepeye-x86.sh start #make sure Serial No is in docker/workaipython/ro_serialno
 ```   
-#### 3.4.2 Build docker images on your local machine
-```
-git clone https://github.com/SharpAI/ImageBuilder-DeepLearning -b android_porting
-cd ImageBuilder-DeepLearning/Docker-DeepEye/workai/
-./build_x86_dockers.sh
-```
-Then run DeepCamera, will use local docker images
 
-```
-git clone https://github.com/SharpAI/DeepCamera
-cd DeepCamera/docker
-docker-compose -f docker-compose-x86.yml up
-```
+## It is even possible to connect Surveilance Camera 
 
-### 3.5 [Run on Raspberry Pi](docs/RunOnRaspberryPi.md)
-
-## 4. Link to Your Camera 
-
-### 4.1 Linux/Docker System
+### Through Shinobi (if you install DeepCamera through Docker)
 Then you need to follow [Shinobi's document](https://shinobi.video) to add camera. or [click to see our tutorial](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)
 
 Shinobi login page(device_ip:8080):   
@@ -115,25 +91,21 @@ password: SharpAI2018
 
 You can also [turn Mac Camera into RTSP camera(not tested)](https://www.tribler.org/MacWebcam/)
 
-### 4.2 Android(Dahua SDK Configure)
+### Through Dahua SDK (if you install DeepCamera on Android)
 Code is [here](https://github.com/SharpAI/RTSP_Decoder_IJKPlayer/blob/od_gl_based/android/ijkplayer/ijkplayer-example/src/main/java/tv/danmaku/ijk/media/example/activities/CameraScanActivity.java#L147)
 
-### 4.3 Android screen capture
-Code is [here](https://github.com/SharpAI/ScreenCapture)
 
-### 4.4 Android(RTSP url config)
-Comming soon
-
-# Survey: Do you want to have Dev Kit for easily startup
+## Survey: Do you want to have Dev Kit for easily startup
 We are considering to provide full set of development kit to easy the setup effort you may face to. 
 [Please thumb up if you want one](https://github.com/SharpAI/DeepCamera/issues/8)
+
 ### How it works from end user's point of view, green parts are done if using Dev Kit
 ![From end user's view](screenshots/on_app_end_user.png)
 
 ## [How to configure on Mobile APP, Chinese Version](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
 
 ## Application in English(Beta Test)
-Android: https://www.pgyer.com/app/install/0e87e08c72a232e8f39a6a7c76222038
+Android: https://www.pgyer.com/app/install/0e87e08c72a232e8f39a6a7c76222038  
 iOS: https://testflight.apple.com/join/8LXGgu3q
 
 ## [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
@@ -153,8 +125,22 @@ iOS: https://testflight.apple.com/join/8LXGgu3q
 
 ![screen shot 2019-03-07 at 11 30 54 am](https://user-images.githubusercontent.com/3085564/53930505-7c094880-40cc-11e9-939a-1368cc557a0c.png)
  
-# APIs doc for app server
+## APIs doc for app server
 [Click to see APIs document](https://github.com/SharpAI/mobile_app_server/tree/android_porting/rest_api_sdk)
 
-# App User Guide
+## App User Guide
 [Click for user guide](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
+
+## Contributions
+This project contains source code or library dependencies from the follow projects:
+* Tensorflow available at: https://github.com/tensorflow/tensorflow Apache License 2.0
+* MXNet available at: https://github.com/apache/incubator-mxnet Apache License 2.0
+* TVM available at: https://github.com/dmlc/tvm Apache License 2.0
+* Shinobi project available at: https://gitlab.com/Shinobi-Systems/Shinobi/ Copyright (c) 2018 Shinobi Systems
+* Termux project available at: https://github.com/termux/termux-app GPLv3/Apache License 2.0
+* Insightface project available at: https://github.com/deepinsight/insightface MIT License
+* Easyrs project available at: https://github.com/silvaren/easyrs MIT License
+* Nodejs: https://nodejs.org Copyright Node.js contributors. All rights reserved.
+* Python: https://www.python.org Python 2.7 license
+* Gcc for termux with fortran scipy etc: https://github.com/its-pointless/gcc_termux
+* RembrandtAndroid project available at https://github.com/imgly/RembrandtAndroid
