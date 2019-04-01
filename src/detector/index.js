@@ -9,6 +9,9 @@ var deepeye=require('./deepeye')
 var waitqueue=require('./waitqueue')
 var timeline=require('./timeline')
 var face_motions=require('./face_motions')
+var UUID = require('uuid')
+var upload = require('./upload')
+var requestretry = require('requestretry')
 
 rt_msg = require('./realtime_message')
 
@@ -418,9 +421,50 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
           console.log('timeout of tack embedding_clustering, manually recover it')
             setEmbeddingInProcessingStatus(cameraId,false)
         },TASK_IN_DETECTOR_EXPIRE_IN_SECONDS*1000)
-
+        device_id = ''
+        cur_group_id = ''
+        deepeye.get_device_uuid(function(uuid){
+            device_id = uuid
+        })
+        deepeye.get_device_group_id(function(group_id){
+            cur_group_id = group_id
+        })
         setEmbeddingInProcessingStatus(cameraId,true)
         deepeye.embedding_clustering(faces_to_be_recognited, current_tracker_id, function(err,results){
+          if(results[0]['result']['recognized'] == true && person_file_path != ''){
+              var key = UUID.vi()
+              face_id = results[0]['result']['face_id']
+              gst_label_api= 'http://testworkai.tiegushi.com/api/v1/groups/'+cur_group_id+'/faces'
+              upload.putFile(key,task_info.path,function(error,accessUrl){ 
+                console.log('error=',error,'accessUrl=',accessUrl)
+                if(!error){
+                  var human_json = {'uuid':device_id,
+                                    'imgUrl':accessUrl,
+                                    'face_id':face_id,
+                                    'type': 'human_shape',
+                                    'fuzziness': 100,
+                                    'style': 'human_shape'
+                                   }
+                  requestretry({
+                    url: gst_label_api,
+                    method: "POST",
+                    json: true,
+                    maxAttempts: 5,   // (default) try 5 times
+                    retryDelay: 5000,
+                    body: human_json
+                  }, function (error, response, body){
+                    if(error) {
+                        console.log("human auto label error: ",error)
+                    } else {
+                        if(body && body.state=="SUCCESS" && body.result) {
+                            var json = JSON.parse(body.result)
+                            console.log('human auto label result: ',json)
+                        }
+                    }
+                  });
+                }
+              }
+          }
           setEmbeddingInProcessingStatus(cameraId,false)
           clearTimeout(embedding_timeout)
           timeline.update(current_tracker_id,'in_tracking',person_count,results)
