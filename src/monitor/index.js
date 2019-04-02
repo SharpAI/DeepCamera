@@ -7,9 +7,41 @@ var CryptoJS = require("crypto-js");
 var Docker = require('dockerode');
 var YAML = require('yamljs');
 var fs = require("fs");
+var http = require("http");
+var StringDecoder = require('string_decoder').StringDecoder;
 var docker = new Docker();
 var flowerws = process.env.FLOWER_WS || 'ws://flower:5555/api/task/events/task-succeeded/';
 var exec = require('child_process').exec;
+
+const hostname = '127.0.0.1';
+const port = 3380;
+
+const http_server = http.createServer(function(req, res) {
+  if (req.method === 'POST') {
+    const decoder = new StringDecoder('utf-8');
+    var payload = '';
+
+    req.on('data', (data) => {
+      payload += decoder.write(data);
+    });
+
+    req.on('end', () => {
+      payload += decoder.end();
+
+      // Parse payload to object.
+      payload = JSON.parse(payload);
+
+      console.log('req url: ' + req.url);
+      console.log('payload: ' + JSON.stringify(payload));
+
+      // Do smoething with the payload....
+      //if (req.url == '/api/login')
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({result: 'success'}));
+    });
+  }
+});
 
 var ddpClient = new DDPClient({
   // All properties optional, defaults shown
@@ -496,6 +528,10 @@ get_device_uuid(function(uuid){
   var my_client_id = uuid
   connectToMeteorServer(my_client_id)
   connectToFlower()
+
+  http_server.listen(port, hostname, function() {
+    console.log(`Server running at http://${hostname}:${port}/`);
+  });
 
   setInterval(function(){
     cpu_mem_uptime_temp(function(os_info) {
