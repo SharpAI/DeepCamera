@@ -1,30 +1,23 @@
-
 # What's SharpAI DeepCamera
 This is a unique repository in many ways. It’s a deep learning model open sourced to protect your privacy. The entire DeepCamera concept is based on automated machine learning (AutoML). So you don’t even need any programming experience to train a new model.
 
 ![image](screenshots/lifecycle_mac.png)
 
-DeepCamera works on Android devices. You can integrate the code with surveillance cameras as well. There’s a LOT you can do with DeepCamera’s code, including:
+DeepCamera works on Android devices.
+You can integrate the code with surveillance cameras as well. There’s a LOT you can do with DeepCamera’s code, including:
 
 - Face recognition
 - Face Detection
 - Control from mobile application
 - Object detection
-- Human ReID (Recognition based on human shape)
 - Motion detection
+- Human ReID (Recognition based on human shape)
 
 And a whole host of other things. Building your own AI-powered model has never been this easy!
 
-## Data labeling on Mobile, no data scientist involed
-## Train/deploy model without programming for edge device(Embedded/Android/X86 system)
-## Mobile first, Production ready, Easy scalable, Power efficient
-
-
-## [Quick Installation on Android](https://github.com/SharpAI/DeepCamera/releases/tag/v1.2.1)
-
+## [Quick Evaluation on Android](https://github.com/SharpAI/DeepCamera/releases/tag/v1.2.1)
 ## Slack Channel
 [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
-
 ## Feature List
 - [x] High accurate Face Recognition
 - [x] Face Detection
