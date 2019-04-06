@@ -103,21 +103,7 @@ Android: https://www.pgyer.com/app/install/0e87e08c72a232e8f39a6a7c76222038
 iOS: https://testflight.apple.com/join/8LXGgu3q
 
 ## [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
-# Call For Help
-- [x] Translation, we did deploy our production in China, much of our resource is in Chinese, need your help to translate, especially the Mobile APP built with Meteor https://github.com/SharpAI/mobile_app_server  (English_Version)
-- [x] Remove unused code/project in https://github.com/SharpAI/mobile_app_server
-- [x] PR, more than welcome, anything :)
-- [ ] Meetup hosts, in Silicon Valley
-
 ![screen shot 2019-03-07 at 4 03 59 pm](https://user-images.githubusercontent.com/3085564/53941268-a0781b80-40f2-11e9-8cc6-6295c3a39c96.png)
-
-![deepcamera_arm32 on android](screenshots/deepcamera_arm32.png)
-![deepcamera_arm64 on android](screenshots/deepcamera_arm64.png)
-![deepcamera_on docker linux](screenshots/deepcamera_docker_linux.png)
-
-![screen shot 2019-03-07 at 11 27 22 am](https://user-images.githubusercontent.com/3085564/53930362-fdaca680-40cb-11e9-8303-d538315d9021.png)
-
-![screen shot 2019-03-07 at 11 30 54 am](https://user-images.githubusercontent.com/3085564/53930505-7c094880-40cc-11e9-939a-1368cc557a0c.png)
  
 ## APIs doc for app server
 [Click to see APIs document](https://github.com/SharpAI/mobile_app_server/tree/android_porting/rest_api_sdk)
