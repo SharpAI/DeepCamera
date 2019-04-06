@@ -74,7 +74,7 @@ cd DeepCamera/docker
 sudo ./run-deepeye-x86.sh start #make sure Serial No is in docker/workaipython/ro_serialno
 ```   
 
-## It is even possible to connect Surveilance Camera 
+## It is even possible to integrate with your Surveilance Camera 
 
 ### Through Shinobi (if you install DeepCamera through Docker)
 Then you need to follow [Shinobi's document](https://shinobi.video) to add camera. or [click to see our tutorial](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)
