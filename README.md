@@ -106,10 +106,10 @@ iOS: https://testflight.apple.com/join/8LXGgu3q
 ![screen shot 2019-03-07 at 4 03 59 pm](https://user-images.githubusercontent.com/3085564/53941268-a0781b80-40f2-11e9-8cc6-6295c3a39c96.png)
  
 ## APIs doc for app server
-[Click to see APIs document](https://github.com/SharpAI/mobile_app_server/tree/android_porting/rest_api_sdk)
+[Click to see APIs document](https://github.com/SharpAI/mobile_app_server/tree/master/hotShareWeb/api/server)
 
 ## App User Guide
-[Click for user guide](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
+[Click for user guide](https://github.com/SharpAI/mobile_app_server/blob/master/README.md)
 
 ## Contributions
 This project contains source code or library dependencies from the follow projects:
