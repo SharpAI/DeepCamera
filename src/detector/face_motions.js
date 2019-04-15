@@ -48,7 +48,7 @@ function get_device_group_id(cb){
 }
 function remove_face_motion_images(cameraId,trackerId){
   var saving_path = 'face_motion/'+trackerId+'/'
-  makegif.removeUnusedImageDir(saving_path)
+  makegif.removeUnusedImageDir(saving_path, 'face_motion/')
 }
 function do_generate_gif_and_upload(cameraId,trackerId,whole_file,name_sorting,cb){
 
@@ -112,7 +112,7 @@ function do_generate_gif_and_upload(cameraId,trackerId,whole_file,name_sorting,c
                         send_face_motion_event_to_event_server(group_id,uuid,'activity',cameraId,url)
                       }
                     }
-                    //makegif.removeUnusedImageDir(saving_path);
+                    //makegif.removeUnusedImageDir(saving_path, 'face_motion/');
                   })
                 })
               })
