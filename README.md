@@ -52,7 +52,7 @@ And a whole host of other things. Building your own AI-powered model has never b
 - [x] Screen Captured from Android Camera preview application
 
 ## Demo
-![demo](https://github.com/SharpAI/DeepCamera/blob/master/screenshots/demo.gif)
+![demo](https://github.com/SharpAI/DeepCamera/raw/master/screenshots/demo.gif)
 
 ## How to develop on SharpAI DeepCamera
 
