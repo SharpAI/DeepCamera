@@ -55,10 +55,7 @@ function generateGif(type,dir,name_sorting,cb){
   });
 }
 
-function deleteFolderRecursive(path) {
-    if(!REMOVE_IMG_UPLOADED)
-        return;
-
+function _deleteFolderRecursive(path) {
     if( fs.existsSync(path) ) {
         fs.readdirSync(path).forEach(function(file) {
             var curPath = path + "/" + file;
@@ -69,6 +66,29 @@ function deleteFolderRecursive(path) {
             }
         });
         fs.rmdirSync(path);
+    }
+};
+
+
+function deleteFolderRecursive(path, face_motion_path) {
+    if(!REMOVE_IMG_UPLOADED)
+        return;
+
+    // remove current unused images
+    _deleteFolderRecursive(path)
+
+    // remove all unused images and dirs
+    if( fs.existsSync(face_motion_path) ) {
+        fs.readdirSync(face_motion_path).forEach(function(dir) {
+            var curPath = face_motion_path + "/" + dir;
+            var dirstat = fs.statSync(curPath)
+            if (dirstat && dirstat.ctime) {
+              var tsdir = new Date(dirstat.ctime).getTime()
+              if ((tsdir + 10*60*1000) < new Date().getTime() && fs.statSync(curPath).isDirectory()) {
+                  _deleteFolderRecursive(face_motion_path + '/' + dir)
+              }
+            }
+        });
     }
 };
 
