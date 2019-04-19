@@ -60,8 +60,8 @@ def faceStyle(landmark, bb, face_width):
     middle_point = (bb[2] + bb[0])/2
     y_middle_point = (bb[3] + bb[1]) / 2
     eye_distance = abs(eye_1[0]-eye_2[0])
-    if eye_distance < 10:
-        print('(Eye distance less than 10 pixels) Add style')
+    if eye_distance < 2:
+        print('(Eye distance less than 2 pixels) Add style')
         style.append('side_face')
     elif eye_1[0] > middle_point:
         print('(Left Eye on the Right) Add style')
