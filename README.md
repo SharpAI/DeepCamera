@@ -15,7 +15,7 @@ You can integrate the code with surveillance cameras as well. There’s a LOT yo
 
 And a whole host of other things. Building your own AI-powered model has never been this easy!
 
-## [Quick Evaluation on Android](https://github.com/SharpAI/DeepCamera/releases/tag/v1.2.1)
+## [Quick Evaluation on Android](https://github.com/SharpAI/DeepCamera/releases/tag/1.3)
 ## Slack Channel
 [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 ## Feature List
