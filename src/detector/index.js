@@ -557,6 +557,169 @@ var onframe = function(cameraId, motion_detected, file_path, person_count, start
     stop_current_tracking(cameraId)
   }
 }
+
+function handle_android_detection_result(cameraId,whole_file,person_count,start_ts,
+  tracking_info,current_tracker_id,face_detected,cropped_num,cropped_images){
+  const ts = new Date().getTime()
+
+  tracking_info && console.log(tracking_info);
+  ON_DEBUG && console.log('detect callback')
+  var current_person_count = getCurrentPersonCount(cameraId)
+  console.log('['+cameraId+'] tid: '+current_tracker_id+' person num: '+person_count+' face num: '+face_detected+' cost: '+(new Date() - start_ts));
+  setCurrentPersonCount(cameraId, person_count)
+  setCurrentFaceCount(cameraId, face_detected)
+  if(person_count >= 1){
+    extend_tracker_id_life_time(cameraId)
+  } else if (face_detected===0){
+    stop_current_tracking(cameraId)
+    timeline.update(current_tracker_id,'track_stopped',0,null)
+  }
+  /*else {
+    // Keep Tracker ID same if multiple person detected
+    console.log('TODO: Multiple Person Logic')
+  }*/
+
+   // Person number changed, need handle it
+/*timeline.get_faces_detected(current_tracker_id,function(err,number){
+  console.log('Current face number----', number)
+  if(number !== 0 && number !== face_detected){
+      console.log('number of faces changes.....')
+      timeline.update(current_tracker_id,'track_stopped',0,null)
+      stop_current_tracking(cameraId)
+      start_new_tracker_id(cameraId)
+      current_tracker_id = getCurrentTrackerId(cameraId)
+      setCurrentPersonCount(cameraId, face_detected)
+      }
+*/
+
+  var faces_to_be_recognited = getFaceRecognitionTaskList(cameraId,
+    cropped_images,tracking_info,current_tracker_id)
+  if (faces_to_be_recognited.length >0) {
+    // 根据数学的Sampling 原则，我们计算一张图片的Embedding时，只需要确保其他的图片不要计算，而等着一张图片的都计算完
+    if(SAMPLING_TO_SAVE_ENERGY_MODE){
+      if(getEmbeddingInProcessingStatus(cameraId)){
+        console.log('Sampling mode, skip this frame since previous calcuation is in progress, need delete images of faces')
+
+        gifQueue.add({
+          person_count:person_count,
+          cameraId:cameraId,
+          current_tracker_id:current_tracker_id,
+          whole_file:whole_file,
+          name_sorting:false});
+        return
+      }
+    }
+
+    var embedding_timeout = setTimeout(function(){
+      console.log('timeout of tack embedding_clustering, manually recover it')
+        setEmbeddingInProcessingStatus(cameraId,false)
+    },TASK_IN_DETECTOR_EXPIRE_IN_SECONDS*1000)
+
+    setEmbeddingInProcessingStatus(cameraId,true)
+    deepeye.embedding_clustering(faces_to_be_recognited, current_tracker_id, function(err,results){
+      setEmbeddingInProcessingStatus(cameraId,false)
+      clearTimeout(embedding_timeout)
+      timeline.update(current_tracker_id,'in_tracking',person_count,results)
+
+      if(GIF_UPLOADING){
+        //save gif info
+        var jpg_motion_path = face_motions.save_face_motion_image_path(current_tracker_id, whole_file);
+        timeline.push_gif_info(current_tracker_id, jpg_motion_path, results, ts, function(err) {
+          if(err){
+            console.log(err)
+          }
+        })
+        // after it,the whole_file will be deleted, so need call it after face_motions.save_face_motion_image_path
+        gifQueue.add({
+          person_count:person_count,
+          cameraId:cameraId,
+          current_tracker_id:current_tracker_id,
+          whole_file:whole_file,
+          name_sorting:false});
+      } else {
+        deepeye.delete_image(whole_file)
+      }
+    })
+  } else {
+      if(GIF_UPLOADING){
+        gifQueue.add({
+          person_count:person_count,
+          cameraId:cameraId,
+          current_tracker_id:current_tracker_id,
+          whole_file:whole_file,
+          name_sorting:false});
+      } else {
+        deepeye.delete_image(whole_file)
+      }
+  }
+}
+
+// Has motion mean in defined duration, motion detected.
+// Can define it on WEB GUI
+function onframe_for_android(json){
+  const cameraId = json.deviceName;
+  const motion_detected = json.motion;
+  const start_ts = new Date();
+  const person_count = json.msg.length || 0;
+  const file_path = json.msg.wholeImagePath
+
+  console.log('onframe for android '+ cameraId +' motion detected frame has motion: '+ motion_detected)
+  const previous_diff = new Date().getTime() - getOldTimeStamp(cameraId)
+  console.log('previous_diff',previous_diff)
+  setOldTimeStamp(cameraId, new Date().getTime())
+
+  let current_tracker_id = false;
+
+  if(motion_detected === true){
+    if(is_in_tracking(cameraId)){
+      current_tracker_id = getCurrentTrackerId(cameraId)
+      // Better to extend it when person_count > 0 only,comment out here.
+      //extend_tracker_id_life_time(cameraId)
+    } else {
+      start_new_tracker_id(cameraId)
+    }
+
+    current_tracker_id = getCurrentTrackerId(cameraId)
+    let croppedFaces = getCroppedFaces(json.msg,current_tracker_id,person_count,cameraId)
+
+    console.log('current tracker id',current_tracker_id,croppedFaces);
+    timeline.get_tracking_info(current_tracker_id,function(error, tracking_info){
+      //console.log(tracking_info)
+      //return do_face_detection(cameraId,file_path,person_count,
+      //  start_ts,tracking_info,current_tracker_id)
+      return handle_android_detection_result(cameraId,file_path,person_count,start_ts,
+            tracking_info,current_tracker_id,croppedFaces.length,croppedFaces.length,croppedFaces)
+    })
+  } else if(is_in_tracking(cameraId)){
+    // 由于现在没有使用Motion Detection，这里都不会进入
+    current_tracker_id = getCurrentTrackerId(cameraId)
+    face_motions.clean_up_face_motion_folder(cameraId,current_tracker_id)
+    stop_current_tracking(cameraId)
+  }
+}
+
+function getCroppedFaces(detectedArray, trackerid, totalPeople, deviceId){
+  let result = [];
+  detectedArray.forEach((item)=>{
+    console.log(item);
+    if(item.faceNum !=0){
+      const croppedFace = {
+        trackerid:trackerid,
+        style: item.faceStyle,
+        blury: item.faceBlurry,
+        width: item.faceWidth,
+        totalPeople: totalPeople,
+        path: item.faceImagePath,
+        ts: new Date().valueOf(),
+        cameraId: deviceId,
+        height: item.faceHeight
+      }
+      result.push(croppedFace);
+    }
+  })
+  return result;
+}
+
 motion.init(onframe)
 if(UPLOAD_IMAGE_SERVICE_ENABLED){
   upload_listener.init(onframe)
@@ -586,7 +749,14 @@ router.get('/post', (request, response) => {
 });
 
 app.post('/post2',function(request, response) {
-  console.log(request.body);
+  let json = request.body;
+  setTimeout(()=>{
+    try{
+      onframe_for_android(json);
+    } catch(e){
+      console.log(e);
+    }
+  },0)
   response.json({message: 'OK'});
 })
 app.listen(port,'0.0.0.0' ,() => console.log('Listening on port ',port));
