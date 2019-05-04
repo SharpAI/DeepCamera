@@ -465,6 +465,10 @@ gifQueue.process(function(job, done){
   // job.id contains id of this job.
   ON_DEBUG && console.log('process gif task in bull queue %d',job.id)
   var data = job.data
+  if(!data || !data.whole_file){
+    console.log('no file to process')
+    return done();
+  }
   face_motions.check_and_generate_face_motion_gif(
     data.person_count,
     data.cameraId,
@@ -661,7 +665,7 @@ function onframe_for_android(json){
   const motion_detected = json.motion;
   const start_ts = new Date();
   const person_count = json.msg.length || 0;
-  const file_path = json.msg.wholeImagePath
+  const file_path = json.wholeImagePath
 
   console.log('onframe for android '+ cameraId +' motion detected frame has motion: '+ motion_detected)
   const previous_diff = new Date().getTime() - getOldTimeStamp(cameraId)
