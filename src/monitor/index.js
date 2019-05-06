@@ -16,6 +16,44 @@ var exec = require('child_process').exec;
 const hostname = '127.0.0.1';
 const port = 3380;
 
+const DEBUG_ON = false;
+
+function getOldestMessage(ai_messages,person_id){
+  let msg = null;
+  for (let key in ai_messages) {
+  	if (ai_messages.hasOwnProperty(key)) {
+      let item = ai_messages[key];
+  		DEBUG_ON && console.log(item);
+      if(item.personId != person_id){
+        continue;
+      }
+      if(!msg){
+        msg = item;
+      } else if(item.createdAt < msg.createdAt){
+        msg = item;
+      }
+  	}
+  }
+  return msg;
+}
+function getPersonIdFromFaceId(face_id){
+  const persons = ddpClient.collections.person;
+  for (let key in persons) {
+  	if (persons.hasOwnProperty(key)) {
+      let item = persons[key];
+  		DEBUG_ON && console.log(item);
+      if(item.faceId != face_id){
+        continue;
+      }
+      if(item._id){
+        const personId = item._id.replace('-','');
+        console.log('got real person id',personId,'from ',face_id);
+        return personId;
+      }
+  	}
+  }
+  return null;
+}
 const http_server = http.createServer(function(req, res) {
   if (req.method === 'POST') {
     const decoder = new StringDecoder('utf-8');
@@ -34,11 +72,52 @@ const http_server = http.createServer(function(req, res) {
       console.log('req url: ' + req.url);
       console.log('payload: ' + JSON.stringify(payload));
 
-      // Do smoething with the payload....
-      //if (req.url == '/api/login')
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify({result: 'success'}));
+      if(req.url == '/person_message_unread'){
+        const face_id = payload.face_id;
+        if(face_id && face_id !=''){
+          DEBUG_ON && console.log('person message: ',ddpClient.collections.ai_messages);
+          if(ddpClient.collections.ai_messages && ddpClient.collections.person){
+            const realPersonID = getPersonIdFromFaceId(face_id);
+            if(!realPersonID){
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({result: 'no'}));
+              return;
+            }
+            const msg = getOldestMessage(ddpClient.collections.ai_messages,realPersonID);
+            if(msg){
+              console.log(msg);
+
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({result: 'yes', msg:msg}));
+              return;
+            }
+          }
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({result: 'no'}));
+        }
+      } else if(req.url == '/person_message_done') {
+          const _id = payload._id;
+          if(_id && _id !=''){
+            DEBUG_ON && console.log('person message done: ',_id);
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({result: 'ok'}));
+
+            ddpClient.call('mark_person_message_as_read',[_id],function(err,result){
+              console.log('mark_person_message_as_read, result',err,result);
+            })
+          }
+      }
+      else {
+        // Do smoething with the payload....
+        //if (req.url == '/api/login')
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({result: 'success'}));
+      }
     });
   }
 });
@@ -73,6 +152,10 @@ function get_device_uuid(cb){
 
 var connectedToServer = false
 var timesInSilence = 0
+
+let groupAIMessageSubId = null;
+let groupPersonSubId = null;
+
 function login_with_device_id(device_id, callback){
   var real_pwd = CryptoJS.HmacSHA256(device_id, "sharp_ai98&#").toString()
   console.log(real_pwd)
@@ -203,7 +286,36 @@ function processing_command(id, client_id){
       processing_command_done(id, clientid);
   }
 }
-
+function subscribe_ai_message(group_id){
+  console.log('subscribing group ai message',group_id);
+  if(groupAIMessageSubId){
+    ddpClient.unsubscribe(groupAIMessageSubId);
+    groupAIMessageSubId = null;
+  }
+  groupAIMessageSubId = ddpClient.subscribe(
+    'aiMessages.group.unread',
+    [group_id],
+    function () {
+      console.log('ai_messages subsctiption complete:');
+      console.log(ddpClient.collections.ai_messages);
+    }
+  );
+}
+function subscribe_group_person_information(group_id){
+  console.log('subscribing group_person_info',group_id);
+  if(groupPersonSubId){
+    ddpClient.unsubscribe(groupPersonSubId);
+    groupPersonSubId = null;
+  }
+  groupPersonSubId = ddpClient.subscribe(
+    'group_person_info',
+    [group_id],
+    function () {
+      console.log('group_person_info subsctiption complete:');
+      console.log(ddpClient.collections.person);
+    }
+  );
+}
 function handle_group_id(group_id){
   console.log('yes, my group id is ['+ group_id +'] for now')
 
@@ -214,6 +326,12 @@ function handle_group_id(group_id){
 
       console.log("The file was saved!");
   });
+  try{
+    subscribe_ai_message(group_id);
+    subscribe_group_person_information(group_id);
+  } catch (e){
+    console.log('exception of handle_group_id',e)
+  }
 }
 function sub_device_info(client_id){
       /*
