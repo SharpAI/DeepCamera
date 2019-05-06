@@ -54,6 +54,36 @@ function getPersonIdFromFaceId(face_id){
   }
   return null;
 }
+function getPersonNameFromFaceId(face_id){
+  const persons = ddpClient.collections.person;
+  for (let key in persons) {
+  	if (persons.hasOwnProperty(key)) {
+      let item = persons[key];
+  		DEBUG_ON && console.log(item);
+      if(item.faceId != face_id){
+        continue;
+      }
+      if(item.name){
+        console.log('got name ',item.name,'from ',face_id);
+        return item.name;
+      }
+  	}
+  }
+  return null;
+}
+let time_to_speak = {};
+function readyToSpeakName(faceId){
+  if(!time_to_speak[faceId]){
+    time_to_speak[faceId] = new Date().valueOf();
+    return true;
+  }
+  const nowTs = new Date().valueOf();
+  if(nowTs - time_to_speak[faceId] > 30*1000){
+    time_to_speak[faceId] = nowTs;
+    return true;
+  }
+  return false;
+}
 const http_server = http.createServer(function(req, res) {
   if (req.method === 'POST') {
     const decoder = new StringDecoder('utf-8');
@@ -78,19 +108,37 @@ const http_server = http.createServer(function(req, res) {
           DEBUG_ON && console.log('person message: ',ddpClient.collections.ai_messages);
           if(ddpClient.collections.ai_messages && ddpClient.collections.person){
             const realPersonID = getPersonIdFromFaceId(face_id);
+            const personName = getPersonNameFromFaceId(face_id);
             if(!realPersonID){
               res.statusCode = 200;
               res.setHeader('Content-Type', 'application/json');
               res.end(JSON.stringify({result: 'no'}));
               return;
             }
-            const msg = getOldestMessage(ddpClient.collections.ai_messages,realPersonID);
+            let msg = getOldestMessage(ddpClient.collections.ai_messages,realPersonID);
             if(msg){
-              console.log(msg);
+              let prefix = ''
+              if(personName){
+                prefix += personName+',';
+              }
+              if(msg.sentByUser){
+                prefix += msg.sentByUser+'对你说,';
+              }
+
+              msg.msg=prefix+','+msg.msg;
 
               res.statusCode = 200;
               res.setHeader('Content-Type', 'application/json');
               res.end(JSON.stringify({result: 'yes', msg:msg}));
+
+              console.log('To speak to ',msg);
+              return;
+            }
+            if(personName && readyToSpeakName(face_id)){
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({result: 'name', name:personName}));
+              console.log('only say hi to',personName);
               return;
             }
           }
