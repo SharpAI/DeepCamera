@@ -168,8 +168,6 @@ const http_server = http.createServer(function(req, res) {
               console.log('mark_person_message_as_read, result',err,result);
             })
           }
-      } else if(req.url == '/camera_keepalive'){
-          status.total_tasks++;
       }
       else {
         // Do smoething with the payload....
@@ -179,6 +177,14 @@ const http_server = http.createServer(function(req, res) {
         res.end(JSON.stringify({result: 'success'}));
       }
     });
+  } else if (req.method === "GET") {
+      if(req.url == '/camera_keepalive'){
+         status.total_tasks++;
+         console.log('keep alive',status);
+      }
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({result: 'success'}));
   }
 });
 
