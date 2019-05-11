@@ -18,6 +18,16 @@ const port = 3380;
 
 const DEBUG_ON = false;
 
+var status = {
+    total_tasks:0,
+    face_detected:0,
+    face_recognized:0,
+    heartbeats: 0,
+    os: {},
+    version: {},
+    cfg: {}
+}
+
 function getOldestMessage(ai_messages,person_id){
   let msg = null;
   for (let key in ai_messages) {
@@ -158,6 +168,8 @@ const http_server = http.createServer(function(req, res) {
               console.log('mark_person_message_as_read, result',err,result);
             })
           }
+      } else if(req.url == '/camera_keepalive'){
+          status.total_tasks++;
       }
       else {
         // Do smoething with the payload....
@@ -624,15 +636,6 @@ function get_curent_config(cb) {
 
 var connected_to_camera = false;
 var camera_monitor_timeout = null;
-var status = {
-    total_tasks:0,
-    face_detected:0,
-    face_recognized:0,
-    heartbeats: 0,
-    os: {},
-    version: {},
-    cfg: {}
-}
 function restart_docker_compose(){
     var exists = fs.existsSync(DOCKER_SOCK);
     if(!exists) {

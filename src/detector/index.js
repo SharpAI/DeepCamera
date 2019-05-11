@@ -2,6 +2,8 @@
 process.on('uncaughtException', function (err) {
     console.error('uncaughtException',err)
 });
+
+const http = require('http');
 var Queue = require('bull');
 var motion=require('./motion')
 //var motion=require('./od')
@@ -735,6 +737,30 @@ const app = express();
 const router = express.Router();
 const port = 3000;
 
+const LOCAL_MONITOR_ADDRESS='127.0.0.1';
+const LOCAL_MONITOR_PORT=3380;
+const LOCAL_MONITOR_OPTIONS = {
+  hostname: LOCAL_MONITOR_ADDRESS,
+  port: LOCAL_MONITOR_PORT,
+  path: '/camera_keepalive',
+  method: 'GET'
+}
+
+function keepalive_to_montior(){
+  const req = https.request(LOCAL_MONITOR_OPTIONS, (res) => {
+    console.log(`statusCode: ${res.statusCode}`)
+
+    res.on('data', (d) => {
+      process.stdout.write(d)
+    })
+  })
+
+  req.on('error', (error) => {
+    console.error(error)
+  })
+
+  req.end()
+}
 app.get('/', (request, response) => response.send('SharpAI, empower Edge AI'));
 
 app.use('/api', router);
@@ -750,6 +776,7 @@ router.get('/post', (request, response) => {
        onframe("device", true, filename, undefined_obj, start)
     }, 0)
     response.json({message: 'OK'});
+    keepalive_to_montior();
 });
 
 app.post('/post2',function(request, response) {
@@ -762,5 +789,6 @@ app.post('/post2',function(request, response) {
     }
   },0)
   response.json({message: 'OK'});
+  keepalive_to_montior();
 })
 app.listen(port,'0.0.0.0' ,() => console.log('Listening on port ',port));
