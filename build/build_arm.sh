@@ -87,7 +87,7 @@ bash ./build_monitor.sh  ${buildpath}
 
 
 #build for arch-linux
-$PREFIX/bin/bash /data/data/com.termux/files/home/arch/startarch c "cd /data/data/com.termux/files/home/sharpai/build && ./build_arm_arch.sh ."
+$PREFIX/bin/bash /data/data/com.termux/files/home/arch/startarch c "cd /data/data/com.termux/files/home/DeepCamera/build && ./build_arm_arch.sh ."
 
 #generate sharpai.tgz for apk
 mkdir -p .termux/boot/
