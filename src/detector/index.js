@@ -747,7 +747,7 @@ const LOCAL_MONITOR_OPTIONS = {
 }
 
 function keepalive_to_montior(){
-  const req = https.request(LOCAL_MONITOR_OPTIONS, (res) => {
+  const req = http.request(LOCAL_MONITOR_OPTIONS, (res) => {
     console.log(`statusCode: ${res.statusCode}`)
 
     res.on('data', (d) => {
