@@ -399,6 +399,17 @@ function handle_group_id(group_id){
     console.log('exception of handle_group_id',e)
   }
 }
+function handle_device_rtsp(rtsp){
+  console.log('handle_device_rtsp',rtsp);
+  am_command = 'am start -S -n tv.danmaku.ijk.media.example/tv.danmaku.ijk.media.example.activities.SetupActivity -e rtsp "' + rtsp + '"';
+  exec(am_command, function (err, stdout, srderr) {
+    if(err) {
+      console.log(srderr);
+    } else {
+      console.log(stdout);
+    }
+  });
+}
 function sub_device_info(client_id){
       /*
        * Observe a collection.
@@ -432,6 +443,9 @@ function sub_device_info(client_id){
         console.log("[CHANGED] new fields: ", newFields);
         if(newFields['groupId']){
           handle_group_id(newFields['groupId'])
+        }
+        if(newFields['rtsp']){
+          handle_device_rtsp(newFields['rtsp'])
         }
 
         if(clearedFields && clearedFields.hasOwnProperty('autoUpdate')) {
