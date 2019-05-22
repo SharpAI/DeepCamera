@@ -180,7 +180,7 @@ const http_server = http.createServer(function(req, res) {
   } else if (req.method === "GET") {
       if(req.url == '/camera_keepalive'){
          status.total_tasks++;
-         console.log('keep alive',status);
+        DEBUG_ON && console.log('keep alive',status);
       }
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
