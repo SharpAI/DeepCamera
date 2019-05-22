@@ -14,6 +14,8 @@ function GetEnvironmentVarInt(varname, defaultvalue)
     else
         return defaultvalue;
 }
+
+var DEBUG_ON = false
 // DEEP_ANALYSIS_MODE true=允许队列缓存, false=不允许队列缓存
 var REALTIME_STRANGER_SDK_MESSAGE = GetEnvironmentVarInt('REALTIME_STRANGER_SDK_MESSAGE',1)
 
@@ -159,6 +161,8 @@ module.exports = {
       var recognitions = []
       var unknown_faces = []
       var front_faces = 0
+      var faces_in_picture = 0
+
       recognition_results.forEach(function(item){
         if(item != undefined && item != null && item.result != undefined && item.result != null) {
           var result = item.result
@@ -169,6 +173,9 @@ module.exports = {
             front_faces++
             console.log(result)
             unknown_faces.push(result)
+          }
+          if(result && result.style ==='front'){
+            faces_in_picture++
           }
         }
       })
@@ -184,10 +191,9 @@ module.exports = {
         }
       }
 
-      console.log('=====> update tracker_id ' + tracker_id +
-        ' type '+ event_type + ' results: ' + recognition_results)
       db_global.findOne({_id:tracker_id},function(err,doc){
         if(!err){
+          DEBUG_ON && console.log('=====> update tracker_id ',tracker_id,'unknown:',unknown_faces,'type',event_type,'results:',recognition_results,doc)
           if(doc === null){
             var record = {
               _id:tracker_id,
@@ -195,7 +201,11 @@ module.exports = {
               results:{},
               front_faces: front_faces,
               number: number,
-              created_on:Date.now()
+              created_on:Date.now(),
+              faces_in_picture:faces_in_picture,
+              strangers:unknown_faces,
+              saved_strangers_num:unknown_faces.length,
+              saved_known_num:recognitions.length,
             }
             recognitions.forEach(function(recognized_face){
               record.results[recognized_face] = 1
@@ -211,11 +221,13 @@ module.exports = {
               if(doc.number !== number){
                 console.log('==========>>>>> TODO: face number changes, need reset tracker id to regenerate the gifs and report ...')
               }
-              if(doc.number < number){
-                db_global.update({_id:tracker_id},{$set:{number:number}})
-              }
-
             })
+            if(doc.number < number){
+              db_global.update({_id:tracker_id},{$set:{number:number}})
+            }
+            if(doc.faces_in_picture < faces_in_picture){
+              db_global.update({_id:tracker_id},{$set:{faces_in_picture:faces_in_picture}})
+            }
             console.log(doc)
             front_faces = front_faces + doc.front_faces
             db_global.update({_id:tracker_id},{$set:{
@@ -223,6 +235,21 @@ module.exports = {
               front_faces:front_faces,
               recognized:(recognized||doc.recognized)
             }})
+            if(doc.saved_known_num < recognized){
+              db_global.update({_id:tracker_id},{$set:{
+                faces_in_picture:faces_in_picture,
+                strangers:unknown_faces,
+                saved_strangers_num:unknown_faces.length,
+                saved_known_num:recognized
+              }})
+            } else if(doc.faces_in_picture < faces_in_picture && doc.saved_strangers_num < unknown_faces.length) {
+              db_global.update({_id:tracker_id},{$set:{
+                faces_in_picture:faces_in_picture,
+                strangers:unknown_faces,
+                saved_strangers_num:unknown_faces.length,
+                saved_known_num:recognized
+              }})
+            }
           }
         }
       })
@@ -276,6 +303,7 @@ module.exports = {
           ts: ts,
           created_on: Date.now()
         }
+        console.log('push gif info',result,jpg_motion_path);
         db_global_gif.insert(item)
         return cb && cb(null);
       }
