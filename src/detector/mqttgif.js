@@ -3,6 +3,7 @@ var request = require('requestretry')
 var host = 'http://workaihost.tiegushi.com/'
 gst_api_url = host + 'restapi/workai'
 gst_stranger_api_url = host + 'restapi/updateStrangers'
+stranger_batch_url = host + 'restapi/workai_autolabel/batch'
 
 function GetEnvironmentVarInt(varname, defaultvalue)
 {
@@ -102,7 +103,36 @@ function post_stranger_gif_4_label(faceid, trackerId, cameraId, gif_url, uuid, g
     });
 }
 
+function post_stranger_batch(persons){
+
+  var json_request_content = {
+      'persons': persons,
+  }
+
+  request({
+      url: stranger_batch_url,
+      method: "POST",
+      json: true,
+      maxAttempts: 5,   // (default) try 5 times
+      retryDelay: 5000,
+      headers: {
+      "content-type": "application/json",
+      },
+      body: json_request_content
+  }, function (error, response, body){
+      if(error) {
+          console.log("post stranger batch---error: ",error)
+      } else {
+          console.log('post stranger batch---body: ',body)
+          if(body && body.state=="SUCCESS" && body.result) {
+              var json = JSON.parse(body.result)
+          }
+      }
+  });
+}
+
 module.exports = {
   post_gif_2_group : post_gif_2_group,
-  post_stranger_gif_4_label : post_stranger_gif_4_label
+  post_stranger_gif_4_label : post_stranger_gif_4_label,
+  post_stranger_batch : post_stranger_batch,
 }
