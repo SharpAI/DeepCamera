@@ -11,6 +11,8 @@ var deepeye=require('./deepeye')
 var waitqueue=require('./waitqueue')
 var timeline=require('./timeline')
 var face_motions=require('./face_motions')
+var fs=require('fs')
+var mqttgif = require('./mqttgif')
 
 rt_msg = require('./realtime_message')
 
@@ -18,6 +20,7 @@ var ON_DEBUG = false
 var FACE_DETECTION_DURATION = 100 // MS, fixed value implement first
 var TRACKER_ID_SILIENCE_INTERVAL = 4000 // MS, fixed value implement first
 var MAX_UNKNOWN_FRONT_FACE_IN_TRACKING = 5 // 陌生人情况下的入队列阈值
+var DEVICE_UUID_FILEPATH = process.env.DEVICE_UUID_FILEPATH || '/dev/ro_serialno'
 var cameras_tracker = {}
 
 var REDIS_HOST = process.env.REDIS_HOST || "redis"
@@ -574,6 +577,42 @@ function handle_android_detection_result(cameraId,whole_file,person_count,start_
   console.log('['+cameraId+'] tid: '+current_tracker_id+' person num: '+person_count+' face num: '+face_detected+' cost: '+(new Date() - start_ts));
   setCurrentPersonCount(cameraId, person_count)
   setCurrentFaceCount(cameraId, face_detected)
+  if(person_count == 0){
+    // timeline.update(current_tracker_id,'track_stopped',0,null)
+    timeline.get_tracking_info(current_tracker_id,function(error,doc){
+      if(error || !doc){
+        return;
+      }
+      console.log('we got the tracking info',doc);
+      if(!error && doc && doc.number > 1){
+        // console.log('we got the tracking info',doc);
+        fs.readFile(DEVICE_UUID_FILEPATH, function (err,data) {
+          if (err) {
+            return;
+          }
+          var uuid = data.toString().replace(/(\r\n\t|\n|\r\t)/gm,"")
+          var persons = []
+          doc.strangers.forEach(function(d){
+            var person={
+              'tid':current_tracker_id,
+              'uuid':uuid,
+              'img_url':d.url,
+              'sqlid':0,
+              'style':d.style,
+              'fuzziness':d.face_fuzziness,
+              'accuracy':0,
+              'type': 'face',
+              'img_ts':doc.created_on,
+              'current_ts':doc.created_on
+            }
+            persons.push(person)
+          })
+          console.log('post strangers--------',persons)
+          mqttgif.post_stranger_batch(persons)
+        })
+      }
+    })
+  }
   if(person_count >= 1){
     extend_tracker_id_life_time(cameraId)
   } else if (face_detected===0){
