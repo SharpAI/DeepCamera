@@ -448,6 +448,9 @@ function classify_task(task_info, cb) {
           if(result.result){
             var json = JSON.parse(result.result)
             console.log('JSON.parse(result.result)=',json)
+            if(!json.result.key){
+              return cb && cb(null, null)
+            }
             json.result['url'] = upload.getAccessUrl(json.result.key)
             console.log('json.result.key[',json.result.key,']task_info.path',task_info.path)
             var key = json.result.key
