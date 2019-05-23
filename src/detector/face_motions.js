@@ -70,7 +70,6 @@ function do_generate_gif_and_upload(cameraId,trackerId,whole_file,name_sorting,c
             if(REPORT_FACE_MOTION_TO_EVENT_SERVER){
               get_device_uuid(function(uuid){
                 get_device_group_id(function(group_id){
-
                   timeline.get_face_ids(trackerId,function(err,results,number,front_faces){
                     console.log('Got face ids in this animation')
                     if(!err && results.length > 0){
@@ -88,12 +87,13 @@ function do_generate_gif_and_upload(cameraId,trackerId,whole_file,name_sorting,c
                           face_ids = face_ids + 'unknown,'
                         }
                         getAllFilesResultsNotRecognized(files, trackerId, function(err, images, peoplenum) {
+                          console.log('pop up gif images...')
                           /* total people >=2 and >=1 people is not recognized*/
-                          if(number >= 2) {
-                            if(images && images.length > 0) {
-                              mqttgif.post_stranger_gif_4_label('unknown',trackerId, cameraId, url,uuid,group_id,images,peoplenum)
-                            }
-                          }
+                          // if(number >= 2) {
+                          //   if(images && images.length > 0) {
+                          //     mqttgif.post_stranger_gif_4_label('unknown',trackerId, cameraId, url,uuid,group_id,images,peoplenum)
+                          //   }
+                          // }
                         })
                       }
                       send_face_motion_event_to_event_server(group_id,uuid,face_ids,cameraId,url)
@@ -103,9 +103,10 @@ function do_generate_gif_and_upload(cameraId,trackerId,whole_file,name_sorting,c
                         console.log('Unfamiliar faces event')
                         send_face_motion_event_to_event_server(group_id,uuid,'unknown',cameraId,url)
                         getAllFilesResults(files, trackerId, function(err, images, peoplenum) {
-                          if(images && images.length > 0) {
-                            mqttgif.post_stranger_gif_4_label('unknown',trackerId, cameraId, url,uuid,group_id,images, peoplenum)
-                          }
+                          console.log('pop up all gif images...')
+                          // if(images && images.length > 0) {
+                          //   mqttgif.post_stranger_gif_4_label('unknown',trackerId, cameraId, url,uuid,group_id,images, peoplenum)
+                          // }
                         })
                       } else {
                         console.log('See some activity')

@@ -21,6 +21,7 @@ var FACE_DETECTION_DURATION = 100 // MS, fixed value implement first
 var TRACKER_ID_SILIENCE_INTERVAL = 4000 // MS, fixed value implement first
 var MAX_UNKNOWN_FRONT_FACE_IN_TRACKING = 5 // 陌生人情况下的入队列阈值
 var DEVICE_UUID_FILEPATH = process.env.DEVICE_UUID_FILEPATH || '/dev/ro_serialno'
+var DEVICE_GROUP_ID_FILEPATH = process.env.DEVICE_GROUP_ID_FILEPATH || '/data/usr/com.deep.workai/cache/groupid.txt'
 var cameras_tracker = {}
 
 var REDIS_HOST = process.env.REDIS_HOST || "redis"
@@ -566,7 +567,23 @@ var onframe = function(cameraId, motion_detected, file_path, person_count, start
     stop_current_tracking(cameraId)
   }
 }
+function get_device_uuid(cb){
+  fs.readFile(DEVICE_UUID_FILEPATH, function (err,data) {
+    if (err) {
+      return cb && cb('no_uuid')
+    }
+    return cb && cb(data.toString().replace(/(\r\n\t|\n|\r\t)/gm,""))
+  });
+}
 
+function get_device_group_id(cb){
+    fs.readFile(DEVICE_GROUP_ID_FILEPATH, function (err,data) {
+      if (err) {
+        return cb && cb('no_group_id')
+      }
+      return cb && cb(data)
+    });
+}
 function handle_android_detection_result(cameraId,whole_file,person_count,start_ts,
   tracking_info,current_tracker_id,face_detected,cropped_num,cropped_images){
   const ts = new Date().getTime()
@@ -578,39 +595,39 @@ function handle_android_detection_result(cameraId,whole_file,person_count,start_
   setCurrentPersonCount(cameraId, person_count)
   setCurrentFaceCount(cameraId, face_detected)
   if(person_count == 0){
-    // timeline.update(current_tracker_id,'track_stopped',0,null)
     timeline.get_tracking_info(current_tracker_id,function(error,doc){
       if(error || !doc){
         return;
       }
       console.log('we got the tracking info',doc);
-      if(!error && doc && doc.number > 1){
-        // console.log('we got the tracking info',doc);
-        fs.readFile(DEVICE_UUID_FILEPATH, function (err,data) {
-          if (err) {
-            return;
+      var uuid = ""
+      var group_id = ""
+      get_device_uuid(function(uuid){
+        get_device_group_id(function(group_id){
+          if(!error && doc && doc.number > 1){
+            // console.log('we got the tracking info',doc);
+              var persons = []
+              doc.strangers.forEach(function(d){
+                var person={
+                  'tid':current_tracker_id,
+                  'uuid':uuid,
+                  'img_url':d.url,
+                  'sqlid':0,
+                  'style':d.style,
+                  'fuzziness':d.face_fuzziness,
+                  'accuracy':0,
+                  'type': 'face',
+                  'img_ts':doc.created_on,
+                  'current_ts':doc.created_on
+                }
+                persons.push(person)
+              })
+              mqttgif.post_stranger_batch(persons)
+          } else if(!error && doc && doc.number == 1 && doc.recognized === false){
+              mqttgif.post_stranger_single("unknown", current_tracker_id, cameraId, uuid, group_id, doc.single_stranger_arr, 1)
           }
-          var uuid = data.toString().replace(/(\r\n\t|\n|\r\t)/gm,"")
-          var persons = []
-          doc.strangers.forEach(function(d){
-            var person={
-              'tid':current_tracker_id,
-              'uuid':uuid,
-              'img_url':d.url,
-              'sqlid':0,
-              'style':d.style,
-              'fuzziness':d.face_fuzziness,
-              'accuracy':0,
-              'type': 'face',
-              'img_ts':doc.created_on,
-              'current_ts':doc.created_on
-            }
-            persons.push(person)
-          })
-          console.log('post strangers--------',persons)
-          mqttgif.post_stranger_batch(persons)
         })
-      }
+      })
     })
   }
   if(person_count >= 1){
