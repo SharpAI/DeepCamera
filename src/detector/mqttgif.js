@@ -94,28 +94,20 @@ function post_stranger_gif_4_label(faceid, trackerId, cameraId, gif_url, uuid, g
         body: json_request_content
     }, function (error, response, body){
         if(error) {
-            console.log("stranger---error: ",error)
+            console.log("stranger ---error: ",error)
         } else {
-            console.log('stranger---body: ',body)
+            console.log('stranger ---body: ',body)
             if(body && body.state=="SUCCESS" && body.result) {
                 var json = JSON.parse(body.result)
             }
         }
     });
 }
-function post_stranger_single(faceid, trackerId, cameraId, gif_url, uuid, group_id, pic_arr, peoplenum){
-    console.log('POST STRANGER INFO TO SERVER...')
-    var images2lable = [];
-    if(peoplenum >= 2) {
-      images2lable.push(pic_arr[0]);
-    }
-    else {
-      images2lable = pic_arr;
-    }
+function post_stranger_single(faceid, trackerId, cameraId, uuid, group_id, pic_arr, peoplenum){
+    console.log('POST SINGLE STRANGER INFO TO SERVER...')
 
     var json_request_content = {
-        'imgs': images2lable,
-        'img_gif': gif_url,
+        'imgs': pic_arr,
         'group_id': '' + group_id,
         'camera_id': cameraId,
         'uuid': uuid,
@@ -124,7 +116,7 @@ function post_stranger_single(faceid, trackerId, cameraId, gif_url, uuid, group_
         'createTime': new Date()}
 
     request({
-        url: gst_stranger_api_url,
+        url: stranger_single_url,
         method: "POST",
         json: true,
         maxAttempts: 5,   // (default) try 5 times
@@ -135,9 +127,9 @@ function post_stranger_single(faceid, trackerId, cameraId, gif_url, uuid, group_
         body: json_request_content
     }, function (error, response, body){
         if(error) {
-            console.log("stranger---error: ",error)
+            console.log("stranger single---error: ",error)
         } else {
-            console.log('stranger---body: ',body)
+            console.log('stranger single---body: ',body)
             if(body && body.state=="SUCCESS" && body.result) {
                 var json = JSON.parse(body.result)
             }
@@ -176,4 +168,5 @@ module.exports = {
   post_gif_2_group : post_gif_2_group,
   post_stranger_gif_4_label : post_stranger_gif_4_label,
   post_stranger_batch : post_stranger_batch,
+  post_stranger_single : post_stranger_single,
 }

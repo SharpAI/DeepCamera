@@ -162,10 +162,14 @@ module.exports = {
       var unknown_faces = []
       var front_faces = 0
       var faces_in_picture = 0
+      var single_stranger_arr = []
+      var img_url = ""
 
       recognition_results.forEach(function(item){
-        if(item != undefined && item != null && item.result != undefined && item.result != null) {
+        if(typeof item != undefined && item != null && typeof item.result != undefined && item.result != null) {
           var result = item.result
+          img_url = result.url
+          console.log('recognitions result----',result)
           if(result && result.recognized === true && result.face_id ){
             recognitions.push(result.face_id)
           }
@@ -173,6 +177,7 @@ module.exports = {
             front_faces++
             console.log(result)
             unknown_faces.push(result)
+            single_stranger_arr.push(img_url)
           }
           if(result && result.style ==='front'){
             faces_in_picture++
@@ -204,6 +209,7 @@ module.exports = {
               created_on:Date.now(),
               faces_in_picture:faces_in_picture,
               strangers:unknown_faces,
+              single_stranger_arr:single_stranger_arr,
               saved_strangers_num:unknown_faces.length,
               saved_known_num:recognitions.length,
             }
@@ -227,6 +233,11 @@ module.exports = {
             }
             if(doc.faces_in_picture < faces_in_picture){
               db_global.update({_id:tracker_id},{$set:{faces_in_picture:faces_in_picture}})
+            }
+            if(doc.number == 1){
+              console.log('=======',doc.single_stranger_arr)
+              doc.single_stranger_arr.push(img_url)
+              db_global.update({_id:tracker_id},{$set:{single_stranger_arr:doc.single_stranger_arr}})
             }
             console.log(doc)
             front_faces = front_faces + doc.front_faces
