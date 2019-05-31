@@ -623,7 +623,7 @@ function handle_android_detection_result(cameraId,whole_file,person_count,start_
                 persons.push(person)
               })
               mqttgif.post_stranger_batch(persons)
-          } else if(!error && doc && doc.number == 1 && doc.recognized === false){
+          } else if(!error && doc && doc.number == 1 && doc.recognized === false && typeof doc.results[recognized_face] === 'undefined'){
               mqttgif.post_stranger_single("unknown", current_tracker_id, cameraId, uuid, group_id, doc.single_stranger_arr, 1)
           }
         })
