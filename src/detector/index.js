@@ -597,6 +597,7 @@ function handle_android_detection_result(cameraId,whole_file,person_count,start_
   if(person_count == 0){
     timeline.get_tracking_info(current_tracker_id,function(error,doc){
       if(error || !doc){
+        console.log('return error------')
         return;
       }
       console.log('we got the tracking info',doc);
@@ -623,7 +624,8 @@ function handle_android_detection_result(cameraId,whole_file,person_count,start_
                 persons.push(person)
               })
               mqttgif.post_stranger_batch(persons)
-          } else if(!error && doc && doc.number == 1 && doc.recognized === false && typeof doc.results[recognized_face] === 'undefined'){
+          } else if(!error && doc && doc.number == 1 && doc.recognized === false && JSON.stringify(doc.results)=='{}'){
+              console.log('post stranger------lalalal')
               mqttgif.post_stranger_single("unknown", current_tracker_id, cameraId, uuid, group_id, doc.single_stranger_arr, 1)
           }
         })
