@@ -605,7 +605,7 @@ function handle_android_detection_result(cameraId,whole_file,person_count,start_
       var group_id = ""
       get_device_uuid(function(uuid){
         get_device_group_id(function(group_id){
-          if(!error && doc && doc.number > 1){
+          if(!error && doc && doc.number > 1 && doc.recognized === false && JSON.stringify(doc.results)=='{}'){
             // console.log('we got the tracking info',doc);
               var persons = []
               doc.strangers.forEach(function(d){
