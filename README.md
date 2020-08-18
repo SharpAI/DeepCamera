@@ -21,7 +21,7 @@ And a whole host of other things. Building your own AI-powered model has never b
 ## Todo
 
 - [ ] Native raspberry pi camera support
-- [ ] Broken download link support
+- [ ] Broken download link of resource
 - [ ] Application for labelling server is down, need restart
 - [ ] Image upload is not working(was using Aliyun)
 
