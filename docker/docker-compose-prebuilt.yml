@@ -131,7 +131,7 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
-    image: deepeye1/shinobi:latest
+    image: shareai/shinobi:arm32v7
     restart: always
     privileged: true
     env_file:

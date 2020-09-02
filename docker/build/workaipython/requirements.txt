@@ -10,7 +10,7 @@ MarkupSafe==1.0
 mock==2.0.0
 oss2==2.2.3
 pbr==2.0.0
-requests>=2.14.2
+requests==2.14.2
 SQLAlchemy==1.1.6
 Werkzeug==0.12.1
 imutils==0.4.0
