@@ -6,7 +6,9 @@ FROM shareai/tensorflow:armv7l_tf1.8
 
 # Install the required packages
 RUN pip install redis
-RUN pip install https://github.com/mher/flower/zipball/master
+RUN pip install tornado==4.2.0 babel==1.0
+RUN pip install https://github.com/mher/flower/archive/v0.9.2.zip
+RUN pip uninstall -y redis && pip install redis==3.2.0
 
 # PYTHONUNBUFFERED: Force stdin, stdout and stderr to be totally unbuffered. (equivalent to `python -u`)
 # PYTHONHASHSEED: Enable hash randomization (equivalent to `python -R`)
