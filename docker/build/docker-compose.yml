@@ -5,3 +5,8 @@ services:
     build:
       context: ./face_detection
       dockerfile: Dockerfile
+  redis:
+    image: shareai/redis:arm32v7
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
