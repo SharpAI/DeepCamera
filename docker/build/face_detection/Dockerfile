@@ -15,7 +15,6 @@ RUN cd /root/mtcnn && \
     cmake ../ && make -j6 && \
     cd /root/ncnn && mkdir build && cd build && \
     cmake ../ && make -j6
-RUN find /root/ -name *.a
 RUN cp /root/mtcnn/build/src/libncnn.a /root/detector/lib/ncnn/libncnn.a
 
 WORKDIR /root/detector/
