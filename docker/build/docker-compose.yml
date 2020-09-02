@@ -10,3 +10,40 @@ services:
     build:
       context: ./redis
       dockerfile: Dockerfile
+  broker:
+    image: shareai/broker:arm32v7
+    build:
+      dockerfile: Dockerfile
+      context: ./broker
+    restart: always
+    container_name: "broker"
+    ports:
+      - 1883:1883
+      - 9001:9001
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+  camera:
+    container_name: "camera"
+    command: sh -c "if [ ! -f /opt/nvr/conf/conf.sqlite ]; then cp /opt/nvr/sql/shinobi.sample.sqlite /opt/nvr/conf/conf.sqlite -a ; fi && sleep 3 &&  (node /opt/nvr/cron.js &) && node /opt/nvr/camera.js"
+    image: shareai/shinobi:arm32v7
+    build:
+      context: ./camera
+    restart: always
+    environment:
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
+      IMAGE_DIR: "/opt/nvr/detector/images"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+    ports:
+      - 8080:8080
+    volumes:
+      - ./videos:/opt/nvr/videos
+      - ./workaipython/sql:/opt/nvr/conf
+      - /opt/nvr/detector/images:/opt/nvr/detector/images
