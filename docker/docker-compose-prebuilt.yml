@@ -87,7 +87,7 @@ services:
       - /dev/shm/streams:/dev/shm/streams
   workaipython:
     command: sh -c "cd /data/runtime/src/ && ls /data/runtime -l &&  ls /data/runtime/src && ./start_embedding_only.sh"
-    image: deepeye4/workaipython:latest
+    image: shareai/workaipython:arm32v7
     container_name: "workaipython"
     env_file:
       - ./cluster.env
@@ -114,10 +114,7 @@ services:
       - /opt/nvr/detector/images:/opt/nvr/detector/images
       - ../src/embedding:/data/runtime/src
       - /opt/nvr/detector/frames:/opt/nvr/videos/frames
-      - /sys/class/misc/mali0:/sys/class/misc/mali0
-      - /dev/mali0:/dev/mali0
       - /var/run/docker.sock:/var/run/docker.sock
-      - ../src/embedding/judgeutil.so_linux_aarch64:/data/runtime/src/judgeutil.so
   detector_plugin:
     container_name: "detector_plugin"
     depends_on:
