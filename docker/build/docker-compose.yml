@@ -47,3 +47,9 @@ services:
       - ./videos:/opt/nvr/videos
       - ./workaipython/sql:/opt/nvr/conf
       - /opt/nvr/detector/images:/opt/nvr/detector/images
+  flower:
+    command: sh -c "flower --port=5555"
+    image: shareai/flower:arm32v7
+    container_name: "flower"
+    build:
+      context: ./flower
