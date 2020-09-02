@@ -27,7 +27,7 @@ services:
   camera:
     container_name: "camera"
     command: sh -c "if [ ! -f /opt/nvr/conf/conf.sqlite ]; then cp /opt/nvr/sql/shinobi.sample.sqlite /opt/nvr/conf/conf.sqlite -a ; fi && sleep 3 &&  (node /opt/nvr/cron.js &) && node /opt/nvr/camera.js"
-    image: deepeye1/shinobi:latest
+    image: shareai/shinobi:arm32v7
     restart: always
     privileged: true
     environment:
