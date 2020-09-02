@@ -15,9 +15,10 @@ You can integrate the code with surveillance cameras as well. There’s a LOT yo
 
 And a whole host of other things. Building your own AI-powered model has never been this easy!
 
-## Slack Channel
-[Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
+## Commercial Support
 
+### Slack
+[Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
 ## Feature List
 - [x] High accurate Face Recognition
