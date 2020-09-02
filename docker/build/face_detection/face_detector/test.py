@@ -10,7 +10,7 @@ m.detect('./images_480p/1_854x480.jpg')
 m.detect('./images_480p/1_854x480.jpg')
 
 start = time.time()
-for i in range(1000):
+for i in range(100):
   step_start = time.time()
   result = m.detect('./images_480p/1_854x480.jpg')
   step_end = time.time()
@@ -18,4 +18,4 @@ for i in range(1000):
 end = time.time()
 print(result)
 
-print('average duration is {}'.format((end - start)/1000))
+print('average duration is {}'.format((end - start)/100))
