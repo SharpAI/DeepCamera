@@ -20,3 +20,5 @@ RUN cp /root/mtcnn/build/src/libncnn.a /root/detector/lib/ncnn/libncnn.a
 WORKDIR /root/detector/
 RUN python setup.py install
 RUN python ./test.py
+ADD requirements.txt /root/requirements.txt
+RUN pip install -r /root/requirements.txt
