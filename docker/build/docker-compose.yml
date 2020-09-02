@@ -25,3 +25,7 @@ services:
     container_name: "flower"
     build:
       context: ./flower
+  workaipython
+    image: shareai/workaipython:arm32v7
+    build:
+      context: ./workaipython
