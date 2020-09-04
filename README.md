@@ -15,9 +15,11 @@ You can integrate the code with surveillance cameras as well. There’s a LOT yo
 
 And a whole host of other things. Building your own AI-powered model has never been this easy!
 
-## [Quick Evaluation on Android](https://github.com/SharpAI/DeepCamera/releases/tag/1.3.1)
-## Slack Channel
+## Commercial Support
+
+### Slack
 [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
+
 ## Feature List
 - [x] High accurate Face Recognition
 - [x] Face Detection
@@ -53,6 +55,14 @@ And a whole host of other things. Building your own AI-powered model has never b
 
 ## Demo
 ![demo](https://github.com/SharpAI/DeepCamera/raw/master/screenshots/demo.gif)
+
+## Todo
+- [ ] Native raspberry pi camera support
+- [ ] Broken download link of resource
+- [ ] Application for labelling server is down, need restart
+- [ ] Image upload is not working(was using Aliyun)
+
+### [Quick Evaluation on Android](https://github.com/SharpAI/DeepCamera/releases/tag/1.3.1)
 
 ## How to develop on SharpAI DeepCamera
 

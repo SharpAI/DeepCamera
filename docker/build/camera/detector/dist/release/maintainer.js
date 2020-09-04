@@ -1,0 +1,1 @@
+var Docker=require("dockerode"),docker=new Docker({socketPath:"/var/run/docker.sock"}),face_detector=docker.getContainer("workaipython");module.exports={onError:function(e,o){"face detection"===e&&face_detector.inspect(function(e,o){console.log(o)})}};

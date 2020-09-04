@@ -1,0 +1,31 @@
+version: '2'
+services:
+  face_detector:
+    image: shareai/face_detector:arm32v7
+    build:
+      context: ./face_detection
+      dockerfile: Dockerfile
+  redis:
+    image: shareai/redis:arm32v7
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
+  broker:
+    image: shareai/broker:arm32v7
+    build:
+      dockerfile: Dockerfile
+      context: ./broker
+  camera:
+    container_name: "camera"
+    image: shareai/shinobi:arm32v7
+    build:
+      context: ./camera
+  flower:
+    image: shareai/flower:arm32v7
+    container_name: "flower"
+    build:
+      context: ./flower
+  workaipython
+    image: shareai/workaipython:arm32v7
+    build:
+      context: ./workaipython

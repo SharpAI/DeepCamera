@@ -1,0 +1,2 @@
+Host github.com
+	StrictHostKeyChecking no

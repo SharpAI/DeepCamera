@@ -1,7 +1,7 @@
 version: '2'
 services:
   redis:
-    image: deepeye0/redis:latest
+    image: arm32v7/redis:latest
     restart: always
     container_name: "redis"
     command: sh -c "rm -rf /data/*.rdb && redis-server --maxmemory 40mb --maxmemory-policy allkeys-lru --save \"\" --appendonly no --dbfilename \"\""
@@ -13,7 +13,7 @@ services:
         max-size: "10m"
         max-file: "10"
   broker:
-    image: deepeye5/broker:latest
+    image: shareai/broker:arm32v7
     restart: always
     container_name: "broker"
     ports:
@@ -27,7 +27,7 @@ services:
   camera:
     container_name: "camera"
     command: sh -c "if [ ! -f /opt/nvr/conf/conf.sqlite ]; then cp /opt/nvr/sql/shinobi.sample.sqlite /opt/nvr/conf/conf.sqlite -a ; fi && sleep 3 &&  (node /opt/nvr/cron.js &) && node /opt/nvr/camera.js"
-    image: deepeye1/shinobi:latest
+    image: shareai/shinobi:arm32v7
     restart: always
     privileged: true
     environment:
@@ -49,7 +49,7 @@ services:
       - ../src/shinobi/2018.03.15.14.50_patchs/camera.js:/opt/nvr/camera.js
   flower:
     command: sh -c "flower --port=5555"
-    image: deepeye2/workai_flower:latest
+    image: shareai/flower:arm32v7
     restart: always
     ports:
       - 5555:5555
@@ -62,7 +62,7 @@ services:
       CELERY_RESULT_BACKEND: redis://redis/0
   face_detector:
     command: sh -c "cd /root/detection && python test.py && python worker.py worker --loglevel INFO -E -n detect -c 1 -Q detect"
-    image: deepeye3/face_detector:latest
+    image: shareai/face_detector:arm32v7
     container_name: "face_detector"
     env_file:
       - ./production_1.env
@@ -87,7 +87,7 @@ services:
       - /dev/shm/streams:/dev/shm/streams
   workaipython:
     command: sh -c "cd /data/runtime/src/ && ls /data/runtime -l &&  ls /data/runtime/src && ./start_embedding_only.sh"
-    image: deepeye4/workaipython:latest
+    image: shareai/workaipython:arm32v7
     container_name: "workaipython"
     env_file:
       - ./cluster.env
@@ -114,10 +114,7 @@ services:
       - /opt/nvr/detector/images:/opt/nvr/detector/images
       - ../src/embedding:/data/runtime/src
       - /opt/nvr/detector/frames:/opt/nvr/videos/frames
-      - /sys/class/misc/mali0:/sys/class/misc/mali0
-      - /dev/mali0:/dev/mali0
       - /var/run/docker.sock:/var/run/docker.sock
-      - ../src/embedding/judgeutil.so_linux_aarch64:/data/runtime/src/judgeutil.so
   detector_plugin:
     container_name: "detector_plugin"
     depends_on:
@@ -131,7 +128,7 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
-    image: deepeye1/shinobi:latest
+    image: shareai/shinobi:arm32v7
     restart: always
     privileged: true
     env_file:
