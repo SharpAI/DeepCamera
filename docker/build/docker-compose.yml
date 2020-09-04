@@ -29,3 +29,7 @@ services:
     image: shareai/workaipython:arm32v7
     build:
       context: ./workaipython
+  rtspserver
+    image:shareai/rtspserver:arm32v7
+    build:
+      context: ./v4l2rtspserver
