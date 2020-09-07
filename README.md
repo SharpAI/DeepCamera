@@ -57,21 +57,13 @@ And a whole host of other things. Building your own AI-powered model has never b
 ![demo](https://github.com/SharpAI/DeepCamera/raw/master/screenshots/demo.gif)
 
 ## Todo
-- [ ] Native raspberry pi camera support
+- [x] Native raspberry pi camera support
 - [ ] Broken download link of resource
 - [ ] Application for labelling server is down, need restart
-- [ ] Image upload is not working(was using Aliyun)
+- [ ] Image upload is not working(was using Aliyun), need change to upload to server itself
 
 ### [How to run DeepCamera on Raspberry Pi 4](docs/RUN_ON_PI_V2.md)
 
-## How to develop on SharpAI DeepCamera
-
-You can develop on SharpAI DeepCamera almost on every devices.
-
-### [How to Run DeepCamera on 64-bit Android From Source Code](docs/Run_Source_Android_aarch64.md)
-### [How to Run DeepCamera on 32-bit Android](docs/RunOnRK3288.md)
-### [Run on Raspberry Pi](docs/RunOnRaspberryPi.md)
-### Run on Embedded Linux with docker (Rockchip RK3399)
 ```
 git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera/docker  
@@ -114,7 +106,7 @@ iOS: https://testflight.apple.com/join/8LXGgu3q
 
 ## [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
 ![screen shot 2019-03-07 at 4 03 59 pm](https://user-images.githubusercontent.com/3085564/53941268-a0781b80-40f2-11e9-8cc6-6295c3a39c96.png)
- 
+
 ## APIs doc for app server
 [Click to see APIs document](https://github.com/SharpAI/mobile_app_server/tree/master/hotShareWeb/api/server)
 
