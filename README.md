@@ -3,7 +3,7 @@ This is a unique repository in many ways. It’s a deep learning model open sour
 
 ![image](screenshots/lifecycle_mac.png)
 
-DeepCamera works on Android devices.
+DeepCamera works on IOT devices such as Raspberry Pi and Android devices.
 You can integrate the code with surveillance cameras as well. There’s a LOT you can do with DeepCamera’s code, including:
 
 - Face recognition
