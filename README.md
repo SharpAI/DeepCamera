@@ -62,7 +62,7 @@ And a whole host of other things. Building your own AI-powered model has never b
 - [ ] Application for labelling server is down, need restart
 - [ ] Image upload is not working(was using Aliyun)
 
-### [Quick Evaluation on Android](https://github.com/SharpAI/DeepCamera/releases/tag/1.3.1)
+### [How to run DeepCamera on Raspberry Pi 4](docs/RUN_ON_PI_V2.md)
 
 ## How to develop on SharpAI DeepCamera
 
