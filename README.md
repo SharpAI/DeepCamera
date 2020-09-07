@@ -62,13 +62,11 @@ And a whole host of other things. Building your own AI-powered model has never b
 - [ ] Application for labelling server is down, need restart
 - [ ] Image upload is not working(was using Aliyun), need change to upload to server itself
 
+## How DeepCamera works on Raspberry Pi with Native Camera
+![architecture](screenshots/DeepCameraOnPi.png)
 ### [How to run DeepCamera on Raspberry Pi 4](docs/RUN_ON_PI_V2.md)
+### [API server document](https://github.com/SharpAI/mobile_app_server/blob/master/hotShareWeb/api/server/README.md)
 
-```
-git clone https://github.com/SharpAI/DeepCamera
-cd DeepCamera/docker  
-sudo ./run-deepeye-prebuilt.sh start
-```
 ### Run on X86 Laptop Docker
 ```
 git clone https://github.com/SharpAI/DeepCamera -b pc_version
