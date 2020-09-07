@@ -11,3 +11,12 @@ sudo curl -sSL https://get.docker.com | sh
 ## Prepare RTSP server
 
 https://www.sylvaindurand.org/surveillance-camera-with-raspberry-pi/
+
+
+## Start DeepCamera on Raspberry Pi 4
+
+```
+git clone https://github.com/SharpAI/DeepCamera
+cd DeepCamera/docker  
+./run-deepeye-prebuilt.sh start
+```
