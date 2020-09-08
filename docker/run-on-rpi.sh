@@ -114,9 +114,9 @@ function prepare()
 }
 
 #YML=./docker-compose.yml
-YML=./docker-compose-prebuilt.yml
+YML=./docker-compose-rpi.yml
 if [ $1'x' == 'x' ];then
-    echo "usage: ./deepeye.sh start"
+    echo "usage: ./run-on-rpi.sh start"
 else
     case $1 in
         start )                 echo "starting..."
@@ -137,7 +137,7 @@ else
                                 docker-compose -f $YML up -d
                                 exit 0
                                 ;;
-        * )                     echo "usage: ./deepeye.sh start"
+        * )                     echo "usage: ./run-on-rpi.sh start"
                                 exit 1
     esac
 fi
