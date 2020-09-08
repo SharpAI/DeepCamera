@@ -67,12 +67,6 @@ And a whole host of other things. Building your own AI-powered model has never b
 ### [How to run DeepCamera on Raspberry Pi 4](docs/RUN_ON_PI_V2.md)
 ### [API server API document](https://github.com/SharpAI/ApiServer#app-server-api)
 
-### Run on X86 Laptop Docker
-```
-git clone https://github.com/SharpAI/DeepCamera -b pc_version
-cd DeepCamera/docker
-sudo ./run-deepeye-x86.sh start #make sure Serial No is in docker/workaipython/ro_serialno
-```   
 
 ## It is even possible to integrate with your Surveilance Camera 
 
@@ -85,15 +79,7 @@ password: SharpAI2018
 
 You can also [turn Mac Camera into RTSP camera(not tested)](https://www.tribler.org/MacWebcam/)
 
-### Through Dahua SDK (if you install DeepCamera on Android)
-Code is [here](https://github.com/SharpAI/RTSP_Decoder_IJKPlayer/blob/od_gl_based/android/ijkplayer/ijkplayer-example/src/main/java/tv/danmaku/ijk/media/example/activities/CameraScanActivity.java#L147)
-
-
-## Survey: Do you want to have Dev Kit for easily startup
-We are considering to provide full set of development kit to easy the setup effort you may face to. 
-[Please thumb up if you want one](https://github.com/SharpAI/DeepCamera/issues/8)
-
-### How it works from end user's point of view, green parts are done if using Dev Kit
+### How it works from end user's point of view
 ![From end user's view](screenshots/on_app_end_user.png)
 
 ## [How to configure on Mobile APP, Chinese Version](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
@@ -101,12 +87,6 @@ We are considering to provide full set of development kit to easy the setup effo
 ## Application in English(Beta Test)
 Android: https://www.pgyer.com/app/install/0e87e08c72a232e8f39a6a7c76222038  
 iOS: https://testflight.apple.com/join/8LXGgu3q
-
-## [How to deploy server on your server](https://github.com/SharpAI/mobile_app_server/issues/1)
-![screen shot 2019-03-07 at 4 03 59 pm](https://user-images.githubusercontent.com/3085564/53941268-a0781b80-40f2-11e9-8cc6-6295c3a39c96.png)
-
-## APIs doc for app server
-[Click to see APIs document](https://github.com/SharpAI/mobile_app_server/tree/master/hotShareWeb/api/server)
 
 ## App User Guide
 [Click for user guide](https://github.com/SharpAI/mobile_app_server/blob/master/README.md)
