@@ -16,20 +16,18 @@ services:
       dockerfile: Dockerfile
       context: ./broker
   camera:
-    container_name: "camera"
     image: shareai/shinobi:arm32v7
     build:
       context: ./camera
   flower:
     image: shareai/flower:arm32v7
-    container_name: "flower"
     build:
       context: ./flower
-  workaipython
+  workaipython:
     image: shareai/workaipython:arm32v7
     build:
-      context: ./workaipython
-  rtspserver
-    image:shareai/rtspserver:arm32v7
+      context: ./embedding
+  rtspserver:
+    image: shareai/rtspserver:arm32v7
     build:
       context: ./v4l2rtspserver
