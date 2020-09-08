@@ -102,10 +102,10 @@ services:
       - /opt/nvr/detector/frames:/opt/nvr/videos/frames
       - ../src/face_detection:/root/detection
       - /dev/shm/streams:/dev/shm/streams
-  workaipython:
+  embedding:
     command: sh -c "cd /data/runtime/src/ && ls /data/runtime -l &&  ls /data/runtime/src && ./start_embedding_only.sh"
-    image: shareai/workaipython:arm32v7
-    container_name: "workaipython"
+    image: shareai/embedding:arm32v7
+    container_name: "embedding"
     env_file:
       - ./cluster.env
     environment:
@@ -158,7 +158,7 @@ services:
       - camera:camera
       - redis:redis
       - flower:flower
-      - workaipython:workaipython
+      - embedding:workaipython
     volumes:
       - ./videos:/opt/nvr/videos
       - ./workaipython/ro_serialno:/dev/ro_serialno

@@ -23,8 +23,8 @@ services:
     image: shareai/flower:arm32v7
     build:
       context: ./flower
-  workaipython:
-    image: shareai/workaipython:arm32v7
+  embedding:
+    image: shareai/embedding:arm32v7
     build:
       context: ./embedding
   rtspserver:
