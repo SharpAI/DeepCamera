@@ -22,7 +22,7 @@ WORKDIR /root
 ADD ./assets/models/ssdlite_mobilenet_v2_coco_2018_05_09/frozen_inference_graph.pb /root/ssdlite_mobilenet_v2_coco_2018_05_09/frozen_inference_graph.pb
 ADD ./assets/labelmap.prototxt /root/ssdlite_mobilenet_v2_coco_2018_05_09/
 
-ADD requirements.txt /root/
+ADD ./assets/requirements.txt /root/
 RUN pip install -r /root/requirements.txt
 ADD od.py /root/
 ADD panda.jpg /root/

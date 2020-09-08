@@ -16,15 +16,9 @@ RUN set -ex; \
 	\
 	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
 	wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
-	wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc"; \
 	export GNUPGHOME="$(mktemp -d)"; \
-	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
-	gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
-	rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc; \
 	chmod +x /usr/local/bin/gosu; \
-	gosu nobody true; \
-	\
-	apt-get purge -y --auto-remove $fetchDeps
+	gosu nobody true;
 
 ENV REDIS_VERSION 3.2.11
 ENV REDIS_DOWNLOAD_URL http://download.redis.io/releases/redis-3.2.11.tar.gz
@@ -40,9 +34,13 @@ RUN set -ex; \
 		libc6-dev \
 		make \
 	'; \
-	apt-get update; \
-	apt-get install -y $buildDeps --no-install-recommends; \
-	rm -rf /var/lib/apt/lists/*; \
+	cp /etc/apt/sources.list /etc/apt/sources.list.bk ; \
+		 echo "deb http://ftp2.cn.debian.org/debian/ stretch main non-free contrib"           >  /etc/apt/sources.list ; \
+		 echo "deb http://ftp2.cn.debian.org/debian/ stretch-updates main non-free contrib"   >> /etc/apt/sources.list ; \
+		 echo "deb http://ftp2.cn.debian.org/debian/ stretch-backports main non-free contrib" >> /etc/apt/sources.list ; \
+		 apt-get update; \
+	apt-get install -y $buildDeps ; \
+	rm -rf /var/lib/apt/lists/*; cp /etc/apt/sources.list.bk /etc/apt/sources.list; \
 	\
 	wget -O redis.tar.gz "$REDIS_DOWNLOAD_URL"; \
 	echo "$REDIS_DOWNLOAD_SHA *redis.tar.gz" | sha256sum -c -; \

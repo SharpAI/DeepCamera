@@ -1,14 +1,16 @@
-#FROM mhart/alpine-node:8
-#FROM arm64v8/node:8-alpine
-FROM shareai/tensorflow:armv7l_tf1.8
+FROM shareai/tensorflow:x86_tf1.8
 
 
 # Install package dependencies
-RUN apt-get update && \
+RUN cp /etc/apt/sources.list /etc/apt/sources.list.bk && \
+    echo "deb http://ftp2.cn.debian.org/debian/ stretch main non-free contrib"           >  /etc/apt/sources.list && \
+    echo "deb http://ftp2.cn.debian.org/debian/ stretch-updates main non-free contrib"   >> /etc/apt/sources.list && \
+    echo "deb http://ftp2.cn.debian.org/debian/ stretch-backports main non-free contrib" >> /etc/apt/sources.list && \
+    apt-get update && \
     apt-get install -y pkg-config graphicsmagick curl sqlite3 libsqlite3-dev libcairo2-dev libgif-dev && \
     curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
     apt-get update && apt-get install -y nodejs libdrm-dev && apt-get clean
-
+RUN cp /etc/apt/sources.list.bk /etc/apt/sources.list
 WORKDIR /opt/
 COPY ./nvr_releases/2018.03.15.14.50.tar.gz /opt/2018.03.15.14.50.tar.gz
 
@@ -18,7 +20,7 @@ RUN mkdir -p /opt/nvr && tar -zxf 2018.03.15.14.50.tar.gz && mv Shinobi-2018.03.
     npm install && \
     npm install canvas@1.6 moment ffmpeg-static --unsafe-perm && \
     rm /root/.npm/* -rf && \
-    rm -rf Shinobi-Shinobi-2018.03.15.14.50 
+    rm -rf Shinobi-Shinobi-2018.03.15.14.50
 
 ADD nvr_releases/2018.03.15.14.50_patchs/* /opt/nvr/
 

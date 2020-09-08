@@ -1,12 +1,16 @@
 FROM shareai/tensorflow:x86_tf1.8
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get install --no-install-recommends  -y python python-pip python-opencv python-dev \
+RUN cp /etc/apt/sources.list /etc/apt/sources.list.bk && \
+    echo "deb http://ftp2.cn.debian.org/debian/ stretch main non-free contrib"           >  /etc/apt/sources.list && \
+    echo "deb http://ftp2.cn.debian.org/debian/ stretch-updates main non-free contrib"   >> /etc/apt/sources.list && \
+    echo "deb http://ftp2.cn.debian.org/debian/ stretch-backports main non-free contrib" >> /etc/apt/sources.list && \
+    apt-get update && apt-get install --no-install-recommends  -y python python-pip python-opencv python-dev \
     zlib1g-dev gcc python-pil && \
     apt-get clean
 RUN apt-get update && apt-get install -y git scons cmake wget unzip curl build-essential \
     libprotobuf-dev protobuf-compiler libopencv-dev python-pip python-setuptools python-dev
-
+RUN cp /etc/apt/sources.list.bk /etc/apt/sources.list
 ADD face_detector /root/detector
 ADD mtcnn /root/mtcnn
 ADD ncnn /root/ncnn
@@ -15,10 +19,11 @@ RUN cd /root/mtcnn && \
     cmake ../ && make -j6 && \
     cd /root/ncnn && mkdir build && cd build && \
     cmake ../ && make -j6
-RUN cp /root/mtcnn/build/src/libncnn.a /root/detector/lib/ncnn/libncnn.a
+RUN mkdir -p /root/detector/lib/ncnn/ && \
+    cp /root/mtcnn/build/src/libncnn.a /root/detector/lib/ncnn/libncnn.a
 
 WORKDIR /root/detector/
 RUN python setup.py install
 RUN python ./test.py
 ADD requirements.txt /root/requirements.txt
-RUN pip install -r /root/requirements.txt
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r /root/requirements.txt
