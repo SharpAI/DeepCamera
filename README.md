@@ -36,22 +36,7 @@ And a whole host of other things. Building your own AI-powered model has never b
 - [x] Motion Detection with Android GPU
 - [x] Lable and train from Mobile to Edge Device
 
-## Supported/tested Device
-- [x] MediaTek MTK6797 (Android, Mobile/Tablet)
-- [x] Huawei Kirin 960/970/980 （Android, Mobile/Tablet)
-- [x] Samsung 7420 (Android, Mobile)
-- [x] Raspberry Pi
-- [x] X86 (Linux/Ubuntu, Mac OS X, Windows(not tested) through Docker)
-- [x] Rockchip RK3399 (Linux, set-up-box H96 Max)
-- [x] Rockchip RK3399 (Android, RockPro64)
-- [x] Rockchip RK3288 (Android, set-up-box)
-- [x] ARM 64bit devices
-
-## Supported Camera
-- [x] Dahua Camera
-- [x] Hikvision Camera
-- [x] Shinobi CCTV Supported Devices
-- [x] Screen Captured from Android Camera preview application
+## [Supported Devices](docs/Supported_Devices.md)
 
 ## Demo
 ![demo](https://github.com/SharpAI/DeepCamera/raw/master/screenshots/demo.gif)
