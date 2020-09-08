@@ -58,15 +58,14 @@ And a whole host of other things. Building your own AI-powered model has never b
 
 ## Todo
 - [x] Native raspberry pi camera support
-- [ ] Broken download link of resource
-- [ ] Application for labelling server is down, need restart
+- [ ] Macbook Pro iSight camera support
+- [ ] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
 - [ ] Image upload is not working(was using Aliyun), need change to upload to server itself
 
 ## How DeepCamera works on Raspberry Pi with Native Camera
 ![architecture](screenshots/DeepCameraOnPi.png)
 ### [How to run DeepCamera on Raspberry Pi 4](docs/RUN_ON_PI_V2.md)
 ### [API server API document](https://github.com/SharpAI/ApiServer#app-server-api)
-
 
 ## It is even possible to integrate with your Surveilance Camera 
 
@@ -78,18 +77,6 @@ username: user@sharpaibox.com
 password: SharpAI2018 
 
 You can also [turn Mac Camera into RTSP camera(not tested)](https://www.tribler.org/MacWebcam/)
-
-### How it works from end user's point of view
-![From end user's view](screenshots/on_app_end_user.png)
-
-## [How to configure on Mobile APP, Chinese Version](https://github.com/SharpAI/mobile_app_server/blob/android_porting/README.md)
-
-## Application in English(Beta Test)
-Android: https://www.pgyer.com/app/install/0e87e08c72a232e8f39a6a7c76222038  
-iOS: https://testflight.apple.com/join/8LXGgu3q
-
-## App User Guide
-[Click for user guide](https://github.com/SharpAI/mobile_app_server/blob/master/README.md)
 
 ## Contributions
 This project contains source code or library dependencies from the follow projects:
