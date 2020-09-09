@@ -1,9 +1,9 @@
 # What's SharpAI DeepCamera
-This is a unique repository in many ways. It’s a deep learning model open sourced to protect your privacy. The entire DeepCamera concept is based on automated machine learning (AutoML). So you don’t even need any programming experience to train a new model.
+This is a unique repository in many ways. It’s a deep learning model open sourced to protect your privacy. The entire DeepCamera concept is based on automated machine learning (AutoML). So you don’t even need any programming experience to train a new model. DeepCamera will keep porting AI models to provide easy for use Edge AI platform to help developers implement AI production on the edge.  
 
 ![image](screenshots/lifecycle_mac.png)
 
-DeepCamera works on IOT devices such as Raspberry Pi and Android devices.
+DeepCamera works on AIoT devices such as Raspberry Pi and Android.
 You can integrate the code with surveillance cameras as well. There’s a LOT you can do with DeepCamera’s code, including:
 
 - Face recognition
@@ -12,6 +12,7 @@ You can integrate the code with surveillance cameras as well. There’s a LOT yo
 - Object detection
 - Motion detection
 - Human ReID (Recognition based on human shape)
+- Many more AI models will come soon
 
 And a whole host of other things. Building your own AI-powered model has never been this easy!
 
