@@ -4,7 +4,7 @@ This is a unique repository in many ways. It’s a deep learning model open sour
 ![image](screenshots/lifecycle_mac.png)
 
 
-## DeepCamera architecture
+## DeepCamera Architecture
 ![architecture](screenshots/DeepCamera_infrastructure.png)
 
 DeepCamera works on AIoT devices such as Raspberry Pi and Android.
