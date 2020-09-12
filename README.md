@@ -44,7 +44,6 @@ And a whole host of other things. Building your own AI-powered model has never b
 
 ## Todo
 - [x] Native raspberry pi camera support
-- [ ] Macbook Pro iSight camera support
 - [ ] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
 - [ ] Image upload is not working(was using Aliyun), need change to upload to server itself
 
