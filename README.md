@@ -3,6 +3,10 @@ This is a unique repository in many ways. It’s a deep learning model open sour
 
 ![image](screenshots/lifecycle_mac.png)
 
+
+## DeepCamera Architecture
+![architecture](screenshots/DeepCamera_infrastructure.png)
+
 DeepCamera works on AIoT devices such as Raspberry Pi and Android.
 You can integrate the code with surveillance cameras as well. There’s a LOT you can do with DeepCamera’s code, including:
 
@@ -44,16 +48,13 @@ And a whole host of other things. Building your own AI-powered model has never b
 
 ## Todo
 - [x] Native raspberry pi camera support
-- [ ] Macbook Pro iSight camera support
 - [ ] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
 - [ ] Image upload is not working(was using Aliyun), need change to upload to server itself
 
-## How DeepCamera works on Raspberry Pi with Native Camera
-![architecture](screenshots/DeepCameraOnPi.png)
 ### [How to run DeepCamera on Raspberry Pi 4](docs/RUN_ON_PI_V2.md)
 ### [API server API document](https://github.com/SharpAI/ApiServer#app-server-api)
 
-## It is even possible to integrate with your Surveilance Camera 
+## How to connect your Surveilance Camera to DeepCamera
 
 ### Through Shinobi (if you install DeepCamera through Docker)
 Then you need to follow [Shinobi's document](https://shinobi.video) to add camera. or [click to see our tutorial](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)
