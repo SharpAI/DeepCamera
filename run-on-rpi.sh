@@ -7,7 +7,7 @@ IFNAME="eth0"
 
 function start_avahi()
 {
-    UUIDFILE=./workaipython/ro_serialno
+    UUIDFILE=./docker/workaipython/ro_serialno
     MAC=''
     if [ -e ${UUIDFILE} ];then
         MAC=$(cat ${UUIDFILE})
@@ -114,7 +114,7 @@ function prepare()
 }
 
 #YML=./docker-compose.yml
-YML=./docker-compose-rpi.yml
+YML=./docker/docker-compose-rpi.yml
 if [ $1'x' == 'x' ];then
     echo "usage: ./run-on-rpi.sh start"
 else

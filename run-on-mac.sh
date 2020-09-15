@@ -7,7 +7,7 @@ IFNAME="eth0"
 
 function gen_ro_serial()
 {
-    UUIDFILE=./workaipython/ro_serialno
+    UUIDFILE=./docker/workaipython/ro_serialno
     MAC=''
     if [ -e ${UUIDFILE} ];then
         MAC=$(cat ${UUIDFILE})
@@ -39,7 +39,7 @@ function gen_ro_serial()
 
 
 #YML=./docker-compose.yml
-YML=./docker-compose-x86.yml
+YML=./docker/docker-compose-x86.yml
 if [ $1'x' == 'x' ];then
     echo "usage: ./run-on-mac.sh start"
 else
