@@ -44,20 +44,51 @@ And a whole host of other things. Building your own AI-powered model has never b
 ## Demo
 ![demo](https://github.com/SharpAI/DeepCamera/raw/master/screenshots/demo.gif)
 
-### [How to run DeepCamera on Raspberry Pi 4](docs/RUN_ON_PI_V2.md)
-### [API server API document](https://github.com/SharpAI/ApiServer#app-server-api)
+# Quick startup
 
-## How to connect your Surveilance Camera to DeepCamera
+## On X86 Linux
+1. Install Docker
+```
+sudo curl -sSL https://get.docker.com | sh
+```
+2. Get source code
+```
+git clone https://github.com/SharpAI/DeepCamera
+```
+3. Start container
+```
+cd DeepCamera/
+./run-on-linux.sh start
+```
+## On Macbook Pro
+1. Install Docker
+[Install Docker Desktop on Mac(Offical)](https://docs.docker.com/docker-for-mac/install/)
+2. Get source code
+```
+git clone https://github.com/SharpAI/DeepCamera
+```
+3. Start container
+```
+cd DeepCamera/
+./run-on-mac.sh start
+```
+
+## [On Raspberry Pi 4](docs/RUN_ON_PI_V2.md)
+
+## Connect Streaming
 ### Through Open Source NVR
-If you are using suggested camera(Dahua) [click to see our tutorial](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
 
 Shinobi login page(device_ip:8080):   
 username: user@sharpaibox.com  
 password: SharpAI2018 
 
-If you are using other camera support streaming, please check [The Shinobi NVR's document](https://shinobi.video) 
+Change IP configuration and camera url on the page. [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
+If you are using other camera support streaming, please check [The Shinobi NVR's document](https://shinobi.video)  [Supported Devices](docs/Supported_Devices.md)
 
-### [Supported Devices](docs/Supported_Devices.md)
+## Connect DeepCamera to API server (Doc WIP)
+### [API server API document](https://github.com/SharpAI/ApiServer#app-server-api)
+
+
 
 ## Contributions
 This project contains source code or library dependencies from the follow projects:
