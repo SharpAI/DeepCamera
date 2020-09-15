@@ -15,8 +15,8 @@ RUN cp /etc/apt/sources.list /etc/apt/sources.list.bk && \
     curl -O https://bootstrap.pypa.io/get-pip.py && \
     python get-pip.py && \
     rm get-pip.py
-#RUN cd / && wget https://github.com/lhelontra/tensorflow-on-arm/releases/download/v1.8.0/tensorflow-1.8.0-cp27-none-linux_armv7l.whl 
-ADD tensorflow-1.8.0-cp27-none-linux_armv7l.whl /tensorflow-1.8.0-cp27-none-linux_armv7l.whl
+RUN cd / && wget https://github.com/lhelontra/tensorflow-on-arm/releases/download/v1.8.0/tensorflow-1.8.0-cp27-none-linux_armv7l.whl 
+#ADD tensorflow-1.8.0-cp27-none-linux_armv7l.whl /tensorflow-1.8.0-cp27-none-linux_armv7l.whl
 ADD assets/requirements.txt /root/requirements.txt
 ADD assets/test.py /test.py
 
