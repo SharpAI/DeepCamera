@@ -49,8 +49,7 @@ And a whole host of other things. Building your own AI-powered model has never b
 
 ## How to connect your Surveilance Camera to DeepCamera
 ### Through Shinobi (if you install DeepCamera through Docker)
-Then you need to follow [Shinobi's document](https://shinobi.video) to add camera. or [click to see our tutorial](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)  
- 
+Then you need to follow [Shinobi's document](https://shinobi.video) to add camera. or [click to see our tutorial](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
 
 Shinobi login page(device_ip:8080):   
 username: user@sharpaibox.com  
