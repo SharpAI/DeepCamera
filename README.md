@@ -1,12 +1,9 @@
 # What's SharpAI DeepCamera
 This is a unique repository in many ways. It’s a deep learning model open sourced to protect your privacy. The entire DeepCamera concept is based on automated machine learning (AutoML). So you don’t even need any programming experience to train a new model. DeepCamera will keep porting AI models to provide easy for use Edge AI platform to help developers implement AI production on the edge.  
-
 ![image](screenshots/lifecycle_mac.png)
-
 
 ## DeepCamera Architecture
 ![architecture](screenshots/DeepCamera_infrastructure.png)
-
 DeepCamera works on AIoT devices such as Raspberry Pi and Android.
 You can integrate the code with surveillance cameras as well. There’s a LOT you can do with DeepCamera’s code, including:
 
@@ -21,7 +18,6 @@ You can integrate the code with surveillance cameras as well. There’s a LOT yo
 And a whole host of other things. Building your own AI-powered model has never been this easy!
 
 ## Commercial Support
-
 ### Slack
 [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
@@ -40,28 +36,27 @@ And a whole host of other things. Building your own AI-powered model has never b
 - [x] Application on Android to decode video with hw acc
 - [x] Motion Detection with Android GPU
 - [x] Lable and train from Mobile to Edge Device
-
-## [Supported Devices](docs/Supported_Devices.md)
-
-## Demo
-![demo](https://github.com/SharpAI/DeepCamera/raw/master/screenshots/demo.gif)
-
-## Todo
 - [x] Native raspberry pi camera support
 - [x] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
 - [ ] Image upload is not working(was using Aliyun), need change to upload to server itself
+
+
+## Demo
+![demo](https://github.com/SharpAI/DeepCamera/raw/master/screenshots/demo.gif)
 
 ### [How to run DeepCamera on Raspberry Pi 4](docs/RUN_ON_PI_V2.md)
 ### [API server API document](https://github.com/SharpAI/ApiServer#app-server-api)
 
 ## How to connect your Surveilance Camera to DeepCamera
-
 ### Through Shinobi (if you install DeepCamera through Docker)
-Then you need to follow [Shinobi's document](https://shinobi.video) to add camera. or [click to see our tutorial](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)
+Then you need to follow [Shinobi's document](https://shinobi.video) to add camera. or [click to see our tutorial](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)  
+ 
 
 Shinobi login page(device_ip:8080):   
 username: user@sharpaibox.com  
 password: SharpAI2018 
+
+### [Supported Devices](docs/Supported_Devices.md)
 
 ## Contributions
 This project contains source code or library dependencies from the follow projects:
