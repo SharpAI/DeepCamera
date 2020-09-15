@@ -23,7 +23,7 @@ function gen_ro_serial()
 
     #get a uuid ######################################
     if [ 'x'${MAC} = 'x' ]; then
-        MAC=$(ifconfig en1 | awk '/ether/{print $2}' | tr -d ':' )
+        MAC=$(ifconfig eth0 | awk '/ether/{print $2}' | tr -d ':' )
         if [ $MAC'x' == 'x' ] || [ ${#MAC} != 12 ];then
             str1=$RANDOM
             str2=$RANDOM
