@@ -48,7 +48,7 @@ And a whole host of other things. Building your own AI-powered model has never b
 
 ## Todo
 - [x] Native raspberry pi camera support
-- [ ] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
+- [x] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
 - [ ] Image upload is not working(was using Aliyun), need change to upload to server itself
 
 ### [How to run DeepCamera on Raspberry Pi 4](docs/RUN_ON_PI_V2.md)
@@ -62,8 +62,6 @@ Then you need to follow [Shinobi's document](https://shinobi.video) to add camer
 Shinobi login page(device_ip:8080):   
 username: user@sharpaibox.com  
 password: SharpAI2018 
-
-You can also [turn Mac Camera into RTSP camera(not tested)](https://www.tribler.org/MacWebcam/)
 
 ## Contributions
 This project contains source code or library dependencies from the follow projects:
