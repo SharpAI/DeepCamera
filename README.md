@@ -73,7 +73,7 @@ cd DeepCamera/
 ./run-on-mac.sh start
 ```
 
-## [On Raspberry Pi 4](docs/RUN_ON_PI_V2.md)
+## [On Raspberry Pi 3B+/4B](docs/RUN_ON_PI_V2.md)
 
 ## Connect Streaming
 ### Through Open Source NVR
