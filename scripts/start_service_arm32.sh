@@ -17,7 +17,7 @@ fi
 
 redis-server --maxmemory 80mb --maxmemory-policy allkeys-lru --save "" --appendonly no --dbfilename "" &
 mosquitto &
-
+cd ../
 cd src/embedding
 ./embedding_arm.sh &
 ./classifier_worker_arm.sh &

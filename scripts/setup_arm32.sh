@@ -1,5 +1,5 @@
 #!/bin/bash
-
+cd ../
 if [ ! -f model/net2.params ]; then
   echo need download model for embedding
   mkdir model
