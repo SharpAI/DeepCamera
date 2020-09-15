@@ -13,10 +13,10 @@ sudo curl -sSL https://get.docker.com | sh
 https://www.sylvaindurand.org/surveillance-camera-with-raspberry-pi/
 
 
-## Start DeepCamera on Raspberry Pi 4
+## Start DeepCamera on Raspberry Pi 3/4
 
 ```
 git clone https://github.com/SharpAI/DeepCamera
-cd DeepCamera/docker  
+cd DeepCamera  
 ./run-on-rpi.sh start
 ```
