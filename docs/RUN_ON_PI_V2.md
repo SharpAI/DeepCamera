@@ -18,5 +18,5 @@ https://www.sylvaindurand.org/surveillance-camera-with-raspberry-pi/
 ```
 git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera/docker  
-./run-deepeye-prebuilt.sh start
+./run-on-rpi.sh start
 ```
