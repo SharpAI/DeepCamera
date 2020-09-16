@@ -44,7 +44,7 @@ And a whole host of other things. Building your own AI-powered model has never b
 ## Demo
 ![demo](https://github.com/SharpAI/DeepCamera/raw/master/screenshots/demo.gif)
 
-# Quick startup
+# Get Started
 
 ## On X86 Linux
 1. Install Docker
