@@ -60,7 +60,7 @@ git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera/
 ./run-on-linux.sh start
 ```
-## On Macbook Pro
+## On OSX
 1. Install Docker
 [Install Docker Desktop on Mac(Offical)](https://docs.docker.com/docker-for-mac/install/)
 2. Get source code
@@ -85,10 +85,8 @@ password: SharpAI2018
 Change IP configuration and camera url on the page. [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
 If you are using other camera support streaming, please check [The Shinobi NVR's document](https://shinobi.video)  [Supported Devices](docs/Supported_Devices.md)
 
-## Connect DeepCamera to API server (Doc WIP)
-### [API server API document](https://github.com/SharpAI/ApiServer#app-server-api)
-
-
+## [Start API Server](https://github.com/SharpAI/ApiServer/blob/master/README.md#get-started)
+## Connect DeepCamera to API Server(Doc WIP)
 
 ## Contributions
 This project contains source code or library dependencies from the follow projects:
