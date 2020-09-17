@@ -1,9 +1,12 @@
 # coding=utf-8
+import os
 import requests
 import time
 from utilslib.getDeviceInfo import get_current_groupid
 
-host = 'http://workaihost.tiegushi.com/'
+API_SERVER_ADDRESS = os.getenv('API_SERVER_ADDRESS','workaihost.tiegushi.com')
+API_SERVER_PORT = os.getenv('API_SERVER_PORT','80')
+host = 'http://'+API_SERVER_ADDRESS+':'+API_SERVER_PORT+'/'
 #host = 'http://deepeye.tiegushi.com/'
 def generate_protocol_string(key, ownerid, filepath, embedding, uuid,
                 DO_NOT_REPORT_TO_SERVER,

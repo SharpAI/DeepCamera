@@ -1,6 +1,10 @@
 var http = require('http');
 var request = require('requestretry')
-var host = 'http://workaihost.tiegushi.com/'
+var API_SERVER_ADDRESS = process.env.API_SERVER_ADDRESS || 'workaihost.tiegushi.com'
+var API_SERVER_PORT = process.env.API_SERVER_PORT || '80'
+var api_server=API_SERVER_ADDRESS+':'+API_SERVER_PORT
+
+var host = 'http://'+api_server+'/'
 gst_api_url = host + 'restapi/workai'
 gst_stranger_api_url = host + 'restapi/updateStrangers'
 stranger_single_url = host + 'restapi/workai_autolabel/single'
