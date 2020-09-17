@@ -1,6 +1,6 @@
 {
   "config": {
-    "endPoint": "localhost",
+    "endPoint": "minio",
     "port": 9000,
     "useSSL": false,
     "accessKey": "QUA2IU17RHOKE6NUZ7T2",
