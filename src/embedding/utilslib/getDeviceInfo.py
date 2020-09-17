@@ -76,7 +76,9 @@ def get_groupid(uuid):
         cmd_arr.append("/msg/g/" + groupid)
         return arr, cmd_arr
     #url="http://192.168.1.230:9000/restapi/workai-getgroupid?uuid=" + uuid
-    url="http://workaihost.tiegushi.com/restapi/workai-getgroupid?uuid=" + uuid
+    API_SERVER_ADDRESS = os.getenv('API_SERVER_ADDRESS','workaihost.tiegushi.com')
+    API_SERVER_PORT = os.getenv('API_SERVER_PORT','80')
+    url='http://'+API_SERVER_ADDRESS+':'+API_SERVER_PORT+'/restapi/workai-getgroupid?uuid=' + uuid
     #url = "http://deepeye.tiegushi.com/restapi/workai-getgroupid?uuid=" + uuid
     try:
         response = urlopen(url, timeout=10)

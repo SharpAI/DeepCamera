@@ -4,6 +4,11 @@ var request = require('requestretry')
 var brokerhost = process.env.BROKERHOST || 'mqtt://broker'
 var client  = mqtt.connect(brokerhost)
 var ON_DEBUG = false
+
+var API_SERVER_ADDRESS = process.env.API_SERVER_ADDRESS || 'workaihost.tiegushi.com'
+var API_SERVER_PORT = process.env.API_SERVER_PORT || '80'
+var api_server=API_SERVER_ADDRESS+':'+API_SERVER_PORT
+
 function GetEnvironmentVarInt(varname, defaultvalue)
 {
     var result = process.env[varname];
@@ -98,7 +103,7 @@ function message_threshold_check(person_id,cb){
 };
 
 function post_stranger_pushnotification(person_id, persons) {
-    var unknown_url = 'http://workaihost.tiegushi.com/restapi/workai_unknown';
+    var unknown_url = 'http://'+api_server+'/restapi/workai_unknown';
     var return_json = {"person_id":person_id, "persons": persons.concat()}
 
     request({

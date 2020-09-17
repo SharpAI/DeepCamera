@@ -115,6 +115,8 @@ services:
         max-file: "10"
     links:
       - redis:redis
+      - broker:mqttserver
+      - api_server:apiserver
     privileged: true
     ports:
       - 5000:5000
@@ -154,6 +156,7 @@ services:
       - redis:redis
       - flower:flower
       - embedding:workaipython
+      - api_server:apiserver
     volumes:
       - ./videos:/opt/nvr/videos
       - ./workaipython/ro_serialno:/dev/ro_serialno
@@ -179,3 +182,14 @@ services:
       - ../src/detector/realtime_message.js:/opt/nvr/detector/realtime_message.js
       - ../src/detector/upload_listener.js:/opt/nvr/detector/upload_listener.js
       - ../src/detector/config:/opt/nvr/detector/config
+  api_server:
+    container_name: "api_server"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+    image: shareai/api_server:latest
+    ports:
+      - 3000:3000
+    restart: always

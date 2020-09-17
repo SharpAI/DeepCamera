@@ -150,7 +150,9 @@ if __name__ == '__main__':
 
     migration()
     #host="http://localhost:3000/restapi/datasync/token/" + str(group_id)
-    host = "http://workaihost.tiegushi.com/restapi/datasync/token/" + str(group_id)
+    API_SERVER_ADDRESS = os.getenv('API_SERVER_ADDRESS','workaihost.tiegushi.com')
+    API_SERVER_PORT = os.getenv('API_SERVER_PORT','80')
+    host = 'http://'+API_SERVER_ADDRESS+':'+API_SERVER_PORT+'/restapi/datasync/token/' + str(group_id)
     result = None
     try:
         response = urlopen(host, timeout=10)

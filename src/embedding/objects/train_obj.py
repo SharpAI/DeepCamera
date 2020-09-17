@@ -25,8 +25,10 @@ from tensorflow.python.util import compat
 def sendMessage2Group(uuid, group_id, text):
     if (len(uuid) < 1) or (len(group_id) < 1) or (len(text) < 1):
         return
+    API_SERVER_ADDRESS = os.getenv('API_SERVER_ADDRESS','workaihost.tiegushi.com')
+    API_SERVER_PORT = os.getenv('API_SERVER_PORT','80')
 
-    gst_api_url = 'http://workaihost.tiegushi.com/restapi/workai-send2group'
+    gst_api_url = 'http://'+API_SERVER_ADDRESS+':'+API_SERVER_PORT+'/restapi/workai-send2group'
     #gst_api_url = 'http://192.168.1.73:3000/restapi/workai-send2group'
     payload = {'uuid': uuid,
                'group_id': group_id,
