@@ -30,3 +30,8 @@ services:
     build:
       context: ./embedding
       dockerfile: Dockerfile.x86
+  minio:
+    image: shareai/minio:x86
+    build:
+      context: ./minio
+      dockerfile: Dockerfile.x86

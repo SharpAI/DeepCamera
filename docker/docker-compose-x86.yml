@@ -24,6 +24,17 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
+  minio:
+    image: shareai/minio:x86
+    restart: always
+    container_name: "minio"
+    ports:
+      - 9000:9000
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
   camera:
     container_name: "camera"
     command: sh -c "if [ ! -f /opt/nvr/conf/conf.sqlite ]; then cp /opt/nvr/sql/shinobi.sample.sqlite /opt/nvr/conf/conf.sqlite -a ; fi && sleep 3 &&  (node /opt/nvr/cron.js &) && node /opt/nvr/camera.js"
