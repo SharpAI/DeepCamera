@@ -91,6 +91,7 @@ services:
     container_name: "embedding"
     env_file:
       - ./cluster.env
+      - ./servers.env
     environment:
       RUNTIME_BASEDIR: "/data/runtime/src/"
     restart: always
@@ -133,6 +134,7 @@ services:
     env_file:
       - ./production_1.env
       - ./cluster.env
+      - ./servers.env
     environment:
       TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
       IMAGE_DIR: "/opt/nvr/detector/images"

@@ -18,12 +18,12 @@ from threading import Timer
 
 import classifier_rest_client as classifier
 
-DEBUG_ON=False
+DEBUG_ON=True
 #HOST='127.0.0.1'
 #PORT='1883'
-HOST='mq.tiegushi.com'
-PORT='8080'
-TRANSPORT='tcp'
+HOST=os.getenv('MQTT_BROKER_ADDRESS','mq.tiegushi.com')
+PORT=os.getenv('MQTT_BROKER_PORT','8080')
+TRANSPORT=os.getenv('MQTT_BROKER_TRANSPORT','tcp')
 #PORT='80'
 #TRANSPORT='websocket'
 CLEAR_FLAG=False
@@ -542,6 +542,8 @@ class MyMQTTClass:
         if device_id is not None and len(device_id) > 1:
             self._selftopic = "/msg/d/{}".format(device_id)
 
+        if DEBUG_ON:
+            print('MQTT Broker Address {}:{}, transport {}'.format(HOST,PORT,TRANSPORT))
     def setAutoTrainTimeout(self):
         toid = get_current_groupid()
         device_id = get_deviceid()
