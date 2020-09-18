@@ -34,7 +34,7 @@ mod3 = None
 DEBUG = False
 
 DATA_RUNTIME_FOLDER = os.getenv('DATA_RUNTIME_FOLDER', '/data/runtime')
-HAS_OPENCL = os.getenv('HAS_OPENCL', 'true')
+HAS_OPENCL = os.getenv('HAS_OPENCL', 'false')
 
 def load_graph(frozen_graph_filename):
     return None
@@ -123,6 +123,8 @@ def init_embedding_processor():
             mod3 = get_model(ctx, [112,112], DATA_RUNTIME_FOLDER+'/model,0', 'fc1')
             print('backup model loaded')
             return mod3
+        else:
+            print('cant get model '+DATA_RUNTIME_FOLDER+'/model-0000.params')
     else:
         print('has opencl supporting')
 
