@@ -9,7 +9,8 @@ RUN pip install --upgrade setuptools -i https://pypi.tuna.tsinghua.edu.cn/simple
 ADD ./assets/face_detection-2.2.0-cp27-cp27mu-linux_x86_64.whl /root/face_detection-2.2.0-cp27-cp27mu-linux_x86_64.whl
 RUN pip install /root/face_detection-2.2.0-cp27-cp27mu-linux_x86_64.whl && \
     rm /root/face_detection-2.2.0-cp27-cp27mu-linux_x86_64.whl
-
+ADD requirements.txt /root/requirements.txt
+RUN pip install -r /root/requirements.txt
 ADD detection /root/detection
 WORKDIR /root/detection/
 RUN python ./test.py
