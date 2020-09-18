@@ -278,7 +278,7 @@ module.exports = {
       }
       embedding_only_task(img, function(err,result) {
         //console.log('embedding_path: ',result.embedding_path)
-        if(result.result.recognized && ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE){
+        if( result && typeof(result.result) != undefined && result.result.recognized && ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE){
           recognized_results.push(result)
           callback(null,result)
           return
@@ -448,7 +448,7 @@ function classify_task(task_info, cb) {
           if(result.result){
             var json = JSON.parse(result.result)
             console.log('JSON.parse(result.result)=',json)
-            if(!json.result.key){
+            if(!json.result || !json.result.key){
               return cb && cb(null, null)
             }
             json.result['url'] = upload.getAccessUrl(json.result.key)
