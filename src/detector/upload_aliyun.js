@@ -6,63 +6,18 @@ var ALY = require('aliyun-sdk');
 
 const OSS = require('ali-oss');
 const client = new OSS({
-  region: 'oss-cn-shenzhen',
-  accessKeyId: 'Vh0snNA4Orv3emBj',
-  accessKeySecret: 'd7p2eNO8GuMl1GtIZ0at4wPDyED4Nz',
-  //accessKeyId: 'Aq-AfdQq7zWeDeRjmjDLWHwVMZgttNQdo07CDDHf',
-  //accessKeySecret: 'lhLLKYpGhqPB-1xOkUjrBTVWRSQqMpaVC-52XVzI',
-  bucket: 'workai'
+  region: '',
+  accessKeyId: '',
+  accessKeySecret: '',
+  bucket: ''
 });
 
-/*
-var bucket = proc.env.QINIU_BUCKET;
-var accessKey = proc.env.QINIU_ACCESS_KEY;
-var secretKey = proc.env.QINIU_SECRET_KEY;
-*/
-var bucket = 'workai';
-var accessKey = 'Aq-AfdQq7zWeDeRjmjDLWHwVMZgttNQdo07CDDHf';
-var secretKey = 'lhLLKYpGhqPB-1xOkUjrBTVWRSQqMpaVC-52XVzI';
+var bucket = '';
+var accessKey = '';
+var secretKey = '';
 
-/*var mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
-var options = {
-  scope: bucket,
-}
-var putPolicy = new qiniu.rs.PutPolicy(options);
-var uploadToken = putPolicy.uploadToken(mac);
-var config = new qiniu.conf.Config();
-var formUploader = new qiniu.form_up.FormUploader(config);
-var putExtra = new qiniu.form_up.PutExtra();
-
-function putFileQiniu(file_key,localFile,cb){
-  uploadToken = putPolicy.uploadToken(mac);
-  formUploader.putFile(uploadToken, file_key, localFile, putExtra, function(respErr,
-    respBody, respInfo) {
-    if (respErr) {
-      if(cb){
-        cb('error',null)
-      }
-      return
-    }
-
-    if (respInfo.statusCode == 200) {
-      var access_url = 'http://workaiossqn.tiegushi.com/' + file_key
-      //console.log(access_url)
-      //console.log(respBody);
-      if(cb){
-        cb(null,access_url)
-      }
-    } else {
-      console.log(respInfo.statusCode);
-      console.log(respBody);
-      if(cb){
-        cb('error',null)
-      }
-    }
-  });
-}
-*/
 function getAccessUrl(file_key){
-  return 'http://cdn.workaioss.tiegushi.com/'+file_key;
+  return 'http://serverurl/'+file_key;
 }
 function putFileAliyun(file_key,localFile,cb){
   _putFileAliyun(file_key,localFile,function(err, url){

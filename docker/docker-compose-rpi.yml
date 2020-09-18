@@ -164,6 +164,7 @@ services:
       - ./production_1.env
       - ./cluster.env
       - ./servers.env
+      - ./aws.env
     environment:
       TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
       IMAGE_DIR: "/opt/nvr/detector/images"
@@ -186,7 +187,7 @@ services:
       #- ../src/detector/maintainer.js:/opt/nvr/detector/maintainer.js
       - ../src/detector/workai-v2.js:/opt/nvr/detector/workai-v2.js
       - ../src/detector/workai.js:/opt/nvr/detector/workai.js
-      - ../src/detector/upload.js:/opt/nvr/detector/upload.js
+      - ../src/detector/upload_aws.js:/opt/nvr/detector/upload.js
       - ../src/detector/makegif.js:/opt/nvr/detector/makegif.js
       - ../src/detector/package.json:/opt/nvr/detector/package.json
       - ../src/detector/conf.json:/opt/nvr/detector/conf.json
