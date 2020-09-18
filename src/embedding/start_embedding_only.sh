@@ -39,6 +39,8 @@ else
   fi
 fi
 
+python2 embedding_server.py &
+
 if [ -f upload_api-v2.py ]; then
   #WORKER_TYPE=detect python2 upload_api-v2.py worker --loglevel INFO -E -n detect -c 1 -Q detect &
   WORKER_TYPE=embedding python2 upload_api-v2.py worker --loglevel INFO -E -n embedding -c 1 -Q embedding &

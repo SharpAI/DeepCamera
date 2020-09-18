@@ -14,3 +14,4 @@ RUN cp /etc/apt/sources.list /etc/apt/sources.list.bk && \
 RUN cp /etc/apt/sources.list.bk /etc/apt/sources.list
 COPY ./requirements.txt /root/requirements.txt
 RUN pip install -r /root/requirements.txt
+RUN pip install mxnet==1.7.0

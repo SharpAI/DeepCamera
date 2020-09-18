@@ -120,6 +120,7 @@ services:
     env_file:
       - ./cluster.env
       - ./servers.env
+      - ./aws.env
     environment:
       RUNTIME_BASEDIR: "/data/runtime/src/"
     restart: always
@@ -132,6 +133,7 @@ services:
         max-file: "10"
     links:
       - redis:redis
+      - minio:minio
     privileged: true
     ports:
       - 5000:5000

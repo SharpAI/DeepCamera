@@ -1,5 +1,6 @@
 from qiniuUpload import qiniu_upload_img
 from aliyunUpload import aliyun_upload_img, aliyun_upload_data
+from awsUpload import aws_upload_img
 import threading, time, Queue
 from uuid import uuid1
 
@@ -9,8 +10,9 @@ event = threading.Event()
 def get_qsize():
     return uploadQueue.qsize()
 
-useAliyun=True
-#useAliyun=False
+useAliyun=False
+useQiNiu=False
+useAWS=True
 
 class workQueue(threading.Thread):
     def __init__(self, name, handle, cb):
@@ -93,11 +95,14 @@ class workQueue(threading.Thread):
                              'p_ids': p_ids,
                              'waiting': waiting})
             self._awakeThread();
-            if useAliyun is False:
+            if useQiNiu is True:
                 url = 'http://workaiossqn.tiegushi.com/' + key
                 return url
-            else:
+            if useAliyun is True:
                 url = 'http://aioss.tiegushi.com/' + key
+                return url
+            if useAWS is True:
+                url = '' + key
                 return url
         else:
             return self._jobHandle(key, filepath, 4);
@@ -107,15 +112,19 @@ class workQueue(threading.Thread):
         url=''
         if useAliyun is True:
             url = aliyun_upload_data(key, data, timeout)
-        else:
+        if useQiNiu is True:
             url = qiniu_upload_data(key, data, timeout)
+        if useAWS is True:
+            url = aws_upload_data(key, data, timeout)
         return url
 
 def uploadFileInit(callback):
     if useAliyun is True:
         upload = workQueue('aliyun', aliyun_upload_img, callback)
-    else:
+    if useQiNiu is True:
         upload = workQueue('qiniu', qiniu_upload_img, callback)
+    if useAWS is True:
+        upload = workQueue('aws', aws_upload_img, callback)
 
     upload.setDaemon(True)
     upload.start()

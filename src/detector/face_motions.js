@@ -321,16 +321,18 @@ function insert2timelineDB(files, tracker_id, uuid, group_id, totalpeople, recog
       recognized_arr=[];
       not_recognized_arr=[];
       for(j=0;j<item.length;j++) {
-        var item2 = item[j].result;
-        item2.ts = info[i].ts
-        item2.tid = tracker_id
-        item2.uuid = uuid
-        item2.group_id = '' + group_id
-        if(item2.recognized == true) {
-          recognized_arr.push(item2)
-        }
-        else {
-          not_recognized_arr.push(item2)
+        if(item[j]){
+          var item2 = item[j].result;
+          item2.ts = info[i].ts
+          item2.tid = tracker_id
+          item2.uuid = uuid
+          item2.group_id = '' + group_id
+          if(item2.recognized == true) {
+            recognized_arr.push(item2)
+          }
+          else {
+            not_recognized_arr.push(item2)
+          }
         }
       }
       info[i].recognized = recognized_arr.length;
