@@ -131,6 +131,8 @@ services:
       - ./opt/nvr/detector/images:/opt/nvr/detector/images
       - ../src/embedding:/data/runtime/src
       - ./opt/nvr/detector/frames:/opt/nvr/videos/frames
+      - ../model/model-0000.params:/data/runtime/model-0000.params
+      - ../model/model-symbol.json:/data/runtime/model-symbol.json
   detector_plugin:
     container_name: "detector_plugin"
     depends_on:
