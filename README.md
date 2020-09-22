@@ -1,5 +1,5 @@
 # What's SharpAI DeepCamera
-SharpAI is open source stack for machine learning engineering. DeepCamera is application of SharpAI designed for computer vision. Developers can run same code on Raspberry Pi/Android/PC/AWS.
+SharpAI is open source stack for machine learning engineering. DeepCamera is application of SharpAI designed for connect computer vision model to surveillance camera. Developers can run same code on Raspberry Pi/Android/PC/AWS.
 ![image](screenshots/lifecycle_mac.png)
 
 ## DeepCamera Architecture
