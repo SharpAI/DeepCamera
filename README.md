@@ -72,12 +72,70 @@ password: SharpAI2018
 Change IP configuration and camera url on the page. [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
 If you are using other camera support streaming, please check [The Shinobi NVR's document](https://shinobi.video)  [Supported Devices](docs/Supported_Devices.md)
 
-## Connect DeepCamera to API Server(Doc WIP)
+## Connect DeepCamera to API Server
 
 ### Get device serial number
+```
+cat docker/workaipython/ro_serialno 
+82f28703d001
+```
+`82f28703d001` is device ID
 ### Create User on API Server
+REST API:
+```
+curl -X POST -H "Content-type: application/json" http://localhost:3000/api/v1/sign-up -d '{"username": "test11", "email": "xxxx@xxx.xx", "password": "xxxxxx"}'
+```
+Response:
+```
+{
+  "success": true
+}
+```
+### Get Token of created user
+REST API:
+```
+curl -X POST http://localhost:3000/api/v1/login/ -d "username=testuser&password=123456"
+```
+Response:
+```
+{
+  "status": "success",
+  "data": {
+    "authToken": "t6QsPaU3VdbfUQMkNIf6I3MDtox29WLrPJRAKkOCfpc",
+    "userId": "tiK8RYG87sGJAErdB"
+  }
+}
+```
 ### Create Group on API Server
+Rest API:
+
+Fill in `X-Auth-Token` and `X-User-Id` in previous response.
+```
+curl -X POST -H "X-Auth-Token: t6QsPaU3VdbfUQMkNIf6I3MDtox29WLrPJRAKkOCfpc" -H "X-User-Id: tiK8RYG87sGJAErdB" http://localhost:3000/api/v1/groups -d "name=group01"
+```
+Response:
+```
+{
+  "groupId": "e309ff8c7a3a8ceb4011e86e"
+}
+```
 ### Add device to Group on API Server
+REST API:
+Replace `X-Auth-Token` and `X-User-Id`.
+Replace group id in requesting URL: http://localhost:3000/api/v1/groups/`e309ff8c7a3a8ceb4011e86e`/devices
+```
+curl -X POST -H "X-Auth-Token: t6QsPaU3VdbfUQMkNIf6I3MDtox29WLrPJRAKkOCfpc" -H "X-User-Id: tiK8RYG87sGJAErdB" -H "Content-type: application/json" http://localhost:3000/api/v1/groups/e309ff8c7a3a8ceb4011e86e/devices -d '{"uuid": "82f28703d001", "deviceName": "testDevice", "name":"testdevice","type": "inout"}'
+```
+Response:
+```
+{
+  "success": true
+}
+```
+
+Then restart DeepCamera service.
+
+### API Server document can be found here: [SharpAI/ApiServer](https://github.com/SharpAI/ApiServer#full-api-document)
 
 ## Contributions
 This project contains source code or library dependencies from the follow projects:
