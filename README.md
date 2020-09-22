@@ -1,25 +1,9 @@
 # What's SharpAI DeepCamera
-This is a unique repository in many ways. It’s a deep learning model open sourced to protect your privacy. The entire DeepCamera concept is based on automated machine learning (AutoML). So you don’t even need any programming experience to train a new model. DeepCamera will keep porting AI models to provide easy for use Edge AI platform to help developers implement AI production on the edge.  
+SharpAI is open source stack for machine learning engineering. DeepCamera is application of SharpAI designed for computer vision. Developers can run same code on Raspberry Pi/Android/PC/AWS.
 ![image](screenshots/lifecycle_mac.png)
 
 ## DeepCamera Architecture
 ![architecture](screenshots/DeepCamera_infrastructure.png)
-DeepCamera works on AIoT devices such as Raspberry Pi and Android.
-You can integrate the code with surveillance cameras as well. There’s a LOT you can do with DeepCamera’s code, including:
-
-- Face recognition
-- Face Detection
-- Control from mobile application
-- Object detection
-- Motion detection
-- Human ReID (Recognition based on human shape)
-- Many more AI models will come soon
-
-And a whole host of other things. Building your own AI-powered model has never been this easy!
-
-## Commercial Support
-### Slack
-[Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
 ## Feature List
 - [x] High accurate Face Recognition
@@ -40,6 +24,9 @@ And a whole host of other things. Building your own AI-powered model has never b
 - [x] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
 - [ ] Image upload is not working(was using Aliyun), need change to upload to server itself
 
+## Commercial Support
+### Slack
+[Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
 ## Demo
 ![demo](https://github.com/SharpAI/DeepCamera/raw/master/screenshots/demo.gif)
@@ -85,8 +72,12 @@ password: SharpAI2018
 Change IP configuration and camera url on the page. [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
 If you are using other camera support streaming, please check [The Shinobi NVR's document](https://shinobi.video)  [Supported Devices](docs/Supported_Devices.md)
 
-## [Start API Server](https://github.com/SharpAI/ApiServer/blob/master/README.md#get-started)
 ## Connect DeepCamera to API Server(Doc WIP)
+
+### Get device serial number
+### Create User on API Server
+### Create Group on API Server
+### Add device to Group on API Server
 
 ## Contributions
 This project contains source code or library dependencies from the follow projects:
