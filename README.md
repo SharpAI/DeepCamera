@@ -22,7 +22,7 @@ SharpAI is open source stack for machine learning engineering. DeepCamera is app
 - [x] Lable and train from Mobile to Edge Device
 - [x] Native raspberry pi camera support
 - [x] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
-- [ ] Image upload is not working(was using Aliyun), need change to upload to server itself
+- [x] Image upload to AWS or on premise AWS compatiable server(MINIO)
 
 ## Commercial Support
 ### Slack
