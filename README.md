@@ -135,6 +135,14 @@ Response:
 
 Then restart DeepCamera service.
 
+## Rebuild Mobile App to connect to your own API Server(Doc WIP)
+### Clone https://github.com/SharpAI/ApiServer
+### Setup your own travis service for CI (to build your own APK on travis)
+### Setup your own sign keystore, setup your own Environment
+### Trigger build
+
+## [Labelling and receive message sent from DeepCamera with Face Detection/Recognition result](https://github.com/SharpAI/SharpAIMobileApp#how-to-use-sharpai-app)
+
 ### API Server document can be found here: [SharpAI/ApiServer](https://github.com/SharpAI/ApiServer#full-api-document)
 
 ## Contributions
