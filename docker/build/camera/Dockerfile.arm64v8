@@ -28,7 +28,6 @@ ADD ./detector /opt/nvr/detector
 WORKDIR /opt/nvr/detector
 RUN npm install && npm run build && cp dist/release/* . -a && cp dist/release/libs/* ./libs/ -a && rm -rf dist && rm -rf uglifyjs-es-cmd \
     rm /opt/2018.03.15.14.50.tar.gz && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    cp /etc/apt/sources.list.bk /etc/apt/sources.list && \
     rm /root/.npm/* -rf
 
 WORKDIR /opt/nvr
