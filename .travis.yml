@@ -10,5 +10,5 @@ script:
 after_success:
   - docker login --username shareai --password $DOCKER_HUB_TOKEN
   - docker push shareai/tensorflow:arm64v8_latest
-  - docker push shareai/od:arm64v8_latest
+  #- docker push shareai/od:arm64v8_latest
   - cd $TRAVIS_BUILD_DIR/docker/build && docker-compose -f docker-compose-arm64v8.yml push
