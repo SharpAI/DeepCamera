@@ -1,11 +1,10 @@
 FROM shareai/tensorflow:arm64v8_latest
 
+RUN apt-get update && apt-get install -y autoconf automake libtool curl make g++ unzip git
 WORKDIR /root
+RUN git clone https://github.com/tensorflow/models
+RUN wget https://github.com/google/protobuf/releases/download/v3.5.1/protobuf-all-3.5.1.tar.gz
 ENV PYTHONPATH /root/models/research/object_detection:/root/models/research:/root/models/research/slim
-ADD ./models /root/models
-WORKDIR /root
-RUN apt-get update && apt-get install -y autoconf automake libtool curl make g++ unzip
-COPY ./protobuf-all-3.5.1.tar.gz /root/protobuf-all-3.5.1.tar.gz
 RUN tar -zxvf protobuf-all-3.5.1.tar.gz
 WORKDIR /root/protobuf-3.5.1
 RUN    ls -alh && \
