@@ -4,6 +4,5 @@ os: linux
 language: c
 service: docker
 script:
-  - ls
   - docker login --username shareai --password $DOCKER_HUB_TOKEN
-  - cd docker/build/tensorflow && docker built -f Dockerfile.arm64v8 -t shareai/tensorflow:arm64v8_latest .
+  - cd docker/build/tensorflow && docker build -f Dockerfile.arm64v8 -t shareai/tensorflow:arm64v8_latest .
