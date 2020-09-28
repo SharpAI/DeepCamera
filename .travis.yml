@@ -1,0 +1,8 @@
+arch:
+  - arm64
+os: linux
+language: c
+service: docker
+script:
+  - ls
+  - docker login --username shareai --password $DOCKER_HUB_TOKEN
