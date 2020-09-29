@@ -7,8 +7,8 @@ RUN apt-get update && apt-get install --no-install-recommends  -y python python-
     apt-get clean
 RUN pip install --upgrade setuptools  && pip install --upgrade pip
 
-ADD ./assets/face_detection-2.2.0-cp27-cp27mu-linux_aarch64.whl /root/face_detection-2.2.0-cp27-cp27mu-linux_aarch64
-RUN pip install /root/face_detection-2.2.0-cp27-cp27mu-linux_aarch64 && \
+ADD ./assets/face_detection-2.2.0-cp27-cp27mu-linux_aarch64.whl /root/face_detection-2.2.0-cp27-cp27mu-linux_aarch64.whl
+RUN pip install /root/face_detection-2.2.0-cp27-cp27mu-linux_aarch64.whl && \
     rm /root/face_detection-2.2.0-cp27-cp27mu-linux_aarch64
 ADD requirements.txt /root/requirements.txt
 RUN pip install -r /root/requirements.txt
