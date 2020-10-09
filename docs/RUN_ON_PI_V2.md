@@ -8,11 +8,6 @@ https://www.raspberrypi.org/documentation/configuration/camera.md
 sudo curl -sSL https://get.docker.com | sh
 ```
 
-## Prepare RTSP server
-
-https://www.sylvaindurand.org/surveillance-camera-with-raspberry-pi/
-
-
 ## Start DeepCamera on Raspberry Pi 3/4
 
 ```
