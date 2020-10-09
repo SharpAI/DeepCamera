@@ -1,13 +1,16 @@
-sudo: required
 arch:
   - arm64
 os: linux
-language: python
+dist: xenial
+language: sh
 services:
   - docker
 env:
   global:
     - DOCKER_CACHE_FILE=/home/travis/docker/cache.tar.gz
+before_script:
+   # Temporary workaround for https://github.com/bitcoin/bitcoin/issues/16368
+   - for i in {1..4}; do echo "$(sleep 500)" ; done &
 script:
   #- cd $TRAVIS_BUILD_DIR/docker/build/tensorflow && docker build -f Dockerfile.arm64v8 -t shareai/tensorflow:arm64v8_latest .
   #- cd $TRAVIS_BUILD_DIR/docker/build/od && docker build -f Dockerfile.arm64v8 -t shareai/od:arm64v8_latest .
