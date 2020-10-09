@@ -1,8 +1,13 @@
+sudo: required
 arch:
   - arm64
 os: linux
-language: c
-service: docker
+language: python
+services:
+  - docker
+env:
+  global:
+    - DOCKER_CACHE_FILE=/home/travis/docker/cache.tar.gz
 script:
   #- cd $TRAVIS_BUILD_DIR/docker/build/tensorflow && docker build -f Dockerfile.arm64v8 -t shareai/tensorflow:arm64v8_latest .
   #- cd $TRAVIS_BUILD_DIR/docker/build/od && docker build -f Dockerfile.arm64v8 -t shareai/od:arm64v8_latest .
@@ -19,6 +24,3 @@ before_install:
   - if [ -f ${DOCKER_CACHE_FILE} ]; then gunzip -c ${DOCKER_CACHE_FILE} | docker load; fi
 before_cache:
   - if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then docker save $(docker images -a -q) | gzip > ${DOCKER_CACHE_FILE}; fi
-env:
-  global:
-    - DOCKER_CACHE_FILE=/home/travis/docker/cache.tar.gz
