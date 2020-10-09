@@ -12,3 +12,10 @@ after_success:
   - docker push shareai/tensorflow:arm64v8_latest
   #- docker push shareai/od:arm64v8_latest
   - cd $TRAVIS_BUILD_DIR/docker/build && docker-compose -f docker-compose-arm64v8.yml push
+cache:
+  directories:
+    - docker_images
+before_install:
+  - docker load -i docker_images/images.tar || true
+before_cache:
+  - docker save -o docker_images/images.tar $(docker images -a -q)
