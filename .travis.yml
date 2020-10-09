@@ -16,7 +16,7 @@ cache:
   directories:
     - docker_images
 before_install:
-  - docker load -i docker_images/images.tar || true
+  - docker load -i docker_images/images_1.tar || true
 before_cache:
   - mkdir docker_images || true
-  - docker save -o docker_images/images.tar $(docker images -a -q)
+  - docker save -o docker_images/images_1.tar $(docker images -a -q)
