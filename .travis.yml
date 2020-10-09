@@ -14,9 +14,9 @@ after_success:
   - cd $TRAVIS_BUILD_DIR/docker/build && docker-compose -f docker-compose-arm64v8.yml push
 cache:
   directories:
-    - docker_images
+    - /home/travis/docker/
 before_install:
-  - docker load -i docker_images/images_1.tar || true
+  - docker load -i /home/travis/docker/cache.tar || true
 before_cache:
   - mkdir docker_images || true
-  - docker save -o docker_images/images_1.tar $(docker images -a -q)
+  - docker save -o /home/travis/docker/cache.tar $(docker images -a -q)
