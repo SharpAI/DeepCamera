@@ -16,6 +16,9 @@ cache:
   directories:
     - /home/travis/docker/
 before_install:
-  - docker load -i /home/travis/docker/cache.tar || true
+  - if [ -f ${DOCKER_CACHE_FILE} ]; then gunzip -c ${DOCKER_CACHE_FILE} | docker load; fi
 before_cache:
-  - if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then docker save -o /home/travis/docker/cache.tar $(docker images -a -q); fi
+  - if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then docker save $(docker images -a -q) | gzip > ${DOCKER_CACHE_FILE}; fi
+env:
+  global:
+    - DOCKER_CACHE_FILE=/home/travis/docker/cache.tar.gz
