@@ -18,5 +18,4 @@ cache:
 before_install:
   - docker load -i /home/travis/docker/cache.tar || true
 before_cache:
-  - mkdir docker_images || true
-  - docker save -o /home/travis/docker/cache.tar $(docker images -a -q)
+  - if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then docker save -o /home/travis/docker/cache.tar $(docker images -a -q); fi
