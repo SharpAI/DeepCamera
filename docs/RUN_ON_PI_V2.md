@@ -22,7 +22,7 @@ git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera
 ./start-cloud.sh start
 ```
-you need private cloud server on next step (Server_IP)
+You need ip address of private cloud server on next step (replace ip address to <Server_IP> on next step)
 
 ## on Raspberry Pi 3/4
 
@@ -35,12 +35,12 @@ git clone https://github.com/SharpAI/DeepCamera
 
 edit configuration on Pi, change following environment var to 1's ip address:
 
-[aws.env](../docker/aws.env)
-AWS_END_POINT='<Server_IP>'
+#### [aws.env](../docker/aws.env)
+AWS_END_POINT='<Server_IP>'  
 AWS_READABLE_PREFIX='http://<Server_IP>:9000/storage/'
 
-[servers.env](../docker/servers.env)
-MQTT_BROKER_ADDRESS=<Server_IP>
+#### [servers.env](../docker/servers.env)
+MQTT_BROKER_ADDRESS=<Server_IP>  
 API_SERVER_ADDRESS=<Server_IP>
 ### Start DeepCamera
 ```
