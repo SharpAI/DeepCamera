@@ -11,7 +11,7 @@ env:
 script:
   #- cd $TRAVIS_BUILD_DIR/docker/build/tensorflow && docker build -f Dockerfile.arm64v8 -t shareai/tensorflow:arm64v8_latest .
   #- cd $TRAVIS_BUILD_DIR/docker/build/od && docker build -f Dockerfile.arm64v8 -t shareai/od:arm64v8_latest .
-  - cd $TRAVIS_BUILD_DIR/docker/build && docker-compose -f docker-compose-arm64v8.yml build
+  - cd $TRAVIS_BUILD_DIR/docker/build && travis_wait 30 docker-compose -f docker-compose-arm64v8.yml build
 after_success:
   - docker login --username shareai --password $DOCKER_HUB_TOKEN
   - docker push shareai/tensorflow:arm64v8_latest
