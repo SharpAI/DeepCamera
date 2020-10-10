@@ -8,14 +8,9 @@ RUN apt-get update && apt-get install -y git scons cmake wget unzip curl build-e
     libprotobuf-dev protobuf-compiler libopencv-dev python-pip python-setuptools python-dev
 
 ADD face_detector /root/detector
-ADD mtcnn /root/mtcnn
-ADD ncnn /root/ncnn
-RUN cd /root/mtcnn && \
-    mkdir build && cd build && \
-    cmake ../ && make -j6 && \
-    cd /root/ncnn && mkdir build && cd build && \
+RUN cd /root/detector/3rdparty/ncnn && mkdir build && cd build && \
     cmake ../ && make -j6
-RUN cp /root/mtcnn/build/src/libncnn.a /root/detector/lib/ncnn/libncnn.a
+RUN cp /root/detector/3rdparty/ncnn/build/src/libncnn.a /root/detector/lib/ncnn/libncnn.a
 
 WORKDIR /root/detector/
 RUN python setup.py install
