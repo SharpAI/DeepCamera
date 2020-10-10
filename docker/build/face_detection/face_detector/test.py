@@ -3,6 +3,11 @@ import time
 
 m.init('./models/ncnn/')
 print('warming up')
+
+m.set_minsize(40)
+m.set_threshold(0.6,0.7,0.8)
+m.set_num_threads(1)
+
 m.detect('./images_480p/1_854x480.jpg')
 m.detect('./images_480p/1_854x480.jpg')
 m.detect('./images_480p/1_854x480.jpg')
