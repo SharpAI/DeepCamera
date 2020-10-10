@@ -16,7 +16,7 @@ https://www.raspberrypi.org/documentation/configuration/camera.md
 sudo curl -sSL https://get.docker.com | sh
 ```
 
-## Start Private Cloud Server on PC/Server/Cloud
+## on PC/Server/Cloud
 ```
 git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera
@@ -24,7 +24,12 @@ cd DeepCamera
 ```
 you need private cloud server on next step (Server_IP)
 
-## Configure and Start DeepCamera on Raspberry Pi 3/4
+## on Raspberry Pi 3/4
+
+### Get source code
+```
+git clone https://github.com/SharpAI/DeepCamera
+```
 
 ### Configure
 
@@ -37,7 +42,7 @@ AWS_READABLE_PREFIX='http://<Server_IP>:9000/storage/'
 [servers.env](../docker/servers.env)
 MQTT_BROKER_ADDRESS=<Server_IP>
 API_SERVER_ADDRESS=<Server_IP>
-### Start
+### Start DeepCamera
 ```
 git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera  
