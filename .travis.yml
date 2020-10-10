@@ -2,7 +2,7 @@ arch:
   - arm64
 os: linux
 dist: xenial
-language: sh
+language: shell
 services:
   - docker
 env:
