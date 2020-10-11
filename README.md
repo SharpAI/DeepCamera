@@ -38,11 +38,15 @@ SharpAI is open source stack for machine learning engineering with private deplo
 ```
 sudo curl -sSL https://get.docker.com | sh
 ```
-2. Get source code
+2. Install Docker-compose
+```
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+```
+3. Get source code
 ```
 git clone https://github.com/SharpAI/DeepCamera
 ```
-3. Start container
+4. Start container
 ```
 cd DeepCamera/
 ./run-on-linux.sh start
