@@ -99,7 +99,7 @@ Response:
 ### Get Token of created user
 REST API:
 ```
-curl -X POST http://localhost:3000/api/v1/login/ -d "username=testuser&password=123456"
+curl -X POST -H "Content-type: application/json" http://localhost:3000/api/v1/login/ -d '{"username": "test11", "email": "xxxx@xxx.xx", "password": "123456"}'
 ```
 Response:
 ```
