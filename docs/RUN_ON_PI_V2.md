@@ -22,7 +22,8 @@ git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera
 ./start-cloud.sh start
 ```
-You need ip address of private cloud server on next step (replace ip address to <Server_IP> on next step)
+You need ip address of private cloud server on next step (replace ip address to <Server_IP> on next step).  
+If you don't want to setup your own server for now, a test server can be used for evaluation, the ip address of test server is 165.232.62.29
 
 ## on Raspberry Pi 3/4
 
