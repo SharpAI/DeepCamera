@@ -201,3 +201,5 @@ services:
       - ../src/detector/realtime_message.js:/opt/nvr/detector/realtime_message.js
       - ../src/detector/upload_listener.js:/opt/nvr/detector/upload_listener.js
       - ../src/detector/config:/opt/nvr/detector/config
+    ports:
+      - 3030:3000

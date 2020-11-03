@@ -163,6 +163,8 @@ services:
       - flower:flower
       - embedding:workaipython
       - api_server:apiserver
+    ports:
+      - 3030:3000
     volumes:
       - ./videos:/opt/nvr/videos
       - ./workaipython/ro_serialno:/dev/ro_serialno
