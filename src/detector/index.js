@@ -795,10 +795,10 @@ let _download = async function(uri, filename){
 
 async function download(url) {
     var filename = url.split('/').pop()
-    var fullname = path.join(__dirname,filename)
-    await _download(url, filename)
+    var fullname = path.join(__dirname,'images',filename)
+    await _download(url, fullname)
     try {
-      var stats = fs.statSync(filename);
+      var stats = fs.statSync(fullname);
 
       //console.log(stats.isFile()) //true
       //console.log(stats.size) //1024000 //= 1MB
