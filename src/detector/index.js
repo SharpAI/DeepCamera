@@ -3,8 +3,11 @@ process.on('uncaughtException', function (err) {
     console.error('uncaughtException',err)
 });
 
-const http = require('http');
-var Queue = require('bull');
+const cp = require('child_process')
+const path = require('path')
+const http = require('http')
+
+var Queue = require('bull')
 var motion=require('./motion')
 //var motion=require('./od')
 var deepeye=require('./deepeye')
@@ -784,6 +787,65 @@ function getCroppedFaces(detectedArray, trackerid, totalPeople, deviceId){
   return result;
 }
 
+let _download = async function(uri, filename){
+    let command = `curl -o ${filename}  '${uri}'`;
+    let result = cp.execSync(command);
+};
+
+
+async function download(url) {
+    var filename = url.split('/').pop()
+    var fullname = path.join(__dirname,filename)
+    await _download(url, filename)
+    try {
+      var stats = fs.statSync(filename);
+
+      //console.log(stats.isFile()) //true
+      //console.log(stats.size) //1024000 //= 1MB
+      //console.log("File exists.")
+      return fullname
+    }
+    catch (e) {
+      console.log("File does not exist.")
+    }
+    return null
+}
+
+async function downloadImages(json){
+  var filePath = null
+  //console.log(json)
+  if(json){
+    if( json.wholeImageUrl && (typeof json.wholeImageUrl != undefined) ){
+      filePath = await download(json.wholeImageUrl)
+      if(filePath){
+        json.wholeImagePath = filePath
+      }
+    }
+    if (json.msg && (typeof json.msg != undefined) ){
+      for(var i=0; i<json.msg.length; i++){
+        if(json.msg[i]){
+          var item = json.msg[i]
+          json.msg[i].wholeImagePath = json.wholeImagePath
+          if(item.personImageUrl && (typeof item.personImageUrl != undefined)){
+              var personImagePath = await download(item.personImageUrl)
+              if(personImagePath){
+                json.msg[i].personImagePath = personImagePath
+              }
+          }
+          if(item.faceImageUrl && (typeof item.faceImageUrl != undefined)){
+              var faceImagePath = await download(item.faceImageUrl)
+              if(faceImagePath){
+                json.msg[i].faceImagePath = faceImagePath
+              }
+          }
+        }
+      }
+    }
+  }
+  //console.log(json)
+  return json
+}
+
 motion.init(onframe)
 if(UPLOAD_IMAGE_SERVICE_ENABLED){
   upload_listener.init(onframe)
@@ -841,12 +903,16 @@ app.post('/post2',function(request, response) {
   let json = request.body;
   setTimeout(()=>{
     try{
-      onframe_for_android(json);
+      downloadImages(json)
+        .then(function(result){
+          //console.log(result)
+          onframe_for_android(result)
+        })
     } catch(e){
       console.log(e);
     }
   },0)
   response.json({message: 'OK'});
-  keepalive_to_montior();
+  //keepalive_to_montior();
 })
 app.listen(port,'0.0.0.0' ,() => console.log('Listening on port ',port));
