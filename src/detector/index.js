@@ -777,6 +777,7 @@ function getCroppedFaces(detectedArray, trackerid, totalPeople, deviceId){
         width: item.faceWidth,
         totalPeople: totalPeople,
         path: item.faceImagePath,
+        url: item.faceImageUrl,
         ts: new Date().valueOf(),
         cameraId: deviceId,
         height: item.faceHeight
@@ -819,6 +820,7 @@ async function downloadImages(json){
       filePath = await download(json.wholeImageUrl)
       if(filePath){
         json.wholeImagePath = filePath
+        json.wholeImagePath = json.wholeImageUrl
       }
     }
     if (json.msg && (typeof json.msg != undefined) ){
@@ -830,12 +832,14 @@ async function downloadImages(json){
               var personImagePath = await download(item.personImageUrl)
               if(personImagePath){
                 json.msg[i].personImagePath = personImagePath
+                json.msg[i].personImageURL = item.personImageUrl
               }
           }
           if(item.faceImageUrl && (typeof item.faceImageUrl != undefined)){
               var faceImagePath = await download(item.faceImageUrl)
               if(faceImagePath){
                 json.msg[i].faceImagePath = faceImagePath
+                json.msg[i].faceImageUrl = item.faceImageUrl
               }
           }
         }

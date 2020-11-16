@@ -438,6 +438,29 @@ function embedding_task(cropped_file_path, cb) {
     return cb && cb('error', null)
   }
 }
+function post_recognition_result_to_api_server(json,accessUrl){
+  var gst_api_url = json.api_data.api_url
+  var json_request_content = json.api_data.payload
+  json_request_content.img_url = accessUrl
+  console.log('api_url,',gst_api_url,'json_request_content ',json_request_content)
+  requestretry({
+      url: gst_api_url,
+      method: "POST",
+      json: true,
+      maxAttempts: 5,   // (default) try 5 times
+      retryDelay: 5000,
+      body: json_request_content
+  }, function (error, response, body){
+      if(error) {
+          console.log("report to server event: ",error)
+      } else {
+          console.log('report to server event: ',body)
+          if(body && body.state=="SUCCESS" && body.result) {
+              var json = JSON.parse(body.result)
+          }
+      }
+  });
+}
 function classify_task(task_info, cb) {
   if(connected_to_celery_broker){
     client.call('classify.classify',
@@ -454,32 +477,19 @@ function classify_task(task_info, cb) {
             json.result['url'] = upload.getAccessUrl(json.result.key)
             console.log('json.result.key[',json.result.key,']task_info.path',task_info.path)
             var key = json.result.key
-            upload.putFile(key,task_info.path,function(error,accessUrl){
-              console.log('error=',error,'accessUrl=',accessUrl)
-              if(!error){
-                var gst_api_url = json.api_data.api_url
-                var json_request_content = json.api_data.payload
-                json_request_content.img_url = accessUrl
-                console.log('api_url,',gst_api_url,'json_request_content ',json_request_content)
-                requestretry({
-                    url: gst_api_url,
-                    method: "POST",
-                    json: true,
-                    maxAttempts: 5,   // (default) try 5 times
-                    retryDelay: 5000,
-                    body: json_request_content
-                }, function (error, response, body){
-                    if(error) {
-                        console.log("report to server event: ",error)
-                    } else {
-                        console.log('report to server event: ',body)
-                        if(body && body.state=="SUCCESS" && body.result) {
-                            var json = JSON.parse(body.result)
-                        }
-                    }
-                });
-              }
-            })
+            console.log(task_info)
+            console.log('face url is '+task_info.url)
+
+            if(task_info.url && task_info.url!=''){
+                post_recognition_result_to_api_server(json,task_info.url)
+            } else {
+              upload.putFile(key,task_info.path,function(error,accessUrl){
+                console.log('error=',error,'accessUrl=',accessUrl)
+                if(!error){
+                  post_recognition_result_to_api_server(json,accessUrl)
+                }
+              })
+            }
             delete json.result.key
             console.log('classify result json:',json)
             return cb && cb(null, json)
