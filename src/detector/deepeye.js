@@ -474,15 +474,16 @@ function classify_task(task_info, cb) {
             if(!json.result || !json.result.key){
               return cb && cb(null, null)
             }
-            json.result['url'] = upload.getAccessUrl(json.result.key)
+
             console.log('json.result.key[',json.result.key,']task_info.path',task_info.path)
-            var key = json.result.key
             console.log(task_info)
             console.log('face url is '+task_info.url)
 
             if(task_info.url && task_info.url!=''){
+                json.result['url'] = task_info.url
                 post_recognition_result_to_api_server(json,task_info.url)
             } else {
+              json.result['url'] = upload.getAccessUrl(json.result.key)
               upload.putFile(key,task_info.path,function(error,accessUrl){
                 console.log('error=',error,'accessUrl=',accessUrl)
                 if(!error){

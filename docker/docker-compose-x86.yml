@@ -97,7 +97,7 @@ services:
       - ../src/face_detection:/root/detection
       - ./dev/shm/streams:/dev/shm/streams
   embedding:
-    command: sh -c "sleep 60 && cd /data/runtime/src/ && ls /data/runtime -l &&  ls /data/runtime/src && ./start_embedding_only.sh"
+    command: sh -c "cd /data/runtime/src/ && ls /data/runtime -l &&  ls /data/runtime/src && ./start_embedding_only.sh"
     image: shareai/embedding:x86_latest
     container_name: "embedding"
     env_file:
@@ -192,6 +192,7 @@ services:
       - ../src/detector/upload_listener.js:/opt/nvr/detector/upload_listener.js
       - ../src/detector/config:/opt/nvr/detector/config
   api_server:
+    entrypoint: ["sleep", "360000"]
     container_name: "api_server"
     logging:
       driver: json-file
