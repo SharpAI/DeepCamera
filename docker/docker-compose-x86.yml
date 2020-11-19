@@ -199,7 +199,7 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
-    image: shareai/api_server:latest
+    image: shareai/api_server:3.0.0
     ports:
       - 3000:3000
     restart: always
