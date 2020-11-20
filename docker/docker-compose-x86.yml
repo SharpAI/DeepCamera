@@ -192,7 +192,6 @@ services:
       - ../src/detector/upload_listener.js:/opt/nvr/detector/upload_listener.js
       - ../src/detector/config:/opt/nvr/detector/config
   api_server:
-    entrypoint: ["sleep", "360000"]
     container_name: "api_server"
     logging:
       driver: json-file
