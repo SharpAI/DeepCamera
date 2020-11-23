@@ -147,7 +147,7 @@ Then restart DeepCamera service.
 cat docker/workaipython/ro_serialno 
 82f28703d001
 ```
-`82f28703d001` is device ID
+`82f28703d001` is device ID.    
 Generate QRCode of device ID
 
 ### Download and install [SharpAI Mobile APP](https://github.com/SharpAI/SharpAIMobileApp/releases/download/3.0.1/sharpai-app.apk)
