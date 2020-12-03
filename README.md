@@ -77,8 +77,8 @@ password: SharpAI2018
 Change IP configuration and camera url on the page. [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
 If you are using other camera support streaming, please check [The Shinobi NVR's document](https://shinobi.video)  [Supported Devices](docs/Supported_Devices.md)
 
-## Connect DeepCamera to API Server
-
+# Connect DeepCamera to API Server
+## 1. USE API
 ### Get device serial number
 ```
 cat docker/workaipython/ro_serialno 
@@ -139,15 +139,20 @@ Response:
 ```
 
 Then restart DeepCamera service.
-
-## Rebuild Mobile App to connect to your own API Server(Doc WIP)
-### Clone https://github.com/SharpAI/ApiServer
-### Setup your own travis service for CI (to build your own APK on travis)
-### Setup your own sign keystore, setup your own Environment
-### Trigger build
-
-## [Labelling and receive message sent from DeepCamera with Face Detection/Recognition result](https://github.com/SharpAI/SharpAIMobileApp#how-to-use-sharpai-app)
-
 ### API Server document can be found here: [SharpAI/ApiServer](https://github.com/SharpAI/ApiServer#full-api-document)
+
+## 2. Use Mobile to Conect
+### Get device serial number
+```
+cat docker/workaipython/ro_serialno 
+82f28703d001
+```
+`82f28703d001` is device ID.    
+Generate QRCode of device ID
+
+### Download and install [SharpAI Mobile APP](https://github.com/SharpAI/SharpAIMobileApp/releases/download/3.0.1.3/debug.apk)
+
+### Configure on Mobile APP
+<img src="docs/App_Manual/1.jpeg" width="200"><img src="docs/App_Manual/2.jpeg" width="200"><img src="docs/App_Manual/3.jpeg" width="200"><img src="docs/App_Manual/4.jpeg" width="200"><img src="docs/App_Manual/5.jpeg" width="200"><img src="docs/App_Manual/6.jpeg" width="200"><img src="docs/App_Manual/7.jpeg" width="200"><img src="docs/App_Manual/8.jpeg" width="200"><img src="docs/App_Manual/9.jpeg" width="200">
 
 ## [Contributions](Contributions.md)
