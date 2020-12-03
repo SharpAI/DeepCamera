@@ -21,6 +21,7 @@ RUN apt-get install -y google-perftools
 RUN apt-get install -y --reinstall pkg-config cmake-data
 RUN apt-get update && apt-get install -y libopencv-dev
 COPY assets/Makefile /incubator-mxnet/Makefile
+COPY assets/CMakeLists.txt /incubator-mxnet/CMakeLists.txt
 RUN mv incubator-mxnet mxnet && \
     cd mxnet && \
     mkdir build && \
