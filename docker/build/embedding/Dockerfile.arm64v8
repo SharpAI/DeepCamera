@@ -10,3 +10,31 @@ RUN ls -lh && apt-get update && apt-get install -y libopenblas-base && apt-get c
 
 COPY ./requirements.txt /root/requirements.txt
 RUN pip install -r /root/requirements.txt
+
+RUN apt-get -y install clang
+
+ENV CC=clang
+ENV CXX=clang++
+RUN git clone https://github.com/apache/incubator-mxnet.git -b 1.2.0 --recursive
+RUN apt-get install -y git unzip cmake build-essential liblapack* libopenblas* libblas*
+RUN apt-get install -y google-perftools
+RUN apt-get install -y --reinstall pkg-config cmake-data
+RUN mv incubator-mxnet mxnet && \
+    cd mxnet && \
+    mkdir build && \
+    cd build && \
+    cmake -DUSE_SSE=OFF \
+        -DUSE_F16C=OFF \
+        -DUSE_CUDA=OFF \
+        -DUSE_OPENCV=OFF \
+        -DUSE_OPENMP=ON \
+        -DUSE_MKL_IF_AVAILABLE=OFF \
+        -DUSE_SIGNAL_HANDLER=ON \
+        -Dmxnet_LINKER_LIBS=-latomic \
+        -DCMAKE_BUILD_TYPE=Release .. && \
+    make -j2 USE_CPP_PACKAGE=1 && \
+    make install && \
+    cd /root/mxnet && \
+    make cython PYTHON=python && \
+    cd /root/mxnet/python && \
+    pip install -e .
