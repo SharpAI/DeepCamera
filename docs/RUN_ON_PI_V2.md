@@ -34,7 +34,7 @@ git clone https://github.com/SharpAI/DeepCamera
 
 ### Configure
 
-edit configuration on Pi, change following environment var to 1's ip address:
+edit configuration on Pi, change following environment variables to PC/Server/Cloud ip address:
 
 #### [aws.env](../docker/aws.env)
 AWS_END_POINT='<Server_IP>'  
