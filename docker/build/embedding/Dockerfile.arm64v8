@@ -43,10 +43,9 @@ RUN mv incubator-mxnet mxnet && \
 #WORKDIR /root/mxnet/build
 RUN pwd && ls -alh
 RUN cd mxnet/build && \
-    cat Makefile && \
     make -v -j4 && \
-    make install && \
-    cd /mxnet && \
-    make Cython PYTHON=python && \
+    make install
+RUN cd /mxnet && \
+    make cython PYTHON=python && \
     cd /mxnet/python && \
     pip install -e .

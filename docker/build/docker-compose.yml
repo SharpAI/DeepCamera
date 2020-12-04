@@ -24,7 +24,7 @@ services:
     build:
       context: ./flower
   embedding:
-    image: shareai/embedding:arm32v7
+    image: shareai/embedding:v1.0_arm32v7
     build:
       context: ./embedding
   rtspserver:
