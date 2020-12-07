@@ -115,7 +115,7 @@ services:
       - /dev/shm/streams:/dev/shm/streams
   embedding:
     command: sh -c "cd /data/runtime/src/ && ls /data/runtime -l &&  ls /data/runtime/src && ./start_embedding_only.sh"
-    image: shareai/embedding:arm32v7
+    image: shareai/embedding:v1.1_arm32v7
     container_name: "embedding"
     env_file:
       - ./cluster.env

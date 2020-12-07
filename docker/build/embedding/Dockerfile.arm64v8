@@ -16,10 +16,9 @@ RUN apt-get -y install clang
 ENV CC=clang
 ENV CXX=clang++
 RUN git clone https://github.com/apache/incubator-mxnet.git -b 1.2.0 --recursive
-RUN apt-get install -y git unzip cmake build-essential liblapack* libopenblas* libblas*
-RUN apt-get install -y google-perftools
+RUN apt-get install -y git unzip cmake build-essential libopenblas* #liblapack* libblas*
+#RUN apt-get install -y google-perftools
 RUN apt-get install -y --reinstall pkg-config cmake-data
-RUN apt-get update && apt-get install -y libopencv-dev
 COPY assets/Makefile /incubator-mxnet/Makefile
 COPY assets/CMakeLists.txt /incubator-mxnet/CMakeLists.txt
 RUN mv incubator-mxnet mxnet && \
@@ -29,7 +28,7 @@ RUN mv incubator-mxnet mxnet && \
     cmake -DUSE_SSE=OFF \
         -DUSE_F16C=OFF \
         -DUSE_CUDA=OFF \
-        -DUSE_OPENCV=ON \
+        -DUSE_OPENCV=OFF \
         -DUSE_OPENMP=OFF \
         -DUSE_GPERFTOOLS=OFF \
         -DUSE_JEMALLOC=OFF \
@@ -45,6 +44,7 @@ RUN pwd && ls -alh
 RUN cd mxnet/build && \
     make -v -j4 && \
     make install
+COPY assets/setup.py /mxnet/python/
 RUN cd /mxnet && \
     make cython PYTHON=python && \
     cd /mxnet/python && \
