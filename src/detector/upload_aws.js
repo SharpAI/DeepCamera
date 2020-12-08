@@ -108,20 +108,29 @@ function _putFileAWS(file_key,localFile,cb){
   //if(obj.counter++ %2 === 0){ return cb('error',null)} test code for failed upload
   var read = fs.createReadStream(localFile);
 
-  mc.putObject(AWS_BUCKET,file_key,read,function(err, etag){
-    if(err){
-      console.log('upload errr, need retry')
-      if(cb){
-        cb('error',null)
+  try{
+    mc.putObject(AWS_BUCKET,file_key,read,function(err, etag){
+      if(err){
+        console.log('upload errr, need retry')
+        if(cb){
+          cb('error',null)
+        }
+        return
       }
-      return
-    }
-    var access_url = getAccessUrl(file_key);
-    console.log('upload succ to: '+access_url);
-    if(cb){
-      cb(null,access_url)
-    }
-  })
+      var access_url = getAccessUrl(file_key);
+      console.log('upload succ to: '+access_url);
+      if(cb){
+        cb(null,access_url)
+      }
+    })
+  } catch(e){
+    console.log(e)
+    console.log('exception when put object to aws')
+    ensureSharpAIBucket(function(result){
+      console.log('after ensureSharpAIBucket')
+      console.log(result)
+    })
+  }
 }
 
 module.exports = {
