@@ -123,6 +123,7 @@ services:
       - ./aws.env
     environment:
       RUNTIME_BASEDIR: "/data/runtime/src/"
+      HAS_OPENCL: "false"
     restart: always
     depends_on:
       - "redis"
@@ -146,6 +147,8 @@ services:
       - ../src/embedding:/data/runtime/src
       - /opt/nvr/detector/frames:/opt/nvr/videos/frames
       - /var/run/docker.sock:/var/run/docker.sock
+      - ../model/model-0000.params:/data/runtime/model-0000.params
+      - ../model/model-symbol.json:/data/runtime/model-symbol.json
   detector_plugin:
     container_name: "detector_plugin"
     depends_on:
