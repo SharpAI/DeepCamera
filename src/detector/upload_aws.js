@@ -113,7 +113,7 @@ function _putFileAWS(file_key,localFile,cb){
       if(err){
         console.log('upload errr, need retry')
         if(cb){
-          cb('error',null)
+          cb(err,null)
         }
         return
       }
