@@ -1,10 +1,6 @@
 ## Prepare System
-Summary(conversation on [slack](https://sharpai-invite-automation.herokuapp.com/)):
 
-1. works out of box if you have 8GB memory version of Raspberry-pi.
-2. you need at least 4GB memory version of Raspberry-Pi, please add 2GB swap to run services.
-3. if you got HTTP request error, please restart services several times.
-4. Please install 32bit system (official raspbian works)
+Please install 32bit system (official raspbian)
 
 ## Prepare Camera
 
