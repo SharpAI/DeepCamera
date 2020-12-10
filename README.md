@@ -32,53 +32,69 @@ SharpAI is open source stack for machine learning engineering with private deplo
 ![demo](https://github.com/SharpAI/DeepCamera/raw/master/screenshots/demo.gif)
 
 # Get Started
+## Prepare System
 
-## On X86 Linux
-1. Install Docker
+Please install 32bit system (official raspbian)
+
+## Prepare Camera
+
+Now you need to enable camera support using the raspi-config program you will have used when you first set up your Raspberry Pi. Use the cursor keys to select and open Interfacing Options, and then select Camera and follow the prompt to enable the camera.
+https://www.raspberrypi.org/documentation/configuration/camera.md
+
+## Prepare Docker
 ```
 sudo curl -sSL https://get.docker.com | sh
 ```
-2. Install Docker-compose
+
+## on PC/Server/Cloud
 ```
-sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+git clone https://github.com/SharpAI/DeepCamera
+cd DeepCamera
+./start-cloud.sh start
 ```
-3. Get source code
+You need ip address of private cloud server on next step (replace ip address to <Server_IP> on next step).  
+If you don't want to setup your own server for now, a test server can be used for evaluation, the ip address of test server is 165.232.62.29
+
+## on Raspberry Pi 3/4
+
+### Get source code
 ```
 git clone https://github.com/SharpAI/DeepCamera
 ```
-4. Start container
-```
-cd DeepCamera/
-./run-on-linux.sh start
-```
-## On OSX
-1. Install Docker
-[Install Docker Desktop on Mac(Offical)](https://docs.docker.com/docker-for-mac/install/)
-2. Get source code
+
+### Configure
+
+edit configuration on Pi, change following environment variables to PC/Server/Cloud ip address:
+
+#### [aws.env](../docker/aws.env)
+AWS_END_POINT='<Server_IP>'  
+AWS_READABLE_PREFIX='http://<Server_IP>:9000/storage/'
+
+#### [servers.env](../docker/servers.env)
+MQTT_BROKER_ADDRESS=<Server_IP>  
+API_SERVER_ADDRESS=<Server_IP>
+### Start DeepCamera
 ```
 git clone https://github.com/SharpAI/DeepCamera
+cd DeepCamera  
+./run-on-rpi.sh start
 ```
-3. Start container
+## Use Mobile APP to receive recognition result on Raspberry Pi
+### Get device serial number
 ```
-cd DeepCamera/
-./run-on-mac.sh start
+cat docker/workaipython/ro_serialno 
+82f28703d001
 ```
+`82f28703d001` is device ID.    
+Generate QRCode of device ID
 
-## [On Raspberry Pi 3B+/4B](docs/RUN_ON_PI_V2.md)
+### Download and install [SharpAI Mobile APP](https://github.com/SharpAI/SharpAIMobileApp/releases/download/3.0.1.3/debug.apk)
 
-## Connect Streaming
-### Through Open Source NVR
+### Configure on Mobile APP
+<img src="docs/App_Manual/1.jpeg" width="200"><img src="docs/App_Manual/2.jpeg" width="200"><img src="docs/App_Manual/3.jpeg" width="200"><img src="docs/App_Manual/4.jpeg" width="200"><img src="docs/App_Manual/5.jpeg" width="200"><img src="docs/App_Manual/6.jpeg" width="200"><img src="docs/App_Manual/7.jpeg" width="200"><img src="docs/App_Manual/8.jpeg" width="200"><img src="docs/App_Manual/9.jpeg" width="200">
 
-Shinobi login page(device_ip:8080):   
-username: user@sharpaibox.com  
-password: SharpAI2018 
 
-Change IP configuration and camera url on the page. [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
-If you are using other camera support streaming, please check [The Shinobi NVR's document](https://shinobi.video)  [Supported Devices](docs/Supported_Devices.md)
-
-# Connect DeepCamera to API Server
-## 1. USE API
+## Develop your own Application GUI with DeepCamera
 ### Get device serial number
 ```
 cat docker/workaipython/ro_serialno 
@@ -140,19 +156,5 @@ Response:
 
 Then restart DeepCamera service.
 ### API Server document can be found here: [SharpAI/ApiServer](https://github.com/SharpAI/ApiServer#full-api-document)
-
-## 2. Use Mobile to Conect
-### Get device serial number
-```
-cat docker/workaipython/ro_serialno 
-82f28703d001
-```
-`82f28703d001` is device ID.    
-Generate QRCode of device ID
-
-### Download and install [SharpAI Mobile APP](https://github.com/SharpAI/SharpAIMobileApp/releases/download/3.0.1.3/debug.apk)
-
-### Configure on Mobile APP
-<img src="docs/App_Manual/1.jpeg" width="200"><img src="docs/App_Manual/2.jpeg" width="200"><img src="docs/App_Manual/3.jpeg" width="200"><img src="docs/App_Manual/4.jpeg" width="200"><img src="docs/App_Manual/5.jpeg" width="200"><img src="docs/App_Manual/6.jpeg" width="200"><img src="docs/App_Manual/7.jpeg" width="200"><img src="docs/App_Manual/8.jpeg" width="200"><img src="docs/App_Manual/9.jpeg" width="200">
 
 ## [Contributions](Contributions.md)
