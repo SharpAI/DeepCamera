@@ -30,15 +30,3 @@ git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera/
 ./run-on-mac.sh start
 ```
-
-## [On Raspberry Pi 3B+/4B](docs/RUN_ON_PI_V2.md)
-
-## Connect Streaming
-### Through Open Source NVR
-
-Shinobi login page(device_ip:8080):   
-username: user@sharpaibox.com  
-password: SharpAI2018
-
-Change IP configuration and camera url on the page. [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
-If you are using other camera support streaming, please check [The Shinobi NVR's document](https://shinobi.video)  [Supported Devices](docs/Supported_Devices.md)
