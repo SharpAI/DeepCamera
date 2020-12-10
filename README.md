@@ -41,16 +41,6 @@ https://www.raspberrypi.org/documentation/configuration/camera.md
 ```
 sudo curl -sSL https://get.docker.com | sh
 ```
-
-## on PC/Server/Cloud
-```
-git clone https://github.com/SharpAI/DeepCamera
-cd DeepCamera
-./start-cloud.sh start
-```
-You need ip address of private cloud server on next step (replace ip address to <Server_IP> on next step).  
-If you don't want to setup your own server for now, a test server can be used for evaluation, the ip address of test server is 165.232.62.29
-
 ## on Raspberry Pi 3/4
 
 ### Get source code
@@ -71,10 +61,19 @@ MQTT_BROKER_ADDRESS=<Server_IP>
 API_SERVER_ADDRESS=<Server_IP>
 ### Start DeepCamera
 ```
-git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera  
 ./run-on-rpi.sh start
 ```
+
+## on PC/Server/Cloud
+```
+git clone https://github.com/SharpAI/DeepCamera
+cd DeepCamera
+./start-cloud.sh start
+```
+You need ip address of private cloud server on next step (replace ip address to <Server_IP> on next step).  
+If you don't want to setup your own server for now, a test server can be used for evaluation, the ip address of test server is 165.232.62.29
+
 ## Use Mobile APP to receive recognition result on Raspberry Pi
 ### Get device serial number
 ```
