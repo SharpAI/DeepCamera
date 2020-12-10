@@ -159,6 +159,8 @@ Response:
 Then restart DeepCamera service.
 ### API Server document can be found here: [SharpAI/ApiServer](https://github.com/SharpAI/ApiServer#full-api-document)
 
+### You can also develop/debug code on your PC [How to run DeepCamera On PC](docs/develop_on_pc.md)
+
 ## Commercial Support
 ### Slack
 [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
