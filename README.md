@@ -94,7 +94,7 @@ username: user@sharpaibox.com
 password: SharpAI2018
 
 Change IP configuration and camera url on the page. [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
-If you are using other camera support streaming, please check [The Shinobi NVR's document](https://shinobi.video)  [Supported Devices](docs/Supported_Devices.md)
+If you are using other camera support streaming, please check [The Shinobi NVR's document](https://shinobi.video)
 
 ## Develop your own Application GUI with DeepCamera
 ### Get device serial number
