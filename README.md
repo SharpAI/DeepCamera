@@ -24,10 +24,6 @@ SharpAI is open source stack for machine learning engineering with private deplo
 - [x] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
 - [x] Image upload to AWS or on premise AWS compatiable server(MINIO)
 
-## Commercial Support
-### Slack
-[Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
-
 ## Demo
 ![demo](https://github.com/SharpAI/DeepCamera/raw/master/screenshots/demo.gif)
 
@@ -156,5 +152,9 @@ Response:
 
 Then restart DeepCamera service.
 ### API Server document can be found here: [SharpAI/ApiServer](https://github.com/SharpAI/ApiServer#full-api-document)
+
+## Commercial Support
+### Slack
+[Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
 ## [Contributions](Contributions.md)
