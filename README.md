@@ -88,6 +88,13 @@ Generate QRCode of device ID
 ### Configure on Mobile APP
 <img src="docs/App_Manual/1.jpeg" width="200"><img src="docs/App_Manual/2.jpeg" width="200"><img src="docs/App_Manual/3.jpeg" width="200"><img src="docs/App_Manual/4.jpeg" width="200"><img src="docs/App_Manual/5.jpeg" width="200"><img src="docs/App_Manual/6.jpeg" width="200"><img src="docs/App_Manual/7.jpeg" width="200"><img src="docs/App_Manual/8.jpeg" width="200"><img src="docs/App_Manual/9.jpeg" width="200">
 
+## Connect to Surveillance Camera through Open Source NVR
+Shinobi login page(device_ip:8080):   
+username: user@sharpaibox.com  
+password: SharpAI2018
+
+Change IP configuration and camera url on the page. [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
+If you are using other camera support streaming, please check [The Shinobi NVR's document](https://shinobi.video)  [Supported Devices](docs/Supported_Devices.md)
 
 ## Develop your own Application GUI with DeepCamera
 ### Get device serial number
