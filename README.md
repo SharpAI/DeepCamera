@@ -54,7 +54,8 @@ edit configuration on Pi, change following environment variables to PC/Server/Cl
 
 #### [aws.env](../docker/aws.env)
 AWS_END_POINT='<Server_IP>'  
-AWS_READABLE_PREFIX='http://<Server_IP>:9000/storage/'
+AWS_BUCKET=faces  
+AWS_READABLE_PREFIX='http://<Server_IP>:9000/faces/'
 
 #### [servers.env](../docker/servers.env)
 MQTT_BROKER_ADDRESS=<Server_IP>  
