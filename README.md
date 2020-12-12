@@ -29,7 +29,7 @@ SharpAI is open source stack for machine learning engineering with private deplo
 ## Demo
 ![demo](https://github.com/SharpAI/DeepCamera/raw/master/screenshots/demo.gif)
 
-# Get Started
+# Get Started on Raspberry Pi 3/4
 ## Prepare System
 
 Please install 32bit system (official raspbian)
@@ -40,37 +40,32 @@ Now you need to enable camera support using the raspi-config program you will ha
 https://www.raspberrypi.org/documentation/configuration/camera.md
 
 ## Prepare Docker
-```
-sudo curl -sSL https://get.docker.com | sh
-sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-```
-## on Raspberry Pi 3/4
+Reference: [Installing Docker and Docker Compose on the Raspberry Pi in 5 Simple Steps](https://dev.to/rohansawant/installing-docker-and-docker-compose-on-the-raspberry-pi-in-5-simple-steps-3mgl)
 
-### Get source code
+## Get source code
 ```
 git clone https://github.com/SharpAI/DeepCamera
 ```
 
-### Configure
+## Configure
 
 edit configuration on Pi, change following environment variables to PC/Server/Cloud ip address:
 
-#### [docker/aws.env](docker/aws.env)
+### [docker/aws.env](docker/aws.env)
 AWS_END_POINT='<Server_IP>'  
 AWS_BUCKET=faces  
 AWS_READABLE_PREFIX='http://<Server_IP>:9000/faces/'
 
-#### [docker/servers.env](docker/servers.env)
+### [docker/servers.env](docker/servers.env)
 MQTT_BROKER_ADDRESS=<Server_IP>  
 API_SERVER_ADDRESS=<Server_IP>
-### Start DeepCamera
+## Start DeepCamera
 ```
 cd DeepCamera  
 ./run-on-rpi.sh start
 ```
 
-## on PC/Server/Cloud
+# on PC/Server/Cloud to setup storage and API_Server
 ```
 git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera
