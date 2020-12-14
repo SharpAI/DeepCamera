@@ -199,6 +199,8 @@ services:
         max-size: "10m"
         max-file: "10"
     image: shareai/api_server:3.0.0
+    links:
+      - broker:mqttserver
     ports:
       - 3000:3000
     restart: always
