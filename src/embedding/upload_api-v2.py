@@ -131,6 +131,7 @@ deepeye.count = 1
 CLUSTER_WORKERONLY = os.getenv('CLUSTER_WORKERONLY', False)
 
 HAS_OPENCL = os.getenv('HAS_OPENCL', 'true')
+EXTRACT_EMBEDDING_WITH_SERVER = os.getenv('EXTRACT_EMBEDDING_WITH_SERVER', 'true')
 SAVE_ORIGINAL_FACE = False
 original_face_img_path = os.path.join(BASEDIR, 'data', 'original_face_img')
 if not os.path.exists(original_face_img_path):
@@ -1689,7 +1690,7 @@ def extract_v2(image):
 
     if current_groupid is None:
         return json.dumps({"embedding_path":"","error":"please join group"})
-    if HAS_OPENCL == 'false':
+    if HAS_OPENCL == 'false' and EXTRACT_EMBEDDING_WITH_SERVER == 'true':
         embedding = get_remote_embedding(imgstring)
     else:
         embedding = FaceProcessing.FaceProcessingBase64ImageData2(imgstring)
