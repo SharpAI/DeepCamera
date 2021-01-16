@@ -7,25 +7,6 @@ SharpAI is open source stack for machine learning engineering with private deplo
 ## DeepCamera Architecture
 ![architecture](screenshots/DeepCamera_infrastructure.png)
 
-## Feature List
-- [x] High accurate Face Recognition
-- [x] Face Detection
-- [x] Inference on ARM Mali GPU
-- [x] Support Android TF Lite(GPU/CPU/NPU)
-- [x] Support open source embedded linux
-- [x] Control from mobile application
-- [x] Management System for devices
-- [x] Push Notification to Mobile Device
-- [x] Object Detection
-- [x] Distributed System based on celery
-- [x] Plugin to process video by Shinobi CCTV
-- [x] Application on Android to decode video with hw acc
-- [x] Motion Detection with Android GPU
-- [x] Lable and train from Mobile to Edge Device
-- [x] Native raspberry pi camera support
-- [x] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
-- [x] Image upload to AWS or on premise AWS compatiable server(MINIO)
-
 ## Demo
 ![demo](https://github.com/SharpAI/DeepCamera/raw/master/screenshots/demo.gif)
 
@@ -83,7 +64,7 @@ cat docker/workaipython/ro_serialno
 `82f28703d001` is device ID.    
 Generate QRCode of device ID
 
-### Download and install [SharpAI Mobile APP](https://github.com/SharpAI/SharpAIMobileApp/releases/download/3.0.1.4/debug.apk)
+### Download and install [SharpAI Mobile APP](https://github.com/SharpAI/SharpAIMobileApp/releases/download/3.0.1.5/debug.apk)
 
 ### Configure on Mobile APP
 <img src="docs/App_Manual/1.jpeg" width="200"><img src="docs/App_Manual/2.jpeg" width="200"><img src="docs/App_Manual/3.jpeg" width="200"><img src="docs/App_Manual/4.jpeg" width="200"><img src="docs/App_Manual/5.jpeg" width="200"><img src="docs/App_Manual/6.jpeg" width="200"><img src="docs/App_Manual/7.jpeg" width="200"><img src="docs/App_Manual/8.jpeg" width="200"><img src="docs/App_Manual/9.jpeg" width="200">
@@ -164,5 +145,24 @@ Then restart DeepCamera service.
 ## Commercial Support
 ### Slack
 [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
+
+## Feature List
+- [x] High accurate Face Recognition
+- [x] Face Detection
+- [x] Inference on ARM Mali GPU
+- [x] Support Android TF Lite(GPU/CPU/NPU)
+- [x] Support open source embedded linux
+- [x] Control from mobile application
+- [x] Management System for devices
+- [x] Push Notification to Mobile Device
+- [x] Object Detection
+- [x] Distributed System based on celery
+- [x] Plugin to process video by Shinobi CCTV
+- [x] Application on Android to decode video with hw acc
+- [x] Motion Detection with Android GPU
+- [x] Lable and train from Mobile to Edge Device
+- [x] Native raspberry pi camera support
+- [x] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
+- [x] Image upload to AWS or on premise AWS compatiable server(MINIO)
 
 ## [Contributions](Contributions.md)
