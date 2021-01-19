@@ -1,7 +1,7 @@
 {
-  "name": "workai",
-  "version": "1.0.0",
-  "description": "Work AI based plugin for NVR",
+  "name": "sharpai",
+  "version": "2.0.0",
+  "description": "SharpAI AI for NVR",
   "main": "index.js",
   "bin": "index.js",
   "scripts": {
