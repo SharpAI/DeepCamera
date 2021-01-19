@@ -22,8 +22,8 @@ from scipy import interpolate
 from scipy.misc import imread, imresize
 import sklearn.preprocessing
 
-global mx
-mx = None
+import mxnet as mx
+
 global globGraph
 globGraph = None
 global mod
@@ -113,10 +113,6 @@ def init_embedding_processor():
     global mod3
 
     if HAS_OPENCL == 'false':
-        global mx
-        import mxnet as mx
-        print('need init mxnet')
-
         mod2 = None
         if os.path.isfile(DATA_RUNTIME_FOLDER+'/model-0000.params'):
             ctx = mx.cpu(0)
@@ -151,15 +147,11 @@ def init_embedding_processor():
             print('error of loading net2')
             mod2 = None
             if os.path.isfile(DATA_RUNTIME_FOLDER+'/model-0000.params'):
-                global mx
-                import mxnet as mx
                 ctx = mx.cpu(0)
                 mod3 = get_model(ctx, [112,112], DATA_RUNTIME_FOLDER+'/model,0', 'fc1')
                 print('backup model loaded')
                 return mod3
     elif os.path.isfile('/root/model-r50-am-lfw/model-0000.params'):
-        global mx
-        import mxnet as mx
         ctx = mx.cpu(0)
         mod3 = get_model(ctx, [112,112], '/root/model-r50-am-lfw/model,0', 'fc1')
         print('backup model loaded')
