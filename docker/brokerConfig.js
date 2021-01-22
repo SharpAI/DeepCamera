@@ -8,15 +8,15 @@ module.exports = {
   brokerId: 'aedes-cli',
   //credentials: './credentials.json',
   persistence: {
-    name: 'mongodb',
+    name: 'redis',
     options: {
-      url: 'mongodb://apiserver:3001/aedes'
+      url: 'redis://redis:6379'
     }
   },
   mq: {
-    name: 'mongodb',
+    name: 'redis',
     options: {
-      url: 'mongodb://apiserver:3001/aedes'
+      url: 'redis://redis:6379'
     }
   },
   key: null,
