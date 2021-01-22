@@ -14,6 +14,8 @@ services:
         max-file: "10"
     networks:
       main:
+        aliases:
+          - redis
   broker:
     image: moscajs/aedes:latest
     restart: always
@@ -32,7 +34,7 @@ services:
     networks:
       main:
         aliases:
-          - api_server:apiserver
+          - mqttserver
   minio:
     image: shareai/minio:x86
     restart: always
@@ -44,6 +46,10 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
+    networks:
+      main:
+        aliases:
+          - minio
   camera:
     container_name: "camera"
     command: sh -c "if [ ! -f /opt/nvr/conf/conf.sqlite ]; then cp /opt/nvr/sql/shinobi.sample.sqlite /opt/nvr/conf/conf.sqlite -a ; fi && sleep 3 &&  (node /opt/nvr/cron.js &) && node /opt/nvr/camera.js"
@@ -61,6 +67,10 @@ services:
         max-file: "10"
     ports:
       - 8080:8080
+    networks:
+      main:
+        aliases:
+          - camera
     volumes:
       - ./videos:/opt/nvr/videos
       - ./workaipython/sql:/opt/nvr/conf
@@ -81,7 +91,7 @@ services:
     networks:
       main:
         aliases:
-          - redis:redis
+          - flower
   face_detector:
     command: sh -c "cd /root/detection && python test.py && python worker.py worker --loglevel INFO -E -n detect -c 1 -Q detect"
     image: shareai/face_detector:x86
@@ -107,6 +117,10 @@ services:
       - ./opt/nvr/detector/frames:/opt/nvr/videos/frames
       - ../src/face_detection:/root/detection
       - ./dev/shm/streams:/dev/shm/streams
+    networks:
+      main:
+        aliases:
+          - facd_detector
   embedding:
     command: sh -c "cd /data/runtime/src/ && ls /data/runtime -l &&  ls /data/runtime/src && ./start_embedding_only.sh"
     image: shareai/embedding:x86_latest
@@ -130,10 +144,7 @@ services:
     networks:
       main:
         aliases:
-          - redis:redis
-          - broker:mqttserver
-          - api_server:apiserver
-          - minio:minio
+          - workaipython
     privileged: true
     ports:
       - 5000:5000
@@ -174,11 +185,7 @@ services:
     networks:
       main:
         aliases:
-          - camera:camera
-          - redis:redis
-          - flower:flower
-          - embedding:workaipython
-          - api_server:apiserver
+          - detector_plugin
     ports:
       - 3030:3000
     volumes:
@@ -217,7 +224,7 @@ services:
     networks:
       main:
         aliases:
-          - broker:mqttserver
+          - apiserver
     ports:
       - 3000:3000
     restart: always
