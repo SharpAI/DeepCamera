@@ -10,13 +10,13 @@ module.exports = {
   persistence: {
     name: 'mongodb',
     options: {
-      url: 'mongodb://apiserver:3000/aedes'
+      url: 'mongodb://apiserver:3001/aedes'
     }
   },
   mq: {
     name: 'mongodb',
     options: {
-      url: 'mongodb://apiserver:3000/aedes'
+      url: 'mongodb://apiserver:3001/aedes'
     }
   },
   key: null,
