@@ -12,6 +12,8 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
+    networks:
+      main:
   broker:
     image: moscajs/aedes:latest
     restart: always
@@ -19,8 +21,6 @@ services:
     ports:
       - 1883:1883
       - 9001:3000
-    links:
-      - api_server:apiserver
     volumes:
       - ./brokerConfig.js:/data/brokerConfig.js
     command: --config /data/brokerConfig.js
@@ -29,6 +29,10 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
+    networks:
+      main:
+        aliases:
+          - api_server:apiserver
   minio:
     image: shareai/minio:x86
     restart: always
@@ -71,11 +75,13 @@ services:
       - 5555:5555
     depends_on:
       - "redis"
-    links:
-      - redis:redis
     environment:
       CELERY_BROKER_URL: redis://redis/0
       CELERY_RESULT_BACKEND: redis://redis/0
+    networks:
+      main:
+        aliases:
+          - redis:redis
   face_detector:
     command: sh -c "cd /root/detection && python test.py && python worker.py worker --loglevel INFO -E -n detect -c 1 -Q detect"
     image: shareai/face_detector:x86
@@ -121,11 +127,13 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
-    links:
-      - redis:redis
-      - broker:mqttserver
-      - api_server:apiserver
-      - minio:minio
+    networks:
+      main:
+        aliases:
+          - redis:redis
+          - broker:mqttserver
+          - api_server:apiserver
+          - minio:minio
     privileged: true
     ports:
       - 5000:5000
@@ -163,12 +171,14 @@ services:
     environment:
       TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
       IMAGE_DIR: "/opt/nvr/detector/images"
-    links:
-      - camera:camera
-      - redis:redis
-      - flower:flower
-      - embedding:workaipython
-      - api_server:apiserver
+    networks:
+      main:
+        aliases:
+          - camera:camera
+          - redis:redis
+          - flower:flower
+          - embedding:workaipython
+          - api_server:apiserver
     ports:
       - 3030:3000
     volumes:
@@ -204,8 +214,12 @@ services:
         max-size: "10m"
         max-file: "10"
     image: shareai/api_server:3.0.0
-    links:
-      - broker:mqttserver
+    networks:
+      main:
+        aliases:
+          - broker:mqttserver
     ports:
       - 3000:3000
     restart: always
+networks:
+  main:
