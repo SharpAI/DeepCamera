@@ -13,12 +13,17 @@ services:
         max-size: "10m"
         max-file: "10"
   broker:
-    image: shareai/broker:x86
+    image: moscajs/aedes:latest
     restart: always
     container_name: "broker"
     ports:
       - 1883:1883
-      - 9001:9001
+      - 9001:3000
+    links:
+      - api_server:apiserver
+    volumes:
+      - ./brokerConfig.js:/data/brokerConfig.js
+    command: --config /data/brokerConfig.js
     logging:
       driver: json-file
       options:
