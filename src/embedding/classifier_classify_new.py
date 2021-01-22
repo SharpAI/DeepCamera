@@ -44,7 +44,7 @@ import shutil
 BASEDIR = os.getenv('RUNTIME_BASEDIR',os.path.abspath(os.path.dirname(__file__)))
 
 
-HAS_OPENCL = os.getenv('HAS_OPENCL','true')
+HAS_OPENCL = os.getenv('HAS_OPENCL','false')
 sys.path.append(BASEDIR)
 import judgeutil
 
