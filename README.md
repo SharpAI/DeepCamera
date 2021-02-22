@@ -5,13 +5,12 @@
 
 # What's SharpAI DeepCamera [![Build Status](https://travis-ci.org/SharpAI/DeepCamera.svg?branch=master)](https://travis-ci.org/SharpAI/DeepCamera)
 SharpAI is open source stack for machine learning engineering with private deployment and AutoML for edge computing.  DeepCamera is application of SharpAI designed for connect computer vision model to surveillance camera. Developers can run same code on Raspberry Pi/Android/PC/AWS to boost your AI production development.
-![image](screenshots/lifecycle_mac.png)
 
 ## DeepCamera Architecture
 ![architecture](screenshots/DeepCamera_infrastructure.png)
 
 ## Demo On Youtube
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/LfcBN8UCy5k/0.jpg)](https://youtu.be/LfcBN8UCy5k)
+[![Demo On Youtube](http://img.youtube.com/vi/LfcBN8UCy5k/0.jpg)](https://youtu.be/LfcBN8UCy5k)
 
 # Get Started on Raspberry Pi 3/4
 ## Prepare System
