@@ -17,15 +17,16 @@ services:
         aliases:
           - redis
   broker:
-    image: moscajs/aedes:latest
+    #image: moscajs/aedes:latest
+    image: emqx/emqx:latest
     restart: always
     container_name: "broker"
     ports:
       - 1883:1883
-      - 9001:3000
+      - 80:8083
     volumes:
       - ./brokerConfig.js:/data/brokerConfig.js
-    command: --config /data/brokerConfig.js
+    #command: --config /data/brokerConfig.js
     logging:
       driver: json-file
       options:

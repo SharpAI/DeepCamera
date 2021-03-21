@@ -1,14 +1,13 @@
 ### Privacy is the most important issue for the AI face recognition camera. Open source and BYOD is the only way to solve privacy issue. SharpAI DeepCamera provides private deployment architecture to save all your information on your own devices.
 
-# What's SharpAI DeepCamera [![Build Status](https://travis-ci.org/SharpAI/DeepCamera.svg?branch=master)](https://travis-ci.org/SharpAI/DeepCamera)
+# What's SharpAI DeepCamera
 SharpAI is open source stack for machine learning engineering with private deployment and AutoML for edge computing.  DeepCamera is application of SharpAI designed for connect computer vision model to surveillance camera. Developers can run same code on Raspberry Pi/Android/PC/AWS to boost your AI production development.
-![image](screenshots/lifecycle_mac.png)
 
 ## DeepCamera Architecture
 ![architecture](screenshots/DeepCamera_infrastructure.png)
 
-## Demo
-![demo](https://github.com/SharpAI/DeepCamera/raw/master/screenshots/demo.gif)
+## Demo On Youtube
+[![Demo On Youtube](http://img.youtube.com/vi/LfcBN8UCy5k/0.jpg)](https://youtu.be/LfcBN8UCy5k)
 
 # Get Started on Raspberry Pi 3/4
 ## Prepare System
@@ -64,10 +63,9 @@ cat docker/workaipython/ro_serialno
 `82f28703d001` is device ID.    
 Generate QRCode of device ID
 
-### Download and install [SharpAI Mobile APP](https://github.com/SharpAI/SharpAIMobileApp/releases/download/3.0.1.5/debug.apk)
+### Download and install [SharpAI Mobile APP](https://github.com/SharpAI/SharpAIMobileApp/releases/download/3.0.2/debug.apk)
 
-### Configure on Mobile APP
-<img src="docs/App_Manual/1.jpeg" width="200"><img src="docs/App_Manual/2.jpeg" width="200"><img src="docs/App_Manual/3.jpeg" width="200"><img src="docs/App_Manual/4.jpeg" width="200"><img src="docs/App_Manual/5.jpeg" width="200"><img src="docs/App_Manual/6.jpeg" width="200"><img src="docs/App_Manual/7.jpeg" width="200"><img src="docs/App_Manual/8.jpeg" width="200"><img src="docs/App_Manual/9.jpeg" width="200">
+### [Configure on Mobile APP](docs/configure_on_mobile.md)
 
 ## Connect to Surveillance Camera through Open Source NVR
 Shinobi login page(device_ip:8080):   
