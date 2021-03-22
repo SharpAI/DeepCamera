@@ -92,8 +92,8 @@ This is open source NVR project Shinobi video.
 It supports thousands kinds of surveillance camera,  
 if you are confident with DIY your own NVR server,  
 you can checkout following guide:  
-[Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
-[The Shinobi NVR's document for camera streaming URL format](https://shinobi.video)
+## [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
+## [The Shinobi NVR's document for camera streaming URL format](https://shinobi.video)
 
 # Develop your own Application GUI with DeepCamera API Server
 If you don't like the GUI or you want to develop your own application.  
