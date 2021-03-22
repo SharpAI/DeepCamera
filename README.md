@@ -77,15 +77,28 @@ Generate QRCode of device ID
 
 ### [Configure on Mobile APP](docs/configure_on_mobile.md)
 
-## Connect to Surveillance Camera through Open Source NVR
-Shinobi login page(device_ip:8080):   
+# In case of you have no Raspberry Pi Camera
+If you don't have camera module for raspberry pi for now,   
+you can order one or connect to your home surveillance camera   
+when you know the ip and password of it.
+
+Access to raspberry pi's 8080 port.
+http://device_ip:8080   
+Default username and password is:  
 username: user@sharpaibox.com  
 password: SharpAI2018
 
-Change IP configuration and camera url on the page. [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
-If you are using other camera support streaming, please check [The Shinobi NVR's document](https://shinobi.video)
+This is open source NVR project Shinobi video.  
+It supports thousands kinds of surveillance camera,  
+if you are confident with DIY your own NVR server,  
+you can checkout following guide:  
+[Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
+[The Shinobi NVR's document for camera streaming URL format](https://shinobi.video)
 
-## Develop your own Application GUI with DeepCamera
+# Develop your own Application GUI with DeepCamera API Server
+If you don't like the GUI or you want to develop your own application.  
+You can use following API:  
+
 ### Get device serial number
 ```
 cat docker/workaipython/ro_serialno 
@@ -151,7 +164,11 @@ Then restart DeepCamera service.
 ### You can also develop/debug code on your PC [How to run DeepCamera On PC](docs/develop_on_pc.md)
 
 
-## Deploy your own API_Server on X86/Cloud Server
+# Deploy your own API_Server on X86/Cloud Server
+Now, you got the idea of DeepCamera,  
+the public testing server is open to the internet.  
+You can deploy your own API server on your OWN device.  
+
 ```
 git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera
@@ -161,8 +178,8 @@ You need ip address of private cloud server on next step (replace ip address to 
 If you don't want to setup your own server for now, a test server can be used for evaluation, the ip address of test server is 165.232.62.29
 
 
-## Commercial Support
-### Slack
+# If your have any question or feature request, please feel free to join slack for commercial support
+## Slack
 [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
 ## Feature List
