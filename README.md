@@ -44,16 +44,6 @@ API_SERVER_ADDRESS=<Server_IP>
 cd DeepCamera  
 ./run-on-rpi.sh start
 ```
-
-# on PC/Server/Cloud to setup storage and API_Server
-```
-git clone https://github.com/SharpAI/DeepCamera
-cd DeepCamera
-./start-cloud.sh start
-```
-You need ip address of private cloud server on next step (replace ip address to <Server_IP> on next step).  
-If you don't want to setup your own server for now, a test server can be used for evaluation, the ip address of test server is 165.232.62.29
-
 ## Connect to API server web gui
 ```
 cat docker/workaipython/ro_serialno 
@@ -148,6 +138,17 @@ Then restart DeepCamera service.
 ### API Server document can be found here: [SharpAI/ApiServer](https://github.com/SharpAI/ApiServer#full-api-document)
 
 ### You can also develop/debug code on your PC [How to run DeepCamera On PC](docs/develop_on_pc.md)
+
+
+## Deploy your own API_Server on X86/Cloud Server
+```
+git clone https://github.com/SharpAI/DeepCamera
+cd DeepCamera
+./start-cloud.sh start
+```
+You need ip address of private cloud server on next step (replace ip address to <Server_IP> on next step).  
+If you don't want to setup your own server for now, a test server can be used for evaluation, the ip address of test server is 165.232.62.29
+
 
 ## Commercial Support
 ### Slack
