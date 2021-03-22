@@ -54,7 +54,16 @@ cd DeepCamera
 You need ip address of private cloud server on next step (replace ip address to <Server_IP> on next step).  
 If you don't want to setup your own server for now, a test server can be used for evaluation, the ip address of test server is 165.232.62.29
 
-## Use Mobile APP to receive recognition result on Raspberry Pi
+## Connect to API server web gui
+```
+cat docker/workaipython/ro_serialno 
+82f28703d001
+```
+`82f28703d001` is device ID.   
+
+Access http://165.232.62.29:3000/
+
+## Use Mobile APP to check recognition result on Raspberry Pi
 ### Get device serial number
 ```
 cat docker/workaipython/ro_serialno 
