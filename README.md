@@ -53,6 +53,8 @@ cat docker/workaipython/ro_serialno
 
 Access http://165.232.62.29:3000/
 
+![how to config on web gui](screenshots/how_to_config_on_web_gui.png)
+
 ## Use Mobile APP to check recognition result on Raspberry Pi
 ### Get device serial number
 ```
