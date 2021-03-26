@@ -44,7 +44,7 @@ API_SERVER_ADDRESS=<Server_IP>
 cd DeepCamera  
 ./run-on-rpi.sh start
 ```
-# Train face recognition model on device
+# Label on GUI, Train on device
 
 To train face recogniton model, you need to tell AI the pictures belongs to whom AKA label dataset.  
 Most used method is save pictures into different folders, then train them. It will cost so much time.  
@@ -53,7 +53,7 @@ detected faces, user can label the face picture(Name Unknown) on it, when server
 it sends to device, then device will train face recognition model on edge device. When there's good model  
 trained on device, the device will send recognition result to server to show result on web/mobile GUI.  
 
-## 1. Use API server web gui to train face recognition model
+## 1. Use API server web gui to label and train train face recognition model
 ```
 cat docker/workaipython/ro_serialno 
 82f28703d001
@@ -64,7 +64,7 @@ Access http://165.232.62.29:3000/
 
 ![how to config on web gui](screenshots/how_to_config_on_web_gui.png)
 
-## 2. Use Mobile APP to train face recognition model
+## 2. Use Mobile APP to label and train face recognition model on device
 ### Get device serial number
 ```
 cat docker/workaipython/ro_serialno 
