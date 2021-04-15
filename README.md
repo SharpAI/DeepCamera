@@ -1,4 +1,4 @@
-# Open Source Object Detection/Face Recognition on AIoT devices.
+## Open Source Object Detection/Face Recognition on AIoT devices.
 
 # DeepCamera Architecture
 ![architecture](screenshots/DeepCamera_infrastructure.png)
