@@ -1,4 +1,4 @@
-FROM shareai/tensorflow:arm64v8_latest
+FROM shareai/tensorflow:nano_latest
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get install --no-install-recommends  -y python python-pip python-opencv python-dev \

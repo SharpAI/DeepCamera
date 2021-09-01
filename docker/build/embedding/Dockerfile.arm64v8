@@ -1,4 +1,4 @@
-FROM nvcr.io/nvidia/l4t-base:r32.6.1
+FROM shareai/tensorflow:nano_latest
 
 RUN mkdir -p /root/.ssh
 COPY ./id_rsa /root/.ssh/id_rsa
@@ -27,7 +27,7 @@ RUN mv incubator-mxnet mxnet && \
     cd build && \
     cmake -DUSE_SSE=OFF \
         -DUSE_F16C=OFF \
-        -DUSE_CUDA=ON \
+        -DUSE_CUDA=OFF \
         -DUSE_OPENCV=OFF \
         -DUSE_OPENMP=OFF \
         -DUSE_GPERFTOOLS=OFF \

@@ -3,8 +3,9 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y python-p
     python-scipy python-h5py python-requests python-psutil git cmake wget unzip \
     python-sklearn python-numpy curl wget python-pil python-skimage \
     zlib1g-dev libjpeg-dev libtiff5-dev && \
-    curl -O https://bootstrap.pypa.io/get-pip.py && \
+    curl -O https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
     python get-pip.py && \
+    python -m pip install --upgrade "pip < 21.0" && \
     rm get-pip.py
 RUN cd / && wget https://github.com/lhelontra/tensorflow-on-arm/releases/download/v1.8.0/tensorflow-1.8.0-cp27-none-linux_aarch64.whl
 ADD assets/requirements.txt /root/requirements.txt

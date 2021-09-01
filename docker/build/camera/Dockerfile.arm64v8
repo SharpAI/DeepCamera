@@ -1,4 +1,4 @@
-FROM shareai/tensorflow:arm64v8_latest
+FROM shareai/tensorflow:nano_latest
 
 
 # Install package dependencies
@@ -6,7 +6,14 @@ RUN apt-get update && \
     apt-get install -y pkg-config graphicsmagick curl sqlite3 libsqlite3-dev libcairo2-dev libgif-dev && \
     curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
     apt-get update && apt-get install -y nodejs libdrm-dev && apt-get clean
-
+ADD --chown=root:root https://repo.download.nvidia.com/jetson/jetson-ota-public.asc /etc/apt/trusted.gpg.d/jetson-ota-public.asc
+RUN chmod 644 /etc/apt/trusted.gpg.d/jetson-ota-public.asc \
+    && apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates
+RUN echo "deb https://repo.download.nvidia.com/jetson/ffmpeg main main" | tee -a /etc/apt/sources.list && \
+    echo "deb-src https://repo.download.nvidia.com/jetson/ffmpeg main main" | tee -a /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y ffmpeg
 WORKDIR /opt/
 COPY ./nvr_releases/2018.03.15.14.50.tar.gz /opt/2018.03.15.14.50.tar.gz
 
@@ -14,7 +21,7 @@ RUN mkdir -p /opt/nvr && tar -zxf 2018.03.15.14.50.tar.gz && mv Shinobi-2018.03.
     rm -rf /opt/Shinobi-2018.03.15.14.50/ && cd /opt/nvr && \
     # Install NodeJS dependencies
     npm install && \
-    npm install canvas@1.6 moment ffmpeg-static --unsafe-perm && \
+    npm install canvas@1.6 moment --unsafe-perm && \
     rm /root/.npm/* -rf && \
     rm -rf Shinobi-Shinobi-2018.03.15.14.50
 

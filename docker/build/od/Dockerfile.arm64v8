@@ -1,4 +1,4 @@
-FROM shareai/tensorflow:arm64v8_latest
+FROM shareai/tensorflow:nano_latest
 
 RUN apt-get update && apt-get install -y autoconf automake libtool curl make g++ unzip git
 WORKDIR /root

@@ -1,4 +1,4 @@
-FROM shareai/tensorflow:arm64v8_latest
+FROM shareai/tensorflow:nano_latest
 
 # Get latest root certificates
 #RUN apk add --update ca-certificates && update-ca-certificates
