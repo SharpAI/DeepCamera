@@ -1,4 +1,4 @@
-FROM arm64v8/debian:stretch
+FROM nvcr.io/nvidia/l4t-base:r32.6.1
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y python-pip python-opencv python-matplotlib \
     python-scipy python-h5py python-requests python-psutil git cmake wget unzip \
     python-sklearn python-numpy curl wget python-pil python-skimage \

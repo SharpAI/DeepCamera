@@ -50,8 +50,6 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
-    links:
-      - rtspserver:rtspserver
     ports:
       - 8080:8080
     volumes:
@@ -60,21 +58,6 @@ services:
       - /dev/shm/streams:/dev/shm/streams
       - /opt/nvr/detector/images:/opt/nvr/detector/images
       - ../src/shinobi/2018.03.15.14.50_patchs/camera.js:/opt/nvr/camera.js
-  rtspserver:
-    container_name: "rtspserver"
-    command: sh -c "v4l2rtspserver"
-    image: shareai/rtspserver:arm32v7
-    restart: always
-    privileged: true
-    ports:
-      - 8554:8554
-    devices:
-      - /dev/video0:/dev/video0
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "10"
   flower:
     command: sh -c "flower --port=5555"
     image: shareai/flower:arm32v7
