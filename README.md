@@ -8,40 +8,24 @@ SharpAI is open source stack for machine learning engineering with private deplo
 ## Demo On Youtube
 [![Demo On Youtube](http://img.youtube.com/vi/LfcBN8UCy5k/0.jpg)](https://youtu.be/LfcBN8UCy5k)
 
-# Get Started on Raspberry Pi 3/4
-## Prepare System
+# Get Started on Jetson Nano
 
-Please install 32bit system (official raspbian)
-
-## Prepare Camera
-
-Now you need to enable camera support using the raspi-config program you will have used when you first set up your Raspberry Pi. Use the cursor keys to select and open Interfacing Options, and then select Camera and follow the prompt to enable the camera.
-https://www.raspberrypi.org/documentation/configuration/camera.md
-
-## Prepare Docker
-Reference: [Installing Docker and Docker Compose on the Raspberry Pi in 5 Simple Steps](https://dev.to/rohansawant/installing-docker-and-docker-compose-on-the-raspberry-pi-in-5-simple-steps-3mgl)
+## Install Docker-compose
+```
+sudo apt-get install -y libhdf5-dev python3 python3-pip
+pip3 install -U pip
+sudo pip3 install docker-compose==1.27.4
+```
 
 ## Get source code
 ```
 git clone https://github.com/SharpAI/DeepCamera
 ```
 
-## Configure
-
-edit configuration on Pi, change following environment variables to PC/Server/Cloud ip address:
-
-### [docker/aws.env](docker/aws.env)
-AWS_END_POINT='<Server_IP>'  
-AWS_BUCKET=faces  
-AWS_READABLE_PREFIX='http://<Server_IP>:9000/faces/'
-
-### [docker/servers.env](docker/servers.env)
-MQTT_BROKER_ADDRESS=<Server_IP>  
-API_SERVER_ADDRESS=<Server_IP>
 ## Start DeepCamera
 ```
 cd DeepCamera  
-./run-on-rpi.sh start
+./run-on-nano.sh start
 ```
 # Label on GUI, Train on device
 
@@ -63,7 +47,20 @@ Access http://165.232.62.29:3000/
 
 ![how to config on web gui](screenshots/how_to_config_on_web_gui.png)
 
-## 2. Use Mobile APP to label and train face recognition model on device
+
+
+# Connect To Camera RTSP URL
+
+On Jetson Nano, Access to 8080 port.
+http://localhost:8080   
+Default username and password is:  
+username: user@sharpaibox.com  
+password: SharpAI2018
+
+## [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
+## [Camera streaming URL format](https://shinobi.video)
+
+## Use Mobile APP to label and train face recognition model on device
 ### Get device serial number
 ```
 cat docker/workaipython/ro_serialno 
@@ -75,24 +72,6 @@ Generate QRCode of device ID
 ### Download and install [SharpAI Mobile APP](https://github.com/SharpAI/SharpAIMobileApp/releases/download/3.0.2/debug.apk)
 
 ### [Configure on Mobile APP](docs/configure_on_mobile.md)
-
-# In case of you have no Raspberry Pi Camera
-If you don't have camera module for raspberry pi for now,   
-you can order one or connect to your home surveillance camera   
-when you know the ip and password of it.
-
-Access to raspberry pi's 8080 port.
-http://device_ip:8080   
-Default username and password is:  
-username: user@sharpaibox.com  
-password: SharpAI2018
-
-This is open source NVR project Shinobi video.  
-It supports thousands kinds of surveillance camera,  
-if you are confident with DIY your own NVR server,  
-you can checkout following guide:  
-## [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
-## [The Shinobi NVR's document for camera streaming URL format](https://shinobi.video)
 
 # Develop your own Application GUI with DeepCamera API Server
 If you don't like the GUI or you want to develop your own application.  
@@ -182,6 +161,7 @@ If you don't want to setup your own server for now, a test server can be used fo
 [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
 ## Feature List
+- [ ] Porting to Jetson Nano 
 - [x] High accurate Face Recognition
 - [x] Face Detection
 - [x] Inference on ARM Mali GPU
