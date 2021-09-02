@@ -27,16 +27,15 @@ git clone https://github.com/SharpAI/DeepCamera
 cd DeepCamera  
 ./run-on-nano.sh start
 ```
-# Label on GUI, Train on device
+## Connect To Camera through RTSP URL
 
-To train face recogniton model, you need to tell AI the pictures belongs to whom AKA label dataset.  
-Most used method is save pictures into different folders, then train them. It will cost so much time.  
-SharpAI leverages AutoML to label/train/deploy face recognition model.  SharpAI web/mobile GUI show  
-detected faces, user can label the face picture(Name Unknown) on it, when server receives labelling data,  
-it sends to device, then device will train face recognition model on edge device. When there's good model  
-trained on device, the device will send recognition result to server to show result on web/mobile GUI.  
+On Jetson Nano, Access to 8080 port.
+http://localhost:8080   
+Default username and password is:  
+username: user@sharpaibox.com  
+password: SharpAI2018
 
-## 1. Use API server web gui to label and train train face recognition model
+## Label on Web GUI, train face recognition model on device
 ```
 cat docker/workaipython/ro_serialno 
 82f28703d001
@@ -47,15 +46,6 @@ Access http://165.232.62.29:3000/
 
 ![how to config on web gui](screenshots/how_to_config_on_web_gui.png)
 
-
-
-# Connect To Camera RTSP URL
-
-On Jetson Nano, Access to 8080 port.
-http://localhost:8080   
-Default username and password is:  
-username: user@sharpaibox.com  
-password: SharpAI2018
 
 ## [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
 ## [Camera streaming URL format](https://shinobi.video)
