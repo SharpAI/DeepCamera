@@ -1,7 +1,7 @@
 version: '2'
 services:
   face_detector:
-    image: shareai/face_detector:arm64v8_latest
+    image: shareai/face_detector:nano_latest
     build:
       context: ./face_detection
       dockerfile: Dockerfile.arm64v8
