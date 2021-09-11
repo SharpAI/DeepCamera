@@ -64,3 +64,4 @@ RUN cd /root && \
     cmake --build . -j$(nproc) && \
     make install && \
     rm -rf /root/opencv
+RUN pip install sqlalchemy==1.3.10
