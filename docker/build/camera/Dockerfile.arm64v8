@@ -40,6 +40,7 @@ RUN npm install && npm run build && cp dist/release/* . -a && cp dist/release/li
 WORKDIR /opt/nvr
 COPY sql/conf.sqlite sql/shinobi.sample.sqlite
 RUN cp sql/shinobi.sample.sqlite /opt/nvr/conf.sqlite
+RUN cp /usr/bin/ffmpeg /opt/nvr/node_modules/ffmpeg-static/bin/linux/arm64/ffmpeg
 VOLUME ["/opt/nvr/videos"]
 
 EXPOSE 8080
