@@ -17,3 +17,4 @@ RUN python setup.py install
 RUN python ./test.py
 ADD requirements.txt /root/requirements.txt
 RUN pip install -r /root/requirements.txt
+RUN pip install --upgrade numpy==1.15

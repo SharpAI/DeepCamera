@@ -35,6 +35,9 @@ Default username and password is:
 username: user@sharpaibox.com  
 password: SharpAI2018
 
+Tested Camera:
+DaHua / Lorex / AMCREST,  URL Path: /cam/realmonitor?channel=1&subtype=0 Port: 554
+
 ## Label on Web GUI, train face recognition model on device
 ```
 cat docker/workaipython/ro_serialno 
