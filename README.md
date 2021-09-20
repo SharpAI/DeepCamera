@@ -2,6 +2,12 @@
 
 SharpAI is open source stack for machine learning engineering with private deployment and AutoML for edge computing.  DeepCamera is application of SharpAI designed for connect computer vision model to surveillance camera. Developers can run same code on Raspberry Pi/Android/PC/AWS to boost your AI production development.
 
+## Todo 
+- [x] FFMpeg with Nvidia Nano HW acceloration
+- [ ] Face Detector with Nvidia Nano HW acceloration 
+- [ ] Face Embedding with Nvidia Nano HW acceloration
+- [ ] Face ID Classifer with Nvidia Nano HW acceloration
+
 # DeepCamera Architecture
 ![architecture](screenshots/DeepCamera_infrastructure.png)
 
