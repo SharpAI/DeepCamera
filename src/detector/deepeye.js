@@ -122,8 +122,6 @@ if(typeof client === 'undefined'){
 }
 
 var ON_DEBUG = false
-
-var upload_list = {}
 module.exports = {
   delete_image:delete_image,
   buffer2file: buffer2file,
@@ -486,27 +484,12 @@ function classify_task(task_info, cb) {
                 post_recognition_result_to_api_server(json,task_info.url)
             } else {
               json.result['url'] = upload.getAccessUrl(json.result.key)
-              if(json.result['recognized'] == true ){
-                if(!upload_list[json.result['face_id']]){
-
-                  console.log('no need to upload so fast for face_id: '+json.result['face_id'] + ' wait for ' + upload_list[json.result['face_id']])
-                  upload_list[json.result['face_id']] = 0
+              upload.putFile(json.result.key,task_info.path,function(error,accessUrl){
+                console.log('error=',error,'accessUrl=',accessUrl)
+                if(!error){
+                  post_recognition_result_to_api_server(json,accessUrl)
                 }
-                upload_list[json.result['face_id']]--
-                if( upload_list[json.result['face_id']]<= 0){
-                  upload_list[json.result['face_id']] = 10
-
-                  upload.putFile(json.result.key,task_info.path,function(error,accessUrl){
-                    console.log('error=',error,'accessUrl=',accessUrl)
-                    if(!error){
-                      post_recognition_result_to_api_server(json,accessUrl)
-                    }
-                  })
-                } else {
-                  console.log('wait for '+upload_list[json.result['face_id']])
-                }
-              }
-
+              })
             }
             delete json.result.key
             console.log('classify result json:',json)
