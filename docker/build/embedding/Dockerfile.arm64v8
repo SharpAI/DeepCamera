@@ -65,8 +65,3 @@ RUN cd /root && \
     make install && \
     rm -rf /root/opencv
 RUN pip install sqlalchemy==1.3.10
-RUN mkdir /root/model-r50-am-lfw && \
-    cd /root/model-r50-am-lfw && \
-    wget https://github.com/solderzzc/model_release/releases/download/v1.0/model-r50-am-lfw.tgz && \
-    tar -zxvf model-r50-am-lfw.tgz && \
-    rm model-r50-am-lfw.tgz

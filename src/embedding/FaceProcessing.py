@@ -111,12 +111,91 @@ def get_model(ctx, image_size, model_str, layer):
 def init_embedding_processor():
     global mod2
     global mod3
-    if os.path.isfile('/root/model-r50-am-lfw/model-0000.params'):
-        ctx = mx.gpu(0)
 
+    if HAS_OPENCL == 'false':
+        mod2 = None
+        if os.path.isfile(DATA_RUNTIME_FOLDER+'/model-0000.params'):
+            ctx = mx.cpu(0)
+            mod3 = get_model(ctx, [112,112], DATA_RUNTIME_FOLDER+'/model,0', 'fc1')
+            print('backup model loaded')
+            return mod3
+        else:
+            print('cant get model '+DATA_RUNTIME_FOLDER+'/model-0000.params')
+    else:
+        print('has opencl supporting')
+
+    if os.path.isfile(DATA_RUNTIME_FOLDER+'/net2'):
+        global __t
+        global graph_runtime
+        try:
+            import tvm as __t
+            from tvm.contrib import graph_runtime
+            loaded_lib = None
+            if os.path.isfile(DATA_RUNTIME_FOLDER+'/net2.tar.so'):
+                loaded_lib = __t.module.load(DATA_RUNTIME_FOLDER+'/net2.tar.so')
+            else:
+                loaded_lib = __t.module.load(DATA_RUNTIME_FOLDER+'/net2.tar')
+            loaded_json = open(DATA_RUNTIME_FOLDER+"/net2").read()
+            loaded_params = bytearray(open(DATA_RUNTIME_FOLDER+"/net2.params", "rb").read())
+
+            ctx = __t.cl(0)
+
+            mod2 = graph_runtime.create(loaded_json, loaded_lib, ctx)
+            mod2.load_params(loaded_params)
+            return mod2
+        except:
+            print('error of loading net2')
+            mod2 = None
+            if os.path.isfile(DATA_RUNTIME_FOLDER+'/model-0000.params'):
+                ctx = mx.cpu(0)
+                mod3 = get_model(ctx, [112,112], DATA_RUNTIME_FOLDER+'/model,0', 'fc1')
+                print('backup model loaded')
+                return mod3
+    elif os.path.isfile('/root/model-r50-am-lfw/model-0000.params'):
+        ctx = mx.cpu(0)
         mod3 = get_model(ctx, [112,112], '/root/model-r50-am-lfw/model,0', 'fc1')
         print('backup model loaded')
-    return mod3
+        return mod3
+
+def FaceProcessingOne(imgpath,sess,graph):
+    images_placeholder = graph.get_tensor_by_name("import/input:0")
+    embeddings = graph.get_tensor_by_name("import/embeddings:0")
+    phase_train_placeholder = graph.get_tensor_by_name("import/phase_train:0")
+
+    image_size = 160 #images_placeholder.get_shape()[1]
+    embedding_size = 128 #embeddings.get_shape()[1]
+    # Run forward pass to calculate embeddings
+    print('Runnning forward pass on LFW images')
+    batch_size = 1 #args.lfw_batch_size
+    nrof_batches = 1
+
+    image = load_image(imgpath)
+
+    feed_dict = { images_placeholder:image, phase_train_placeholder:False }
+    features = sess.run(embeddings, feed_dict=feed_dict)
+
+    return features
+
+def FaceProcessingImageData(imgData,sess,graph):
+    images_placeholder = graph.get_tensor_by_name("import/input:0")
+    embeddings = graph.get_tensor_by_name("import/embeddings:0")
+    phase_train_placeholder = graph.get_tensor_by_name("import/phase_train:0")
+
+    image_size = 160 #images_placeholder.get_shape()[1]
+    embedding_size = 128 #embeddings.get_shape()[1]
+    # Run forward pass to calculate embeddings
+    print('Runnning forward pass on LFW images')
+    batch_size = 1 #args.lfw_batch_size
+    nrof_batches = 1
+
+    img_list = [None] * 1
+    img_list[0] = imgData
+    image = np.stack(img_list)
+
+    feed_dict = { images_placeholder:image, phase_train_placeholder:False }
+    features = sess.run(embeddings, feed_dict=feed_dict)
+
+    return features
 
 def FaceProcessingImageData2(img_path):
     img_data = misc.imread(img_path)
