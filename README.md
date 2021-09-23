@@ -4,7 +4,7 @@ SharpAI is open source stack for machine learning engineering with private deplo
 
 ## Todo 
 - [x] FFMpeg with Nvidia Nano HW acceloration
-- [ ] Face Detector with Nvidia Nano HW acceloration 
+- [x] Face Detector with Nvidia Nano HW acceloration [TensorRT MTCNN](https://github.com/jkjung-avt/tensorrt_demos)
 - [ ] Face Embedding with Nvidia Nano HW acceloration
 - [ ] Face ID Classifer with Nvidia Nano HW acceloration
 
