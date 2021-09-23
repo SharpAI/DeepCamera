@@ -3,12 +3,12 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import face_detection as m
 import json, cv2, os
 import numpy as np
 from scipy import misc
 import face_preprocess
 import time
+from mtcnn import TrtMtcnn
 
 minsize = int(os.getenv("MINIMAL_FACE_RESOLUTION", default="100"))  # minimum size of face, 100 for 1920x1080 resolution, 70 for 1280x720.
 threads_number = int(os.getenv("THREADS_NUM_FACE_DETECTOR", default="1"))
@@ -16,10 +16,7 @@ image_size = 160
 margin = 16
 BLURY_THREHOLD = 5
 
-m.init('./model')
-m.set_minsize(minsize)
-m.set_threshold(0.6,0.7,0.8)
-m.set_num_threads(threads_number)
+mtcnn = TrtMtcnn()
 
 def get_filePath_fileName_fileExt(filename):
     (filepath,tempfilename) = os.path.split(filename)
@@ -246,14 +243,30 @@ def load_align_image_v2(result, image_path, trackerid, ts, cameraId, face_filter
         face_height_list[new_image_path] = face_height
 
     return len(face_path), face_path, imgs_style, blury_arr, face_width_list, face_height_list
-
+def get_result(boxes, landmarks):
+    result = []
+    for bb, ll in zip(boxes, landmarks):
+        bbox =  [int(bb[0]), int(bb[1]), int(bb[2]), int(bb[3])]
+        landmark = []
+        for j in range(5):
+            landmark.append([int(ll[j]), int(ll[j+5])])
+        result.append({
+            'score': 0.9999865,
+            'bbox': bbox,
+            'landmark': landmark
+        })
+    json_result = { 'result': result}
+    return json_result
 def detect(image_path, trackerid, ts, cameraId, face_filter):
-    result = m.detect(image_path)
+    #result = m.detect(image_path)
+    img = cv2.imread(image_path)
+    dets, landmarks = mtcnn.detect(img, minsize=minsize)
+    result = get_result(dets, landmarks)
 
     #FIXME:
-    result = result.replace('[,', '[')
-    result = json.loads(result)
-    #print('detect result-----',result)
+    # result = result.replace('[,', '[')
+    # result = json.loads(result)
+    print('detect result-----',result)
     people_cnt = 0
     cropped = []
     detected = False
