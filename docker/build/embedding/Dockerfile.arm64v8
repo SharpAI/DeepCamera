@@ -64,4 +64,8 @@ RUN cd /root && \
     cmake --build . -j$(nproc) && \
     make install && \
     rm -rf /root/opencv
-RUN pip install sqlalchemy==1.3.10
+RUN pip install sqlalchemy==1.3.10 pycuda==2019.1
+#RUN wget https://nvidia.box.com/shared/static/1v2cc4ro6zvsbu0p8h6qcuaqco1qcsif.whl -O torch-1.4.0-cp27-cp27mu-linux_aarch64.whl && \
+ADD ./assets/torch-1.4.0-cp27-cp27mu-linux_aarch64.whl /root/torch-1.4.0-cp27-cp27mu-linux_aarch64.whl
+RUN pip install /root/torch-1.4.0-cp27-cp27mu-linux_aarch64.whl && \
+    rm /root/torch-1.4.0-cp27-cp27mu-linux_aarch64.whl
