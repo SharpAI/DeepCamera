@@ -1,10 +1,12 @@
-# Machine Learning On The Edge, Turn your Camera into AI-powered with Jetson Nano
+# AI Face Recognition NVR
+## Machine Learning On The Edge, Turn your Camera into AI-powered with Jetson Nano
 
 SharpAI is open source stack for machine learning engineering with private deployment and AutoML for edge computing.  DeepCamera is application of SharpAI designed for connect computer vision model to surveillance camera. Developers can run same code on Raspberry Pi/Android/PC/AWS to boost your AI production development.
 
 ## Todo 
 - [x] FFMpeg with Nvidia Nano HW acceloration
 - [x] Face Detector with Nvidia Nano HW acceloration [TensorRT MTCNN](https://github.com/jkjung-avt/tensorrt_demos)
+- [ ] Integrate with telegram bot API
 - [ ] Face Embedding with Nvidia Nano HW acceloration
 - [ ] Face ID Classifer with Nvidia Nano HW acceloration
 
