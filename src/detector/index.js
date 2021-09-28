@@ -39,6 +39,14 @@ function GetEnvironmentVarInt(varname, defaultvalue)
         return defaultvalue;
 }
 
+function GetEnvironmentVarString(varname, defaultvalue)
+{
+    var result = process.env[varname];
+    if(result!=undefined)
+        return result;
+    else
+        return defaultvalue;
+}
 // DEEP_ANALYSIS_MODE true=允许队列缓存, false=不允许队列缓存
 var DEEP_ANALYSIS_MODE = GetEnvironmentVarInt('DEEP_ANALYSIS_MODE',1)
 // SAMPLING_TO_SAVE_ENERGY_MODE true，同一个Camera在进行Embedding计算的时候其他图片不再计算Embedding, false=关闭
@@ -55,6 +63,8 @@ var UPLOAD_IMAGE_SERVICE_ENABLED = GetEnvironmentVarInt('UPLOAD_IMAGE_SERVICE_EN
 var GIF_UPLOADING = GetEnvironmentVarInt('GIF_UPLOADING', 1)
 // TASK_IN_DETECTOR_EXPIRE_IN_SECONDS Celery重启的时候，已经发出的任务不会超时，将导致永远不再执行
 var TASK_IN_DETECTOR_EXPIRE_IN_SECONDS = GetEnvironmentVarInt('TASK_IN_DETECTOR_EXPIRE_IN_SECONDS', 15)
+
+var TELEGRAM_BOT_TOKEN = GetEnvironmentVarString('TELEGRAM_BOT_TOKEN', null)
 
 if(UPLOAD_IMAGE_SERVICE_ENABLED){
   var upload_listener=require('./upload_listener')
@@ -855,6 +865,7 @@ if(UPLOAD_IMAGE_SERVICE_ENABLED){
   upload_listener.init(onframe)
 }
 waitqueue.init()
+face_motions.init({telegram_bot_token: TELEGRAM_BOT_TOKEN})
 
 const express = require('express');
 const app = express();

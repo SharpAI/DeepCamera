@@ -1,10 +1,60 @@
+const { execSync } = require("child_process");
+
 var fs = require('fs');
 var path = require('path');
 var Gm = require("gm"); //.subClass({ imageMagick: true });
 var readdir = require('readdir-absolute');
 var upload = require('./upload');
 var REMOVE_IMG_UPLOADED = true;
+function generateVideo(type,dir,name_sorting,cb){
+  readdir(dir,function(err,list){
+    var files = list.filter(function(element) {
+      var extName = path.extname(element);
+      return extName === '.'+type;
+    })
+    if(name_sorting){
+      files = files.sort(function(a, b) {
+        var a_num = parseInt(/frame-(.*?).jpg/.exec(a.toString())[1])
+        var b_num = parseInt(/frame-(.*?).jpg/.exec(b.toString())[1])
+        return a_num - b_num
+      });
+    } else {
+      files = files.sort(function(a, b) {
+         return fs.statSync(a).mtime.getTime() -
+                fs.statSync(b).mtime.getTime();
+      });
+    }
 
+    if (files.length <= 0){
+      cb('No File in folder: '+dir,null,null)
+    }
+    image_list = ''
+    idx = 0
+    files.forEach(function(item){
+      filename = dir+'/deepeye_'+String(idx).padStart(5, '0')+'.jpg'
+      idx++
+      fs.renameSync(item, filename)
+      console.log(filename)
+      image_list += filename+'\n'
+    })
+    fs.writeFileSync(dir+"/image_list.txt", image_list);
+    cmd = 'gst-launch-1.0 multifilesrc location="'+dir +'/deepeye_%05d.jpg" \
+      ! "image/jpeg,framerate=1/1" \
+      ! jpegparse \
+      ! jpegdec \
+      ! omxh264enc \
+      ! qtmux \
+      ! filesink location='+dir+'/video.mp4'
+    
+    fs.writeFileSync(dir+"/cmd.txt", cmd);
+    console.log('image to video list ', image_list)
+    // execute mkdir command synchronously
+    // to make a directory with name hello
+    execSync(cmd);
+
+    cb(null,dir+'/video.mp4',files)
+  });
+}
 function generateGif(type,dir,name_sorting,cb){
   readdir(dir,function(err,list){
     var files = list.filter(function(element) {
@@ -93,6 +143,7 @@ function deleteFolderRecursive(path, face_motion_path) {
 };
 
 module.exports = {
+  generateVideo: generateVideo,
   generateGif : generateGif,
   removeUnusedImageDir: deleteFolderRecursive
 }

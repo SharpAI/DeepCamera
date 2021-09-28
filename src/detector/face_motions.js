@@ -5,6 +5,7 @@ var mkdirp = require('mkdirp')
 var mv = require('mv')
 var request = require('requestretry')
 var readdir = require('readdir-absolute')
+const TelegramBot = require('node-telegram-bot-api');
 
 var makegif=require('./makegif')
 var upload=require('./upload')
@@ -19,6 +20,11 @@ var DEVICE_UUID_FILEPATH = process.env.DEVICE_UUID_FILEPATH || '/dev/ro_serialno
 var DEVICE_GROUP_ID_FILEPATH = process.env.DEVICE_GROUP_ID_FILEPATH || '/data/usr/com.deep.workai/cache/groupid.txt'
 
 var ON_DEBUG = false
+
+// replace the value below with the Telegram token you receive from @BotFather
+var telegram_bot = null;
+var telegram_chat_id = null;
+
 function GetEnvironmentVarInt(varname, defaultvalue)
 {
     var result = process.env[varname];
@@ -50,6 +56,18 @@ function remove_face_motion_images(cameraId,trackerId){
   var saving_path = 'face_motion/'+trackerId+'/'
   makegif.removeUnusedImageDir(saving_path, 'face_motion/')
 }
+function send_image_to_telegram(image_path){
+  if(telegram_bot == null || telegram_chat_id == null){
+    return false
+  }
+  telegram_bot.sendPhoto(telegram_chat_id, image_path)
+}
+function send_video_to_telegram(video_path){
+  if(telegram_bot == null || telegram_chat_id == null){
+    return false
+  }
+  telegram_bot.sendVideo(telegram_chat_id, video_path)
+}
 function do_generate_gif_and_upload(cameraId,trackerId,whole_file,name_sorting,cb){
 
   save_face_motion_image(cameraId,trackerId,whole_file,function(error,file){
@@ -61,9 +79,13 @@ function do_generate_gif_and_upload(cameraId,trackerId,whole_file,name_sorting,c
     var cropped_path = 'face_cropped/'+trackerId+'/'
     var file_key = cameraId+'_'+trackerId+'.gif'
 
-    makegif.generateGif('jpg',saving_path,name_sorting,function(err,gif_path,files){
+    makegif.generateVideo('jpg',saving_path,name_sorting,function(err,gif_path,files){
       if(!err && gif_path){
         ON_DEBUG && console.log('Generated gif, need upload: '+gif_path)
+
+        send_video_to_telegram(gif_path)
+        return cb && cb(null,whole_file)
+        
         upload.putFile(file_key,gif_path,function(err,url){
           if(!err){
             console.log('TODO: fill up information. Upload success, url is: ' + url)
@@ -208,9 +230,44 @@ function save_face_motion_image(cameraId,trackerId,filePath,cb){
     });
   });
 }
+function init_face_motion(options){
+  token = options.telegram_bot_token
+  if (token == null){
+    console.log('no token for telegram bot')
+    return
+  }
+  console.log('telegram token is', token)
+  // Create a bot that uses 'polling' to fetch new updates
+  telegram_bot = new TelegramBot(token, {polling: true});
+
+  // Matches "/echo [whatever]"
+  telegram_bot.onText(/\/start (.+)/, (msg, match) => {
+    // 'msg' is the received Message from Telegram
+    // 'match' is the result of executing the regexp above on the text content
+    // of the message
+
+    const chatId = msg.chat.id;
+    telegram_chat_id = chatId;
+    console.log('chat Id is: '+chatId);
+    const resp = 'DeepCamera is running'; 
+
+    telegram_bot.sendMessage(chatId, resp);
+  });
+
+  // Listen for any kind of message. There are different kinds of
+  // messages.
+  telegram_bot.on('message', (msg) => {
+    const chatId = msg.chat.id;
+    telegram_chat_id = chatId;
+
+    // send a message to the chat acknowledging receipt of their message
+    telegram_bot.sendMessage(chatId, 'Received your message');
+  });
+}
 module.exports = {
   // Only generate gif if saved image === 19 or stopped(face_detected === 0).
   clean_up_face_motion_folder : remove_face_motion_images,
+  init : init_face_motion,
   check_and_generate_face_motion_gif :function (face_detected,cameraId,trackerId,whole_file,name_sorting,cb){
     get_number_of_face_motion_saved_images('jpg',cameraId,trackerId,function(num){
       if(face_detected === 0){
@@ -218,7 +275,7 @@ module.exports = {
         if(num === 0){
           ON_DEBUG && console.log('stop check: no face detected, Just need remove folder')
           remove_face_motion_images(cameraId,trackerId)
-        } else if(num >= 20){
+        } else if(num >= 200){
           ON_DEBUG && console.log('stop check: already uploaded, Just need remove folder')
           remove_face_motion_images(cameraId,trackerId)
         } else if(num >= 1){
@@ -231,10 +288,10 @@ module.exports = {
         }
       } else {
         ON_DEBUG && console.log('in tracking logic')
-        if(num === 19){
+        if(num === 199){
           ON_DEBUG && console.log('In time bingo: 19 face motion images saved, save/generate/upload/report ')
           return do_generate_gif_and_upload(cameraId,trackerId,whole_file,name_sorting,cb)
-        } else if(num < 19){
+        } else if(num < 199){
           // just save it for more incoming file
           return save_face_motion_image(cameraId,trackerId,whole_file,function(){
             return cb && cb(null,whole_file)
