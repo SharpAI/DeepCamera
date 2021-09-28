@@ -4,9 +4,9 @@
 SharpAI is open source stack for machine learning engineering with private deployment and AutoML for edge computing.  DeepCamera is application of SharpAI designed for connect computer vision model to surveillance camera. Developers can run same code on Raspberry Pi/Android/PC/AWS to boost your AI production development.
 
 ## Todo 
-- [x] FFMpeg with Nvidia Nano HW acceloration
-- [x] Face Detector with Nvidia Nano HW acceloration [TensorRT MTCNN](https://github.com/jkjung-avt/tensorrt_demos)
-- [x] Face Embedding with Nvidia Nano HW acceloration [Pytorch InsightFace](https://github.com/nizhib/pytorch-insightface) [InsightFace](https://github.com/deepinsight/insightface) 
+- [x] FFMpeg with Nvidia Nano hardware decoder
+- [x] Face Detector with Nvidia Nano GPU [TensorRT MTCNN](https://github.com/jkjung-avt/tensorrt_demos)
+- [x] Face Embedding with Nvidia Nano GPU [Pytorch](https://github.com/nizhib/pytorch-insightface) [InsightFace](https://github.com/deepinsight/insightface) 
 - [ ] Integrate with telegram bot API
 - [ ] Face ID Classifer with Nvidia Nano HW acceloration
 
