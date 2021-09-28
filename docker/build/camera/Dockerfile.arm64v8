@@ -30,7 +30,11 @@ ADD nvr_releases/2018.03.15.14.50_patchs/* /opt/nvr/
 ADD docker-entrypoint.sh /opt/nvr/docker-entrypoint.sh
 ADD conf.d/main.conf.json /opt/nvr/conf.json
 ADD conf.d/super.json /opt/nvr/super.json
-ADD ./detector /opt/nvr/detector
+
+RUN cd /root && \
+    git clone https://github.com/SharpAI/DeepCamera && \
+    mv /root/DeepCamera/src/detector  /opt/nvr/detector && \
+    rm -rf /root/DeepCamera
 
 WORKDIR /opt/nvr/detector
 RUN npm install && npm run build && cp dist/release/* . -a && cp dist/release/libs/* ./libs/ -a && rm -rf dist && rm -rf uglifyjs-es-cmd \
