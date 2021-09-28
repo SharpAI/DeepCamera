@@ -143,9 +143,7 @@ SVM_TRAIN_WITHOUT_CATEGORY=True
 SVM_HIGH_SCORE_WITH_DB_CHECK=True
 
 counter = 0
-
-if HAS_OPENCL == 'false':
-    from embedding_client import get_remote_embedding
+faceprocessingmodel = None
 
 def featureCalculation(imgpath):
     img = misc.imread(os.path.expanduser(imgpath))
@@ -1635,18 +1633,13 @@ def getQueueName():
     return ""
 
 def featureCalculation2(imgpath):
-    embedding=None
-    if HAS_OPENCL == 'false':
-        with open(imgpath, "rb") as image_file:
-            encoded_string = base64.b64encode(image_file.read())
-        embedding = get_remote_embedding(encoded_string)
-    else:
-        embedding = FaceProcessing.FaceProcessingImageData2(imgpath)
+    embedding = faceprocessingmodel.FaceProcessingImageData2(imgpath)
     return embedding
 
 @worker_process_init.connect()
 def setup(sender=None, **kwargs):
     global mqttc
+    global faceprocessingmodel
 
     # setup
     print('done initializing <<< ==== be called Per Fork/Process')
@@ -1655,25 +1648,18 @@ def setup(sender=None, **kwargs):
 
         check_groupid_changed()
         init_fs()
-
-        if HAS_OPENCL == 'true':
-            mod = FaceProcessing.init_embedding_processor()
-            print("start to warm up")
-            embedding = featureCalculation2(os.path.join(BASEDIR,"image","Mike_Alden_0001_tmp.png"))
-            print("warmed up")
-        #if embedding is not None:
-        #    print("worker embedding ready")
+        faceprocessingmodel = FaceProcessing.FaceProcessing()
+        faceprocessingmodel.init_embedding_processor()
+        print("start to warm up")
+        embedding = featureCalculation2(os.path.join(BASEDIR,"image","Mike_Alden_0001_tmp.png"))
+        print("warmed up")
+        if embedding is not None:
+            print("worker embedding ready")
 
         init_mqtt_client()
 
     return "detect"
 
-
-class FaceDetectorTask(Task):
-    def __init__(self):
-        self._model = 'testing'
-        self._type = getQueueName()
-        print(">>> {}".format(self._type))
 
 @deepeye.task
 def extract_v2(image):
@@ -1690,10 +1676,7 @@ def extract_v2(image):
 
     if current_groupid is None:
         return json.dumps({"embedding_path":"","error":"please join group"})
-    if HAS_OPENCL == 'false' and EXTRACT_EMBEDDING_WITH_SERVER == 'true':
-        embedding = get_remote_embedding(imgstring)
-    else:
-        embedding = FaceProcessing.FaceProcessingBase64ImageData2(imgstring)
+    embedding = faceprocessingmodel.FaceProcessingBase64ImageData2(imgstring)
     embedding_path=''
     embedding_str=''
     if embedding is not None:
