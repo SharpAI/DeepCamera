@@ -19,3 +19,11 @@ rm mxnet_cu102-1.6.0-py2.py3-none-linux_aarch64.whl && \
     pip install scikit-build --user && \
     pip install ninja --user && \
     python setup.py bdist_wheel
+
+apt-get install -y libjpeg-dev zlib1g-dev libpython3-dev libavcodec-dev libavformat-dev libswscale-dev && \
+    git clone --branch v0.5.0 https://github.com/pytorch/vision torchvision && \
+    export BUILD_VERSION=0.5.0 && \
+    cd torchvision/ && \
+    python setup.py install && \
+    cd .. && \
+    pip install 'pillow<7'
