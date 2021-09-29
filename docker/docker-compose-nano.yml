@@ -162,9 +162,12 @@ services:
       - ./cluster.env
       - ./servers.env
       - ./aws.env
+    runtime: nvidia
     environment:
       TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
       IMAGE_DIR: "/opt/nvr/detector/images"
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility,video
     links:
       - camera:camera
       - redis:redis

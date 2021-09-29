@@ -20,3 +20,4 @@ RUN pip install -r /root/requirements.txt
 RUN pip install --upgrade numpy==1.15
 
 RUN pip install pycuda==2019.1
+RUN pip install onnx==1.4.1
