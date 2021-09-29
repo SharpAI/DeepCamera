@@ -458,7 +458,7 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
               cameraId:cameraId,
               current_tracker_id:current_tracker_id,
               whole_file:whole_file,
-              name_sorting:false});
+              name_sorting:true});
           } else {
             deepeye.delete_image(whole_file)
           }
@@ -470,7 +470,7 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
               cameraId:cameraId,
               current_tracker_id:current_tracker_id,
               whole_file:whole_file,
-              name_sorting:false});
+              name_sorting:true});
           } else {
             deepeye.delete_image(whole_file)
           }

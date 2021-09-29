@@ -14,8 +14,8 @@ function generateVideo(type,dir,name_sorting,cb){
     })
     if(name_sorting){
       files = files.sort(function(a, b) {
-        var a_num = parseInt(/frame-(.*?).jpg/.exec(a.toString())[1])
-        var b_num = parseInt(/frame-(.*?).jpg/.exec(b.toString())[1])
+        var a_num = parseInt(/deepeye_(.*?).jpg/.exec(a.toString())[1])
+        var b_num = parseInt(/deepeye_(.*?).jpg/.exec(b.toString())[1])
         return a_num - b_num
       });
     } else {
@@ -39,7 +39,7 @@ function generateVideo(type,dir,name_sorting,cb){
     })
     fs.writeFileSync(dir+"/image_list.txt", image_list);
     cmd = 'gst-launch-1.0 multifilesrc location="'+dir +'/deepeye_%05d.jpg" \
-      ! "image/jpeg,framerate=1/1" \
+      ! "image/jpeg,framerate=4/1" \
       ! jpegparse \
       ! jpegdec \
       ! omxh264enc \
