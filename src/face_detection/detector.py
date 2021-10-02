@@ -9,6 +9,18 @@ from scipy import misc
 import face_preprocess
 import time
 from mtcnn import TrtMtcnn
+from yolo.yolov4_tiny import YoloModel
+
+'''
+import face_detection
+import time
+
+
+face_detection.init('./model/')
+print('warming up')
+face_detection.set_minsize(40)
+face_detection.set_threshold(0.6,0.7,0.8)
+'''
 
 minsize = int(os.getenv("MINIMAL_FACE_RESOLUTION", default="100"))  # minimum size of face, 100 for 1920x1080 resolution, 70 for 1280x720.
 threads_number = int(os.getenv("THREADS_NUM_FACE_DETECTOR", default="1"))
@@ -16,6 +28,7 @@ image_size = 160
 margin = 16
 BLURY_THREHOLD = 5
 
+yolo_model = YoloModel()
 mtcnn = TrtMtcnn()
 
 def get_filePath_fileName_fileExt(filename):
@@ -81,76 +94,9 @@ def faceStyle(landmark, bb, face_width):
         style.append('front')
     return style
 
-def load_align_image(result, image_path, trackerid, ts, cameraId):
-    detected = False
-    people_cnt = 0
-    cropped = []
-    nrof_faces = 0
-
-    if result is None or len(result['result']) < 1:
-        return None, None, None, None
-
-    results = result['result']
-    if results is None or len(results) < 1:
-        return None, None, None, None
-
-    face_path = {}
-    blury_arr = {}
-    imgs_style = {}
-
-    img = misc.imread(image_path)
-    img_size = np.asarray(img.shape)[0:2]
-    img_w = img_size[1]
-    img_h = img_size[0]
-
-    for i in range(len(results)):
-        item     = results[i]
-        landmark = item['landmark']
-        score    = item['score']
-        bbox     = item['bbox']
-        x1, y1, x2, y2 = bbox
-
-        x1, x2, y1, y2 = resize2square(x1, x2, y1, y2)
-        if x1 <= 0 or y1 <= 0 or x2 >= img_w or y2 >= img_h:
-            print('Out of boundary ({},{},{},{})'.format(x1, y1, x2, y2))
-            continue
-
-        face_width  = x2 - x1
-        face_height = y2 - y1
-
-        if face_width * face_height  < minsize * minsize:
-            print("to small to recognise ({},{})".format(face_width,face_height))
-            continue
-
-        #style
-        style = faceStyle(landmark, bbox, face_width)
-
-        #blury
-        cropped = img[y1:y2, x1:x2, :]
-        aligned = misc.imresize(cropped, (160, 160), interp='bilinear')
-
-        # Need to detect if face is too blury to be detected
-        blury_value = faceBlury(aligned)
-        print(blury_value)
-        if blury_value < BLURY_THREHOLD:
-            print('A blur face (%d) captured, avoid it.' %blury_value)
-            style = ['blury']
-        else:
-            print('Blur Value: %d, good'%blury_value)
-
-        new_image_path = image_path.rsplit('.', 1)[0] + '_' + str(i) + '.' + 'png'
-        np.save(new_image_path, aligned)
-        #print('image path saved aligned: ', new_image_path)
-        prewhitened = prewhiten(aligned)
-        face_path[new_image_path] = prewhitened
-        blury_arr[new_image_path] = blury_value
-        imgs_style[new_image_path] = '|'.join(style)
-
-    return len(results), face_path, imgs_style, blury_arr
 
 def load_align_image_v2(result, image_path, trackerid, ts, cameraId, face_filter):
     detected = False
-    people_cnt = 0
     cropped = []
     nrof_faces = 0
 
@@ -260,20 +206,32 @@ def get_result(boxes, landmarks):
 def detect(image_path, trackerid, ts, cameraId, face_filter):
     #result = m.detect(image_path)
     img = cv2.imread(image_path)
-    dets, landmarks = mtcnn.detect(img, minsize=minsize)
+    boxes, confs, clss = yolo_model.trt_yolo.detect(img, 0.5)
+
+    xmin, ymin, xmax, ymax = None, None, None, None
+    for bb, cf, cl in zip(boxes, confs, clss):
+        if cl == 0:
+            if person_count == 0:
+                xmin, ymin, xmax, ymax = bb[0],bb[1],bb[2],bb[3]
+            else:
+                xmin, ymin, xmax, ymax = min(bb[0],xmin),min(ymin,bb[1]),max(bb[2],xmax),max(ymax,bb[3])
+            person_count += 1
+
+    if person_count == 0:
+        return json.dumps({'detected': False, "ts": ts, "totalPeople": 0, "cropped": [], 'totalmtcnn': 0})
+
+    new_img = img[ymin:ymax, xmin:xmax]
+    cropped_img_path = image_path.replace('.jpg','_cropped.jpg')
+    cv2.imwrite(cropped_img_path, new_img)
+    dets, landmarks = mtcnn.detect(new_img, minsize=minsize)
     result = get_result(dets, landmarks)
 
-    #FIXME:
-    # result = result.replace('[,', '[')
-    # result = json.loads(result)
     print('detect result-----',result)
-    people_cnt = 0
     cropped = []
     detected = False
 
-    nrof_faces, img_data, imgs_style, blury_arr, face_width, face_height = load_align_image_v2(result, image_path, trackerid, ts, cameraId, face_filter)
+    nrof_faces, img_data, imgs_style, blury_arr, face_width, face_height = load_align_image_v2(result, cropped_img_path, trackerid, ts, cameraId, face_filter)
     if img_data is not None and len(img_data) > 0:
-        people_cnt = len(img_data)
         detected = True
         for align_image_path, prewhitened in img_data.items():
             style=imgs_style[align_image_path]
@@ -281,7 +239,7 @@ def detect(image_path, trackerid, ts, cameraId, face_filter):
             width=face_width[align_image_path]
             height=face_height[align_image_path]
             cropped.append({"path": align_image_path, "style": style, "blury": blury, "ts": ts,
-                "trackerid": trackerid, "totalPeople": people_cnt, "cameraId": cameraId,
+                "trackerid": trackerid, "totalPeople": person_count, "cameraId": cameraId,
                 "width":width,"height":height})
 
-    return json.dumps({'detected': detected, "ts": ts, "totalPeople": people_cnt, "cropped": cropped, 'totalmtcnn': nrof_faces})
+    return json.dumps({'detected': detected, "ts": ts, "totalPeople": person_count, "cropped": cropped, 'totalmtcnn': nrof_faces})

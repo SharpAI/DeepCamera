@@ -31,21 +31,21 @@ function generateVideo(type,dir,name_sorting,cb){
     image_list = ''
     idx = 0
     files.forEach(function(item){
-      filename = dir+'/deepeye_'+String(idx).padStart(5, '0')+'.jpg'
+      filename = dir+'deepeye_'+String(idx).padStart(5, '0')+'.jpg'
       idx++
       fs.renameSync(item, filename)
       console.log(filename)
       image_list += filename+'\n'
     })
     fs.writeFileSync(dir+"/image_list.txt", image_list);
-    cmd = 'gst-launch-1.0 multifilesrc location="'+dir +'/deepeye_%05d.jpg" \
+    cmd = 'gst-launch-1.0 multifilesrc location="'+dir +'deepeye_%05d.jpg" \
       ! "image/jpeg,framerate=4/1" \
       ! jpegparse \
       ! jpegdec \
       ! omxh264enc \
       ! qtmux \
-      ! filesink location='+dir+'/video.mp4'
-    
+      ! filesink location='+dir+'video.mp4'
+    //cmd = 'ffmpeg -y -f image2 -i '+dir+'deepeye_%05d.jpg '+dir+'video.mp4'
     fs.writeFileSync(dir+"/cmd.txt", cmd);
     console.log('image to video list ', image_list)
     // execute mkdir command synchronously
