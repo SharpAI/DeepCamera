@@ -3,6 +3,8 @@ const proc = require("process");
 var fs = require('fs');
 const Minio=require('minio')
 
+const ON_DEBUG=false
+
 function GetEnvironmentVarInt(varname, defaultvalue)
 {
     var result = process.env[varname];
@@ -111,14 +113,14 @@ function _putFileAWS(file_key,localFile,cb){
   try{
     mc.putObject(AWS_BUCKET,file_key,read,function(err, etag){
       if(err){
-        console.log('upload errr, need retry')
+        console.log('upload err to AWS bucket ['+ AWS_BUCKET+'], need retry' + err)
         if(cb){
           cb(err,null)
         }
         return
       }
       var access_url = getAccessUrl(file_key);
-      console.log('upload succ to: '+access_url);
+      ON_DEBUG && console.log('upload succ to: '+access_url);
       if(cb){
         cb(null,access_url)
       }

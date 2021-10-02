@@ -375,7 +375,7 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
   },TASK_IN_DETECTOR_EXPIRE_IN_SECONDS*1000)
   deepeye.process(cameraId, file_path, ts, current_tracker_id,
     function(err,face_detected,cropped_num,cropped_images,whole_file) {
-      tracking_info && console.log(tracking_info);
+      ON_DEBUG && tracking_info && console.log(tracking_info);
       setFaceDetectInProcessingStatus(cameraId, false);
       clearTimeout(timeout)
       ON_DEBUG && console.log('detect callback')
@@ -388,7 +388,7 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
         person_count = face_detected
       }
       var current_person_count = getCurrentPersonCount(cameraId)
-      console.log('['+cameraId+'] tid: '+current_tracker_id+' person num: '+person_count+' face num: '+face_detected+' cost: '+(new Date() - start_ts));
+      ON_DEBUG && console.log('['+cameraId+'] tid: '+current_tracker_id+' person num: '+person_count+' face num: '+face_detected+' cost: '+(new Date() - start_ts));
       setCurrentPersonCount(cameraId, person_count)
       setCurrentFaceCount(cameraId, face_detected)
       if(person_count >= 1){
@@ -519,12 +519,12 @@ function need_save_to_delayed_process(tracking_info){
   var recognized_in_results = Object.keys(tracking_info.results).length
   // 如果已经识别出的人数多于当前Tracking的最大人数，不再送入Delayed队列
   if(recognized_in_results >= tracking_info.number){
-    console.log('recognized_in_results >= %d, no delayed save',tracking_info.number)
+    ON_DEBUG && console.log('recognized_in_results >= %d, no delayed save',tracking_info.number)
     return false;
   }
   // 镜头前是陌生人，正脸出现次数大于 N，不再入Delayed队列
   if(tracking_info.front_faces >= MAX_UNKNOWN_FRONT_FACE_IN_TRACKING){
-    console.log('Unknowd faces >= %d no delayed save',MAX_UNKNOWN_FRONT_FACE_IN_TRACKING)
+    ON_DEBUG && console.log('Unknowd faces >= %d no delayed save',MAX_UNKNOWN_FRONT_FACE_IN_TRACKING)
     return false;
   }
   // 其他情况，入队列
@@ -604,7 +604,7 @@ function handle_android_detection_result(cameraId,whole_file,person_count,start_
   tracking_info && console.log(tracking_info);
   ON_DEBUG && console.log('detect callback')
   var current_person_count = getCurrentPersonCount(cameraId)
-  console.log('['+cameraId+'] tid: '+current_tracker_id+' person num: '+person_count+' face num: '+face_detected+' cost: '+(new Date() - start_ts));
+  ON_DEBUG && console.log('['+cameraId+'] tid: '+current_tracker_id+' person num: '+person_count+' face num: '+face_detected+' cost: '+(new Date() - start_ts));
   setCurrentPersonCount(cameraId, person_count)
   setCurrentFaceCount(cameraId, face_detected)
   if(person_count == 0){
@@ -613,7 +613,7 @@ function handle_android_detection_result(cameraId,whole_file,person_count,start_
         console.log('return error------')
         return;
       }
-      console.log('we got the tracking info',doc);
+      ON_DEBUG && console.log('we got the tracking info',doc);
       var uuid = ""
       var group_id = ""
       get_device_uuid(function(uuid){

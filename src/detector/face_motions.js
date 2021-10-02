@@ -7,6 +7,8 @@ var request = require('requestretry')
 var readdir = require('readdir-absolute')
 const TelegramBot = require('node-telegram-bot-api');
 
+const limiter = require('limiter')
+
 var makegif=require('./makegif')
 var upload=require('./upload')
 var timeline=require('./timeline')
@@ -24,6 +26,10 @@ var ON_DEBUG = false
 // replace the value below with the Telegram token you receive from @BotFather
 var telegram_bot = null;
 var telegram_chat_id = null;
+const rate_limiter = new limiter.RateLimiter({
+  tokensPerInterval: 1,
+  interval: "minute"
+});
 
 function GetEnvironmentVarInt(varname, defaultvalue)
 {
@@ -54,7 +60,13 @@ function get_device_group_id(cb){
 }
 function remove_face_motion_images(cameraId,trackerId){
   var saving_path = 'face_motion/'+trackerId+'/'
-  makegif.removeUnusedImageDir(saving_path, 'face_motion/')
+  if(trackerId != '' || trackerId != null){
+    try{
+      makegif.removeUnusedImageDir(saving_path, 'face_motion/')
+    } catch(error){
+      console.error(error)
+    }
+  }
 }
 function send_image_to_telegram(image_path){
   if(telegram_bot == null || telegram_chat_id == null){
@@ -78,7 +90,12 @@ function do_generate_gif_and_upload(cameraId,trackerId,whole_file,name_sorting,c
     var saving_path = 'face_motion/'+trackerId+'/'
     var cropped_path = 'face_cropped/'+trackerId+'/'
     var file_key = cameraId+'_'+trackerId+'.gif'
-
+    if (rate_limiter.tryRemoveTokens(1)){
+      ON_DEBUG && console.log('Tokens removed');
+    } else{
+      ON_DEBUG && console.log('No tokens removed >>>>>>>>>>>>>>>> threshold not call genvideo');
+      return cb && cb(null,whole_file)
+    }
     makegif.generateVideo('jpg',saving_path,name_sorting,function(err,gif_path,files){
       if(!err && gif_path){
         ON_DEBUG && console.log('Generated gif, need upload: '+gif_path)

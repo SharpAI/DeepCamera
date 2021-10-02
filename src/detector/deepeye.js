@@ -32,6 +32,7 @@ var REDIS_PORT = process.env.REDIS_PORT || 6379
 var CLUSTER_REDIS_ADDRESS = process.env.CLUSTER_REDIS_ADDRESS || "redis"
 var CLUSTER_REDIS_PORT = process.env.CLUSTER_REDIS_PORT || 6379
 
+let ON_DEBUG = false
 function GetEnvironmentVarInt(varname, defaultvalue)
 {
     var result = process.env[varname];
@@ -121,7 +122,6 @@ if(typeof client === 'undefined'){
   connect_node_celery_to_amqp()
 }
 
-var ON_DEBUG = false
 module.exports = {
   delete_image:delete_image,
   buffer2file: buffer2file,
@@ -442,7 +442,7 @@ function post_recognition_result_to_api_server(json,accessUrl){
   var gst_api_url = json.api_data.api_url
   var json_request_content = json.api_data.payload
   json_request_content.img_url = accessUrl
-  console.log('api_url,',gst_api_url,'json_request_content ',json_request_content)
+  ON_DEBUG && console.log('api_url,',gst_api_url,'json_request_content ',json_request_content)
   requestretry({
       url: gst_api_url,
       method: "POST",
@@ -454,7 +454,7 @@ function post_recognition_result_to_api_server(json,accessUrl){
       if(error) {
           console.log("report to server event: ",error)
       } else {
-          console.log('report to server event: ',body)
+          ON_DEBUG && console.log('report to server event: ',body)
           if(body && body.state=="SUCCESS" && body.result) {
               var json = JSON.parse(body.result)
           }
@@ -470,29 +470,29 @@ function classify_task(task_info, cb) {
         if(result && result.status === 'SUCCESS'){
           if(result.result){
             var json = JSON.parse(result.result)
-            console.log('JSON.parse(result.result)=',json)
+            ON_DEBUG && console.log('JSON.parse(result.result)=',json)
             if(!json.result || !json.result.key){
               return cb && cb(null, null)
             }
 
-            console.log('json.result.key[',json.result.key,']task_info.path',task_info.path)
-            console.log(task_info)
+            ON_DEBUG && console.log('json.result.key[',json.result.key,']task_info.path',task_info.path)
+            ON_DEBUG && console.log(task_info)
 
             if(task_info.url && task_info.url!=''){
-                console.log('face url is '+task_info.url)
+              ON_DEBUG && console.log('face url is '+task_info.url)
                 json.result['url'] = task_info.url
                 post_recognition_result_to_api_server(json,task_info.url)
             } else {
               json.result['url'] = upload.getAccessUrl(json.result.key)
               upload.putFile(json.result.key,task_info.path,function(error,accessUrl){
-                console.log('error=',error,'accessUrl=',accessUrl)
+                ON_DEBUG && console.log('error=',error,'accessUrl=',accessUrl)
                 if(!error){
                   post_recognition_result_to_api_server(json,accessUrl)
                 }
               })
             }
             delete json.result.key
-            console.log('classify result json:',json)
+            ON_DEBUG && console.log('classify result json:',json)
             return cb && cb(null, json)
           }
         }

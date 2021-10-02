@@ -45,7 +45,8 @@
     "requestretry": "^3.0.1",
     "socket.io": "^2.1.1",
     "socket.io-client": "^2.1.1",
-    "node-telegram-bot-api": "0.54.x"
+    "node-telegram-bot-api": "0.54.x",
+    "limiter":"2.1.0"
   },
   "devDependencies": {
     "bower-resolve-webpack-plugin": "^1.0.5",

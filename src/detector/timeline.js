@@ -107,7 +107,7 @@ function generate_known_person_message(tracker_id,recognition_results){
           result_info.persons.push(person_info)
         }
       })
-      console.log('=============================')
+      DEBUG_ON && console.log('=============================')
       rt_msg.send_rt_known_message(result_info)
     })
   })
@@ -142,7 +142,7 @@ function generate_unknown_person_message(tracker_id,recognition_results){
         result_info.persons.push(person_info)
         console.log('unknown message ',result)
       })
-      console.log('=============================')
+      DEBUG_ON && console.log('=============================')
       rt_msg.send_rt_unknown_message(result_info)
     })
   })
@@ -169,13 +169,13 @@ module.exports = {
         if(typeof item != undefined && item != null && typeof item.result != undefined && item.result != null) {
           var result = item.result
           img_url = result.url
-          console.log('recognitions result----',result)
+          DEBUG_ON && console.log('recognitions result----',result)
           if(result && result.recognized === true && result.face_id ){
             recognitions.push(result.face_id)
           }
           if(result && result.recognized === false && result.style ==='front' /*|| result.style == 'left_side' || result.style ==='right_side'*/){
             front_faces++
-            console.log(result)
+            DEBUG_ON && console.log(result)
             unknown_faces.push(result)
             single_stranger_arr.push(img_url)
           }
@@ -235,11 +235,11 @@ module.exports = {
               db_global.update({_id:tracker_id},{$set:{faces_in_picture:faces_in_picture}})
             }
             if(doc.number == 1){
-              console.log('=======',doc.single_stranger_arr)
+              DEBUG_ON && console.log('=======',doc.single_stranger_arr)
               doc.single_stranger_arr.push(img_url)
               db_global.update({_id:tracker_id},{$set:{single_stranger_arr:doc.single_stranger_arr}})
             }
-            console.log(doc)
+            DEBUG_ON && console.log(doc)
             front_faces = front_faces + doc.front_faces
             db_global.update({_id:tracker_id},{$set:{
               results:doc.results,
@@ -314,7 +314,7 @@ module.exports = {
           ts: ts,
           created_on: Date.now()
         }
-        console.log('push gif info',result,jpg_motion_path);
+        DEBUG_ON && console.log('push gif info',result,jpg_motion_path);
         db_global_gif.insert(item)
         return cb && cb(null);
       }

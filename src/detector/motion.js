@@ -8,7 +8,7 @@ var s={
     group:{},
     has_motion:false
 }
-var ON_DEBUG = false
+let ON_DEBUG = false
 var old_time = new Date()
 module.exports = {
   init : function(onframe){
