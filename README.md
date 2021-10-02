@@ -7,9 +7,8 @@ SharpAI is open source stack for machine learning engineering with private deplo
 - [x] FFMpeg with Nvidia Nano hardware decoder
 - [x] Face Detector with Nvidia Nano GPU [TensorRT MTCNN](https://github.com/jkjung-avt/tensorrt_demos)
 - [x] Face Embedding with Nvidia Nano GPU [Pytorch](https://github.com/nizhib/pytorch-insightface) [InsightFace](https://github.com/deepinsight/insightface) 
-- [ ] Person Detection
+- [x] Person Detection with GPU
 - [x] Integrate with telegram bot API
-- [ ] Face ID Classifer with Nvidia Nano HW acceloration
 
 # DeepCamera Architecture
 ![architecture](screenshots/DeepCamera_infrastructure.png)
