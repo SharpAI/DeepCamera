@@ -30,6 +30,13 @@ sudo pip3 install docker-compose==1.27.4
 git clone https://github.com/SharpAI/DeepCamera
 ```
 
+
+## Create Token for Telegram Bot
+
+Create Telegram Bot through @BotFather
+Set Telegram Token in [Configure File](https://github.com/SharpAI/DeepCamera/blob/nano/docker/production_1.env#L15)
+Send message to the new bot you created
+
 ## Start DeepCamera
 ```
 cd DeepCamera  
@@ -45,6 +52,8 @@ password: SharpAI2018
 
 Tested Camera:
 DaHua / Lorex / AMCREST,  URL Path: /cam/realmonitor?channel=1&subtype=0 Port: 554
+
+When setup done, you will see live view on web page, when detected person in camera, you will receive video clips on telegram.
 
 ## Label on Web GUI, train face recognition model on device
 ```
