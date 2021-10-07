@@ -33,9 +33,9 @@ git clone https://github.com/SharpAI/DeepCamera
 
 ## Create Token for Telegram Bot
 
-Create Telegram Bot through @BotFather
-Set Telegram Token in [Configure File](https://github.com/SharpAI/DeepCamera/blob/nano/docker/production_1.env#L15)
-Send message to the new bot you created
+- Create Telegram Bot through @BotFather
+- Set Telegram Token in [Configure File](https://github.com/SharpAI/DeepCamera/blob/nano/docker/production_1.env#L15)
+- Send message to the new bot you created
 
 ## Start DeepCamera
 ```
@@ -170,8 +170,8 @@ If you don't want to setup your own server for now, a test server can be used fo
 ## Slack
 [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
-## Feature List
-- [ ] Porting to Jetson Nano 
+## Todo List
+- [x] Porting to Jetson Nano 
 - [x] High accurate Face Recognition
 - [x] Face Detection
 - [x] Inference on ARM Mali GPU
