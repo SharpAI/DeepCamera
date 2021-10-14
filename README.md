@@ -170,7 +170,7 @@ If you don't want to setup your own server for now, a test server can be used fo
 ## Slack
 [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
-## Todo List
+## Features
 - [x] Porting to Jetson Nano 
 - [x] High accurate Face Recognition
 - [x] Face Detection
