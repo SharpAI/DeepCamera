@@ -222,6 +222,8 @@ services:
         max-size: "10m"
         max-file: "10"
     image: shareai/api_server:3.4.1
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
     volumes:
       - ./db:/root/SharpAIMobileApp/.meteor/local/db
     networks:
