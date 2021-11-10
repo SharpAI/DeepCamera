@@ -1,7 +1,7 @@
 version: '2'
 services:
   redis:
-    image: arm32v7/redis:latest
+    image: arm32v7/redis:3.2.11
     restart: always
     container_name: "redis"
     command: sh -c "rm -rf /data/*.rdb && redis-server --maxmemory 40mb --maxmemory-policy allkeys-lru --save \"\" --appendonly no --dbfilename \"\""
