@@ -205,6 +205,7 @@ def get_result(boxes, landmarks):
     return json_result
 def detect(image_path, trackerid, ts, cameraId, face_filter):
     #result = m.detect(image_path)
+    person_count = 0
     img = cv2.imread(image_path)
     boxes, confs, clss = yolo_model.trt_yolo.detect(img, 0.5)
 
