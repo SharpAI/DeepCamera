@@ -5,6 +5,7 @@ SharpAI is open source stack for machine learning engineering with private deplo
 
 ## Features 
 - [ ] End to End data collection and training pipeline [Model E2E Pipeline](model/)
+- [ ] Support Nvidia Jetson Xavier AGX
 - [x] FFMpeg with Nvidia Nano hardware decoder
 - [x] Face Detector with Nvidia Nano GPU [TensorRT MTCNN](https://github.com/jkjung-avt/tensorrt_demos)
 - [x] Face Embedding with Nvidia Nano GPU [Pytorch](https://github.com/nizhib/pytorch-insightface) [InsightFace](https://github.com/deepinsight/insightface) 
