@@ -1299,7 +1299,7 @@ def _updateDataSet(url, objId, group_id, device_id, drop, img_type, sqlId, style
                     OBJ_COUNT += 1
 
                     # 这里需要把老图从本地目录删除掉
-                    old_img_path = infile.replace(str(new_train_set.id)+'.jpg', str(old_train_set.id)+'.jpg')
+                    old_img_path = infile.replace(str(new_train_set.id)+'.png', str(old_train_set.id)+'.png')
                     os.remove(old_img_path)
                 elif SVM_CLASSIFIER_ENABLED is True:
                     img_path = save_embedding.download_img_for_svm(url, group_id, face_id, style=style)
@@ -1323,7 +1323,7 @@ def _updateDataSet(url, objId, group_id, device_id, drop, img_type, sqlId, style
                         print('update: {} style face count, url={}'.format(FACE_COUNT[style], url))
 
                         # 这里需要把老图从本地目录删除掉
-                        old_img_path = img_path.replace(str(new_train_set.id) + '.jpg', str(old_train_set.id) + '.jpg')
+                        old_img_path = img_path.replace(str(new_train_set.id) + '.png', str(old_train_set.id) + '.png')
                         os.remove(old_img_path)
                 else:
                     print('face')
@@ -1338,7 +1338,7 @@ def _updateDataSet(url, objId, group_id, device_id, drop, img_type, sqlId, style
                     print('{} style face count'.format((FACE_COUNT[style])))
 
                     # 这里需要把老图从本地目录删除掉
-                    old_img_path = img_path.replace(str(new_train_set.id) + '.jpg', str(old_train_set.id) + '.jpg')
+                    old_img_path = img_path.replace(str(new_train_set.id) + '.png', str(old_train_set.id) + '.png')
                     os.remove(old_img_path)
 
             else:

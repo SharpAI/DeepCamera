@@ -483,9 +483,9 @@ function classify_task(task_info, cb) {
                 json.result['url'] = task_info.url
                 post_recognition_result_to_api_server(json,task_info.url)
             } else {
-              json.result['url'] = upload.getAccessUrl(json.result.key)
-              upload.putFile(json.result.key,task_info.path,function(error,accessUrl){
-                console.log('error=',error,'accessUrl=',accessUrl)
+              json.result['url'] = upload.getAccessUrl(json.result.key)+'.png'
+              upload.putFile(json.result.key+'.png',task_info.path,function(error,accessUrl){
+                ON_DEBUG && console.log('error=',error,'accessUrl=',accessUrl)
                 if(!error){
                   post_recognition_result_to_api_server(json,accessUrl)
                 }
