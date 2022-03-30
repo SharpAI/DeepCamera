@@ -20,6 +20,7 @@ var REPORT_FACE_MOTION_TO_EVENT_SERVER = true
 
 var DEVICE_UUID_FILEPATH = process.env.DEVICE_UUID_FILEPATH || '/dev/ro_serialno'
 var DEVICE_GROUP_ID_FILEPATH = process.env.DEVICE_GROUP_ID_FILEPATH || '/data/usr/com.deep.workai/cache/groupid.txt'
+var MQTT_BROKER_ADDRESS = process.env.MQTT_BROKER_ADDRESS || 'mqttbroker'
 
 var ON_DEBUG = false
 
@@ -27,6 +28,10 @@ var ON_DEBUG = false
 var telegram_bot = null;
 var telegram_chat_id = null;
 const rate_limiter = new limiter.RateLimiter({
+  tokensPerInterval: 1,
+  interval: "minute"
+});
+const mqtt_rate_limiter = new limiter.RateLimiter({
   tokensPerInterval: 1,
   interval: "minute"
 });
@@ -41,6 +46,9 @@ function GetEnvironmentVarInt(varname, defaultvalue)
 }
 // ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE 一张图里，出现一个人脸，不再计算后续
 var GIF_UPLOADING = GetEnvironmentVarInt('GIF_UPLOADING', 1)
+
+var MQTT_PORT = GetEnvironmentVarInt('MQTT_BROKER_PORT', 1883)
+var mqtt_server = 'mqtt://' + MQTT_BROKER_ADDRESS + ':' + MQTT_PORT
 
 function get_device_uuid(cb){
   fs.readFile(DEVICE_UUID_FILEPATH, function (err,data) {
@@ -68,6 +76,54 @@ function remove_face_motion_images(cameraId,trackerId){
     }
   }
 }
+
+var mqtt = require('mqtt')
+var client  = mqtt.connect(mqtt_server)
+client.on('connect', function () {
+  client.subscribe('presence', function (err) {
+    if (!err) {
+      client.publish('presence', 'Hello mqtt')
+    }
+  })
+})
+
+client.on('message', function (topic, message) {
+  // message is Buffer
+  ON_DEBUG && console.log(message.toString())
+  var json_str = message.toString()
+  ON_DEBUG && console.log('json string: ', json_str)
+  try{
+    var json = JSON.parse(json_str)
+    if (json.type == 'text' && json.text ){
+      if (mqtt_rate_limiter.tryRemoveTokens(1)){
+        send_text_to_telegram(json.text)
+      } else{
+        return 
+      }
+    }
+  } catch(a){
+    return
+  }
+})
+
+var interval_handler = setInterval(function(){
+  get_device_uuid(function(uuid){
+    get_device_group_id(function(group_id){
+      if(uuid && group_id){
+        clearInterval(interval_handler)
+        var msg_topic = '/msg/g/' + group_id
+        client.subscribe(msg_topic, function (err) {
+          if (!err) {
+            send_text_to_telegram('subscribed to group:'+group_id)
+          }
+        })
+      }
+    })
+  })
+},10000)
+
+
+
 function send_image_to_telegram(image_path){
   if(telegram_bot == null || telegram_chat_id == null){
     return false
@@ -79,6 +135,13 @@ function send_video_to_telegram(video_path){
     return false
   }
   telegram_bot.sendVideo(telegram_chat_id, video_path)
+}
+function send_text_to_telegram(text){
+  if(telegram_bot == null || telegram_chat_id == null){
+    return false
+  }
+
+  telegram_bot.sendMessage(telegram_chat_id, text);
 }
 function do_generate_gif_and_upload(cameraId,trackerId,whole_file,name_sorting,cb){
 
