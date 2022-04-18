@@ -1,5 +1,5 @@
 # Not only an AI Face Recognition/Person Detection NVR 
-## Machine Learning On The Edge, Turn your Camera into AI-powered with Edge AI devices
+## SharpAI helped companies applying machine learning on the edge computing devices
 
 SharpAI is open source stack for machine learning engineering with private deployment and AutoML for edge computing.  DeepCamera is application of SharpAI designed for connect computer vision model to surveillance camera. Developers can run same code on Raspberry Pi/Android/PC/AWS to boost your AI production development.
 
