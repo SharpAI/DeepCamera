@@ -29,11 +29,12 @@ SharpAI is open source stack for machine learning engineering with private deplo
 - [x] Image upload to AWS or on premise AWS compatiable server(MINIO)
 
 ## Commercial Version
-- Provide real time pipeline on edge device  
+- Provide real time pipeline on edge device     
 - E2E pipeline to support model customization  
 - Cluster on the edge  
 - Port to specific edge device/chipset
 - Voice application (ASR/KWS) end to end pipeline  
+- ReID model   
 - Behavior analysis model    
 - Transformer model  
 - Contrastive learning  
