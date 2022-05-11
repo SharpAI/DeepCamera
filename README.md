@@ -83,6 +83,8 @@ password: SharpAI2018
 Tested Camera:
 DaHua / Lorex / AMCREST,  URL Path: /cam/realmonitor?channel=1&subtype=0 Port: 554
 
+You can use [iSpyConnect](https://www.ispyconnect.com/cameras) to get camera streaming URL
+
 When setup done, you will see live view on web page, when detected person in camera, you will receive video clips on telegram.
 
 ## Label on Web GUI, train face recognition model on device
