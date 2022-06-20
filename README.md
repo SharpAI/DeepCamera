@@ -1,4 +1,4 @@
-# Not only an AI Face Recognition/Person Detection NVR 
+# Face Recognition/Person Detection NVR as Machine Learning data collector
 ## SharpAI helps companies applying machine learning on the edge computing devices
 
 DeepCamera is a computer vision machine learning pipeline. You can use DeepCamera to collect data from Cameras, upload prelabeled images to server, retrieve data and retrain model then deploy model to edge device such as Jetson Nano for example.
