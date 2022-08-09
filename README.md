@@ -4,7 +4,6 @@
 DeepCamera is a computer vision machine learning pipeline. You can use DeepCamera to collect data from Cameras, upload prelabeled images to server, retrieve data and retrain model then deploy model to edge device such as Jetson Nano for example.
 
 ## Features 
-- [ ] Integration with Home Assistant
 - [x] FFMpeg with Nvidia Nano hardware decoder
 - [x] Face Detector with Nvidia Nano GPU [TensorRT MTCNN](https://github.com/jkjung-avt/tensorrt_demos)
 - [x] Face Embedding with Nvidia Nano GPU [Pytorch](https://github.com/nizhib/pytorch-insightface) [InsightFace](https://github.com/deepinsight/insightface) 
@@ -28,6 +27,9 @@ DeepCamera is a computer vision machine learning pipeline. You can use DeepCamer
 - [x] Native raspberry pi camera support
 - [x] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
 - [x] Image upload to AWS or on premise AWS compatiable server(MINIO)
+## Todos
+- [ ] Integration with Home Assistant
+- [ ] Since many developers reported the installation issus, need simpilfy installation
 
 ## Commercial Version
 - Provide real time pipeline on edge device     
