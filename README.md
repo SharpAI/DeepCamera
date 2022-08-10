@@ -29,7 +29,8 @@ DeepCamera is a computer vision machine learning pipeline. You can use DeepCamer
 - [x] Image upload to AWS or on premise AWS compatiable server(MINIO)
 ## Todos
 - [ ] Integration with Home Assistant
-- [ ] Since many developers reported the installation issus, need simpilfy installation
+- [ ] Since many developers reported the installation issus, need simplify installation
+- [ ] Simplify installation script
 
 ## Commercial Version
 - Provide real time pipeline on edge device     
