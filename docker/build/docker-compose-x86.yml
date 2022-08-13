@@ -3,7 +3,7 @@ services:
   face_detector:
     image: shareai/face_detector:x86
     build:
-      context: ./face_detection
+      context: ../../src/face_detection
       dockerfile: Dockerfile.x86
   redis:
     image: shareai/redis:x86

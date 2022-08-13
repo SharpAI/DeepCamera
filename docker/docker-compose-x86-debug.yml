@@ -1,7 +1,7 @@
 version: '2'
 services:
   redis:
-    image: shareai/redis:x86
+    image: redis:latest
     restart: always
     container_name: "redis"
     command: sh -c "rm -rf /data/*.rdb && redis-server --maxmemory 40mb --maxmemory-policy allkeys-lru --save \"\" --appendonly no --dbfilename \"\""
@@ -75,7 +75,7 @@ services:
         aliases:
           - flower
   face_detector:
-    command: sh -c "python test.py && python worker.py worker --loglevel INFO -E -n detect -c 1 -Q detect"
+    command: sh -c "cd /root/detection && python test.py && python worker.py worker --loglevel INFO -E -n detect -c 1 -Q detect"
     image: shareai/face_detector:x86
     container_name: "face_detector"
     env_file:
@@ -97,6 +97,7 @@ services:
       - ./workaipython/cache:/data/runtime/cache
       - ./opt/nvr/detector/images:/opt/nvr/detector/images
       - ./opt/nvr/detector/frames:/opt/nvr/videos/frames
+      - ../src/face_detection:/root/detection
       - ./dev/shm/streams:/dev/shm/streams
     networks:
       main:
@@ -104,7 +105,7 @@ services:
           - facd_detector
   embedding:
     command: sh -c "cd /data/runtime/src/ && ls /data/runtime -l &&  ls /data/runtime/src && ./start_embedding_only.sh"
-    image: shareai/embedding:x86
+    image: shareai/embedding:x86_latest
     container_name: "embedding"
     env_file:
       - ./cluster.env
@@ -134,7 +135,10 @@ services:
       - ./workaipython/cache:/data/runtime/cache
       - ./workaipython/data:/data/runtime/src/data
       - ./opt/nvr/detector/images:/opt/nvr/detector/images
+      - ../src/embedding:/data/runtime/src
       - ./opt/nvr/detector/frames:/opt/nvr/videos/frames
+      - ../model/model-0000.params:/data/runtime/model-0000.params
+      - ../model/model-symbol.json:/data/runtime/model-symbol.json
   detector_plugin:
     container_name: "detector_plugin"
     depends_on:
