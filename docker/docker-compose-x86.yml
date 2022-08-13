@@ -1,7 +1,7 @@
 version: '2'
 services:
   redis:
-    image: redis:latest
+    image: shareai/redis:x86
     restart: always
     container_name: "redis"
     command: sh -c "rm -rf /data/*.rdb && redis-server --maxmemory 40mb --maxmemory-policy allkeys-lru --save \"\" --appendonly no --dbfilename \"\""
@@ -17,16 +17,12 @@ services:
         aliases:
           - redis
   broker:
-    #image: moscajs/aedes:latest
-    image: emqx/emqx:latest
+    image: shareai/broker:x86
     restart: always
     container_name: "broker"
     ports:
       - 1883:1883
-      - 80:8083
-    volumes:
-      - ./brokerConfig.js:/data/brokerConfig.js
-    #command: --config /data/brokerConfig.js
+      - 9001:9001
     logging:
       driver: json-file
       options:
@@ -36,21 +32,6 @@ services:
       main:
         aliases:
           - mqttserver
-  minio:
-    image: shareai/minio:x86
-    restart: always
-    container_name: "minio"
-    ports:
-      - 9000:9000
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "10"
-    networks:
-      main:
-        aliases:
-          - minio
   camera:
     container_name: "camera"
     command: sh -c "if [ ! -f /opt/nvr/conf/conf.sqlite ]; then cp /opt/nvr/sql/shinobi.sample.sqlite /opt/nvr/conf/conf.sqlite -a ; fi && sleep 3 &&  (node /opt/nvr/cron.js &) && node /opt/nvr/camera.js"
@@ -124,7 +105,7 @@ services:
           - facd_detector
   embedding:
     command: sh -c "cd /data/runtime/src/ && ls /data/runtime -l &&  ls /data/runtime/src && ./start_embedding_only.sh"
-    image: shareai/embedding:x86_latest
+    image: shareai/embedding:x86
     container_name: "embedding"
     env_file:
       - ./cluster.env
@@ -136,7 +117,6 @@ services:
     restart: always
     depends_on:
       - "redis"
-      - "api_server"
     logging:
       driver: json-file
       options:
@@ -155,10 +135,7 @@ services:
       - ./workaipython/cache:/data/runtime/cache
       - ./workaipython/data:/data/runtime/src/data
       - ./opt/nvr/detector/images:/opt/nvr/detector/images
-      - ../src/embedding:/data/runtime/src
       - ./opt/nvr/detector/frames:/opt/nvr/videos/frames
-      - ../model/model-0000.params:/data/runtime/model-0000.params
-      - ../model/model-symbol.json:/data/runtime/model-symbol.json
   detector_plugin:
     container_name: "detector_plugin"
     depends_on:
@@ -214,24 +191,5 @@ services:
       - ../src/detector/realtime_message.js:/opt/nvr/detector/realtime_message.js
       - ../src/detector/upload_listener.js:/opt/nvr/detector/upload_listener.js
       - ../src/detector/config:/opt/nvr/detector/config
-  api_server:
-    container_name: "api_server"
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "10"
-    image: shareai/api_server:3.4.1
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: 0
-    volumes:
-      - ./db:/root/SharpAIMobileApp/.meteor/local/db
-    networks:
-      main:
-        aliases:
-          - apiserver
-    ports:
-      - 3000:3000
-    restart: always
 networks:
   main:

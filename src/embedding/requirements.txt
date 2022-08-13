@@ -27,3 +27,4 @@ redis==2.10.5
 kombu==4.2.1
 docker==3.3.0
 ConfigParser==3.5.0
+minio==6.0.0
