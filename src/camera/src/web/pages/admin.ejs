@@ -1,0 +1,239 @@
+<% include blocks/header %>
+<script>$user=<%-JSON.stringify($user)%></script>
+<style>
+.shinobi-bg {
+    background: url(/libs/img/bg.jpg);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}.shinobi-bg-shade {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,0.5);
+}
+    nav{margin-top:20px}
+</style>
+<link rel="stylesheet" href="/libs/css/pnotify.custom.min.css">
+<link rel="stylesheet" href="/libs/css/vbox.css">
+<link rel="stylesheet" href="/libs/css/circles.css">
+<link rel="stylesheet" href="/libs/css/bootstrap.min.css">
+<link rel="stylesheet" href="/libs/css/font-awesome.min.css">
+<link rel="stylesheet" href="/libs/css/fullcalendar.min.css">
+<link rel="stylesheet" href="/libs/css/bootstrap-table.min.css">
+<link rel="stylesheet" href="/libs/css/main.dash2.css">
+<body class="shinobi-bg">
+    <div class="shinobi-bg-shade">
+<div class="container-fluid">
+    <div class="container">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Shinobi : Admin</a>
+    </div>
+
+
+      <ul class="nav navbar-nav navbar-right">
+<!--        <li><a href="#">Link</a></li>-->
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">&nbsp;<i class="fa fa-bars"></i>&nbsp;</a>
+          <ul class="dropdown-menu">
+<!--
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li role="separator" class="divider"></li>
+-->
+            <li><a class="logout"><i class="fa fa-sign-out pull-right"></i> Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+  </div><!-- /.container-fluid -->
+</nav>
+        
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group-group grey">
+                    <h4>Sub-Accounts</h4>
+                    <table class="table table-striped" id="sub_accounts"></table>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <form id="add_new">
+                  <div class="form-group-group grey">
+                        <h4>Add<small id="msg" class="pull-right" style="color:#fff"></small></h4>
+                        <div class="form-group">
+                            <label><div><span>Email</span></div>
+                                <div><input class="form-control" type="email" name="mail"></div>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label><div><span>Password</span></div>
+                                <div><input class="form-control" type="password" name="pass"></div>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label><div><span>Password Again</span></div>
+                                <div><input class="form-control" type="password" name="password_again"></div>
+                            </label>
+                      </div>
+                      <div>
+                          <button type="reset" class="btn btn-danger"><i class="fa fa-undo"></i> Clear</button>
+                          <div class="pull-right">
+                            <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Submit</button>
+                          </div>
+                      </div>
+                  </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<% include blocks/confirm.ejs %>
+<% include blocks/subpermissions.ejs %>
+    </div>
+</body>
+<script><% include ../libs/js/socket.io.js %></script>
+<script><% include ../libs/js/pnotify.custom.min.js %></script>
+<script><% include ../libs/js/moment.js %></script>
+<script><% include ../libs/js/livestamp.min.js %></script>
+<script><% include ../libs/js/placeholder.js %></script>
+<script><% include ../libs/js/bootstrap.min.js %></script>
+<script><% include ../libs/js/bootstrap-table.min.js %></script>
+<script>
+$.ccio={subs:{}};$.ls=localStorage;
+$.ccio.ws=io(location.origin);
+$.ccio.cx=function(x){if(!x.ke){x.ke=$user.ke;};if(!x.uid){x.uid=$user.uid;};return $.ccio.ws.emit('a',x)}
+$.ccio.ws.on('connect',function(d){
+    $.ccio.cx({f:'init',auth:$user.auth_token});
+})
+$.ccio.ws.on('f',function(d){
+    console.log(d);
+    switch(d.f){
+        case'edit_sub_account':
+            $.each(d.form,function(n,v){
+                $.ccio.subs[d.uid][n]=v;
+            });
+        break;
+        case'add_sub_account':
+            $.ccio.tm(0,d,'#sub_accounts')
+        break;
+        case'delete_sub_account':
+            $('#sub_accounts tr[uid="'+d.uid+'"]').remove()
+        break;
+    }
+})
+    $.ccio.tm=function(x,d,z,k){
+        var tmp='';if(!d){d={}};if(!k){k={}};
+        if(d.id&&!d.mid){d.mid=d.id;}
+        switch(x){
+            case 0://sub account row
+                d.detailsJSON=JSON.parse(d.details);
+                $.ccio.subs[d.uid]=d;
+                tmp+='<tr uid="'+d.uid+'"><td><b class="mail">'+d.mail+'</b></td><td><span class="uid">'+d.uid+'</span></td><td><a class="permission btn btn-xs btn-primary"><i class="fa fa-lock"></i></a></td><td><a class="delete btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></a></td></tr>';
+            break;
+        }
+        if(z){
+            $(z).prepend(tmp)
+        }
+        return tmp;
+    }
+$subs=<%-JSON.stringify($subs)%>;
+$.each($subs,function(n,v){
+    $.ccio.tm(0,v,'#sub_accounts')
+})
+    
+//add new
+$.aN={e:$('#add_new')};
+$.aN.e.submit(function(e){
+    e.preventDefault();
+    e.s=$.aN.e.serializeObject();e.m=$('#msg').empty()
+    $.post($user.auth_token+'/register/'+$user.ke+'/'+$user.uid,e.s,function(d){
+        if(d.msg){
+            e.m.text(d.msg)
+        };
+    });
+    return false;
+});
+//sub simple lister
+$.sU={e:$('#sub_accounts')};
+$.sU.e.on('click','.delete',function(e){
+    e.e=$(this).parents('tr');e.m=e.e.find('.mail').text();e.u=e.e.attr('uid');
+    $.confirm.e.modal('show');
+    $.confirm.title.html('Delete Sub-Account <small>'+e.u+'</small>')
+    e.html='Do you want to delete <b>'+e.m+'</b>? You cannot recover this account.'
+    $.confirm.body.html(e.html)
+    $.confirm.click({title:'Delete',class:'btn-danger'},function(){
+        $.ccio.cx({f:'accounts',ff:'delete',$uid:e.u,auth:$user.auth_token,mail:e.m})
+    });
+})
+$.sU.e.on('click','.permission',function(e){
+    e.e=$(this).parents('tr');e.m=e.e.find('.mail').text();e.u=e.e.attr('uid');
+    $.pR.e.modal('show');
+    $.pR.l.text(e.m);
+    $.pR.user=e.u;
+    e.d=$.ccio.subs[e.u].detailsJSON;
+    //load values
+    $.each($.ccio.subs[$.pR.user],function(n,v){
+        $.pR.e.find('[name="'+n+'"]').val(v)
+    })
+    $.pR.e.find('[detail="allmonitors"]').val(e.d.allmonitors).change()
+    $.each(['monitors','monitor_edit','video_delete','video_view'],function(m,b){
+        if(e.d[b]){
+            $.each(e.d[b],function(n,v){
+                $.pR.e.find('[monitor="'+b+'"][mid="'+v+'"]').val(1)
+            })
+        }
+    })
+})
+
+//permission window
+$.pR={e:$('#permissions'),l:$('#permissionsLabel small')};$.pR.f=$.pR.e.find('form')
+$.pR.e.on('change','[detail="allmonitors"]',function(e){
+    e.e=$(this),
+    e.mon=$('#monitors_section,#monitors_edit_section,#video_delete_section')
+    e.details=$.pR.e.find('[name="details"]')
+    e.json=JSON.parse(e.details.val())
+    if(e.e.val()=='1'){
+        e.mon.hide();
+        e.json.allmonitors='1';
+    }else{
+        e.mon.show()
+        e.json.allmonitors='0';
+        $.pR.e.find('[monitor]').first().change()
+    }
+    e.details.val(JSON.stringify(e.json))
+})
+$.pR.e.on('click','[check]',function(e){
+    $(this).parents('.form-group-group').find('select').val($(this).attr('check')).first().change()
+})
+$.pR.e.on('change','[monitor]',function(e){
+    e.monitors=[];
+    e.key=$(this).attr('monitor');
+    e.details=$.pR.e.find('[name="details"]')
+    try{e.detail=JSON.parse(e.details.val())}catch(err){e.detail={}}
+    if(!e.detail){e.detail={}}
+    $.pR.e.find('[monitor="'+e.key+'"]').each(function(n,v){
+        v=$(v)
+        if(v.val()=='1'){
+            e.monitors.push(v.attr('mid'))
+        }
+    });
+    e.detail[e.key]=e.monitors;
+    e.details.val(JSON.stringify(e.detail))
+});
+$.pR.f.submit(function(e){
+    e.preventDefault();
+    e.s=$(this).serializeObject()
+    $.ccio.cx({f:'accounts',ff:'edit',$uid:$.pR.user,auth:$user.auth_token,mail:$.ccio.subs[$.pR.user].mail,form:e.s})
+    $.pR.e.modal('hide')
+    return false;
+})
+
+$('body')
+.on('click','.logout',function(e){
+    localStorage.removeItem('ShinobiLogin_'+location.host);location.href=location.href;
+})
+</script>

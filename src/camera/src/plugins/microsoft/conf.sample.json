@@ -1,0 +1,29 @@
+{
+    "plug":"ComputerVision",
+    "host":"localhost",
+    "port":8080,
+    "key":"UNIQUE KEY HERE",
+    "computerVision":{
+        "apiKey":"YOUR_KEY",
+        "endpoint":"http://YOUR_ENDPOINT/analyze",
+        "params":{
+            "visualFeatures": "Categories,Description,Color",
+            "details": "",
+            "language": "en"
+        }
+    },
+    "EmotionAPI":{
+        "apiKey":"YOUR_KEY",
+        "endpoint":"http://YOUR_ENDPOINT/recognize",
+        "params":{}
+    },
+    "FaceAPI":{
+        "apiKey":"YOUR_KEY",
+        "endpoint":"http://YOUR_ENDPOINT/detect",
+        "params":{
+            "returnFaceId": "true",
+            "returnFaceLandmarks": "false",
+            "returnFaceAttributes": "age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise"
+        }
+    }
+}

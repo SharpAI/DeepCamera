@@ -1,0 +1,41 @@
+#main_header {
+    background: #122444;
+    color: #fff;
+}
+.demo-drawer {
+    background: #1b2d4c;
+    color: #fff;
+}
+#main_canvas {
+    background: #2b3a50;
+    color: #333;
+}
+.monitor_item .mdl-card__media {
+    background: #fbfbfb;
+}
+.monitor_item .stream-block {
+    background: #000;
+}
+.monitor_item .mdl-card {
+    border: 1px solid #b7b7b7;
+}
+.monitor_item .mdl-card__supporting-text {
+    background: #122444;
+    color: #fff!important;
+}
+.progress-bar-warning {
+    background-color: #b59f00;
+}
+.monitor_item .side-menu {
+    background: #1b2431;
+    color: #fff;
+}
+.monitor_item .mdl-card {
+    border: 1px solid #122444;
+}
+.dark.modal .modal-header,.dark.modal .modal-footer{background:#091222;border-color:#222;}
+.dark.modal .modal-body{background:#151d28;}
+.form-group-group.forestgreen {border-color: #091222;}
+.form-group-group.forestgreen h4 {background: #091222;}
+.dark .form-group-group {background: #18253e;}
+.dark .list-group-item {background: #091222;border-color: #18253e;}

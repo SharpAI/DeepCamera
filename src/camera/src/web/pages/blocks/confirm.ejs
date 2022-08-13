@@ -1,0 +1,37 @@
+<!--Confirmation Window-->
+<div class="modal fade" id="confirm_window" role="dialog" aria-labelledby="confirm_windowLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="confirm_windowLabel"><i class="fa fa-exclamation-circle"></i> &nbsp; <span><%- lang['Confirm'] %></span></h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-times"></i> <%- lang['Close'] %></button>
+        <button type="button" class="btn btn-success confirmaction"><%- lang['Save'] %></button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+//confirmwindow
+    $.confirm={e:$('#confirm_window')};
+    $.confirm.title=$.confirm.e.find('.modal-title span')
+    $.confirm.body=$.confirm.e.find('.modal-body')
+    $.confirm.click=function(x,e){
+        if(!x.class){x.class='btn-success'}
+        if(!x.title){x.title='Save changes'}
+        x.e=$.confirm.e.find('.confirmaction').removeClass('btn-danger btn-warning btn-primary btn-success').addClass(x.class).text(x.title);
+        x.e.click(function(){
+            x.e.unbind('click');$.confirm.e.modal('hide');e();
+        })
+    }
+    $(document).ready(function(){
+        $.confirm.e.on('hidden.bs.modal', function () {
+            $.confirm.e.find('.confirmaction').unbind('click');
+        })
+    })
+</script>

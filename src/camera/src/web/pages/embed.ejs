@@ -1,0 +1,284 @@
+<script>var io=null;</script>
+<%
+data.name='SHINOBI_'+data.ke+'_'+data.id;
+if(config.ssl&&config.ssl.port&&data.protocol==='https'){
+    data.port=config.ssl.port
+}else{
+    data.port=config.port
+}
+if(!data.port||data.port===''||data.port==80||data.port==443){data.url=baseUrl}else{data.url=baseUrl+':'+data.port}
+if(data.addon.indexOf('relative')>-1){
+    data.url=''
+}
+%>
+<script src="<%=data.url%>/libs/js/socket.io.js"></script>
+<script src="<%=data.url%>/libs/js/poseidon.js"></script>
+<script src="<%=data.url%>/libs/js/hls.min.js"></script>
+<script src="<%=data.url%>/libs/js/flv.min.js"></script>
+<% if(data.addon){
+    var ar={}
+    decodeURI(data.addon).split('|').forEach(function(v){
+        if(v.indexOf('=')>-1){
+            v=v.split('=');
+            ar[v[0]]=v[1];
+        }
+    })
+    if(!ar.width){ar.width=640;}
+    if(!ar.height){ar.height=480;}
+    if(data.addon.indexOf('jquery')>-1){ %>
+<script src="<%=data.url%>/libs/js/jquery.min.js"></script>
+<% };
+if(data.addon.indexOf('gui')>-1){ %>
+<style>
+    .shinobi_stream{position:relative;display:inline-block}
+    .shinobi_hud{position:absolute;width:100%;height:100%;top:0;left:0;}
+    .shinobi_hud .shinobi_viewers{position:absolute;top:5px;left:5px;}
+    .shinobi_hud .shinobi_viewers{
+        display: inline-block;
+        min-width: 10px;
+        padding: 3px 7px;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        background-color: #777;
+        border-radius: 10px;
+        font-family: sans-serif;
+    }
+    iframe.stream-element{border:0;}
+</style>
+<% };
+if(data.addon.indexOf('fullscreen')>-1){ %>
+<style>
+    body,html{overflow: hidden;}
+    *{margin:0;padding:0;border:0}
+    .stream-element,.shinobi_stream{position:absolute;top:0;left:0;}
+</style>
+<script>
+$(window).resize(function(){
+    $('.stream-element').attr('width',$('body').width())
+    $('.stream-element').attr('height',$('body').height())
+})
+</script>
+<% } %>
+<% }else{
+    //no addon set, do defaults
+    var ar={};
+    ar.width=640;
+    ar.height=480;
+} %>
+<script>
+$(document).ready(function(){
+    $('#<%= data.name %> canvas').attr('width',<%=ar.width%>).attr('height',<%=ar.height%>)
+})
+</script>
+<div class="shinobi_stream" id="<%= data.name %>">
+    
+    <% switch(mon.details.stream_type){
+        case'jpeg':
+            %><img class="stream-element"><%
+        break;
+        case'flv':case'hls':case'mp4':
+            %><video class="stream-element" autoplay></video><%
+        break;
+        case'mjpeg':
+            %><iframe class="stream-element"></iframe><%
+        break;
+        default:
+            %><canvas class="stream-element"></canvas><%
+        break;
+    } %>
+    
+    
+<% if(data.addon&&data.addon.indexOf('gui')>-1){ %>
+    <div class="shinobi_hud">
+        <div class="shinobi_viewers" title="Current number of viewers"></div>
+    </div>
+<% } %>
+</div>
+<script>
+    var SHINOBI_TIMER=setInterval(function(){
+        if(io){
+            clearInterval(SHINOBI_TIMER);delete(SHINOBI_TIMER);
+            if(!$.shinobi){
+                $.shinobi={}
+            };
+            if(!$.shinobi.mon){
+                $.shinobi.mon={}
+            };
+            $.shinobi.init=function(d){
+                  switch($.shinobi.mon[d.id].details.stream_type){
+                    case'mp4':
+                    var stream = $('#SHINOBI_'+d.ke+'_'+d.id+' .stream-element');
+                    if($.shinobi.mon[d.id].details.stream_flv_type==='ws'){
+                        if($.shinobi.mon[d.id].Poseidon){
+                            $.shinobi.mon[d.id].Poseidon.destroy()
+                        }
+                        var createPoseidon = function(){
+                            $.shinobi.mon[d.id].Poseidon = new Poseidon({
+                                video: stream[0],
+                                auth_token:'<%=data.auth%>',
+                                ke:d.ke,
+                                uid:'<%=data.uid%>',
+                                id:d.id,
+                                url: '<%=data.url%>'
+                            });
+                            $.shinobi.mon[d.id].Poseidon.start();
+                            $.shinobi.mon[d.id].Poseidon._socket.on('data',function(res){
+                                console.log(res)
+                            })
+                        }
+                        try{
+                            createPoseidon()
+                        }catch(err){
+                            console.log(err)
+                            setTimeout(function(){
+                                createPoseidon()
+                            },3000)
+                        }
+                    }else{
+                        stream.attr('src','<%=data.url%>/<%=data.auth%>/mp4/'+d.ke+'/'+d.id+'/s.mp4')
+                        setTimeout(function(){
+                            $.ccio.init('signal-check',{id:d.id,ke:d.ke})
+                        },3000)
+                    }
+                    break;
+                    case'flv':
+                        if (flvjs.isSupported()) {
+                            if($.shinobi.mon[d.id].flv){
+                                $.shinobi.mon[d.id].flv.destroy()
+                            }
+                            var options = {};
+//                            if($.shinobi.mon[d.id].details.stream_flv_type==='ws'){
+//                                if($.shinobi.mon[d.id].details.stream_flv_maxLatency&&$.shinobi.mon[d.id].details.stream_flv_maxLatency!==''){
+//                                    $.shinobi.mon[d.id].details.stream_flv_maxLatency = parseInt($.shinobi.mon[d.id].details.stream_flv_maxLatency)
+//                                }else{
+//                                    $.shinobi.mon[d.id].details.stream_flv_maxLatency = 20000;
+//                                }
+//                                options = {
+//                                    type: 'flv',
+//                                    isLive: true,
+//                                    auth_token:'<%=data.auth%>',
+//                                    ke:d.ke,
+//                                    uid:'<%=data.uid%>',
+//                                    id:d.id,
+//                                    maxLatency:$.shinobi.mon[d.id].details.stream_flv_maxLatency,
+//                                    hasAudio:false,
+//                                    url: '<%=data.url%>'
+//                                }
+//                            }else{
+                                options = {
+                                    type: 'flv',
+                                    isLive: true,
+                                    url: '<%=data.url%>/<%=data.auth%>/flv/'+d.ke+'/'+d.id+'/s.flv'
+                                }
+//                            }
+                            $.shinobi.mon[d.id].flv = flvjs.createPlayer(options);
+                            $.shinobi.mon[d.id].flv.attachMediaElement($('#SHINOBI_'+d.ke+'_'+d.id+' .stream-element')[0]);
+                            $.shinobi.mon[d.id].flv.on('error',function(err){
+                                console.log(err)
+                            });
+                            $.shinobi.mon[d.id].flv.load();
+                            $.shinobi.mon[d.id].flv.play();
+                        }else{
+                            alert({title:'Stream cannot be started',text:'FLV.js is not supported on this browser. Try another stream type.',type:'error'})
+                        }
+                    break;
+                    case'jpeg':
+                        d.mon=$.shinobi.mon[d.id]
+                        k=d.mon.details;
+                        k.jpegInterval=parseFloat(k.jpegInterval);
+                        if(!k.jpegInterval||k.jpegInterval===''||isNaN(k.jpegInterval)){k.jpegInterval=1}
+                        if(!$.shinobi.mon[d.mon.mid].jpegInterval){
+                            clearInterval($.shinobi.mon[d.mon.mid].jpegInterval);
+                            $.shinobi.mon[d.mon.mid].jpegInterval=setInterval(function(){
+                                $('#SHINOBI_'+d.ke+'_'+d.id+' .stream-element').attr('src','<%=data.url%>/<%=data.auth%>/jpeg/'+d.mon.ke+'/'+d.mon.mid+'/s.jpg?time='+(new Date()).getTime())
+                            },1000/k.jpegInterval);
+                        }
+                    break;
+                    case'hls':
+                    var video = $('#SHINOBI_'+d.ke+'_'+d.id+' .stream-element')[0];
+                    d.url='<%=data.url%>/<%=data.auth%>/hls/'+d.ke+'/'+d.id+'/s.m3u8';
+                    if($.shinobi.mon[d.id].hls){
+                        $.shinobi.mon[d.id].hls.destroy()
+                    }
+                    if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)||(navigator.userAgent.match(/(Safari)/)&&!navigator.userAgent.match('Chrome'))) {
+                        video.src=d.url;
+                        video.play();
+                    }else{
+                        $.shinobi.mon[d.id].hls = new Hls();
+                        $.shinobi.mon[d.id].hls.loadSource(d.url);
+                        $.shinobi.mon[d.id].hls.attachMedia(video);
+                        $.shinobi.mon[d.id].hls.on(Hls.Events.MANIFEST_PARSED,function() {
+                          video.play();
+                        });
+                    }
+                    break;
+                    case'mjpeg':
+                        $('#SHINOBI_'+d.ke+'_'+d.id+' .stream-element').attr('src','<%=data.url%>/<%=data.auth%>/mjpeg/'+d.ke+'/'+d.id+'?full=true')
+                    break;
+                }
+            }
+            $.shinobi.mon['<%=data.id%>']=<%- JSON.stringify(mon) %>;
+            if(!$.shinobi.callback){$.shinobi.callback=function(){}}
+            if(!$.shinobi.ws||$.shinobi.ws.connected===false){
+                $.shinobi.ws=io('<%=data.url%>');
+                $.shinobi.ws.on('f',function (d){
+                if(d.viewers){
+                    $('#SHINOBI_'+d.ke+'_'+d.id+' .shinobi_viewers').html(d.viewers);
+                }
+                switch(d.f){
+                    case'monitor_frame':
+                        var image = new Image();
+                        var ctx = $('#SHINOBI_'+d.ke+'_'+d.id+' canvas')[0];
+                        image.onload = function() {
+                            ctx.getContext("2d").drawImage(image,0,0,ctx.width,ctx.height);
+                            delete(d.frame);
+                            delete(image);
+                        };
+                        image.src='data:image/jpeg;base64,'+d.frame
+                    break;
+                    case'monitor_watch_off':case'monitor_watch_on':
+                        $('#SHINOBI_'+d.ke+'_'+d.id+' .shinobi_viewers').html(d.viewers)
+                        $.shinobi.init(d)
+                    break;
+                    case'monitor_edit':
+                        if(!d.id){d.id=d.mon.mid;}
+                        if($.shinobi.mon[d.id]){
+                            clearInterval($.shinobi.mon[d.id].jpegInterval);
+                        }
+                        d.e=$('#SHINOBI_'+d.ke+'_'+d.id+'');
+                        d.e.find('.stream-element').remove();
+                        d.tmp='';
+                        switch(d.mon.details.stream_type){
+                            case'hls':
+                                d.tmp+='<video class="stream-element" controls autoplay></video>';
+                            break;
+                            case'mjpeg':
+                                d.tmp+='<iframe class="stream-element"></iframe>';
+                            break;
+                            case'jpeg'://base64
+                                d.tmp+='<img class="stream-element">';
+                            break;
+                            default://base64
+                                d.tmp+='<canvas class="stream-element"></canvas>';
+                            break;
+                        }
+                        d.e.append(d.tmp).find('.stream-element').resize();
+                        $(window).resize();
+                        d.mon.details=JSON.stringify(d.mon.details);
+                        $.shinobi.mon[d.mon.mid]=d.mon;
+                        $.shinobi.init(d.mon);
+                    break;
+                  }
+                    $.shinobi.callback()
+                });
+            };
+            $.shinobi.ws.emit('e',{f:'init',auth:'<%=data.auth%>',id:'<%=data.id%>',ke:'<%=data.ke%>'})
+            $(window).resize();
+        }
+    },1000);
+</script>

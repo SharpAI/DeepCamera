@@ -1,0 +1,37 @@
+FROM shareai/tensorflow:x86_tf1.8
+
+
+# Install package dependencies
+RUN cp /etc/apt/sources.list /etc/apt/sources.list.bk && \
+    echo "deb http://ftp2.cn.debian.org/debian/ stretch main non-free contrib"           >  /etc/apt/sources.list && \
+    echo "deb http://ftp2.cn.debian.org/debian/ stretch-updates main non-free contrib"   >> /etc/apt/sources.list && \
+    echo "deb http://ftp2.cn.debian.org/debian/ stretch-backports main non-free contrib" >> /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y pkg-config graphicsmagick curl sqlite3 libsqlite3-dev libcairo2-dev libgif-dev && \
+    curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
+    apt-get update && apt-get install -y nodejs libdrm-dev && apt-get clean
+RUN cp /etc/apt/sources.list.bk /etc/apt/sources.list
+ADD src /opt/nvr
+WORKDIR /opt/nvr/
+RUN npm install && \
+    npm install canvas@1.6 moment ffmpeg-static --unsafe-perm && \
+    rm /root/.npm/* -rf 
+
+ADD docker-entrypoint.sh /opt/nvr/docker-entrypoint.sh
+ADD conf.d/main.conf.json /opt/nvr/conf.json
+ADD conf.d/super.json /opt/nvr/super.json
+ADD ./detector /opt/nvr/detector
+
+WORKDIR /opt/nvr/detector
+RUN npm install && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    cp /etc/apt/sources.list.bk /etc/apt/sources.list && \
+    rm /root/.npm/* -rf
+
+WORKDIR /opt/nvr
+COPY sql/conf.sqlite sql/shinobi.sample.sqlite
+RUN cp sql/shinobi.sample.sqlite /opt/nvr/conf.sqlite
+VOLUME ["/opt/nvr/videos"]
+
+EXPOSE 8080
+ENTRYPOINT ["/opt/nvr/docker-entrypoint.sh" ]

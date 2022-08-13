@@ -1,0 +1,86 @@
+<!--Video File Window-->
+<div class="modal full fade dark" id="pvideo_viewer" role="dialog" aria-labelledby="pvideo_viewerLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="pvideo_viewerLabel"><i class="fa fa-map-marker"></i> &nbsp; <%-lang['Power Video Viewer']%><span style="display:none" class="_loading"> &nbsp; <i class="fa fa-pulse fa-spinner"></i></span></h4>
+      </div>
+      <div class="modal-body" style="overflow:inherit">
+          <form class="row text-center" style="margin:0">
+            <div id="live_view" class="col-md-4"><h3><%-lang['Live View']%> : <span></span></h3><iframe></iframe></div>
+            <div id="video_preview" class="col-md-4">
+                <h3></h3>
+                <div style="position:relative">
+                    <div class="stream-objects holder"></div>
+                </div>
+                <div style="margin-top:10px">
+                    <div class="form-group">
+                        <div class="progress" id="pwrvid_seekBar" style="height:10px;">
+                            <div class="progress-bar progress-bar-primary" role="progressbar" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="progress motion-meter" title="<%-lang['Motion Meter']%>">
+                            <div class="progress-bar progress-bar-danger" role="progressbar" style="width:0%;"><span></span></div>
+                        </div>
+                    </div>
+                    <div class="clearfix" style="margin:5px"></div>
+                    <div class="btn-group btn-group-sm">
+                        <a preview="stepBackBack" class="active btn btn-primary"><i class="fa fa-backward"></i></a>
+                        <a preview="stepBack" class="btn btn-primary"><i class="fa fa-arrow-circle-o-left"></i></a>
+                        <a preview="play" class="btn btn-default"><i class="fa fa-play"></i></a>
+                        <a preview="mute" class="btn btn-default"><i class="fa fa-volume-up"></i></a>
+                        <a preview="stepFront" class="btn btn-primary"><i class="fa fa-arrow-circle-o-right"></i></a>
+                        <a preview="stepFrontFront" class="active btn btn-primary"><i class="fa fa-forward"></i></a>
+                        <a preview="fullscreen" class="btn btn-default"><i class="fa fa-arrows-alt"></i></a>
+                    </div>
+                    <div class="btn-group btn-group-sm">
+                        <a onclick="$.pwrvid.f.submit()" class="active btn btn-success"><i class="fa fa-refresh"></i></a>
+                        <a download="" href="" class="btn btn-sm btn-default"><i class="fa fa-download"></i></a>
+                        <% if(config.DropboxAppKey){ %><a video="download" host="dropbox" download="" href="" class="btn btn-sm btn-default"><i class="fa fa-dropbox"></i></a><% } %>
+                    </div>
+<!--                <a class="btn btn-sm btn-primary" video="launch" href=""><i class="fa fa-play-circle"></i> <span>No Video Selected</span></a>-->
+                </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="temp hidden"></div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Monitor']%></span></div>
+                        <div><select class="form-control dark" id="vis_monitors"></select></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Date Range']%></span></div>
+                        <div><input type="text" id="pvideo_daterange" class="form-control dark" value="" /></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Event Limit']%></span></div>
+                        <div><input type="text" id="pvideo_event_limit" class="form-control dark" placeholder="500" localStorage="powerEventLimit" /></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Video Limit']%></span></div>
+                        <div><input type="text" id="pvideo_video_limit" class="form-control dark" value="200" placeholder="0 for No Limit" localStorage="powerVideoLimit" /></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                      <ul id="motion_list" class="list-group text-left"></ul>
+                  </div>
+              </div>
+          </form>
+          <div class="row" style="position:relative">
+              <div class="nodata super-center"><%-lang['No Data']%> <div class="divider"></div><i class="fa fa-4x fa-area-chart"></i></div>
+              <div class="loading super-center" style="display:none">Loading <div class="divider"></div><i class="fa fa-4x fa-spinner fa-pulse"></i></div>
+              <div id="vis_pwrvideo" class="col-md-12"></div>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><%-lang['Close']%></button>
+      </div>
+    </div>
+  </div>
+</div>

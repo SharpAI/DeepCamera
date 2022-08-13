@@ -1,0 +1,12 @@
+node_modules
+videos
+events
+frames
+web.old
+.DS_Store
+.vagrant
+conf.json
+super.json
+dbdata
+npm-debug.log
+shinobi.sqlite

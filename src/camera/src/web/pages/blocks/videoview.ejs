@@ -1,0 +1,69 @@
+<!--Videos List Window-->
+<div class="modal full fade" id="videos_viewer" role="dialog" aria-labelledby="videos_viewerLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="videos_viewerLabel"><i class="fa fa-film"></i> &nbsp; <%-lang.Videos%> <small> <span class="video_viewer_total"></span> <%-lang.total%></small></h4>
+      </div>
+      <div class="modal-body flex-container-modal-body">
+          <div style="padding:20px 0" class="flex-block flex-modal-block">
+              <div class="col-md-3">
+
+                  <div class="form-group">
+                    <label><div><span><%-lang['Date Range']%></span></div>
+                        <div><input type="text" id="videos_viewer_daterange" class="form-control" value="" /></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Video Limit']%></span></div>
+                        <div><input id="videos_viewer_limit" value="100" class="form-control" placeholder="0 for No Limit" localStorage="videosViewerLimit" /></div>
+                    </label>
+                  </div>
+                  <div id="videos_viewer_preview" class="text-center"></div>
+              </div>
+              <div class="col-md-9">
+                  <div class="contents"></div>
+              </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+          <div class="row">
+              <div class="col-md-4 text-left">
+                  <a class="btn btn-danger delete_selected"><i class="fa fa-trash-o"></i> &nbsp; <%-lang['Delete selected']%></a> 
+              </div>
+              <div class="col-md-4">
+                  <div class="text-center" id="videos_viewer_pages"></div>
+              </div>
+              <div class="col-md-4">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal"><%-lang.Close%></button>
+              </div>
+          </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!--Video File Window-->
+<div class="modal full fade dark" id="video_viewer" role="dialog" aria-labelledby="video_viewerLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="video_viewerLabel"><i class="fa fa-play-circle"></i> &nbsp; <span></span></h4>
+      </div>
+      <div class="modal-body text-center"></div>
+      <div class="modal-footer">
+        <a class="btn btn-danger pull-left" video="delete" data-dismiss="modal"><%-lang.Delete%></a>
+          <div class="btn-group">
+              <a class="btn btn-primary download_link"><i class="fa fa-download"></i> &nbsp; <%-lang.Save%></a>
+              <% if(config.DropboxAppKey){ %><a class="btn btn-primary" monitor="download" host="dropbox"><i class="fa fa-dropbox"></i> &nbsp; Dropbox</a><% } %>
+              <button type="button" class="btn btn-default" data-dismiss="modal"><%-lang.Close%></button>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

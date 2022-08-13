@@ -1,0 +1,9 @@
+{
+  "plug":"OpenALPR",
+  "host":"localhost",
+  "port":8080,
+  "hostPort":8082,
+  "key":"SomeOpenALPRkeySoPeopleDontMessWithYourShinobi",
+  "mode":"client",
+  "type":"detector"
+}

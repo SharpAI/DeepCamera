@@ -1,0 +1,69 @@
+<% include blocks/header %>
+<div class="shinobi-bg display-table" style="height:100%">
+    <div class="shinobi-bg-shade">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="panel panel-login">
+                        <div class="panel-heading">
+                            <div class="panel-heading-shade">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <a href="http://shinobi.video" target="_blank">
+                                            <img src="/libs/img/icon/apple-touch-icon-76x76.png" style="border-radius:50%">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <form id="auth-form" action="/" method="post" style="display: block;">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-12 monospace" style="width:calc(100% - 48px)">
+                                                    <input type="hidden" name="ke" id="ke" value="<%-$user.ke%>">
+                                                    <input type="hidden" name="id" id="uid" value="<%-$user.uid%>">
+                                                    <input type="hidden" name="machineID" id="machineID" value="">
+                                                    <input type="password" name="factorAuthKey" id="factorAuthKey" tabindex="2" class="monospace form-control" placeholder="<%-lang['2-Factor Authentication']%>">
+                                                </div>
+                                                <div class="text-right" title="Remember This Machine" style="display:inline-block">
+                                                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="remember_me">
+                                                      <input type="checkbox" id="remember_me" value="1" name="remember" class="mdl-switch__input">
+                                                        <span class="monospace mdl-switch__label"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="margin:20px"></div>
+                                        <div class="form-group">
+                                            <button type="submit" name="login-submit" id="login-submit" tabindex="4" class="btn btn-success btn-block"><%-lang.Authenticate%></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/libs/js/material.min.js"></script>
+<script>
+    $.ccio={f:$('#auth-form'),ls:localStorage.getItem('ShinobiAuth_'+location.host)}
+    $.ccio.gid=function(x){
+        if(!x){x=10};var t = "";var p = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for( var i=0; i < x; i++ )
+            t += p.charAt(Math.floor(Math.random() * p.length));
+        return t;
+    };
+    if(!$.ccio.ls||$.ccio.ls===''){
+        $.ccio.ls=$.ccio.gid(20)
+        localStorage.setItem('ShinobiAuth_'+location.host,$.ccio.ls)
+    }
+    $(document).ready(function(){
+        $('#machineID').val($.ccio.ls)
+    })
+</script>

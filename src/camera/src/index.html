@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+      <style>*{margin:0;padding:0;border:0}
+      
+          iframe{width:100%;height:100%;position:fixed;left:0;top:0;}</style>
+  </head>
+  <body>
+      <iframe src="https://shinobi.video"></iframe>
+      <!--Follower ad-->
+<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+<style>
+    #follower{position:fixed;left:0;bottom:0;z-index:6;width:auto}
+    #follower .end{position:absolute;top:0;right:0;color:#fff;text-shadow:0 0 15px #333;z-index:2;cursor:pointer;background:#333;border-radius:50%;font-family:monospace}
+    #follower .end:hover{font-size:105%}
+    #follower .note{position:absolute;bottom:0;right:0;color:#fff;z-index:2;padding:5px;background:#333;}
+</style>
+<div id="follower" class="hidden-sm hidden-xs" style="display:none">
+    <div class="end">X</div>
+    <small class="note">Sorry for the Ads</small>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <!-- longdown --> <ins class="adsbygoogle"      style="display:inline-block;width:160px;height:600px"      data-ad-client="ca-pub-3391236677062948"      data-ad-slot="4862030510"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> <!-- longdown --> <ins class="adsbygoogle"      style="display:inline-block;width:160px;height:600px"      data-ad-client="ca-pub-3391236677062948"      data-ad-slot="4862030510"></ins> <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
+</div>
+<script>
+    $('#follower .note').click(function(){
+        $('#follower .adsbygoogle').focus()
+    })
+    $('#follower .end').click(function(){
+        $('#follower .adsbygoogle:first').remove()
+    })
+    setTimeout(function(){
+        $('#follower').show()
+    })
+</script>
+  </body>
+</html>

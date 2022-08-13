@@ -1,0 +1,95 @@
+<!--API Window-->
+<div class="modal medium fade dark" id="apis" role="dialog" aria-labelledby="apisLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="apisLabel"><i class="fa fa-code"></i> &nbsp; <%-lang['API Keys']%> <small><%-lang['Group Key']%>  : <%- $user.ke %></small></h4>
+      </div>
+      <div class="modal-body">
+          <div class="text-center msg"></div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label><div><span><%-lang['Allowed IPs']%> <small><%-lang['Separate with commas, no spaces']%></small></span></div>
+                    <div><input class="form-control" name="ip" placeholder="0.0.0.0 <%-lang['for Global Access']%>"></div>
+                </label>
+            </div>
+            <div class="form-group">
+            <label><div><span><%-lang['Can Authenticate Websocket']%></span></div>
+                <div><select class="form-control" detail="auth_socket">
+                    <option value="1"><%-lang['Yes']%></option>
+                    <option value="0" selected><%-lang['No']%></option>
+                </select></div>
+            </label>
+            </div>
+            <div class="form-group">
+            <label><div><span><%-lang['Can Get Monitors']%></span></div>
+                <div><select class="form-control" detail="get_monitors">
+                    <option value="1" selected><%-lang['Yes']%></option>
+                    <option value="0"><%-lang['No']%></option>
+                </select></div>
+            </label>
+            </div>
+            <div class="form-group">
+            <label><div><span><%-lang['Can Control Monitors']%></span></div>
+                <div><select class="form-control" detail="control_monitors">
+                    <option value="1" selected><%-lang['Yes']%></option>
+                    <option value="0"><%-lang['No']%></option>
+                </select></div>
+            </label>
+            </div>
+            <div class="form-group">
+            <label><div><span><%-lang['Can Get Logs']%></span></div>
+                <div><select class="form-control" detail="get_logs">
+                    <option value="1" selected><%-lang['Yes']%></option>
+                    <option value="0"><%-lang['No']%></option>
+                </select></div>
+            </label>
+            </div>
+            <div class="form-group">
+            <label><div><span><%-lang['Can View Streams']%></span></div>
+                <div><select class="form-control" detail="watch_stream">
+                    <option value="1" selected><%-lang['Yes']%></option>
+                    <option value="0"><%-lang['No']%></option>
+                </select></div>
+            </label>
+            </div>
+            <div class="form-group">
+            <label><div><span><%-lang['Can View Snapshots']%></span></div>
+                <div><select class="form-control" detail="watch_snapshot">
+                    <option value="1" selected><%-lang['Yes']%></option>
+                    <option value="0"><%-lang['No']%></option>
+                </select></div>
+            </label>
+            </div>
+            <div class="form-group">
+            <label><div><span><%-lang['Can View Videos']%></span></div>
+                <div><select class="form-control" detail="watch_videos">
+                    <option value="1" selected><%-lang['Yes']%></option>
+                    <option value="0"><%-lang['No']%></option>
+                </select></div>
+            </label>
+            </div>
+            <div class="form-group">
+            <label><div><span><%-lang['Can Delete Videos']%></span></div>
+                <div><select class="form-control" detail="delete_videos">
+                    <option value="1" selected><%-lang['Yes']%></option>
+                    <option value="0"><%-lang['No']%></option>
+                </select></div>
+            </label>
+            </div>
+          </div>
+        <div class="col-md-6">
+            <table class="table table-striped" id="api_list"></table>
+        </div>
+        <input type="hidden" name="details">
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal"><%-lang['Close']%></button>
+          <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i> &nbsp; <%-lang['Add']%></button>
+      </div>
+    </form>
+  </div>
+</div>

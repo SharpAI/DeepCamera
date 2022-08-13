@@ -1,0 +1,105 @@
+<!--Confirmation Window-->
+<div class="modal fade" id="permissions" tabindex="-1" role="dialog" aria-labelledby="permissionsLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="permissionsLabel"><i class="fa fa-lock"></i> &nbsp; <%-lang.Permissions%></h4>
+      </div>
+      <div class="modal-body" style="max-height:600px;overflow:auto">
+          <div class="text-center msg"></div>
+        <div class="form-group">
+            <label><div><span><%-lang['All Monitors and Privileges']%></span></div>
+                <div><select class="form-control" detail="allmonitors">
+                    <option value="0" selected><%-lang.No%></option>  
+                    <option value="1"><%-lang.Yes%></option>  
+                </select></div>
+            </label>
+        </div>
+          <div class="form-group-group blue" id="monitors_section">
+              <h4>
+                  <%-lang['Can View Monitor']%>
+                  <div class="pull-right">
+                    <a class="btn btn-success btn-xs" check="1"><i class="fa fa-check-square-o"></i></a>
+                    <a class="btn btn-danger btn-xs" check="0"><i class="fa fa-square-o"></i></a>
+                  </div>
+              </h4>
+              <% $mons.forEach(function(v,n){ %>
+                <div class="form-group">
+                    <label><div><span><%- v.name %></span></div>
+                        <div><select class="form-control" monitor="monitors" mid="<%- v.mid %>">
+                            <option value="0" selected><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>  
+                        </select></div>
+                    </label>
+                </div>
+              <% }) %>
+          </div>
+          <div class="form-group-group forestgreen" id="monitors_edit_section">
+              <h4>
+                  <%-lang['Can Edit Monitor']%>
+                  <div class="pull-right">
+                    <a class="btn btn-success btn-xs" check="1"><i class="fa fa-check-square-o"></i></a>
+                    <a class="btn btn-danger btn-xs" check="0"><i class="fa fa-square-o"></i></a>
+                  </div>
+              </h4>
+              <% $mons.forEach(function(v,n){ %>
+                <div class="form-group">
+                    <label><div><span><%- v.name %></span></div>
+                        <div><select class="form-control" monitor="monitor_edit" mid="<%- v.mid %>">
+                            <option value="0" selected><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>  
+                        </select></div>
+                    </label>
+                </div>
+              <% }) %>
+          </div>
+          <div class="form-group-group navy" id="video_view_section">
+              <h4>
+                  <%-lang['Can View Videos and Events']%>
+                  <div class="pull-right">
+                    <a class="btn btn-success btn-xs" check="1"><i class="fa fa-check-square-o"></i></a>
+                    <a class="btn btn-danger btn-xs" check="0"><i class="fa fa-square-o"></i></a>
+                  </div>
+              </h4>
+              <% $mons.forEach(function(v,n){ %>
+                <div class="form-group">
+                    <label><div><span><%- v.name %></span></div>
+                        <div><select class="form-control" monitor="video_view" mid="<%- v.mid %>">
+                            <option value="0" selected><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>  
+                        </select></div>
+                    </label>
+                </div>
+              <% }) %>
+          </div>
+          <div class="form-group-group red" id="video_delete_section">
+              <h4>
+                  <%-lang['Can Delete Videos and Events']%>
+                  <div class="pull-right">
+                    <a class="btn btn-success btn-xs" check="1"><i class="fa fa-check-square-o"></i></a>
+                    <a class="btn btn-danger btn-xs" check="0"><i class="fa fa-square-o"></i></a>
+                  </div>
+              </h4>
+              <% $mons.forEach(function(v,n){ %>
+                <div class="form-group">
+                    <label><div><span><%- v.name %></span></div>
+                        <div><select class="form-control" monitor="video_delete" mid="<%- v.mid %>">
+                            <option value="0" selected><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>  
+                        </select></div>
+                    </label>
+                </div>
+              <% }) %>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-times"></i> <%-lang.Close%></button>
+          <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> <%-lang.Save%></button>
+        </div>
+        <input type="hidden" name="details">
+    </form>
+  </div>
+</div>

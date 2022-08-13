@@ -1,0 +1,200 @@
+<% var details=JSON.parse($user.details) %>
+<% include blocks/header %>
+<script>var $user=<%- JSON.stringify($user) %>;</script>
+<link rel="stylesheet" href="/libs/css/pnotify.custom.min.css">
+<link rel="stylesheet" href="/libs/css/vbox.css">
+<link rel="stylesheet" href="/libs/css/daterangepicker.css">
+<link rel="stylesheet" href="/libs/css/circles.css">
+<!--<link rel="stylesheet" href="/libs/css/poseidon.css">-->
+<link rel="stylesheet" href="/libs/css/bootstrap.min.css">
+<link rel="stylesheet" href="/libs/css/font-awesome.min.css">
+<link rel="stylesheet" href="/libs/css/fullcalendar.min.css">
+<link rel="stylesheet" href="/libs/css/bootstrap-table.min.css">
+<link rel="stylesheet" href="/libs/css/main.dash2.css">
+<style id="theme">
+<% if(details.theme&&details.theme!==''){ %><%- include(__dirname+'/web/libs/themes/'+details.theme+'/style.css'); %><% } %>
+</style>
+<style id="custom_css">
+<%= details.css %>
+</style>
+<style>
+<% if(details.sub&&details.allmonitors==='0'){
+    if(details.monitor_edit&&details.monitor_edit!==''){
+        details.monitor_edit.forEach(function(v,n){ %>
+            [mid="<%= v %>"] .permission_monitor_edit{display:inline-block}
+  <% 
+        })
+    }
+    if(details.video_delete&&details.video_delete!==''){
+        details.video_delete.forEach(function(v,n){ %>
+            [mid="<%= v %>"] .permission_video_delete{display:inline-block}
+  <%
+        })
+    }
+}else{ %>
+    .permission_video_delete,.permission_monitor_edit{display:inline-block}
+    th.permission_video_delete,td.permission_video_delete{display:table-cell}
+<% } %>
+</style>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<!--    <link rel="stylesheet" href="$$hosted_libs_prefix$$/$$version$$/material.cyan-light_blue.min.css">-->
+  </head>
+  <body>
+    <div class="demo-layout demo-blog mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+      <header id="main_header" class="demo-header mdl-layout__header">
+        <div class="mdl-layout__header-row">
+        <ul class="nav navbar-nav">
+            <li title="<%-lang['Toggle Sidebar']%>" class_toggle="hide-side" data-target=".mdl-js-layout"><a>&nbsp;<i class="fa fa-bars"></i>&nbsp;</a></li>
+            <li title="<%-lang.Montage%>" system="montage"><a>&nbsp;<i class="fa fa-th"></i>&nbsp;</a></li>
+            <li title="<%-lang['Add Monitor']%>" mid="" ke="" class="hidden-xs permission_monitor_edit"><a monitor="edit">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a></li>
+            <li title="<%-lang['Power Video Viewer']%>" class="hidden-xs" mid="" ke=""><a monitor="powerview">&nbsp;<i class="fa fa-map-marker"></i>&nbsp;</a></li>
+            <li>
+                <a title="<%-lang['Monitor Groups']%>" id="group_list_button" class="mdl-js-button">&nbsp;<i class="fa fa-video-camera"></i>&nbsp;</a>
+                <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="group_list_button" id="group_list"></ul>
+            </li>
+            <li class="os_bars hidden-xs">
+                <div class="display-table">
+                    <div class="cpu_load display-table-cell">
+                        <span class="pull-right percent"></span>
+                        <label><span class="os_cpuCount"></span> <%-lang.CPU%><span class="os_cpuCount_trailer"></span> <%-lang.on%> <span class="os_platform" style="text-transform:capitalize"></span></label>
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-warning" role="progressbar" style="width:0%"></div>
+                      </div>
+                    </div>
+                    <div class="ram_load display-table-cell">
+                        <span class="pull-right percent"></span>
+                       <label><span class="os_totalmem" style="letter-spacing:2px;font-weight:100"></span> <%-lang.MB%> <%-lang.RAM%></label>
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-warning" role="progressbar" style="width:0%"></div>
+                      </div>
+                    </div>
+                    <div class="diskUsed display-table-cell">
+                        <span class="pull-right percent"></span>
+                       <label><span class="value" style="letter-spacing:2px;font-weight:100"></span></label>
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-warning" role="progressbar" style="width:0%"></div>
+                      </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+          <div class="mdl-layout-spacer"></div>
+            <ul class="nav navbar-nav navbar-right">
+                <li role="presentation" class="dropdown">
+                <div id="clock" class_toggle="twentyfour" data-target="#time-hours">
+                    <div id="time-date"></div>
+                    <ul>
+                        <li id="time-hours"></li>
+                        <li class="point">:</li>
+                        <li id="time-min"></li>
+                        <li class="point">:</li>
+                        <li id="time-sec"></li>
+                    </ul>
+                </div>
+                </li>
+                <li role="presentation" class="dropdown">
+                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="true">&nbsp;<i class="fa fa-group"></i>&nbsp;</a>
+                  <ul id="users_online" class="dropdown-menu list-unstyled msg_list scrollable" role="menu"></ul>
+                </li>
+<!--
+                <li role="presentation" class="dropdown">
+                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="true">&nbsp;<i class="fa fa-info-circle"></i>&nbsp;</a>
+                  <ul id="notifications" class="dropdown-menu list-unstyled msg_list scrollable" role="menu"></ul>
+                </li>
+-->
+                <li role="presentation" class="dropdown">
+                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="true">&nbsp;<i class="fa fa-exclamation-triangle"></i>&nbsp;</a>
+                  <ul id="logs" class="dropdown-menu list-unstyled msg_list scrollable" role="menu">
+                  </ul>
+                </li>
+              </ul>
+        </div>
+      </header>
+      <div class="demo-drawer mdl-layout__drawer">
+        <header class="demo-drawer-header">
+          <div class="demo-avatar-dropdown">
+            <button id="accbtn" style="color:#fff" class="usermail mdl-button mdl-js-button mdl-js-ripple-effect"></button>
+            <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+                <li class="mdl-menu__item" data-toggle="modal" data-target="#multi_mon"><div><i class="fa fa-clone"></i><div><%- lang['Monitors'] %></div></div></li>
+                <li class="mdl-menu__item" mid="" ke=""><div class="flex" monitor="powerview"><i class="fa fa-map-marker"></i><div><%- lang['Power Viewer'] %></div></div></li>
+                <li class="mdl-menu__item" mid="" ke=""><div class="flex" monitor="timelapse"><i class="fa fa-angle-double-right"></i><div><%- lang['Time-lapse'] %></div></div></li>
+                <li class="mdl-menu__item" system="montage"><div><i class="fa fa-th"></i><div><%- lang.Montage %></div></div></li>
+                <li class="mdl-menu__item" data-toggle="modal" data-target="#settings"><div><i class="fa fa-gears"></i><div><%- lang.Settings %></div></div></li>
+                <li class="mdl-menu__item" data-toggle="modal" data-target="#apis"><div><i class="fa fa-code"></i><div><%- lang.API %></div></div></li>
+                <% if(!details.sub){ %>
+                <li class="mdl-menu__item" data-toggle="modal" data-target="#onvif_probe"><div><i class="fa fa-rss"></i><div><%- lang.ONVIF %></div></div></li>
+                <li class="mdl-menu__item" data-toggle="modal" data-target="#probe"><div><i class="fa fa-search"></i><div><%- lang.FFprobe %></div></div></li>
+                <li class="mdl-menu__item" data-toggle="modal" data-target="#filters"><div><i class="fa fa-filter"></i><div><%- lang.Filters %></div></div></li>
+                <% } %>
+                <li class="mdl-menu__item" data-toggle="modal" data-target="#logs_modal"><div><i class="fa fa-exclamation-triangle"></i><div><%- lang.Logs %></div></div></li>
+                <li class="mdl-menu__item" class_toggle="list-blocks" data-target="#left_menu"><div><i class="fa fa-camera"></i><div><%- lang['List Toggle'] %></div></div></li>
+                <li class="mdl-menu__item" class_toggle="hide-side" data-target=".mdl-js-layout"><div><i class="fa fa-bars"></i><div><%- lang['Hide List'] %></div></div></li>
+                <li class="mdl-menu__item shinobi-detector-motion shinobi-detector-opencv shinobi-detector_plug" class_toggle="hide_indifference" data-target="body" style="display:none"><div><i class="fa fa-bolt"></i><div><%- lang['Motion GUI'] %></div></div></li>
+                <li class="mdl-menu__item" system="jpegToggle"><div><i class="fa fa-file-image-o"></i><div><%- lang['JPEG Mode'] %></div></div></li>
+                <li class="mdl-menu__item" system="switch" switch="monitorOrder" type="text"><div><i class="fa fa-sort"></i><div><%- lang['Order Streams'] %></div></div></li>
+                <li class="mdl-menu__item" system="switch" switch="notifyHide" type="text"><div><i class="fa fa-exclamation-circle"></i><div><%- lang['Hide Notes'] %></div></div></li>
+                <li class="mdl-menu__item logout"><div><i class="fa fa-sign-out"></i><div><%- lang.Logout %></div></div></li>
+            </ul>
+            <div class="mdl-layout-spacer"></div>
+            <button class_toggle="list-blocks" data-target="#left_menu" class="mdl-button mdl-button--icon">
+              <i class="fa fa-camera"></i>
+            </button>
+          </div>
+        </header>
+        <nav class="demo-navigation mdl-navigation side-menu" id="left_menu">
+            <div class="form-group col-md-12">
+                <input class="form-control dark" placeholder="Search Monitors" id="monitors_list_search">
+            </div>
+            <div id="monitors_list" class="display-table"></div>
+            <div class="mdl-layout-spacer"></div>
+        </nav>
+      </div>
+      <main class="mdl-layout__content selected" id="main_canvas">
+          <div class="demo-blog__posts mdl-grid" id="monitors_live"></div>
+      </main>
+    </div>
+  </body>
+</html>
+<!---->
+<div class="hidden" id="temp"></div>
+<% include blocks/multimon.ejs %>
+<% include blocks/api.ejs %>
+<% include blocks/logs.ejs %>
+<% include blocks/settings.ejs %>
+<% include blocks/filters.ejs %>
+<% include blocks/powervideo.ejs %>
+<% include blocks/timelapse.ejs %>
+<% include blocks/videoview.ejs %>
+<% include blocks/monitoredit.ejs %>
+<% include blocks/probe.ejs %>
+<% include blocks/region.ejs %>
+<% include blocks/confirm.ejs %>
+<% if(config.DropboxAppKey){ %>
+<!--Dropbox Library, Change data-app-key to your app key. -->
+<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="<%= config.DropboxAppKey %>"></script>
+<!--Dropbox End-->
+<% } %>
+<script src="/libs/js/material.min.js"></script>
+<script src="/libs/js/pnotify.custom.min.js"></script>
+<script><% include ../libs/js/moment.js %></script>
+<script><% include ../libs/js/livestamp.min.js %></script>
+<script src="/libs/js/placeholder.js"></script>
+<script src="/libs/js/bootstrap.min.js"></script>
+<script src="/libs/js/bootstrap-table.min.js"></script>
+<script src="/libs/js/socket.io.js"></script>
+<script src="/libs/js/fullcalendar.min.js"></script>
+<script src="/libs/js/hls.min.js"></script>
+<script type="text/javascript" src="/libs/js/flv.shinobi.js">;</script>
+<script src="/libs/js/menu.js"></script>
+<script src="/libs/js/clock.js"></script>
+<script src="/libs/js/poseidon.js"></script>
+<script src="/libs/js/Chart.js"></script>
+<script src="/libs/js/clusterPoints.js"></script>
+<script src="/libs/js/daterangepicker.js"></script>
+<script src="/libs/js/jquery.canvasAreaDraw.js"></script>
+<script><% include ../libs/js/main.dash2.js %></script>
+<% include blocks/help.ejs %>

@@ -1,0 +1,244 @@
+<!--Settings Window-->
+<div class="modal fade medium dark" id="settings" tabindex="-1" role="dialog" aria-labelledby="settingsLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="settingsLabel"><i class="fa fa-gears"></i> &nbsp; <%-lang.Settings%></h4>
+      </div>
+      <div class="modal-body">
+          <div class="text-center msg"></div>
+          <div class="form-group-group green">
+              <h4><%-lang['Account Info']%></h4>
+            <div class="form-group">
+                <label><div><span><%-lang.Email%></span></div>
+                    <div><input class="form-control" value="<%- $user.mail %>" disabled></div>
+                </label>
+            </div>
+            <div class="form-group">
+                <label><div><span><%-lang['Group Key']%></span></div>
+                    <div><input class="form-control" value="<%- $user.ke %>" disabled></div>
+                </label>
+            </div>
+          </div>
+          <div class="form-group-group grey">
+                <h4><%-lang.Profile%></h4>
+                <div class="form-group">
+                    <label><div><span><%-lang.Email%></span></div>
+                        <div><input class="form-control" type="email" name="mail"></div>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label><div><span><%-lang.Password%> <small><%-lang.blankPassword%></small></span></div>
+                        <div><input class="form-control" type="password" name="pass"></div>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label><div><span><%-lang.Password%> <%-lang.Again%></span></div>
+                        <div><input class="form-control" type="password" name="password_again"></div>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label><div><span><%-lang['2-Factor Authentication']%> (<%-lang.Email%>)</span></div>
+                            <div><select class="form-control" detail="factorAuth">
+                                <option value="0" selected><%-lang.No%></option>
+                                <option value="1"><%-lang.Yes%></option>  
+                            </select></div>
+                    </label>
+                </div>
+              <% if(!details.sub){ %>
+                <% if(details.edit_size!=='0'){ %>
+                <div class="form-group">
+                    <label><div><span><%-lang['Max Storage Amount']%></span></div>
+                        <div><input class="form-control" detail="size" placeholder="10000"></div>
+                    </label>
+                </div>
+                <% } %>
+                <% if(details.edit_days!=='0'){ %>
+                <div class="form-group">
+                    <label><div><span><%-lang['Number of Days to keep']%> <%-lang.Videos%></span></div>
+                        <div><input class="form-control" detail="days" placeholder="5"></div>
+                    </label>
+                </div>
+                <% } %>
+                <% if(details.edit_event_days!=='0'){ %>
+                <div class="form-group">
+                    <label><div><span><%-lang['Number of Days to keep']%> <%-lang.Events%></span></div>
+                        <div><input class="form-control" detail="event_days" placeholder="10"></div>
+                    </label>
+                </div>
+                <% } %>
+                <% if(details.edit_log_days!=='0'){ %>
+                <div class="form-group">
+                    <label><div><span><%-lang['Number of Days to keep']%> <%-lang.Logs%></span></div>
+                        <div><input class="form-control" detail="log_days" placeholder="10"></div>
+                    </label>
+                </div>
+                <% } %>
+              <% } %>
+            <div class="form-group">
+                <label><div><span><%-lang['Dashboard Language']%></span></div>
+                    <div>
+                        <select class="form-control" detail="lang" placeholder="10">
+                            <option value="" selected>Default</option>
+                            <% fs.readdirSync('./languages').forEach(function(v,n){
+                                    v=v.replace('.json','') %>
+                            <option value="<%-v%>"><%-v%></option>
+                               <% }) %>
+                        </select>
+                    </div>
+                </label>
+            </div>
+          </div>
+          <% if(!details.sub){ %>
+          <div class="form-group-group blue">
+              <h4 class="mon_groups">
+                  <%-lang['Monitor Groups']%>
+                  <div class="pull-right">
+                    <a class="btn btn-success btn-xs add"><i class="fa fa-plus"></i></a>
+                    <a class="btn btn-danger btn-xs delete"><i class="fa fa-trash-o"></i></a>
+                  </div>
+              </h4>
+              <div class="form-group">
+                    <label><div><span><%-lang['Monitor Groups']%></span></div>
+                        <div><select class="form-control" id="settings_mon_groups"></select></div>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label><div><span><%-lang['Group Name']%></span></div>
+                        <div><input type="hidden" group="id">
+                        <input class="form-control" group="name"></div>
+                    </label>
+                </div>
+              <input type="hidden" detail="mon_groups">
+          </div>
+            <% if(details.use_webdav!=='0'){ %>
+          <div class="form-group-group forestgreen">
+                <h4><%-lang.WebDAV%></h4>
+                <div class="form-group">
+                    <label><div><span><%-lang.URL%></span></div>
+                        <div><input class="form-control" detail="webdav_url"></div>
+                    </label>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label><div><span><%-lang.Username%></span></div>
+                            <div><input class="form-control" detail="webdav_user"></div>
+                        </label>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label><div><span><%-lang.Password%></span></div>
+                            <div><input class="form-control" type="password" detail="webdav_pass"></div>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><div><span><%-lang.Autosave%></span></div>
+                            <div><select class="form-control" detail="webdav_save">
+                                <option value="0"><%-lang.No%></option>  
+                                <option value="1"><%-lang.Yes%></option>  
+                            </select></div>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label><div><span><%-lang['Save Directory']%></span></div>
+                        <div><input class="form-control" placeholder="/" detail="webdav_dir"></div>
+                    </label>
+                </div>
+            </div>
+            <% } %>
+            <% if(details.use_ldap!=='0'){ %>
+          <div class="form-group-group forestgreen">
+                <h4><%-lang.LDAP%></h4>
+                <div class="form-group">
+                    <label><div><span><%-lang.Enable%></span></div>
+                            <div><select class="form-control" detail="ldap_enable" selector="ldap_i">
+                                <option value="0"><%-lang.No%></option>  
+                                <option value="1"><%-lang.Yes%></option>  
+                            </select></div>
+                    </label>
+                </div>
+                <div class="ldap_i_input ldap_i_1" style="display:none">
+                    <div class="form-group">
+                        <label><div><span><%-lang.URL%></span></div>
+                            <div><input class="form-control" detail="ldap_url"></div>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label><div><span><%-lang['bindDN']%></span></div>
+                            <div><input class="form-control" detail="ldap_bindDN" placeholder="<%-lang.Example%> : cn=admin,dc=test,dc=com"></div>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label><div><span><%-lang['Bind Credentials']%></span></div>
+                            <div><input class="form-control" detail="ldap_bindCredentials"></div>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label><div><span><%-lang['Search Filter']%></span></div>
+                            <div><input class="form-control" detail="ldap_searchFilter" placeholder="cn={{username}}"></div>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label><div><span><%-lang['Search Base']%></span></div>
+                            <div><input class="form-control" detail="ldap_searchBase" placeholder="dc=test,dc=com"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+          <% } %>
+            <div class="form-group-group navy">
+                <h4><%-lang.Preferences%></h4>
+                <div class="form-group">
+                    <label><div><span><%-lang.CSS%></span></div>
+                        <div><textarea class="form-control" placeholder="#main_header{background:#b59f00}" detail="css"></textarea></div>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label><div><span><%-lang['Monitors per row']%></span></div>
+                        <div><input class="form-control" placeholder="3" localStorage="montage"></div>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label><div><span><%-lang['Browser Console Log']%></span></div>
+                            <div><select class="form-control" localStorage="browserLog">
+                                <option value="0" selected><%-lang.No%></option>  
+                                <option value="1"><%-lang.Yes%></option>  
+                            </select></div>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label><div><span><%-lang['Get Logs to Client']%></span></div>
+                            <div><select class="form-control" detail="get_server_log">
+                                <option value="1" selected><%-lang.Yes%></option>  
+                                <option value="0"><%-lang.No%></option>
+                            </select></div>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label><div><span><%-lang['Themes']%></span></div>
+                        <div><select class="form-control" detail="theme">
+                            <option value="" selected>Default</option>
+                            <% fs.readdirSync(__dirname+'/web/libs/themes').forEach(function(v){ %>
+                            <option value="<%-v%>"><%-v%></option>
+                            <% }) %>
+                            </select></div>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group-group green linkShinobi">
+                <h4><%-lang['Link Shinobi']%><div class="pull-right"><a class="btn btn-success btn-xs add"><i class="fa fa-plus"></i></a></div></h4>
+                <div id="linkShinobi"></div>
+            </div>
+        <input type="hidden" name="details">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-times"></i> <%-lang.Close%></button>
+          <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> <%-lang.Save%></button>
+        </div>
+    </form>
+  </div>
+</div>

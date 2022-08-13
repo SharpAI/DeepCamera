@@ -1,0 +1,219 @@
+<!--Confirmation Window-->
+<div class="modal fade" id="add_edit" tabindex="-1" role="dialog" aria-labelledby="permissionsLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="permissionsLabel"><i class="fa fa-lock"></i> &nbsp; <span id="title"></span>
+              <div class="pull-right">
+                  <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="edit">
+                      <input type="checkbox" id="edit" value="1" class="mdl-switch__input">
+                      <span class="monospace mdl-switch__label"></span>
+                  </label>
+              </div>
+          </h4>
+      </div>
+      <div class="modal-body" style="max-height:600px;overflow:auto">
+        <div class="form-group">
+            <label>
+                <div><span><%-lang.Email%></span></div>
+                <div><input class="form-control" type="email" name="mail"></div>
+            </label>
+        </div>
+        <div class="form-group">
+            <label><div><span><%-lang['Group Key']%> <small><%-lang['Leave blank for random.']%></small></span></div>
+                <div><input class="form-control" name="ke"></div>
+            </label>
+        </div>
+        <div class="form-group">
+            <label><div><span><%-lang.Password%> <small class="h_e_input h_e_edit"><%-lang.blankPassword%></small></span></div>
+                <div><input class="form-control" type="password" name="pass"></div>
+            </label>
+        </div>
+        <div class="form-group">
+            <label><div><span><%-lang['Password Again']%></span></div>
+                <div><input class="form-control" type="password" name="password_again"></div>
+            </label>
+        </div>
+        <div class="form-group">
+            <label><div><span><%-lang['2-Factor Authentication']%> (<%-lang.Email%>)</span></div>
+                    <div><select class="form-control" detail="factorAuth">
+                        <option value="0" selected><%-lang.No%></option>
+                        <option value="1"><%-lang.Yes%></option>  
+                    </select></div>
+            </label>
+        </div>
+        <div class="form-group">
+            <label><div><span><%-lang['Max Storage Amount']%></span></div>
+                <div><input class="form-control" detail="size" placeholder="10000"></div>
+            </label>
+        </div>
+        <div class="form-group">
+            <label><div><span><%-lang['Number of Days to keep']%> <b><%-lang.Videos%></b></span></div>
+                <div><input class="form-control" detail="days" placeholder="5"></div>
+            </label>
+        </div>
+        <div class="form-group">
+            <label><div><span><%-lang['Number of Days to keep']%> <b><%-lang.Events%></b></span></div>
+                <div><input class="form-control" detail="event_days" placeholder="10"></div>
+            </label>
+        </div>
+        <div class="form-group">
+            <label><div><span><%-lang['Number of Days to keep']%> <b><%-lang.Logs%></b></span></div>
+                <div><input class="form-control" detail="log_days" placeholder="10"></div>
+            </label>
+        </div>
+        <div class="form-group">
+            <label><div><span><%-lang['Max Number of Cameras']%></span></div>
+                <div><input class="form-control" detail="max_camera" placeholder="<%-lang['Leave blank for unlimited']%>"></div>
+            </label>
+        </div>
+        <div class="form-group">
+            <label><div><span><%-lang['Permissions']%></span></div>
+                <div><select class="form-control" detail="permissions" selector="h_l">
+                    <option value="all" selected><%-lang['All Privileges']%></option>  
+                    <option value="limited"><%-lang.Limited%></option>  
+                </select></div>
+            </label>
+        </div>
+        <div class="form-group h_l_input h_l_limited">
+            <label><div><span><%-lang['Can edit Max Storage']%></span></div>
+                <div><select class="form-control" detail="edit_size">
+                    <option value="1" selected><%-lang.Yes%></option>
+                    <option value="0"><%-lang.No%></option>  
+                </select></div>
+            </label>
+        </div>
+        <div class="form-group h_l_input h_l_limited">
+            <label><div><span><%-lang['Can edit Max Days']%></span></div>
+                <div><select class="form-control" detail="edit_days">
+                    <option value="1" selected><%-lang.Yes%></option>
+                    <option value="0"><%-lang.No%></option>  
+                </select></div>
+            </label>
+        </div>
+        <div class="form-group h_l_input h_l_limited">
+            <label><div><span><%-lang['Can edit how long to keep Events']%> <small><%-lang['in Days']%></small></span></div>
+                <div><select class="form-control" detail="edit_event_days">
+                    <option value="1" selected><%-lang.Yes%></option>
+                    <option value="0"><%-lang.No%></option>  
+                </select></div>
+            </label>
+        </div>
+        <div class="form-group h_l_input h_l_limited">
+            <label><div><span><%-lang['Can edit how long to keep Logs']%> <small><%-lang['in Days']%></small></span></div>
+                <div><select class="form-control" detail="edit_log_days">
+                    <option value="1" selected><%-lang.Yes%></option>
+                    <option value="0"><%-lang.No%></option>  
+                </select></div>
+            </label>
+        </div>
+        <div class="form-group h_l_input h_l_limited">
+            <label><div><span><%-lang['Can use Admin Panel']%></span></div>
+                <div><select class="form-control" detail="use_admin">
+                    <option value="1" selected><%-lang.Yes%></option>
+                    <option value="0"><%-lang.No%></option>  
+                </select></div>
+            </label>
+        </div>
+        <div class="form-group h_l_input h_l_limited">
+            <label><div><span><%-lang['Can use WebDAV']%></span></div>
+                <div><select class="form-control" detail="use_webdav">
+                    <option value="1" selected><%-lang.Yes%></option>
+                    <option value="0"><%-lang.No%></option>  
+                </select></div>
+            </label>
+        </div>
+        <div class="form-group h_l_input h_l_limited">
+            <label><div><span><%-lang['Can use LDAP']%></span></div>
+                <div><select class="form-control" detail="use_ldap">
+                    <option value="1" selected><%-lang.Yes%></option>
+                    <option value="0"><%-lang.No%></option>  
+                </select></div>
+            </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-times"></i> <%-lang.Close%></button>
+          <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> <%-lang.Save%></button>
+        </div>
+        <input type="hidden" name="details" value="{}">
+    </form>
+  </div>
+</div>
+<script>
+//add new
+$.aN={e:$('#add_edit')};$.aN.f=$.aN.e.find('form')
+$.aN.f.submit(function(e){
+    e.preventDefault();
+    e.s=$.aN.f.serializeObject()
+    e.cx={f:'accounts',ff:'register',form:e.s};
+    if($('#edit').is(':checked')){
+        e.cx.ff='edit';
+        e.cx.account=$.aN.selected;
+    }
+    $.ccio.cx(e.cx)
+    $.aN.e.modal('hide')
+    return false;
+});
+$.aN.e.on('change','[detail]',function(e){
+    e.ar={},e.f=$(this).parents('form');
+    $.each(e.f.find('[detail]'),function(n,v){
+        v=$(v);e.ar[v.attr('detail')]=v.val();
+    });
+    e.f.find('[name="details"]').val(JSON.stringify(e.ar));
+})
+$('#edit').change(function(e){
+    if($('#edit').is(':checked')){
+        $('#title').text("<%-lang['Edit']%>")
+        $.aN.e.find('[name="mail"],[name="ke"]').prop('disabled',true)
+    }else{
+        $('#title').text("<%-lang['Add New']%>")
+        $.aN.e.find('input,select').prop('disabled',false)
+    }
+}).change()
+$.aN.e.on('change','[selector]',function(e){
+    e.v=$(this).val();e.a=$(this).attr('selector')
+    $.aN.e.find('.'+e.a+'_input').hide()
+    $.aN.e.find('.'+e.a+'_'+e.v).show();
+}).find('[selector]').change();
+//simple lister
+$.aC={e:$('#accounts')};$.aC.t=$.aC.e.find('table')
+$.aC.e.on('click','.add',function(e){
+    $.aN.e.modal('show')
+    $('#edit').prop('checked',false).change().parent().removeClass('is-checked')
+    $.aN.f[0].reset()
+})
+$.aC.e.on('click','.delete',function(e){
+    e.e=$(this).parents('tr');
+    e.u=e.e.attr('ke');
+    e.account=$.ccio.accounts[e.u];
+    $.confirm.e.modal('show');
+    $.confirm.title.html('Delete Account <small>'+e.u+'</small>')
+    e.html='Do you want to delete <b>'+e.account.mail+'</b>? You cannot recover this account. Files will remain in the filesystem. If you choose to create an account with the same Group Key it will have the previous events activated in that account.'
+    $.confirm.body.html(e.html)
+    $.confirm.click({title:'Delete',class:'btn-danger'},function(){
+        $.ccio.cx({f:'accounts',ff:'delete',account:e.account})
+    });
+})
+$.aC.e.on('click','.permission',function(e){
+    $.aN.e.modal('show')
+    $('#edit').prop('checked',true).change().parent().addClass('is-checked')
+    e.e=$(this).parents('tr');
+    e.u=e.e.attr('ke');
+    e.account=$.ccio.accounts[e.u];
+    $.aN.selected=e.account;
+    $.aN.e.find('input').val('');
+    $.each(e.account,function(n,v){
+        if(n=='pass'){return}
+        $.aN.e.find('[name="'+n+'"]').val(v).change()
+    })
+    $.each(JSON.parse(e.account.details),function(n,v){
+        $.aN.e.find('[detail="'+n+'"]').val(v).change()
+    })
+//    $.pR.e.modal('show');
+    
+})
+</script>

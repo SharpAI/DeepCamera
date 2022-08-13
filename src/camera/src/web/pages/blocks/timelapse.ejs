@@ -1,0 +1,68 @@
+<!--Timelapse Window-->
+<div class="modal full fade dark" id="timelapse" role="dialog" aria-labelledby="timelapseLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="timelapseLabel"><i class="fa fa-angle-double-right"></i> &nbsp; <span><%-lang['Time-lapse Tool']%></span></h4>
+      </div>
+        <div class="modal-body text-center">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="timelapse_hud">
+                        <div class="timelapse_playRate hover-hide"></div>
+                        <div class="controlBar hover-hide">
+                            <div class="form-group">
+                                <div class="progress" id="timelapse_seekBar">
+                                    <div class="progress-bar progress-bar-warning" role="progressbar" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="btn-group btn-group-lg">
+                                    <a timelapse="stepBackBack" class="active btn btn-primary"><i class="fa fa-backward"></i></a>
+                                    <a timelapse="stepBack" class="btn btn-primary"><i class="fa fa-arrow-circle-o-left"></i></a>
+                                    <a timelapse="play" class="btn btn-default"><i class="fa fa-play"></i></a>
+                                    <a timelapse="mute" class="btn btn-default"><i class="fa fa-volume-up"></i></a>
+                                    <a timelapse="stepFront" class="btn btn-primary"><i class="fa fa-arrow-circle-o-right"></i></a>
+                                    <a timelapse="stepFrontFront" class="active btn btn-primary"><i class="fa fa-forward"></i></a>
+                                </div>
+                                <a timelapse="download" class="btn btn-lg btn-default"><i class="fa fa-download"></i></a>
+                                <div class="btn-group btn-group-lg">
+                                    <a timelapse="stepFrontFront" stepFrontFront="5" add="0" class="btn btn-default">5</a>
+                                    <a timelapse="stepFrontFront" stepFrontFront="15" add="0" class="btn btn-default">15</a>
+                                    <a timelapse="stepFrontFront" stepFrontFront="30" add="0" class="btn btn-default">30</a>
+                                    <a timelapse="stepFrontFront" stepFrontFront="60" add="0" class="btn btn-default">60</a>
+                                    <a timelapse="stepFrontFront" stepFrontFront="120" add="0" class="btn btn-default">120</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="timelapse_video_display"></div>
+                    </div>
+                </div>
+                <form class="col-md-4">
+                    <div class="form-group">
+                        <label><div><span><%-lang.Monitor%></span></div>
+                            <div><select class="form-control monitors_list"></select></div>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                    <label><div><span><%-lang['Date Range']%></span></div>
+                        <div><input type="text" id="timelapse_daterange" class="form-control" value="" /></div>
+                    </label>
+                    </div>
+                    <div class="form-group">
+                        <ul id="timelapse_video_line" class="list-group"></ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+      <div class="modal-footer">
+          <div class="btn-group">
+              <button type="button" class="btn btn-default" data-dismiss="modal"><%-lang.Close%></button>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

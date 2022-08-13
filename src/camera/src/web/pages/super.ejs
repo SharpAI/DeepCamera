@@ -1,0 +1,304 @@
+<% include blocks/header %>
+<link rel="stylesheet" href="/libs/css/pnotify.custom.min.css">
+<link rel="stylesheet" href="/libs/css/vbox.css">
+<link rel="stylesheet" href="/libs/css/circles.css">
+<link rel="stylesheet" href="/libs/css/material.min.css">
+<link rel="stylesheet" href="/libs/css/bootstrap.min.css">
+<link rel="stylesheet" href="/libs/css/font-awesome.min.css">
+<link rel="stylesheet" href="/libs/css/fullcalendar.min.css">
+<link rel="stylesheet" href="/libs/css/bootstrap-table.min.css">
+<link rel="stylesheet" href="/libs/css/main.dash2.css">
+<style>
+    .form-group label>div:first-child{width:40%}
+</style>
+<body style="background:rgba(33,33,33,1);">
+<div class="container-fluid">
+    <div class="container">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><%-lang.superAdminTitle%></a>
+    </div>
+      <ul class="nav navbar-nav navbar-right">
+<!--        <li><a href="#">Link</a></li>-->
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">&nbsp;<i class="fa fa-bars"></i>&nbsp;</a>
+          <ul class="dropdown-menu">
+<!--
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li role="separator" class="divider"></li>
+-->
+            <li><a class="logout"><i class="fa fa-sign-out pull-right"></i> <%-lang.Logout%></a></li>
+          </ul>
+        </li>
+      </ul>
+  </div><!-- /.container-fluid -->
+</nav>
+        
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group-group grey" id="accounts">
+                    <h4><%-lang.Accounts%><a class="pull-right add btn btn-success btn-xs"><i class="fa fa-plus"></i></a></h4>
+                    <table class="table table-striped"></table>
+                </div>
+                <div class="form-group-group primary no-padding" id="logs">
+                    <h4 class="no-margin"><%-lang['Logs']%><a class="pull-right delete btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></a></h4>
+                    <div style="height:400px;overflow:auto">
+                        <table class="table table-striped"></table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <form class="form-group-group red" id="conf_json">
+                    <h4><%-lang['Configuration']%> <small class="pull-right msg"></small></h4>
+                    <div class="form-group">
+                        <textarea name="json" style="height:300px;font-family: monospace;" class="form-control"></textarea>
+                    </div>
+                      <div>
+                          <div class="pull-right">
+                              <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> <%-lang.Save%></button>
+                          </div>
+                      </div>
+                </form>
+                <div class="form-group-group blue" id="system">
+                    <h4><%-lang['System']%> <small class="pull-right msg"></small></h4>
+                    <div class="btn-group btn-group-justified">
+                        <a restart="system" class="btn btn-danger"><i class="fa fa-retweet"></i> <%-lang['Restart Core']%></a>
+                        <a restart="cron" class="btn btn-danger"><i class="fa fa-retweet"></i> <%-lang['Restart CRON']%></a>
+                        <a restart="logs" class="btn btn-danger"><i class="fa fa-retweet"></i> <%-lang['Flush PM2 Logs']%></a>
+                    </div>
+                    <div class="btn-group btn-group-justified">
+                        <a system="update" distro="master" class="btn btn-primary"><i class="fa fa-upload"></i> <%-lang['Update to Master']%></a>
+                        <a system="update" distro="dev" class="btn btn-primary"><i class="fa fa-upload"></i> <%-lang['Update to Development']%></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% include blocks/confirm.ejs %>
+<div id="toast" class="mdl-js-snackbar mdl-snackbar">
+  <div class="mdl-snackbar__text"></div>
+  <button class="mdl-snackbar__action" type="button"></button>
+</div>
+</body>
+<script><% include ../libs/js/material.min.js %></script>
+<script><% include ../libs/js/pnotify.custom.min.js %></script>
+<script><% include ../libs/js/moment.js %></script>
+<script><% include ../libs/js/livestamp.min.js %></script>
+<script><% include ../libs/js/placeholder.js %></script>
+<script><% include ../libs/js/bootstrap.min.js %></script>
+<script><% include ../libs/js/bootstrap-table.min.js %></script>
+<script><% include ../libs/js/socket.io.js %></script>
+<script>$user=<%-JSON.stringify($user)%></script>
+<script>
+$.ccio={accounts:{}};$.ls=localStorage;
+if(!$user.lang||$user.lang==''){
+    $user.lang="<%-config.language%>"
+}
+switch($user.lang){
+    case'ar'://Arabic
+    case'bn'://Bengali
+        $('body').addClass('right-to-left')
+        $('.mdl-menu__item').each(function(n,v){
+            v=$(v).find('i')
+            v.appendTo(v.parent())
+        })
+    break;
+}
+$.ccio.ws=io(location.origin);
+$.ccio.cx=function(x){return $.ccio.ws.emit('super',x)}
+$.ccio.ws.on('connect',function(d){
+    $.ccio.cx({f:'init',mail:$user.mail,pass:$user.pass});
+})
+$.ccio.ws.on('f',function(d){
+    switch(d.f){
+        case'log':
+            $.ccio.tm(4,d.log,'#logs table')
+        break;
+        case'save_configuration':
+            $.conf.msg.html('Saved, Restart Shinobi to apply changes.')
+        break;
+        case'edit_account':
+            d.msg='Account Edited';
+            $.each(d.form,function(n,v){
+                $.ccio.accounts[d.ke][n]=v;
+            });
+        break;
+        case'add_account':
+            d.msg='Account Created';
+            $.ccio.tm(0,d,'#accounts table')
+            $.aN.selected=$.ccio.accounts[d.ke];
+        break;
+        case'delete_account':
+            $('#accounts table tr[ke="'+d.ke+'"]').remove()
+        break;
+    }
+    if(d.msg&&typeof d.msg==='string'){
+        $('#toast')[0].MaterialSnackbar.showSnackbar({message:d.msg})
+    }
+})
+
+$.ccio.tm=function(x,d,z,k){
+    var tmp='';if(!d){d={}};if(!k){k={}};
+    if(d.id&&!d.mid){d.mid=d.id;}
+    switch(x){
+        case 0://account row
+            d.detailsJSON=JSON.parse(d.details);
+            $.ccio.accounts[d.ke]=d;
+            tmp+='<tr ke="'+d.ke+'"><td><b class="mail">'+d.mail+'</b></td><td>'+d.ke+'</td><td><a class="permission btn btn-xs btn-primary"><i class="fa fa-lock"></i></a></td><td><a class="delete btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></a></td></tr>';
+        break;
+        case 4://log row, draw to global and monitor
+            if(!d.time){d.time=$.ccio.init('t')}
+            tmp+='<tr class="search-row"><td><span title="'+d.time+'" class="livestamp"></span><br><small>'+d.time+'</small><br><small>'+d.mid+'</small></td><td></td><td><pre class="pre-inline">'+$.ccio.init('jsontoblock',JSON.parse(d.info))+'</pre></td></tr>'
+        break;
+    }
+    if(z){
+        $(z).prepend(tmp)
+    }
+    switch(x){
+        case 4:
+            $.ccio.init('ls')
+        break;
+    }
+    return tmp;
+}
+users=<%-JSON.stringify(users)%>;
+if(users){
+    $.each(users,function(n,v){
+        $.ccio.tm(0,v,'#accounts table')
+    })
+}
+$.ccio.init=function(x,d,z,k){
+    if(!k){k={}};k.tmp='';
+    switch(x){
+        case 'ls'://livestamp all
+            g={e:jQuery('.livestamp')};
+            g.e.each(function(){g.v=jQuery(this),g.t=g.v.attr('title');if(!g.t){return};g.v.toggleClass('livestamp livestamped').attr('title',$.ccio.init('t',g.t)).livestamp(g.t);})
+            return g.e
+        break;
+        case't'://format time
+            if(!d){d=new Date();}
+            return moment(d).format('YYYY-MM-DD HH:mm:ss')
+        break;
+        case'jsontoblock'://draw json as block
+            if(d instanceof Object){
+                k.tmp+='<ul>'
+                $.each(d,function(n,v){
+                    k.tmp+='<li>';
+                    k.tmp+='<b>'+n+'</b> : '+$.ccio.init('jsontoblock',v);
+                    k.tmp+='</li>';
+                })
+                k.tmp+='</ul>'
+            }else{
+                k.tmp+='<span>';
+                k.tmp+=d;
+                k.tmp+='</span>';
+            }
+        break;
+    }
+    return k.tmp;
+}
+//logs
+$.logs={e:$('#logs')}
+$.logs.e.find('.delete').click(function(e){
+    $.confirm.e.modal('show');
+    $.confirm.title.html('Delete Logs <small>'+e.u+'</small>')
+    e.html='Do you want to delete these logs? User logs will <b>not</b> be deleted.'
+    $.confirm.body.html(e.html)
+    $.confirm.click({title:'Delete',class:'btn-danger'},function(){
+        $.ccio.cx({f:'logs',ff:'delete',ke:'$'})
+        $.logs.e.find('table').empty()
+    });
+})
+//config editor
+$.conf={e:$('#conf_json')};$.conf.draw=$.conf.e.find('[name="json"]'),$.conf.msg=$.conf.e.find('.msg')
+$.conf.valid=1;
+$.conf.draw.val(JSON.stringify(<%-JSON.stringify(plainConfig)%>,null,3))
+$.conf.draw.keyup(function(){
+    var msg=''
+    var color=''
+    try{
+        $.parseJSON($.conf.draw.val())
+        msg='Valid JSON'
+        color='success'
+        $.conf.valid=1
+    }catch(er){
+        msg='Not a valid JSON'
+        color='danger'
+        $.conf.valid=0
+    }
+    $.conf.msg.text(msg).css('color',color)
+})
+$.conf.e.submit(function(e){
+    e.preventDefault()
+    if($.conf.valid===1){
+        $.confirm.e.modal('show');
+        $.confirm.title.html('Save Configuration <small>conf.json</small>')
+        e.html='<p>This is a change being applied to the configuration file (conf.json). Are you sure you want to do this? You must restart Shinobi for these changes to take effect. <b>The JSON below is what you are about to save.</b></p>'
+        e.html+='<pre>'+JSON.stringify($.parseJSON($.conf.draw.val()),null,3)+'</pre>'
+        $.confirm.body.html(e.html)
+        $.confirm.click({title:'Save',class:'btn-success'},function(){
+            $.ccio.cx({f:'system',ff:'configure',data:$.parseJSON($.conf.draw.val())})
+        });
+    }else{
+        $.conf.msg.text('Invalid JSON Syntax, Cannot Save.')
+    }
+    return false;
+})
+//sys controls
+$.system={e:$('#system')}
+$.system.e.find('[system]').click(function(e){
+    switch($(this).attr('system')){
+        case'update':
+            e.distro=$(this).attr('distro')
+            if(!e.distro){e.distro='master'}
+            $.confirm.e.modal('show')
+            $.confirm.title.html('Update Shinobi?')
+            $.confirm.body.html('Updating Shinobi means overwriting files. If you have modified any files yourself you should update Shinobi manually. The updater will download the latest '+e.distro+' from the <a href="https://github.com/ShinobiCCTV/Shinobi" target="_blank">Pro repository</a>.')
+            $.confirm.click({title:'Update',class:'btn-danger'},function(){
+                $.ccio.cx({f:'system',ff:'update',distro:e.distro})
+            });
+        break;
+    }
+})
+$.system.e.find('[restart]').click(function(e){
+    $.confirm.e.modal('show');
+    e.html=''
+    e.title=''
+    e.target=$(this).attr('restart').split(',')
+    e.target.forEach(function(v){
+        switch(v){
+            case'system':
+                e.html+='<p>Do you want to restart the core (camera.js)? plugins will not be restarted. They will reconnect when Shinobi is back online.</p>'
+            break;
+            case'cron':
+                e.html+='<p>Do you want to restart the CRON (cron.js)?</p>'
+            break;
+            case'logs':
+                e.html+='<p>Flush PM2 console logs? The logs saved in the database will <b>not</b> be deleted.</p>'
+            break;
+        }
+    })
+    $.confirm.title.html('Restart?')
+    $.confirm.body.html(e.html)
+    $.confirm.click({title:'Restart',class:'btn-danger'},function(){
+        $.ccio.cx({f:'system',ff:'restart',target:e.target})
+    });
+})
+$(document).ready(function(){
+    $.each(<%-JSON.stringify(Logs)%>,function(n,v){
+        $.ccio.tm(4,v,'#logs table')
+    })
+})
+    //
+$('body')
+.on('click','.logout',function(e){
+    localStorage.removeItem('ShinobiLogin_'+location.host);location.href='/';
+})    
+</script>
+<% include blocks/mainpermissions.ejs %>

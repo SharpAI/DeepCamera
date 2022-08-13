@@ -1,0 +1,1429 @@
+<% link_id=function(x){
+    return x.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '').replace(/ /g,'');
+} %>
+<!--Add Monitor Window-->
+<div class="modal dark medium fade" id="add_monitor" role="dialog" aria-labelledby="add_monitorLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="add_monitorLabel"><i class="fa fa-plus"></i> &nbsp; <span><%-lang.Add%></span> <%-lang.Monitor%> &nbsp; <small><%-lang['Monitor ID']%> : <t class="edit_id"></t></small></h4>
+      </div>
+      <div class="modal-body form-group-group-group">
+          <div class="row">
+          <div class="col-md-2 hidden-xs follow-list">
+              <ul class="affix"></ul>
+          </div>
+        <div class="col-md-10">
+        <div class="form-group-group grey" section id="monSectionIdentity">
+          <h4><%-lang.Identity%></h4>
+            <blockquote class="global_tip am_notice am_notice_new">
+                <%-lang.IdentityText1%>
+            </blockquote>
+            <blockquote class="global_tip am_notice am_notice_edit">
+                <%-lang.IdentityText2%>
+            </blockquote>
+            <div class="form-group">
+            <label> 
+                <div><span><%-lang.Mode%></span></div>
+                <div><select class="form-control" name="mode" selector="h_m">
+                    <option value="stop"><%-lang.Disabled%></option>
+                    <option value="idle"><%-lang.Idle%></option>
+                    <option value="start"><%-lang['Watch Only']%></option>
+                    <option value="record"><%-lang.Record%></option>
+                </select></div>
+            </label>
+            </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Monitor ID']%></span></div>
+                    <div><input class="form-control" name="mid"></div>
+                </label>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang.Name%></span></div>
+                    <div><input class="form-control" name="name"></div>
+                </label>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang.Notes%></span></div>
+                    <div><textarea class="form-control" detail="notes" placeholder="<%-lang.NotesPlacholder%>"></textarea></div>
+                </label>
+              </div>
+            <div class="form-group">
+            <label>
+                <div><span><%-lang['Storage Location']%></span></div>
+                <div><select class="form-control" detail="dir">
+                    <option value="" selected><%-lang.Main%></option>
+                    <% addStorage.forEach(function(v){ %>
+                    <option value="<%-v.path%>"><%-v.name%></option>
+                    <% })%>
+                </select></div>
+            </label>
+            </div>
+          </div>
+<!--     START of Connection     -->
+          <div class="form-group-group orange" section id="monSectionConnection">
+          <h4><%-lang.Connection%></h4>
+              <blockquote class="global_tip">
+                  <p><%-lang.InputText1%></p>
+                  <%-lang.InputText2%>
+                  <p><%-lang.InputText3%></p>
+              </blockquote>
+              <div class="form-group">
+                <label><div><span><%-lang['Input Type']%></span></div>
+                    <div><select class="form-control" name="type" selector="h_t">
+                        <option value="jpeg"><%-lang['JPEG']%></option>
+                        <option value="mjpeg"><%-lang['MJPEG']%></option>
+                        <option value="h264"><%-lang['H.264 / H.265 / H.265+']%></option>
+                        <option value="hls"><%-lang['HLS (.m3u8)']%></option>
+                        <option value="mp4"><%-lang['MPEG-4 (.mp4 / .ts)']%></option>
+                        <option value="socket"><%-lang['Shinobi Streamer']%></option>
+                        <option value="dashcam"><%-lang['Dashcam (Streamer v2)']%></option>
+                        <option value="local"><%-lang['Local']%></option>
+                    </select></div>
+                </label>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Automatic']%></span></div>
+                    <div><select class="form-control" detail="auto_host_enable" selector="h_auto_host">
+                            <option value="0"><%-lang.No%></option>
+                            <option value="1" selected><%-lang.Yes%></option>
+                    </select></div>
+                </label>
+              </div>
+              <div class="form-group h_auto_host_input h_auto_host_1">
+                  <div class="form-group">
+                    <label><div><span><%-lang['Full URL Path']%></span></div>
+                    <div><input class="form-control" detail="auto_host" placeholder="Example : rtsp://123.123.123.123/stream/1"></div>
+                    </label>
+                  </div>
+              </div>
+              <div class="h_auto_host_input h_auto_host_0" style="display:none">
+                  <div class="form-group h_t_input h_t_h264 h_t_hls h_t_mp4 h_t_jpeg h_t_mjpeg">
+                    <label><div><span><%-lang['Connection Type']%></span></div>
+                        <div><select class="form-control" name="protocol" selector="h_p">
+                            <option value="http" selected><%-lang['HTTP']%></option>
+                            <option value="https"><%-lang['HTTPS']%></option>
+                            <option value="rtsp"><%-lang['RTSP']%></option>
+                            <option value="udp"><%-lang['UDP']%></option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group h_p_input h_p_rtsp">
+                    <label><div><span><%-lang['RTSP Transport']%></span></div>
+                        <div><select class="form-control" detail="rtsp_transport">
+                            <option value="no" selected><%-lang['Auto']%></option>  
+                            <option value="tcp"><%-lang['TCP']%></option>  
+                            <option value="udp"><%-lang['UDP']%></option>  
+                            <option value="http"><%-lang['HTTP']%></option>  
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="h_t_input h_t_h264 h_t_hls h_t_mp4 h_t_jpeg h_t_mjpeg">
+                      <div class="form-group">
+                        <label><div><span><%-lang['Username']%></span></div>
+                        <div><input class="form-control" detail="muser" placeholder=""></div>
+                        </label>
+                      </div>
+                      <div class="form-group">
+                        <label><div><span><%-lang['Password']%></span></div>
+                        <div><input class="form-control" type="password" detail="mpass" placeholder=""></div>
+                        </label>
+                      </div>
+                  </div>
+                  <div class="h_t_input h_t_h264 h_t_hls h_t_mp4 h_t_jpeg h_t_mjpeg">
+                      <div class="form-group">
+                        <label><div><span><%-lang['Host']%></span></div>
+                        <div><input class="form-control" name="host" placeholder=""></div>
+                        </label>
+                      </div>
+                      <div class="form-group">
+                        <label>
+                            <div><span><%-lang['Port']%></span></div>
+                            <div><input class="form-control" name="port" placeholder="80"></div>
+                        </label>
+                      </div>
+                      <div class="form-group">
+                        <label><div><span><%-lang['Force Port']%></span></div>
+                            <div><select class="form-control" detail="port_force">
+                                <option value="0" selected><%-lang.No%></option>
+                                <option value="1"><%-lang.Yes%></option>
+                            </select></div>
+                        </label>
+                      </div>
+                  </div>
+                  <div class="form-group h_t_input h_t_h264 h_t_hls h_t_mp4 h_t_jpeg h_t_mjpeg h_t_local">
+                    <label><div><span><%-lang['Path']%></span></div>
+                    <div><input class="form-control" name="path" placeholder="/videostream.cgi?1"></div>
+                    </label>
+                  </div>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Retry Connection']%></span></div>
+                    <div><input class="form-control" detail="fatal_max" placeholder="10"></div>
+                </label>
+              </div>
+            </div>
+<!--     END of Connection     -->
+<!--     START of Input     -->
+          <div class="form-group-group forestgreen" section id="monSectionInput">
+          <h4><%-lang['Input Settings']%></h4>
+              <div class="form-group">
+                <label><div><span><%-lang['Analyzation Duration']%></span></div>
+                <div><input class="form-control" detail="aduration"></div>
+                </label>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Probe Size']%></span></div>
+                <div><input class="form-control" detail="probesize"></div>
+                </label>
+              </div>
+              <div class="form-group h_t_input h_t_mp4">
+                <label><div><span><%-lang["Loop Stream"]%></span></div>
+                    <div><select class="form-control" detail="stream_loop">
+                        <option value="0" selected><%-lang.No%></option>
+                        <option value="1"><%-lang.Yes%></option>
+                    </select></div>
+                </label>
+              </div>
+              <div class="form-group h_t_input h_t_socket h_t_jpeg h_t_mjpeg">
+                <label><div><span><%-lang['Monitor Capture Rate']%></span></div>
+                <div><input class="form-control" detail="sfps"></div>
+                </label>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang.Accelerator%></span></div>
+                    <div><select class="form-control" detail="accelerator" selector="h_gpud">
+                        <option value="0" selected><%-lang.No%></option>
+                        <option value="1"><%-lang.Yes%></option>
+                    </select></div>
+                </label>
+              </div>
+              <div class="h_gpud_input h_gpud_1">
+                  <div class="form-group">
+                    <label><div><span><%-lang.hwaccel%></span></div>
+                        <div><select class="form-control" detail="hwaccel">
+                            <option value="auto"><%-lang.Auto%></option>
+                            <option value="cuvid"><%-lang.cuvid%></option>
+                            <option value="vaapi"><%-lang.vaapi%></option>
+                            <option value="qsv"><%-lang.qsv%></option>
+                            <option value="vdpau"><%-lang.vdpau%></option>
+                            <option value="dxva2"><%-lang.dxva2%></option>
+                            <option value="vdpau"><%-lang.vda%></option>
+                            <option value="videotoolbox"><%-lang.videotoolbox%></option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang.hwaccel_vcodec%></span></div>
+                        <div><select class="form-control" detail="hwaccel_vcodec">
+                            <option value=""><%-lang.Auto%> (<%-lang.Recommended%>)</option>
+                            <optgroup label="NVIDIA">
+                                <option value="h264_cuvid"><%-lang['h264_cuvid']%></option>
+                                <option value="hevc_cuvid"><%-lang['hevc_cuvid']%></option>
+                                <option value="mjpeg_cuvid"><%-lang['mjpeg_cuvid']%></option>
+                                <option value="mpeg4_cuvid"><%-lang['mpeg4_cuvid']%></option>
+                            </optgroup>
+                            <optgroup label="QuickSync Video">
+                                <option value="h264_qsv"><%-lang['h264_qsv']%></option>
+                                <option value="hevc_qsv"><%-lang['hevc_qsv']%></option>
+                                <option value="mpeg2_qsv"><%-lang['mpeg2_qsv']%></option>
+                            </optgroup>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang.hwaccel_device%></span></div>
+                    <div><input class="form-control" detail="hwaccel_device"></div>
+                    </label>
+                  </div>
+              </div>
+          </div>
+<!--     END of Input     -->
+<!--     START of Input Maps     -->
+          <div id="monSectionInputMaps"></div>
+<!--     END of Input Maps     -->
+<!--     START of Stream     -->
+          <div class="form-group-group navy" section id="monSectionStream">
+          <h4><%-lang['Stream']%></h4>
+              <blockquote class="global_tip">
+                  <%-lang.StreamText%>
+              </blockquote>
+              <div class="form-group-group forestgreen" input-mapping="stream">
+                  <h4><%-lang['Input Feed']%>
+                      <div class="pull-right">
+                          <a class="btn btn-success btn-xs add_map_row"><i class="fa fa-plus-square-o"></i></a>
+                      </div>
+                  </h4>
+                  <div class="choices"></div>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Stream Type']%></span></div>
+                    <div><select class="form-control" detail="stream_type" selector="h_st">
+                        <option value="mp4"><%-lang['Poseidon']%></option>
+                        <option value="b64" selected><%-lang['Base64 over Websocket']%></option>
+                        <option value="jpeg"><%-lang['JPEG (Auto Enables JPEG API)']%></option>
+                        <option value="mjpeg"><%-lang['MJPEG']%></option>
+                        <option value="flv"><%-lang['FLV']%></option>
+                        <option value="hls"><%-lang['HLS (includes Audio)']%></option>
+                    </select></div>
+                </label>
+              </div>
+              <div class="form-group h_st_input h_st_flv h_st_mp4">
+                <label><div><span><%-lang['Connection Type']%></span></div>
+                    <div><select class="form-control" detail="stream_flv_type" selector="h_st_lat">
+                        <option value="http" selected><%-lang['HTTP']%></option>
+                        <option value="ws"><%-lang['Websocket']%></option>
+                    </select></div>
+                </label>
+              </div>
+              <div class="form-group h_st_lat_input h_st_lat_ws">
+                <label><div><span><%-lang['Max Latency']%></span></div>
+                    <div><input class="form-control" detail="stream_flv_maxLatency" placeholder="20000"></div>
+                </label>
+              </div>
+              <div class="form-group h_st_input h_st_mjpeg">
+                <label><div><span><%-lang['# of Allow MJPEG Clients']%></span></div>
+                    <div><input class="form-control" detail="stream_mjpeg_clients" placeholder="20"></div>
+                </label>
+              </div>
+              <div class="h_st_input h_st_hls h_st_flv h_st_mp4">
+                  <div class="form-group">
+                    <label><div><span><%-lang['HLS Video Encoder']%></span></div>
+                        <div><select class="form-control" detail="stream_vcodec" selector="h_hls_v">
+                            <option value="no" selected><%-lang['Auto']%></option>
+                            <option value="libx264" selected><%-lang['libx264']%></option>
+                            <option value="libx265"><%-lang['libx265']%></option>
+                            <option value="copy"><%-lang['copy']%></option>
+                            <optgroup label="<%-lang['Hardware Accelerated']%>">
+                                <option value="h264_vaapi"><%-lang['h264_vaapi']%></option>
+                                <option value="hevc_vaapi"><%-lang['hevc_vaapi']%></option>
+                                <option value="h264_nvenc"><%-lang['h264_nvenc']%></option>
+                                <option value="hevc_nvenc"><%-lang['hevc_nvenc']%></option>
+                                <option value="h264_qsv"><%-lang['h264_qsv']%></option>
+                                <option value="hevc_qsv"><%-lang['hevc_qsv']%></option>
+                                <option value="mpeg2_qsv"><%-lang['mpeg2_qsv']%></option>
+                            </optgroup>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['HLS Audio Encoder']%></span></div>
+                        <div><select class="form-control" detail="stream_acodec">
+                            <option value="no" selected><%-lang['No Audio']%></option>
+                            <option value="" selected><%-lang['Auto']%></option>
+                            <option value="aac"><%-lang['aac']%></option>
+                            <option value="ac3"><%-lang['ac3']%></option>
+                            <option value="libmp3lame"><%-lang['libmp3lame']%></option>
+                            <option value="copy"><%-lang['copy']%></option>
+                        </select></div>
+                    </label>
+                  </div>
+              </div>
+              <div class="h_st_input h_st_mjpeg h_st_b64 h_st_hls h_st_flv h_st_mp4 h_hls_v_input h_hls_v_libx264 h_hls_v_libx265 h_hls_v_h264_nvenc h_hls_v_hevc_nvenc h_hls_v_no">
+                  <div class="h_st_input h_st_hls">
+                      <div class="form-group">
+                        <label><div><span><%-lang['HLS Segment Length']%></span></div>
+                            <div><input class="form-control" detail="hls_time" placeholder="2"></div>
+                        </label>
+                      </div>
+                      <div class="form-group">
+                        <label><div><span><%-lang['HLS List Size']%></span></div>
+                            <div><input class="form-control" detail="hls_list_size" placeholder="2"></div>
+                        </label>
+                      </div>
+                  </div>
+                  <div class="form-group h_st_input h_st_hls h_st_flv h_st_mp4">
+                    <label><div><span><%-lang['HLS Preset']%></span></div>
+                        <div><input class="form-control" detail="preset_stream" placeholder="ultrafast"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Check Signal Interval']%></span></div>
+                        <div><input class="form-control" detail="signal_check" placeholder="Set to 0 to Disable"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Log Signal Event']%></span></div>
+                            <div><select class="form-control" detail="signal_check_log">
+                                <option value="0" selected><%-lang.No%></option>
+                                <option value="1"><%-lang.Yes%></option>
+                            </select></div>
+                      </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Quality']%></span></div>
+                    <div><input class="form-control" placeholder="23" detail="stream_quality"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Rate']%></span></div>
+                    <div><input class="form-control" detail="stream_fps" placeholder="1"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Width']%></span></div>
+                    <div><input class="form-control" type="number" min="1" detail="stream_scale_x" placeholder="640"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Height']%></span></div>
+                    <div><input class="form-control" type="number" min="1" detail="stream_scale_y" placeholder="480"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Rotate']%></span></div>
+                            <div><select class="form-control" detail="rotate_stream">
+                                <option value="no" selected><%-lang['No Rotation']%></option>
+                                <option value="2,transpose=2"><%-lang['180 Degrees']%></option>
+                                <option value="0"><%-lang['90 Counter Clockwise and Vertical Flip (default)']%></option>
+                                <option value="1"><%-lang['90 Clockwise']%></option>
+                                <option value="2"><%-lang['90 Clockwise and Vertical Flip']%></option>
+                                <option value="3"><%-lang['90 Clockwise and Vertical Flip']%></option>
+                            </select></div>
+                      </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Video Filter']%></span></div>
+                    <div><input class="form-control" detail="svf"></div>
+                    </label>
+                  </div>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['TV Channel']%></span></div>
+                        <div><select class="form-control" detail="tv_channel" selector="h_tvc">
+                            <option value="0" selected><%-lang.No%></option>
+                            <option value="1"><%-lang.Yes%></option>
+                        </select></div>
+                  </label>
+              </div>
+              <div class="h_tvc_input h_tvc_1" style="display:none">
+                  <div class="form-group">
+                    <label><div><span><%-lang['TV Channel ID']%></span></div>
+                    <div><input class="form-control" detail="tv_channel_id"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['TV Channel Group']%></span></div>
+                    <div><input class="form-control" detail="tv_channel_group_title"></div>
+                    </label>
+                  </div>
+              </div>
+          </div>
+          <div class="h_us_input h_us_advanced" style="display:none">
+              <div class="form-group-group navy" section id="monSectionStreamTimestamp">
+              <h4><%-lang['Stream Timestamp']%></h4>
+                  <div class="form-group">
+                      <label><div><span><%-lang['Enabled']%></span></div>
+                        <div><select class="form-control" detail="stream_timestamp" selector="h_tm">
+                            <option value="1"><%-lang.Yes%></option>  
+                            <option value="0" selected><%-lang.No%></option>  
+                        </select></div>
+                      </label>
+                  </div>
+                  <div class="h_tm_input h_tm_1">
+                      <div class="form-group">
+                        <label><div><span><%-lang['Font Path']%></span></div>
+                        <div><input class="form-control" detail="stream_timestamp_font" placeholder="/usr/share/fonts/truetype/freefont/FreeSans.ttf"></div>
+                        </label>
+                      </div>
+                      <div class="form-group">
+                        <label><div><span><%-lang['Font Size']%></span></div>
+                        <div><input class="form-control" detail="stream_timestamp_font_size" placeholder="10"></div>
+                        </label>
+                      </div>
+
+                      <div class="form-group">
+                        <label><div><span><%-lang['Text Color']%></span></div>
+                        <div><input class="form-control" detail="stream_timestamp_color" placeholder="white"></div>
+                        </label>
+                      </div>
+                      <div class="form-group">
+                        <label><div><span><%-lang['Text Box Color']%></span></div>
+                        <div><input class="form-control" detail="stream_timestamp_box_color" placeholder="0x00000000@1"></div>
+                        </label>
+                      </div>
+
+                      <div class="form-group">
+                        <label><div><span><%-lang['Position X']%></span></div>
+                        <div><input class="form-control" detail="stream_timestamp_x" placeholder="(w-tw)/2"></div>
+                        </label>
+                      </div>
+                      <div class="form-group">
+                        <label><div><span><%-lang['Position Y']%></span></div>
+                        <div><input class="form-control" detail="stream_timestamp_y" placeholder="0"></div>
+                        </label>
+                      </div>
+                  </div>
+              </div>
+              <div class="form-group-group navy" section id="monSectionStreamWatermark">
+              <h4><%-lang['Stream Watermark']%></h4>
+                  <div class="form-group">
+                      <label><div><span><%-lang['Enabled']%></span></div>
+                        <div><select class="form-control" detail="stream_watermark" selector="h_wat">
+                            <option value="1"><%-lang.Yes%></option>
+                            <option value="0" selected><%-lang.No%></option>
+                        </select></div>
+                      </label>
+                  </div>
+                  <div class="h_wat_input h_wat_1">
+                      <div class="form-group important">
+                        <label><div><span><%-lang['Image Location']%></span></div>
+                        <div><input class="form-control" detail="stream_watermark_location" placeholder="<%-lang.Example%> : /usr/share/watermark.logo"></div>
+                        </label>
+                      </div>
+                      <div class="form-group">
+                          <label><div><span><%-lang['Image Position']%></span></div>
+                            <div><select class="form-control" detail="stream_watermark_position">
+                                <option value="tr"><%-lang['Top Right']%></option>
+                                <option value="tl"><%-lang['Top Left']%></option>
+                                <option value="br" selected><%-lang['Bottom Right']%></option>
+                                <option value="bl"><%-lang['Bottom Left']%></option>
+                            </select></div>
+                          </label>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div id="monSectionStreamChannels"></div>
+<!--     END of Stream     -->
+<!--     START of JPEG     -->
+          <div class="form-group-group forestgreen" section id="monSectionJPEGAPI">
+          <h4><%-lang['JPEG API']%></h4>
+              <div class="form-group-group forestgreen" input-mapping="snap">
+                  <h4><%-lang['Input Feed']%>
+                      <div class="pull-right">
+                          <a class="btn btn-success btn-xs add_map_row"><i class="fa fa-plus-square-o"></i></a>
+                      </div>
+                  </h4>
+                  <div class="choices"></div>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Enabled']%></span></div>
+                    <div><select class="form-control" detail="snap" selector="h_sn">
+                        <option value="0" selected><%-lang.No%></option>
+                        <option value="1"><%-lang.Yes%></option>
+                    </select></div>
+                </label>
+              </div>
+              <div class="h_sn_input h_sn_1" style="display:none">
+                  <div class="form-group">
+                    <label><div><span><%-lang['Frame Rate']%></span></div>
+                    <div><input class="form-control" detail="snap_fps" placeholder="1"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Image Width']%></span></div>
+                    <div><input class="form-control" detail="snap_scale_x" placeholder=""></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Image Height']%></span></div>
+                    <div><input class="form-control" detail="snap_scale_y" placeholder=""></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Video Filter']%></span></div>
+                    <div><input class="form-control" detail="snap_vf"></div>
+                    </label>
+                  </div>
+              </div>
+          </div>
+<!--     END of JPEG     -->
+<!--     Start of Record     -->
+          <div class="form-group-group red h_m_input h_m_record h_m_idle" section id="monSectionRecording">
+          <h4><%-lang['Recording']%></h4>
+              <blockquote class="global_tip">
+                <%-lang.RecordingText%>
+              </blockquote>
+              <div class="form-group-group forestgreen" input-mapping="record">
+                  <h4><%-lang['Input Feed']%>
+                      <div class="pull-right">
+                          <a class="btn btn-success btn-xs add_map_row"><i class="fa fa-plus-square-o"></i></a>
+                      </div>
+                  </h4>
+                  <div class="choices"></div>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Record File Type']%></span></div>
+                    <div><select class="form-control" name="ext" selector="h_f">
+                        <option value="webm"><%-lang['WebM (libvpx)']%></option>  
+                        <option value="mp4"><%-lang['MP4 (copy, libx264, libx265)']%></option>  
+    <!--                    <option value="mkv">MKV</option>  -->
+                    </select></div>
+                </label>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Video Codec']%></span></div>
+                    <div><select class="form-control" detail="vcodec" selector="h_vc">
+                        <option value="default" selected><%-lang['Default']%></option>
+                        <option value="none"><%-lang['Auto']%></option>
+                        <optgroup label="WebM">
+                            <option value="libvpx"><%-lang['libvpx (Default)']%></option>
+                            <option value="libvpx-vp9"><%-lang['libvpx-vp9']%></option>
+                        </optgroup>
+                        <optgroup label="MP4">
+                            <option value="libx265"><%-lang['libx265']%></option>
+                            <option value="libx264"><%-lang['libx264 (Default)']%></option>
+                            <option value="copy"><%-lang['copy']%></option>
+                        </optgroup>
+                        <optgroup label="MP4 <%-lang['Hardware Accelerated']%>">
+                            <option value="h264_vaapi"><%-lang['h264_vaapi']%></option>
+                            <option value="hevc_vaapi"><%-lang['hevc_vaapi']%></option>
+                            <option value="h264_nvenc"><%-lang['h264_nvenc']%></option>
+                            <option value="hevc_nvenc"><%-lang['hevc_nvenc']%></option>
+                            <option value="h264_qsv"><%-lang['h264_qsv']%></option>
+                            <option value="hevc_qsv"><%-lang['hevc_qsv']%></option>
+                            <option value="mpeg2_qsv"><%-lang['mpeg2_qsv']%></option>
+                        </optgroup>
+                        <optgroup label="WebM <%-lang['Hardware Accelerated']%>">
+                            <option value="vp8_cuvid"><%-lang['vp8_cuvid']%></option>
+                            <option value="vp9_cuvid"><%-lang['vp9_cuvid']%></option>
+                            <option value="vp8_qsv"><%-lang['vp8_qsv']%></option>
+                        </optgroup>
+                    </select></div>
+                </label>
+              </div>
+              <div class="h_vc_input h_vc_libvpx h_vc_libvpx-vp9 h_vc_libx264 h_vc_libx265 h_vc_hevc_nvenc h_vc_h264_nvenc h_vc_h264_vaapi h_vc_hevc_vaapi h_vc_h264_qsv h_vc_hevc_qsv h_vc_mpeg2_qsv h_vc_default h_vc_none">
+                  <div class="form-group">
+                    <label><div><span><%-lang['Quality']%></span></div>
+                    <div><input class="form-control" detail="crf" placeholder=""></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Preset']%></span></div>
+                        <div><input class="form-control" detail="preset_record" placeholder=""></div>
+                    </label>
+                  </div>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Audio Codec']%></span></div>
+                    <div><select class="form-control" detail="acodec">
+                        <option value="default" selected><%-lang['Default']%></option>
+                        <option value="none"><%-lang['Auto']%></option>
+                        <option value="no"><%-lang['No Audio']%></option>
+                        <optgroup label="WebM">
+                            <option value="libvorbis"><%-lang['libvorbis (Default)']%></option>
+                            <option value="libopus"><%-lang['libopus']%></option>
+                        </optgroup>
+                        <optgroup label="MP4">
+                            <option value="libmp3lame"><%-lang['libmp3lame']%></option>
+                            <option value="aac"><%-lang['aac (Default)']%></option>
+                            <option value="ac3"><%-lang['ac3']%></option>
+                            <option value="copy"><%-lang['copy']%></option>
+                        </optgroup>
+                    </select></div>
+                </label>
+              </div>
+              <div class="h_vc_input h_vc_libvpx h_vc_libvpx-vp9 h_vc_libx264 h_vc_libx265 h_vc_hevc_nvenc h_vc_h264_nvenc h_vc_h264_vaapi h_vc_hevc_vaapi h_vc_h264_qsv h_vc_hevc_qsv h_vc_mpeg2_qsv h_vc_default h_vc_none">
+                   <div class="form-group">
+                    <label><div><span><%-lang['Video Record Rate']%></span></div>
+                    <div><input class="form-control" name="fps"></div>
+                    </label>
+                  </div>
+                  <div class="row">
+                      <div class="form-group col-md-12">
+                        <label><div><span><%-lang['Record Width']%></span></div>
+                        <div><input class="form-control" type="number" min="1" name="width"></div>
+                        </label>
+                      </div>
+                      <div class="form-group col-md-12">
+                        <label><div><span><%-lang['Record Height']%></span></div>
+                        <div><input class="form-control" type="number" min="1" name="height"></div>
+                        </label>
+                      </div>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label><div><span><%-lang['Double Quote Directory']%></span></div>
+                    <div><select class="form-control" detail="dqf">
+                        <option value="0" selected><%-lang.No%></option>
+                        <option value="1"><%-lang.Yes%></option>
+                    </select></div>
+                  </label>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Recording Segment Interval']%></span></div>
+                <div><input class="form-control" detail="cutoff" placeholder="15"></div>
+                </label>
+              </div>
+              <div class="h_vc_input h_vc_libvpx h_vc_libvpx-vp9 h_vc_libx264 h_vc_libx265 h_vc_hevc_nvenc h_vc_h264_nvenc h_vc_h264_vaapi h_vc_hevc_vaapi h_vc_h264_qsv h_vc_hevc_qsv h_vc_mpeg2_qsv h_vc_default h_vc_none">
+                  <div class="form-group">
+                    <label><div><span><%-lang['Rotate']%></span></div>
+                            <div><select class="form-control" detail="rotate_record">
+                                <option value="no" selected><%-lang['No Rotation']%></option>
+                                <option value="2,transpose=2"><%-lang['180 Degrees']%></option>
+                                <option value="0"><%-lang['90 Counter Clockwise and Vertical Flip (default)']%></option>
+                                <option value="1"><%-lang['90 Clockwise']%></option>
+                                <option value="2"><%-lang['90 Clockwise and Vertical Flip']%></option>
+                                <option value="3"><%-lang['90 Clockwise and Vertical Flip']%></option>
+                            </select></div>
+                      </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Record Video Filter']%></span></div>
+                    <div><input class="form-control" detail="vf"></div>
+                    </label>
+                  </div>
+              </div>
+          </div>
+          <div class="h_us_input h_us_advanced" style="display:none">
+              <div class="h_vc_input h_vc_libvpx h_vc_libvpx-vp9 h_vc_libx264 h_vc_libx265 h_vc_hevc_nvenc h_vc_h264_nvenc h_vc_h264_vaapi h_vc_hevc_vaapi h_vc_h264_qsv h_vc_hevc_qsv h_vc_mpeg2_qsv h_vc_default h_vc_none">
+                  <div class="form-group-group red h_m_input h_m_record h_m_idle" section id="monSectionRecordingTimestamp">
+                  <h4><%-lang['Recording Timestamp']%></h4>
+                      <div class="form-group">
+                          <label><div><span><%-lang['Enabled']%></span></div>
+                            <div><select class="form-control" detail="timestamp" selector="h_tm">
+                                <option value="1"><%-lang.Yes%></option>  
+                                <option value="0" selected><%-lang.No%></option>  
+                            </select></div>
+                          </label>
+                      </div>
+                      <div class="h_tm_input h_tm_1">
+                          <div class="form-group">
+                            <label><div><span><%-lang['Font Path']%></span></div>
+                            <div><input class="form-control" detail="timestamp_font" placeholder="/usr/share/fonts/truetype/freefont/FreeSans.ttf"></div>
+                            </label>
+                          </div>
+                          <div class="form-group">
+                            <label><div><span><%-lang['Font Size']%></span></div>
+                            <div><input class="form-control" detail="timestamp_font_size" placeholder="10"></div>
+                            </label>
+                          </div>
+
+                          <div class="form-group">
+                            <label><div><span><%-lang['Text Color']%></span></div>
+                            <div><input class="form-control" detail="timestamp_color" placeholder="white"></div>
+                            </label>
+                          </div>
+                          <div class="form-group">
+                            <label><div><span><%-lang['Text Box Color']%></span></div>
+                            <div><input class="form-control" detail="timestamp_box_color" placeholder="0x00000000@1"></div>
+                            </label>
+                          </div>
+
+                          <div class="form-group">
+                            <label><div><span><%-lang['Position X']%></span></div>
+                            <div><input class="form-control" detail="timestamp_x" placeholder="(w-tw)/2"></div>
+                            </label>
+                          </div>
+                          <div class="form-group">
+                            <label><div><span><%-lang['Position Y']%></span></div>
+                            <div><input class="form-control" detail="timestamp_y" placeholder="0"></div>
+                            </label>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="h_vc_input h_vc_libvpx h_vc_libvpx-vp9 h_vc_libx264 h_vc_libx265 h_vc_hevc_nvenc h_vc_h264_nvenc h_vc_h264_vaapi h_vc_hevc_vaapi h_vc_h264_qsv h_vc_hevc_qsv h_vc_mpeg2_qsv h_vc_default h_vc_none">
+                  <div class="form-group-group red h_m_input h_m_record h_m_idle" section id="monSectionRecordingWatermark">
+                  <h4><%-lang['Recording Watermark']%></h4>
+                      <div class="form-group">
+                          <label><div><span><%-lang['Enabled']%></span></div>
+                            <div><select class="form-control" detail="watermark" selector="h_wat">
+                                <option value="1"><%-lang.Yes%></option>
+                                <option value="0" selected><%-lang.No%></option>
+                            </select></div>
+                          </label>
+                      </div>
+                      <div class="h_wat_input h_wat_1">
+                          <div class="form-group important">
+                            <label><div><span><%-lang['Image Location']%></span></div>
+                            <div><input class="form-control" detail="watermark_location" placeholder="<%-lang.Example%> : /usr/share/watermark.logo"></div>
+                            </label>
+                          </div>
+                          <div class="form-group">
+                              <label><div><span><%-lang['Image Position']%></span></div>
+                                <div><select class="form-control" detail="watermark_position">
+                                    <option value="tr"><%-lang['Top Right']%></option>
+                                    <option value="tl"><%-lang['Top Left']%></option>
+                                    <option value="br" selected><%-lang['Bottom Right']%></option>
+                                    <option value="bl"><%-lang['Bottom Left']%></option>
+                                </select></div>
+                              </label>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+<!--     END of Record     -->
+<!--     START of Advanced     -->
+          <div class=" h_us_input h_us_advanced" style="display:none">
+<!--     START of Custom     -->
+          <div class="form-group-group navy" section id="monSectionCustom">
+          <h4><%-lang['Custom']%></h4>
+              <div class="form-group">
+                <label><div><span><%-lang['Input Flags']%></span></div>
+                <div><input class="form-control" detail="cust_input" placeholder=""></div>
+                </label>
+              </div>
+              <div class="form-group h_sn_input h_sn_1" style="display:none">
+                <label><div><span><%-lang['Snapshot Flags']%></span></div>
+                <div><input class="form-control" detail="cust_snap"></div>
+                </label>
+              </div>
+              <div class="form-group h_rtmp_input h_rtmp_1" style="display:none">
+                <label><div><span><%-lang['RTMP Stream Flags']%></span></div>
+                <div><input class="form-control" detail="cust_rtmp"></div>
+                </label>
+              </div>
+              <div class="form-group h_rawh264_input h_rawh264_1" style="display:none">
+                <label><div><span><%-lang['Snapshot Flags']%></span></div>
+                <div><input class="form-control" detail="cust_rawh264"></div>
+                </label>
+              </div>
+              <div class="form-group shinobi-detector" style="display:none">
+                <label><div><span><%-lang['Detector Flags']%></span></div>
+                <div><input class="form-control" detail="cust_detect"></div>
+                </label>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Stream Flags']%></span></div>
+                <div><input class="form-control" detail="cust_stream"></div>
+                </label>
+              </div>
+              <div class="form-group h_yt_input h_yt_1" style="display:none">
+                <label><div><span><%-lang['Stream to YouTube Flags']%></span></div>
+                <div><input class="form-control" detail="cust_stream_server"></div>
+                </label>
+              </div>
+              <div class="form-group h_m_input h_m_record">
+                <label><div><span><%-lang['Recording Flags']%></span></div>
+                <div><input class="form-control" detail="cust_record" placeholder=""></div>
+                </label>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Output Method']%></span></div>
+                    <div><input class="form-control" detail="custom_output" placeholder="-f flv rtmp://.."></div>
+                </label>
+              </div>
+          </div>
+<!--     END of Custom     -->
+<!--     START of Detector     -->
+          <div class="form-group-group orange" section id="monSectionDetector">
+          <h4><%-lang['Detector']%> : <b class="h_det_pam_input h_det_pam_1">Activated</b><span class="h_det_pam_input h_det_pam_0"><b class="shinobi-detector_name"></b> <b class="shinobi-detector-invert"><%-lang['Not Connected']%></b><b class="shinobi-detector" style="display:none"><%-lang['Connected']%></b></span></h4>
+              <blockquote class="global_tip shinobi-detector">
+                <%-lang.DetectorText%>
+                <p class="shinobi-detector-msg"></p>
+              </blockquote>
+              <div class="form-group-group forestgreen" input-mapping="detector">
+                  <h4><%-lang['Input Feed']%>
+                      <div class="pull-right">
+                          <a class="btn btn-success btn-xs add_map_row"><i class="fa fa-plus-square-o"></i></a>
+                      </div>
+                  </h4>
+                  <div class="choices"></div>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Enabled']%></span></div>
+                    <div><select class="form-control" detail="detector" selector="h_det">
+                        <option value="0" selected><%-lang.No%></option>
+                        <option value="1"><%-lang.Yes%></option>
+                    </select></div>
+                </label>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Use Built-In']%></span></div>
+                    <div><select class="form-control" detail="detector_pam" selector="h_det_pam">
+                            <option value="0" selected><%-lang.No%></option>
+                            <option value="1"><%-lang.Yes%></option>
+                    </select></div>
+                </label>
+              </div>
+              <div class="h_det_input h_det_1" style="display:none">
+                  <div class="form-group">
+                    <label><div><span><%-lang['Noise Filter']%></span></div>
+                        <div><select class="form-control" detail="detector_noise_filter">
+                                <option value="0" selected><%-lang.No%></option>
+                                <option value="1"><%-lang.Yes%></option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Webhook']%></span></div>
+                        <div><select class="form-control" detail="detector_webhook" selector="h_det_web">
+                            <option value="0" selected><%-lang.No%></option>
+                            <option value="1"><%-lang.Yes%></option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group h_det_web_input h_det_web_1">
+                    <label><div><span><%-lang['Webhook URL']%></span></div>
+                    <div><input class="form-control" detail="detector_webhook_url" placeholder="<%-lang.Example%> : http://111.111.111.111?mid={{MONITOR_ID}}&group={{GROUP_KEY}}&confidence={{CONFIDENCE}}"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Command on Trigger']%></span></div>
+                        <div><select class="form-control" detail="detector_command_enable" selector="h_det_com">
+                            <option value="0" selected><%-lang.No%></option>
+                            <option value="1"><%-lang.Yes%></option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group h_det_com_input h_det_com_1">
+                    <label><div><span><%-lang['Command']%></span></div>
+                    <div><input class="form-control" detail="detector_command" placeholder="<%-lang.Example%> : /home/script.sh {{MONITOR_ID}} {{GROUP_KEY}} {{CONFIDENCE}}"></div>
+                    </label>
+                  </div>
+                  <div class="form-group h_det_com_input h_det_com_1">
+                    <label><div><span><%-lang['Allow Next Command']%></span></div>
+                    <div><input class="form-control" detail="detector_command_timeout" placeholder="10"></div>
+                    </label>
+                  </div>
+                  <div class="form-group important">
+                    <label><div><span><%-lang['Allow Next Trigger']%></span></div>
+                    <div><input class="form-control" detail="detector_lock_timeout" placeholder="2000"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Save Events to SQL']%></span></div>
+                        <div><select class="form-control" detail="detector_save">
+                            <option value="0" selected><%-lang.No%></option>
+                            <option value="1"><%-lang.Yes%></option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Save Frames to Events']%></span></div>
+                        <div><select class="form-control" detail="detector_frame_save">
+                            <option value="0" selected><%-lang.No%></option>
+                            <option value="1"><%-lang.Yes%></option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="row">
+                      <div class="form-group col-md-12">
+                        <label><div><span><%-lang['Email on Trigger']%></span></div>
+                            <div><select class="form-control" detail="detector_mail">
+                                <option value="0" selected><%-lang.No%></option>
+                                <option value="1"><%-lang.Yes%></option>
+                            </select></div>
+                        </label>
+                      </div>
+                      <div class="form-group col-md-12">
+                        <label><div><span><%-lang['Allow Next Email']%></span></div>
+                        <div><input class="form-control" detail="detector_mail_timeout" placeholder="10"></div>
+                        </label>
+                      </div>
+                  </div>
+                  <div class="form-group important">
+                    <label><div><span><%-lang['How to Record']%></span></div>
+                        <div><select class="form-control" detail="detector_record_method" selector="h_rec_mtd">
+                            <option value="sip" selected><%-lang['Traditional (Watch-Only, Includes Buffer)']%></option>
+                            <option value="hot"><%-lang['Hotswap Modes (Watch-Only)']%></option>
+                            <option value="del"><%-lang['Delete Motionless Videos (Record)']%></option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="h_rec_mtd_input h_rec_mtd_hot h_rec_mtd_sip">
+                      <div class="form-group">
+                        <label><div><span><%-lang['Trigger Record']%></span></div>
+                            <div><select class="form-control" detail="detector_trigger">
+                                <option value="0" selected><%-lang.No%></option>
+                                <option value="1"><%-lang.Yes%></option>
+                            </select></div>
+                        </label>
+                      </div>
+                      <div class="form-group">
+                        <label><div><span><%-lang['Recording FPS Change on Start']%></span></div>
+                        <div><input class="form-control" detail="detector_trigger_record_fps" placeholder="<%-lang['Blank for No Change']%>"></div>
+                        </label>
+                      </div>
+                      <div class="form-group">
+                        <label><div><span><%-lang['Recording Timeout']%></span></div>
+                        <div><input class="form-control" detail="detector_timeout" placeholder="10"></div>
+                        </label>
+                      </div>
+                      <div class="form-group">
+                        <label><div><span><%-lang['Timeout Reset on Next Motion']%></span></div>
+                            <div><select class="form-control" detail="watchdog_reset">
+                                <option value="0"><%-lang.No%></option>
+                                <option value="1" selected><%-lang.Yes%></option>
+                            </select></div>
+                        </label>
+                      </div>
+                  </div>
+                  <div class="h_rec_mtd_input h_rec_mtd_del">
+                      <div class="form-group">
+                        <label><div><span><%-lang['Delete Motionless Video']%></span></div>
+                            <div><select class="form-control" detail="detector_delete_motionless_videos">
+                                <option value="0" selected><%-lang.No%></option>
+                                <option value="1"><%-lang.Yes%></option>
+                            </select></div>
+                        </label>
+                      </div>
+                  </div>
+                  <div class="form-group important">
+                    <label><div><span><%-lang['Send Frames']%></span></div>
+                        <div><select class="form-control" detail="detector_send_frames" selector="h_det_fra">
+                            <option value="0" selected><%-lang.No%></option>
+                            <option value="1"><%-lang.Yes%></option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Show Regions of Interest']%></span></div>
+                        <div><select class="form-control" detail="detector_region_of_interest">
+                            <option value="0" selected><%-lang.No%></option>
+                            <option value="1"><%-lang.Yes%></option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Detector Rate']%></span></div>
+                    <div><input class="form-control" detail="detector_fps" placeholder="2"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Feed-in Image Width']%></span></div>
+                    <div><input class="form-control" detail="detector_scale_x" placeholder="320"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Feed-in Image Height']%></span></div>
+                    <div><input class="form-control" detail="detector_scale_y" placeholder="240"></div>
+                    </label>
+                  </div>
+                  <div class="shinobi-detector-opencv shinobi-detector-openalpr shinobi-detector_plug" style="display:none">
+                      <div class="form-group">
+                        <label><div><span><%-lang['Check for Motion First']%></span></div>
+                            <div><select class="form-control" detail="detector_use_motion">
+                                <option value="0" selected><%-lang.No%></option>
+                                <option value="1"><%-lang.Yes%></option>
+                            </select></div>
+                        </label>
+                      </div>
+                      <div class="form-group">
+                        <label><div><span><%-lang['Detect Objects']%></span></div>
+                            <div><select class="form-control" detail="detector_use_detect_object" selector="h_casc">
+                                <option value="0" selected><%-lang.No%></option>
+                                <option value="1"><%-lang.Yes%></option>
+                            </select></div>
+                        </label>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="form-group col-md-12">
+                        <label><div><span><%-lang['Full Frame Detection']%></span></div>
+                            <div><select class="form-control" detail="detector_frame">
+                                <option value="0"><%-lang.No%></option>
+                                <option value="1" selected><%-lang.Yes%></option>
+                            </select></div>
+                        </label>
+                      </div>
+                      <div class="form-group col-md-12">
+                        <label><div><span><%-lang['Indifference']%></span></div>
+                        <div><input class="form-control" detail="detector_sensitivity" placeholder="0.5"></div>
+                        </label>
+                      </div>
+                  </div>
+                  <div class="hidden">
+                      <div><input detail="cords" placeholder=""></div>
+                  </div>
+                  <div class="form-group">
+                    <a class="btn btn-danger btn-block" monitor="region"><i class="fa fa-grav"></i> &nbsp; <%-lang['Region Editor']%></a>
+                  </div>
+              </div>
+          </div>
+          <div class="form-group-group orange h_rec_mtd_input h_rec_mtd_sip" style="display:none" section id="monSectionDetectorBuffer">
+          <h4><%-lang['Traditional Recording']%></h4>
+              <div class="form-group-group forestgreen" input-mapping="detector_sip_buffer">
+                  <h4><%-lang['Input Feed']%>
+                      <div class="pull-right">
+                          <a class="btn btn-success btn-xs add_map_row"><i class="fa fa-plus-square-o"></i></a>
+                      </div>
+                  </h4>
+                  <div class="choices"></div>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['HLS Video Encoder']%></span></div>
+                    <div><select class="form-control" detail="detector_buffer_vcodec" selector="h_buff">
+                        <option value="auto" selected><%-lang['Auto']%></option>
+                        <option value="libx264"><%-lang['libx264']%></option>
+                        <option value="h264_vaapi"><%-lang['h264_vaapi']%></option>
+                        <option value="hevc_vaapi"><%-lang['hevc_vaapi']%></option>
+                        <option value="copy"><%-lang['copy']%></option>
+                    </select></div>
+                </label>
+              </div>
+<!--
+              <div class="form-group">
+                <label><div><span><%-lang['Tune']%></span></div>
+                    <div><input class="form-control" detail="detector_buffer_tune" placeholder="zerolatency"></div>
+                </label>
+              </div>
+              <div class="form-group">
+                <label><div><span>G</span></div>
+                    <div><input class="form-control" detail="detector_buffer_g" placeholder="1"></div>
+                </label>
+              </div>
+-->
+              <div class="form-group h_buff_input h_buff_libx264 h_buff_h264_vaapi h_buff_hevc_vaapi">
+                <label><div><span><%-lang['Frame Rate']%></span></div>
+                    <div><input class="form-control" detail="detector_buffer_fps" placeholder="30"></div>
+                </label>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['HLS Segment Length']%></span></div>
+                    <div><input class="form-control" detail="detector_buffer_hls_time" placeholder="2"></div>
+                </label>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['HLS List Size']%></span></div>
+                    <div><input class="form-control" detail="detector_buffer_hls_list_size" placeholder="10"></div>
+                </label>
+              </div>
+              <div class="h_buff_input h_buff_libx264 h_buff_h264_vaapi h_buff_hevc_vaapi">
+                  <div class="form-group">
+                    <label><div><span><%-lang['HLS Start Number']%></span></div>
+                        <div><input class="form-control" detail="detector_buffer_start_number" placeholder="0"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['HLS Live Start Index']%></span></div>
+                        <div><input class="form-control" detail="detector_buffer_live_start_index" placeholder="-3"></div>
+                    </label>
+                  </div>
+              </div>
+              <div class="form-group">
+                <label><div><span><%-lang['Buffer Preview']%></span></div>
+                    <div><iframe id="monEditBufferPreview" style="width:100%;height:300px;background:#eceaea" class="form-control"></iframe></div>
+                </label>
+              </div>
+          </div>
+          <div class="h_det_input h_det_1" style="display:none">
+              <div class="form-group-group orange shinobi-detector-opencv shinobi-detector-openalpr shinobi-detector_plug" style="display:none" section id="monSectionLisencePlateDetector">
+              <h4><%-lang['Lisence Plate Detector']%></h4>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Enabled']%></span></div>
+                        <div><select class="form-control" detail="detector_lisence_plate">
+                            <option value="0" selected><%-lang.No%></option>
+                            <option value="1"><%-lang.Yes%></option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Country of Plates']%></span></div>
+                        <div><select class="form-control" detail="detector_lisence_plate_country">
+                            <option value="us" selected><%-lang['US']%></option>
+                            <option value="eu"><%-lang['EU']%></option>
+                        </select></div>
+                    </label>
+                  </div>
+              </div>
+              <div class="h_casc_input h_casc_1" style="display:none">
+                  <div class="form-group-group orange shinobi-detector-opencv shinobi-detector-openalpr shinobi-detector_plug" section id="monSectionOpenCVCascades" style="display:none">
+                  <h4><%-lang['OpenCV Cascades']%><a class="pull-right btn btn-xs btn-default refresh_cascades" title="<%-lang['Refresh List of Cascades']%>">&nbsp;<i class="fa fa-retweet"></i>&nbsp;</a></h4>
+                      <blockquote>
+                        If you see nothing here then just download this package of <a href="https://s3.amazonaws.com/cloudcamio/cascades.zip">cascades</a>. Drop them into <code>plugins/opencv/cascades</code> then press refresh <i class="fa fa-retweet"></i>.
+                      </blockquote>
+                      <div id="detector_cascade_list"></div>
+                  </div>
+               </div>
+              <div class="form-group-group orange shinobi-detector" style="display:none" section id="monSectionNoMotionDetector">
+              <h4><%-lang['"No Motion" Detector']%></h4>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Enabled']%></span></div>
+                        <div><select class="form-control" detail="detector_notrigger">
+                            <option value="0" selected><%-lang.No%></option>
+                            <option value="1"><%-lang.Yes%></option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Email on No Motion']%></span></div>
+                        <div><select class="form-control" detail="detector_notrigger_mail">
+                            <option value="0" selected><%-lang.No%></option>
+                            <option value="1"><%-lang.Yes%></option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Timeout']%></span></div>
+                        <div><input class="form-control" detail="detector_notrigger_timeout" placeholder="10"></div>
+                    </label>
+                  </div>
+              </div>
+          </div>
+<!--     END of Motion     -->
+          <div class="form-group-group blue" section id="monSectionControl">
+          <h4><%-lang['Control']%></h4>
+              <div class="form-group">
+                <label><div><span><%-lang['Controllable']%></span></div>
+                    <div><select class="form-control" detail="control" selector="h_c">
+                        <option value="0"><%-lang.No%></option>  
+                        <option value="1"><%-lang.Yes%></option>  
+                    </select></div>
+                </label>
+              </div>
+              <div class="h_c_input h_c_1">
+                  <div class="form-group">
+                    <label><div><span><%-lang['Custom Base URL']%></span></div>
+                    <div><input class="form-control" detail="control_base_url" placeholder="<%-lang.Example%> : http://111.111.111.111:8080"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Call Method']%></span></div>
+                        <div><select class="form-control" detail="control_url_method">
+                            <option value="GET">GET (<%-lang.Default%>)</option>  
+                            <option value="PUT">PUT</option>
+                            <option value="POST">POST</option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Stop URL']%></span></div>
+                        <div><select class="form-control" detail="control_stop" selector="h_cs">
+                            <option value="0"><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>
+                        </select></div>
+                    </label>
+                  </div>
+                  <div class="form-group h_cs_input h_cs_1">
+                    <label><div><span><%-lang['URL Stop Timeout']%></span></div>
+                    <div><input class="form-control" detail="control_url_stop_timeout" placeholder="1000"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Center']%></span></div>
+                    <div><input class="form-control" detail="control_url_center" placeholder="/"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Left']%></span></div>
+                    <div><input class="form-control" detail="control_url_left" placeholder="/"></div>
+                    </label>
+                  </div>
+                  <div class="form-group h_cs_input h_cs_1">
+                    <label><div><span><%-lang['Left Stop']%></span></div>
+                    <div><input class="form-control" detail="control_url_left_stop" placeholder="/"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Right']%></span></div>
+                    <div><input class="form-control" detail="control_url_right" placeholder="/"></div>
+                    </label>
+                  </div>
+                  <div class="form-group h_cs_input h_cs_1">
+                    <label><div><span><%-lang['Right Stop']%></span></div>
+                    <div><input class="form-control" detail="control_url_right_stop" placeholder="/"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Up']%></span></div>
+                    <div><input class="form-control" detail="control_url_up" placeholder="/"></div>
+                    </label>
+                  </div>
+                  <div class="form-group h_cs_input h_cs_1">
+                    <label><div><span><%-lang['Up Stop']%></span></div>
+                    <div><input class="form-control" detail="control_url_up_stop" placeholder="/"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Down']%></span></div>
+                    <div><input class="form-control" detail="control_url_down" placeholder="/"></div>
+                    </label>
+                  </div>
+                  <div class="form-group h_cs_input h_cs_1">
+                    <label><div><span><%-lang['Down Stop']%></span></div>
+                    <div><input class="form-control" detail="control_url_down_stop" placeholder="/"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Enable Night Vision']%></span></div>
+                    <div><input class="form-control" detail="control_url_enable_nv" placeholder="/"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Disable Night Vision']%></span></div>
+                    <div><input class="form-control" detail="control_url_disable_nv" placeholder="/"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Zoom Out']%></span></div>
+                    <div><input class="form-control" detail="control_url_zoom_out" placeholder="/"></div>
+                    </label>
+                  </div>
+                  <div class="form-group h_cs_input h_cs_1">
+                    <label><div><span><%-lang['Zoom Out Stop']%></span></div>
+                    <div><input class="form-control" detail="control_url_zoom_out_stop" placeholder="/"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label><div><span><%-lang['Zoom In']%></span></div>
+                    <div><input class="form-control" detail="control_url_zoom_in" placeholder="/"></div>
+                    </label>
+                  </div>
+                  <div class="form-group h_cs_input h_cs_1">
+                    <label><div><span><%-lang['Zoom In Stop']%></span></div>
+                    <div><input class="form-control" detail="control_url_zoom_in_stop" placeholder="/"></div>
+                    </label>
+                  </div>
+              </div>
+          </div>
+          <div class="form-group-group purple" section id="monSectionGrouping">
+          <h4><%-lang['Grouping']%></h4>
+              <div>
+                  <ul class="mdl-list" id="monitor_groups"></ul>
+                  <input type="hidden" detail="groups">
+              </div>
+          </div>
+          <div class="form-group-group green" section id="monSectionLogging">
+          <h4><%-lang['Logging']%></h4>
+              <div class="row">
+                  <div class="form-group col-md-12">
+                      <label><div><span><%-lang['Log Level']%></span></div>
+                        <div><select class="form-control" detail="loglevel">
+                            <option value="quiet"><%-lang['Silent']%></option>
+                            <option value="fatal"><%-lang['Fatal']%></option>
+                            <option value="error" selected><%-lang['on Error']%></option>
+                            <option value="warning"><%-lang['All Warnings']%></option>
+                            <option value="debug"><%-lang['Debug']%></option>
+                        </select></div>
+                      </label>
+                  </div>
+                  <div class="form-group col-md-12">
+                      <label><div><span><%-lang['Save Log in SQL']%></span></div>
+                        <div><select class="form-control" detail="sqllog">
+                            <option value="0" selected><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>  
+                        </select></div>
+                      </label>
+                  </div>
+              </div>
+          </div>
+          <div class="form-group-group orange" section id="monSectionCopying">
+          <h4><%-lang['Copy Settings']%></h4>
+              <div class="form-group">
+                  <label><div><span><%-lang['Copy to Settings']%></span></div>
+                    <div><select class="form-control" id="copy_settings" selector="h_copy_settings">
+                        <option value="0" selected><%-lang.No%></option>  
+                        <option value="1"><%-lang.Yes%></option>  
+                    </select></div>
+                  </label>
+              </div>
+              <div class="h_copy_settings_input h_copy_settings_1">
+                  <div class="form-group">
+                      <label><div><span><%-lang['Copy Connection Settings']%></span></div>
+                        <div><select class="form-control" copy="#monSectionConnection">
+                            <option value="0" selected><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>  
+                        </select></div>
+                      </label>
+                  </div>
+                  <div class="form-group">
+                      <label><div><span><%-lang['Copy Input Settings']%></span></div>
+                        <div><select class="form-control" copy="#monSectionInput">
+                            <option value="0" selected><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>  
+                        </select></div>
+                      </label>
+                  </div>
+                  <div class="form-group">
+                      <label><div><span><%-lang['Copy Stream Settings']%></span></div>
+                        <div><select class="form-control" copy="#monSectionStream,#monSectionStreamTimestamp,#monSectionStreamWatermark,#monSectionJPEGAPI">
+                            <option value="0" selected><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>  
+                        </select></div>
+                      </label>
+                  </div>
+    <!--
+                  <div class="form-group">
+                      <label><div><span><%-lang['Copy Stream Channel Settings']%></span></div>
+                        <div><select class="form-control" copy="stream_channel">
+                            <option value="0" selected><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>  
+                        </select></div>
+                      </label>
+                  </div>
+    -->
+                  <div class="form-group">
+                      <label><div><span><%-lang['Copy Recording Settings']%></span></div>
+                        <div><select class="form-control" copy="#monSectionRecording">
+                            <option value="0" selected><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>  
+                        </select></div>
+                      </label>
+                  </div>
+                  <div class="form-group">
+                      <label><div><span><%-lang['Copy Detector Settings']%></span></div>
+                        <div><select class="form-control" copy="#monSectionDetector,#monSectionDetectorBuffer,#monSectionLisencePlateDetector,#monSectionNoMotionDetector">
+                            <option value="0" selected><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>  
+                        </select></div>
+                      </label>
+                  </div>
+                  <div class="form-group">
+                      <label><div><span><%-lang['Copy Custom Settings']%></span></div>
+                        <div><select class="form-control" copy="#monSectionCustom">
+                            <option value="0" selected><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>  
+                        </select></div>
+                      </label>
+                  </div>
+                  <div class="form-group">
+                      <label><div><span><%-lang['Copy Group Settings']%></span></div>
+                        <div><select class="form-control" copy="#monSectionGrouping">
+                            <option value="0" selected><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>  
+                        </select></div>
+                      </label>
+                  </div>
+                  <div class="form-group">
+                      <label><div><span><%-lang['Copy Logging Settings']%></span></div>
+                        <div><select class="form-control" copy="#monSectionLogging">
+                            <option value="0" selected><%-lang.No%></option>  
+                            <option value="1"><%-lang.Yes%></option>  
+                        </select></div>
+                      </label>
+                  </div>
+                  <div class="form-group">
+                      <label><div><span><%-lang['Monitors to Copy to']%></span></div>
+                        <div><select class="form-control" style="min-height:100px" multiple id="copy_settings_monitors">
+                            <option value="$New"><%-lang['New Monitor']%></option>
+                            <optgroup label="<%-lang['Monitors']%>"></optgroup>
+                        </select></div>
+                      </label>
+                  </div>
+              </div>
+          </div>
+          </div>
+          <div class="form-group" style="display:none">
+              <input type="hidden" detail="detector_cascades">
+              <input type="hidden" detail="stream_channels">
+              <input type="hidden" detail="input_maps">
+              <input type="hidden" detail="input_map_choices" value="{}">
+              <input class="form-control" name="details" value="{}">
+              <input class="form-control" name="shto" value="[]">
+              <input class="form-control" name="shfr" value="[]">
+          </div>
+      </div>
+      </div>
+      </div>
+      <div class="modal-footer">
+          <div class="pull-left">
+            <button type="button" id="monedit_bottom_menu" class="btn btn-default"><i class="fa fa-wrench"></i> <%-lang.Options%></button>
+            <ul class="mdl-menu mdl-menu--top-left mdl-js-menu mdl-js-ripple-effect" data-mdl-for="monedit_bottom_menu">
+              <li class="mdl-menu__item mdl-menu__item--full-bleed-divider" data-dismiss="modal"><i class="fa fa-times"></i> <%-lang.Close%></li>
+              <li class="mdl-menu__item" monitor="delete"><i class="fa fa-trash-o"></i> <%-lang.Delete%></li>
+              <li class="mdl-menu__item save_config"><i class="fa fa-download"></i> <%-lang.Export%></li>
+              <li class="mdl-menu__item import_config"><i class="fa fa-upload"></i> <%-lang.Import%></li>
+              <li class="mdl-menu__item probe_config"><i class="fa fa-search"></i> <%-lang.FFprobe%></li>
+              <li class="mdl-menu__item add_map"><i class="fa fa-rss"></i> <%-lang['Add Input Feed']%></li>
+              <li class="mdl-menu__item add_channel"><i class="fa fa-puzzle-piece"></i> <%-lang['Add Channel']%></li>
+            </ul>
+            <span class="h_det_input h_det_1"><button type="button" style="display:none" class="btn btn-warning shinobi-detector-opencv shinobi-detector-openalpr shinobi-detector-motion shinobi-detector_plug" monitor="region"><i class="fa fa-grav"></i> <%-lang['Region Editor']%></button></span>
+          </div>
+          <div style="display:inline-block;margin-right:5px">
+            <div><select class="form-control btn-default" dropdown_toggle="monedit_user_type" selector="h_us">
+                <option value="simple" selected><%-lang['Simple']%></option>  
+                <option value="advanced"><%-lang['Advanced']%></option>  
+            </select></div>
+          </div>
+          <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> <%-lang.Save%></button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -16,9 +16,9 @@ services:
       dockerfile: Dockerfile.x86
       context: ./broker
   camera:
-    image: shareai/shinobi:x86
+    image: shareai/nvr:x86
     build:
-      context: ./camera
+      context: ../../src/camera
       dockerfile: Dockerfile.x86
   flower:
     image: shareai/flower:x86

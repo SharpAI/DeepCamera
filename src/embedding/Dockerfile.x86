@@ -18,3 +18,4 @@ RUN pip install mxnet==1.2.0
 ADD . /data/runtime/src
 ADD model/model-0000.params /data/runtime/model-0000.params
 ADD model/model-symbol.json /data/runtime/model-symbol.json
+WORKDIR /data/runtime/src

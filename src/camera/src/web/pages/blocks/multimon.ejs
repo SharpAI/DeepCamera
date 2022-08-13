@@ -1,0 +1,38 @@
+<!--Multi Monitor Manager-->
+<div class="modal medium fade dark" mid ke id="multi_mon" tabindex="-1" role="dialog" aria-labelledby="multi_monLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="multi_monLabel"><i class="fa fa-clone"></i> &nbsp; <%- lang['Monitors'] %></h4>
+        </div>
+        <form class="modal-body">
+            <table class="table table-striped tableData">
+                <thead>
+                    <tr>
+                        <th><div class="checkbox"><input id="multimon_select_all" type="checkbox"><label for="multimon_select_all"></label></div></th>
+                        <th><%-lang['Name']%></th>
+                        <th><%-lang['Mode']%></th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </form>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+            <div>
+                <a class="btn btn-danger delete"><%-lang['Delete']%></a>
+                <a class="btn btn-primary save_config"><%-lang['Export']%></a>
+                <a class="btn btn-default import_config"><%-lang['Import']%></a>
+                <a class="btn btn-success" data-dismiss="modal" monitor="edit"><%-lang['Add New']%></a>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>

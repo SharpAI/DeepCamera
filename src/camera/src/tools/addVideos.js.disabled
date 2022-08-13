@@ -1,0 +1,48 @@
+//add videos to SQL tables from filesystem
+var fs = require('fs');
+var moment = require('moment');
+var mysql = require('mysql');
+var config = require('../conf.json');
+s={}
+s.disc=function(){
+    sql = mysql.createConnection(config.db);
+    sql.connect(function(err){if(err){console.log('Error Connecting : DB',err);setTimeout(s.disc, 2000);}});
+    sql.on('error',function(err) {console.log('DB Lost.. Retrying..');console.log(err);s.disc();return;});
+}
+s.disc();
+if(!config.videosDir){config.videosDir=__dirname+'/../videos/'}
+s.dir={videos:config.videosDir};
+s.nameToTime=function(x){x=x.split('.')[0].split('T'),x[1]=x[1].replace(/-/g,':');x=x.join(' ');return x;}
+s.moment=function(e,x){
+    if(!e){e=new Date};if(!x){x='YYYY-MM-DDTHH-mm-ss'};
+    return moment(e).format(x);
+}
+fs.readdir(s.dir.videos,function(err,groups){
+    groups.forEach(function(group){
+        fs.readdir(s.dir.videos+group,function(err,cameras){
+            cameras.forEach(function(camera){
+                fs.readdir(s.dir.videos+group+'/'+camera,function(err,videos){
+                    sql.query('SELECT * FROM Videos WHERE ke=? AND mid=?',[group,camera],function(err,r){
+                        videos.forEach(function(filename){
+                            fs.stat(s.dir.videos+group+'/'+camera+'/'+filename,function(err,file){
+                                file.startTime=s.nameToTime(filename)
+                                file.endTime=s.moment(file.mtime,'YYYY-MM-DD HH:mm:ss')
+                                var save=[camera,group,filename.split('.')[1],file.size,file.startTime,file.endTime,1]
+                                var found=null
+                                r.forEach(function(v){
+                                    if(s.moment(v.time,'YYYY-MM-DD HH:mm:ss')===file.startTime){
+                                        found=v
+                                    }
+                                })
+                                if(!found){
+                                    console.log('!found',save)
+                                  sql.query('INSERT INTO Videos (mid,ke,ext,size,time,end,status) VALUES (?,?,?,?,?,?,?)',save)
+                                }
+                            })
+                        })
+                    })
+                })
+            })
+        })
+    })
+})
