@@ -10,3 +10,4 @@ build/*
 test/node_modules/*
 *.tgz
 .DS_Store
+docker/db
