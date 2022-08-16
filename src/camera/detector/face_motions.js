@@ -392,7 +392,7 @@ function insert2timelineDB(files, tracker_id, uuid, group_id, totalpeople, recog
         if(err)
             console.log(err)
 
-        timeline.send_realtime_msg(function(err){})
+        //timeline.send_realtime_msg(function(err){})
     })
 
     return cb && cb(null, null, 0);

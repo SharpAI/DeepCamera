@@ -1,16 +1,11 @@
 var fs = require('fs');
-var http = require('http');
-var qs=require('querystring');
-var path = require('path');
 var request = require('request');
 var celery = require('node-celery');
 var requestretry = require('requestretry')
+const https = require('https');
+const url = require('url');
 
 var async = require('async')
-var face_motion = require('./face_motions')
-//var maintainer = require('./maintainer')
-var mqtt_2_group = require('./mqttgif')
-var timeline = require('./timeline')
 var upload = require('./upload')
 var device_SN = null
 
@@ -31,6 +26,12 @@ var REDIS_PORT = process.env.REDIS_PORT || 6379
 
 var CLUSTER_REDIS_ADDRESS = process.env.CLUSTER_REDIS_ADDRESS || "redis"
 var CLUSTER_REDIS_PORT = process.env.CLUSTER_REDIS_PORT || 6379
+
+const SHARP_AI_TOKEN=process.env.SHARP_AI_TOKEN
+const SHARP_AI_USER_ID=process.env.SHARP_AI_USER_ID
+const SHARP_AI_USERNAME=process.env.SHARP_AI_USERNAME
+const API_SERVER_ADDRESS=process.env.API_SERVER_ADDRESS
+const API_SERVER_PORT=process.env.API_SERVER_PORT
 
 function GetEnvironmentVarInt(varname, defaultvalue)
 {
@@ -461,6 +462,22 @@ function post_recognition_result_to_api_server(json,accessUrl){
       }
   });
 }
+
+function check_quote_and_sign_url(key,cb){
+  const options = {
+    method: 'POST',
+    url: 'http://'+API_SERVER_ADDRESS+':'+API_SERVER_PORT+'/api/v1/quote/upload',
+    headers: {
+      'X-Auth-Token': SHARP_AI_TOKEN,
+      'X-User-Id':SHARP_AI_USER_ID,
+      'Content-type': 'application/json'
+    },
+    json: true,
+    body:{key:key}
+  };
+  request(options, cb);
+}
+
 function classify_task(task_info, cb) {
   if(connected_to_celery_broker){
     client.call('classify.classify',
@@ -483,12 +500,45 @@ function classify_task(task_info, cb) {
                 json.result['url'] = task_info.url
                 post_recognition_result_to_api_server(json,task_info.url)
             } else {
-              json.result['url'] = upload.getAccessUrl(json.result.key)+'.png'
-              upload.putFile(json.result.key+'.png',task_info.path,function(error,accessUrl){
-                ON_DEBUG && console.log('error=',error,'accessUrl=',accessUrl)
-                if(!error){
-                  post_recognition_result_to_api_server(json,accessUrl)
+              check_quote_and_sign_url(json.result.key+'.png',function(error, response, body){
+                if (!error && response.statusCode == 200) {
+                  //const info = JSON.parse(body);
+                  ON_DEBUG && console.log('server response: '+ body);
+                  ON_DEBUG && console.log(body);
+                  const info = JSON.parse(body);
+                  ON_DEBUG && console.log(info);
+
+                  var presigned=info.presigned;
+                  var filename = task_info.path;
+                  var stats = fs.statSync(filename);
+                  var file_size = stats.size;
+                  var dataStream = fs.createReadStream(filename);
+                  var options = url.parse(presigned);
+                  options.method = 'PUT';
+                  options.headers = {
+                      'Content-Length' : file_size,
+                      'Content-Type' : 'image/png'
+                    }
+                  
+                  console.log(options)
+                  const stream = https.request(options);
+                  stream.on('response', (res) => {
+                      console.log(res.statusCode);
+                      res.pipe(process.stdout);
+
+                      console.log('uploaded to ' + info.url)
+                      post_recognition_result_to_api_server(json,info.url)
+                  });
+                  
+                  dataStream.pipe(stream);
                 }
+                /*json.result['url'] = upload.getAccessUrl(json.result.key)+'.png'
+                upload.putFile(json.result.key+'.png',task_info.path,function(error,accessUrl){
+                  ON_DEBUG && console.log('error=',error,'accessUrl=',accessUrl)
+                  if(!error){
+                    post_recognition_result_to_api_server(json,accessUrl)
+                  }
+                })*/
               })
             }
             delete json.result.key
