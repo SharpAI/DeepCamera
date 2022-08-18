@@ -1,0 +1,37 @@
+version: '2'
+services:
+  redis:
+    image: shareai/redis:arm64v8_latest
+    build:
+      context: ./redis
+      dockerfile: Dockerfile.arm64v8
+  broker:
+    image: shareai/broker:arm64v8_latest
+    build:
+      dockerfile: Dockerfile.arm64v8
+      context: ./broker
+  minio:
+    image: shareai/minio:arm64v8_latest
+    build:
+      context: ./minio
+      dockerfile: Dockerfile.arm64v8
+  embedding:
+    image: shareai/embedding:nano_r32.6.1
+    build:
+      context: ./embedding
+      dockerfile: Dockerfile.nano_r32.6.1
+  face_detector:
+    image: shareai/face_detector:nano_r32.6.1
+    build:
+      context: ./face_detection
+      dockerfile: Dockerfile.nano_r32.6.1
+  camera:
+    image: shareai/shinobi:nano_r32.6.1
+    build:
+      context: ./camera
+      dockerfile: Dockerfile.nano_r32.6.1
+  flower:
+    image: shareai/flower:nano_r32.6.1
+    build:
+      context: ./flower
+      dockerfile: Dockerfile.nano_r32.6.1
