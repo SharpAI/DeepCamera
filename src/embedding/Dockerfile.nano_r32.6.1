@@ -1,0 +1,8 @@
+FROM shareai/embedding_base_l4t:r32.6.1
+ADD ./requirements.txt /root/requirements.txt
+RUN pip install -r /root/requirements.txt
+ADD . /data/runtime/src
+ADD model/model-0000.params /data/runtime/model-0000.params
+ADD model/model-symbol.json /data/runtime/model-symbol.json
+WORKDIR /data/runtime/src
+RUN cp FaceProcessing_jetson.py FaceProcessing.py
