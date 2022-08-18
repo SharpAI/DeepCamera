@@ -1,7 +1,28 @@
-# Face Recognition/Person Detection NVR as Machine Learning data collector
-## SharpAI helps companies applying machine learning on the edge computing devices
+# Face Recognition/Person Detection NVR
 
-DeepCamera is a computer vision machine learning pipeline. You can use DeepCamera to collect data from Cameras, upload prelabeled images to server, retrieve data and retrain model then deploy model to edge device such as Jetson Nano for example.
+DeepCamera is a sample application from sharpai-hub.
+
+## Get started on X86 Machine(Windows/Linux/Mac)
+
+### Installation
+- Register account on [DeepCamera website](http://dp.sharpai.org:3000)
+- Install sharpai-hub: `pip3 install sharpai-hub`
+- Login on device: `sharpai-cli login`
+- Register device: `sharpai-cli device register`
+- Start DeepCamera: `sharpai-cli deepcamera start`
+
+### Connect To Camera through NVR Gui
+
+- NVR GUI(Shinobi) address: http://localhost:8080   
+- Default username and password is:  
+- username: user@sharpaibox.com  
+- password: SharpAI2018
+
+#### Tested Camera:
+- DaHua / Lorex / AMCREST: URL Path: `/cam/realmonitor?channel=1&subtype=0` Port: `554`
+- Ip Camera Lite on IOS: URL Path: `/live` Port: `8554`   
+
+If you are using a camera but have no idea about the RTSP URL, please file an issue or use [iSpyConnect](https://www.ispyconnect.com/cameras) to get camera streaming URL format
 
 ## Features 
 - [x] FFMpeg with Nvidia Nano hardware decoder
@@ -29,7 +50,6 @@ DeepCamera is a computer vision machine learning pipeline. You can use DeepCamer
 - [x] Image upload to AWS or on premise AWS compatiable server(MINIO)
 ## Todos
 - [ ] Integration with Home Assistant
-- [ ] Since many developers reported the installation issus, need simplify installation
 - [ ] Simplify installation script
 
 ## Commercial Version
@@ -58,54 +78,39 @@ sudo apt-get install -y libhdf5-dev python3 python3-pip
 pip3 install -U pip
 sudo pip3 install docker-compose==1.27.4
 ```
-
 ## Get source code
 ```
 git clone https://github.com/SharpAI/DeepCamera
 ```
-
-
 ## Create Token for Telegram Bot
-
 - Create Telegram Bot through @BotFather
 - Set Telegram Token in [Configure File](https://github.com/SharpAI/DeepCamera/blob/nano/docker/production_1.env#L15)
 - Send message to the new bot you created
-
 ## Start DeepCamera
 ```
 cd DeepCamera  
 ./run-on-nano.sh start
 ```
 ## Connect To Camera through RTSP URL
-
 On Jetson Nano, Access to 8080 port.
 http://localhost:8080   
 Default username and password is:  
 username: user@sharpaibox.com  
 password: SharpAI2018
-
 Tested Camera:
 DaHua / Lorex / AMCREST,  URL Path: /cam/realmonitor?channel=1&subtype=0 Port: 554
-
 You can use [iSpyConnect](https://www.ispyconnect.com/cameras) to get camera streaming URL
-
 When setup done, you will see live view on web page, when detected person in camera, you will receive video clips on telegram.
-
 ## Label on Web GUI, train face recognition model on device
 ```
 cat docker/workaipython/ro_serialno 
 82f28703d001
 ```
 `82f28703d001` is device ID.   
-
 Access http://165.232.62.29:3000/
-
 ![how to config on web gui](screenshots/how_to_config_on_web_gui.png)
-
-
 ## [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
 ## [Camera streaming URL format](https://shinobi.video)
-
 ## Use Mobile APP to label and train face recognition model on device
 ### Get device serial number
 ```
@@ -114,94 +119,6 @@ cat docker/workaipython/ro_serialno
 ```
 `82f28703d001` is device ID.    
 Generate QRCode of device ID
-
-### Download and install [SharpAI Mobile APP](https://github.com/SharpAI/SharpAIMobileApp/releases/download/3.0.2/debug.apk)
-
-### [Configure on Mobile APP](docs/configure_on_mobile.md)
-
-# Develop your own Application GUI with DeepCamera API Server
-If you don't like the GUI or you want to develop your own application.  
-You can use following API:  
-
-### Get device serial number
-```
-cat docker/workaipython/ro_serialno 
-82f28703d001
-```
-`82f28703d001` is device ID
-### Create User on API Server
-REST API:
-```
-curl -X POST -H "Content-type: application/json" http://localhost:3000/api/v1/sign-up -d '{"username": "test11", "email": "xxxx@xxx.xx", "password": "xxxxxx"}'
-```
-Response:
-```
-{
-  "success": true
-}
-```
-### Get Token of created user
-REST API:
-```
-curl -X POST -H "Content-type: application/json" http://localhost:3000/api/v1/login/ -d '{"username": "test11", "email": "xxxx@xxx.xx", "password": "123456"}'
-```
-Response:
-```
-{
-  "status": "success",
-  "data": {
-    "authToken": "t6QsPaU3VdbfUQMkNIf6I3MDtox29WLrPJRAKkOCfpc",
-    "userId": "tiK8RYG87sGJAErdB"
-  }
-}
-```
-### Create Group on API Server
-Rest API:
-
-Fill in `X-Auth-Token` and `X-User-Id` in previous response.
-```
-curl -X POST -H "X-Auth-Token: t6QsPaU3VdbfUQMkNIf6I3MDtox29WLrPJRAKkOCfpc" -H "X-User-Id: tiK8RYG87sGJAErdB" http://localhost:3000/api/v1/groups -d "name=group01"
-```
-Response:
-```
-{
-  "groupId": "e309ff8c7a3a8ceb4011e86e"
-}
-```
-### Add device to Group on API Server
-REST API:
-Replace `X-Auth-Token` and `X-User-Id`.
-Replace group id in requesting URL: http://localhost:3000/api/v1/groups/`e309ff8c7a3a8ceb4011e86e`/devices
-```
-curl -X POST -H "X-Auth-Token: t6QsPaU3VdbfUQMkNIf6I3MDtox29WLrPJRAKkOCfpc" -H "X-User-Id: tiK8RYG87sGJAErdB" -H "Content-type: application/json" http://localhost:3000/api/v1/groups/e309ff8c7a3a8ceb4011e86e/devices -d '{"uuid": "82f28703d001", "deviceName": "testDevice", "name":"testdevice","type": "inout"}'
-```
-Response:
-```
-{
-  "success": true
-}
-```
-
-Then restart DeepCamera service.
-### API Server document can be found here: [SharpAI/ApiServer](https://github.com/SharpAI/ApiServer#full-api-document)
-
-### You can also develop/debug code on your PC [How to run DeepCamera On PC](docs/develop_on_pc.md)
-
-
-# Deploy your own API_Server on X86/Cloud Server
-Now, you got the idea of DeepCamera,  
-the public testing server is open to the internet.  
-You can deploy your own API server on your OWN device.  
-
-```
-git clone https://github.com/SharpAI/DeepCamera
-cd DeepCamera
-./start-cloud.sh start
-```
-You need ip address of private cloud server on next step (replace ip address to <Server_IP> on next step).  
-If you don't want to setup your own server for now, a test server can be used for evaluation, the ip address of test server is 165.232.62.29
-
-
 # If your have any question or feature request, please feel free to join slack for commercial support
 ## Slack
 [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
