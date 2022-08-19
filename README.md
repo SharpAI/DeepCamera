@@ -2,7 +2,7 @@
 
 DeepCamera is a sample application from sharpai-hub.
 
-## Get started on Jetson Nano/Windows/Linux/Mac)
+## Get started on Jetson Nano/Windows/Linux/Mac
 
 ### Installation
 - Register account on [DeepCamera website](http://dp.sharpai.org:3000)
@@ -76,14 +76,14 @@ sudo apt-get install -y libhdf5-dev python3 python3-pip
 pip3 install -U pip
 sudo pip3 install docker-compose==1.27.4
 ```
-## Create Token for Telegram Bot
+
+## [How to use web gui](screenshots/how_to_config_on_web_gui.png)
+## [How to config RTSP on GUI](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
+## [Camera streaming URL format](https://shinobi.video)
+## How to create token for Telegram Bot(DOC W.I.P)
 - Create Telegram Bot through @BotFather
 - Set Telegram Token in [Configure File](https://github.com/SharpAI/DeepCamera/blob/nano/docker/production_1.env#L15)
 - Send message to the new bot you created
-
-![how to config on web gui](screenshots/how_to_config_on_web_gui.png)
-## [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
-## [Camera streaming URL format](https://shinobi.video)
 
 # If your have any question or feature request, please feel free to join slack for commercial support
 ## Slack
