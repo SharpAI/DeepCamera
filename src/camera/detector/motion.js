@@ -3,6 +3,7 @@
 var moment = require('moment');
 var config=require('./conf.json');
 var deepeye = require('./deepeye');
+var request = require('request');
 
 var s={
     group:{},
@@ -10,6 +11,26 @@ var s={
 }
 var ON_DEBUG = false
 var old_time = new Date()
+
+var detector_http_url = process.env.DETECTOR_HTTP_URL || 'None'
+function post_task_to_detector(detect_task_url,camera_id,file_path, cb) {
+    var json_request_content = {'args': [camera_id,file_path, ts]};
+    console.log('request task url: ', detect_task_url)
+    request({
+        url: detect_task_url,
+        method: "POST",
+        json: true,
+        body: json_request_content
+    }, function (error, response, body){
+        if(error) {
+            console.log(error)
+            return cb && cb(error)
+        } else {
+            console.log('task request body: ',body)
+            return cb && cb(null)
+        }
+    });
+}
 module.exports = {
   init : function(onframe){
     if(process.argv[2]&&process.argv[3]){
@@ -140,7 +161,14 @@ module.exports = {
             if(!err && filepath){
               s.has_motion = true
               var undefined_obj
-              onframe(d.id, s.has_motion,filepath,undefined_obj,start)
+
+              if(detector_http_url=='None'){
+                onframe(d.id, s.has_motion,filepath,undefined_obj,start)
+              } else {
+                post_task_to_detector(detector_http_url,d.id,filepath,function(error){
+                    
+                })
+              }
             } else {
               console.log('Need check the error of deepeye.saveCanvas2png')
             }
