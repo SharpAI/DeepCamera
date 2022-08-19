@@ -2,7 +2,7 @@
 
 DeepCamera is a sample application from sharpai-hub.
 
-## Get started on X86 Machine(Windows/Linux/Mac) / Jetson Nano (Jetpack 4.6) / More devices comming soon
+## Get started on Jetson Nano/Windows/Linux/Mac)
 
 ### Installation
 - Register account on [DeepCamera website](http://dp.sharpai.org:3000)
