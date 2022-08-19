@@ -1,0 +1,9 @@
+FROM shareai/face_detector_base_l4t:r32.6.1
+
+ADD ./assets/detection/requirements.txt /root/requirements.txt
+RUN pip install -r /root/requirements.txt
+ADD . /root/detection
+WORKDIR /root/detection
+RUN pip install -r requirements.txt && \
+    rm -rf /root/detection/assets && \
+    python test.py
