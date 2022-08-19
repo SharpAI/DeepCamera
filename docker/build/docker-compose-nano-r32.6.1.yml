@@ -18,17 +18,17 @@ services:
   embedding:
     image: shareai/embedding:nano_r32.6.1
     build:
-      context: ./embedding
+      context: ../../src/embedding
       dockerfile: Dockerfile.nano_r32.6.1
   face_detector:
     image: shareai/face_detector:nano_r32.6.1
     build:
-      context: ./face_detection
+      context: ../../src/face_detection
       dockerfile: Dockerfile.nano_r32.6.1
   camera:
-    image: shareai/shinobi:nano_r32.6.1
+    image: shareai/nvr:nano_r32.6.1
     build:
-      context: ./camera
+      context: ../../src/camera
       dockerfile: Dockerfile.nano_r32.6.1
   flower:
     image: shareai/flower:nano_r32.6.1

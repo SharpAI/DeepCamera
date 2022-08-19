@@ -55,46 +55,53 @@ def load_image(image_path):
     img_list[0] = prewhitened
     image = np.stack(img_list)
     return image
+preprocess = None
+embedder = None
+device = None
+def init_embedding_processor():
+    global embedder
+    global preprocess
+    global device
 
+    embedder = insightface.iresnet34(pretrained=True).cuda()
+    embedder.eval()
 
-class FaceProcessing:
-    def init_embedding_processor(self):
-        embedder = insightface.iresnet34(pretrained=True).cuda()
-        embedder.eval()
+    mean = [0.5] * 3
+    std = [0.5 * 256 / 255] * 3
+    preprocess = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize(mean, std)
+    ])
+    use_cuda = torch.cuda.is_available()
+    device = torch.device("cuda" if use_cuda else "cpu")
 
-        mean = [0.5] * 3
-        std = [0.5 * 256 / 255] * 3
-        preprocess = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize(mean, std)
-        ])
-        use_cuda = torch.cuda.is_available()
-        self.device = torch.device("cuda" if use_cuda else "cpu")
-        self.embedder = embedder
-        self.preprocess = preprocess
-        return embedder
+    return embedder
 
-    def FaceProcessingImageData2(self, img_path):
-        img_data = misc.imread(img_path)
-        img = cv2.cvtColor(img_data, cv2.COLOR_BGR2RGB)
-        return self._FaceProcessingImageData2(img)
+def FaceProcessingImageData2(img_path):
+    img_data = misc.imread(img_path)
+    img = cv2.cvtColor(img_data, cv2.COLOR_BGR2RGB)
+    return _FaceProcessingImageData2(img)
 
-    def FaceProcessingBase64ImageData2(self, base64_string):
-        sbuf = StringIO()
-        sbuf.write(base64.b64decode(base64_string))
-        pimg = Image.open(sbuf)
-        img = np.array(pimg)
-        #img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        return self._FaceProcessingImageData2(img)
+def FaceProcessingBase64ImageData2(base64_string):
+    sbuf = StringIO()
+    sbuf.write(base64.b64decode(base64_string))
+    pimg = Image.open(sbuf)
+    img = np.array(pimg)
+    #img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    return _FaceProcessingImageData2(img)
 
-    def _FaceProcessingImageData2(self, img):
-        nimg = np.transpose(img, (2,0,1))
-        resize_img = misc.imresize(nimg, [112, 112], interp='bilinear')
-        tensor = self.preprocess(resize_img)
-        with torch.no_grad():
-            features = self.embedder(tensor.unsqueeze(0).to(self.device))[0]
-            features = features.to(torch.device('cpu')).numpy().flatten() #.detach().numpy().flatten()
+def _FaceProcessingImageData2(img):
+    global embedder
+    global preprocess
+    global device
 
-            print(features[:32])
-            return features
-        return None
+    nimg = np.transpose(img, (2,0,1))
+    resize_img = misc.imresize(nimg, [112, 112], interp='bilinear')
+    tensor = preprocess(resize_img)
+    with torch.no_grad():
+        features = embedder(tensor.unsqueeze(0).to(device))[0]
+        features = features.to(torch.device('cpu')).numpy().flatten() #.detach().numpy().flatten()
+
+        print(features[:32])
+        return features
+    return None
