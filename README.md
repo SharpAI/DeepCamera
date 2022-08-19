@@ -1,188 +1,37 @@
-### Privacy is the most important issue for the AI face recognition camera. Open source and BYOD is the only way to solve privacy issue. SharpAI DeepCamera provides private deployment architecture to save all your information on your own devices.
+# Face Recognition/Person Detection NVR
 
-# What's SharpAI DeepCamera
-SharpAI is open source stack for machine learning engineering with private deployment and AutoML for edge computing.  DeepCamera is application of SharpAI designed for connect computer vision model to surveillance camera. Developers can run same code on Raspberry Pi/Android/PC/AWS to boost your AI production development.
+DeepCamera is a sample application from sharpai-hub.
 
-# DeepCamera Architecture
-![architecture](screenshots/DeepCamera_infrastructure.png)
+## Get started on X86 Machine(Windows/Linux/Mac) / Jetson Nano (Jetpack 4.6) / More devices comming soon
 
-## Demo On Youtube
-[![Demo On Youtube](http://img.youtube.com/vi/LfcBN8UCy5k/0.jpg)](https://youtu.be/LfcBN8UCy5k)
+### Installation
+- Register account on [DeepCamera website](http://dp.sharpai.org:3000)
+- Install sharpai-hub: `pip3 install sharpai-hub`
+- Login on device: `sharpai-cli login`
+- Register device: `sharpai-cli device register`
+- Start DeepCamera: `sharpai-cli deepcamera start`
 
-# Get Started on Raspberry Pi 3/4
-## Prepare System
+### Connect To Camera through NVR Gui
 
-Please install 32bit system (official raspbian)
+- NVR GUI(Shinobi) address: http://localhost:8080   
+- Default username and password is:  
+- username: user@sharpaibox.com  
+- password: SharpAI2018
 
-## Prepare Camera
+#### Tested Camera:
+- DaHua / Lorex / AMCREST: URL Path: `/cam/realmonitor?channel=1&subtype=0` Port: `554`
+- Ip Camera Lite on IOS: URL Path: `/live` Port: `8554`   
 
-Now you need to enable camera support using the raspi-config program you will have used when you first set up your Raspberry Pi. Use the cursor keys to select and open Interfacing Options, and then select Camera and follow the prompt to enable the camera.
-https://www.raspberrypi.org/documentation/configuration/camera.md
+If you are using a camera but have no idea about the RTSP URL, please file an issue or use [iSpyConnect](https://www.ispyconnect.com/cameras) to get camera streaming URL format
 
-## Prepare Docker
-Reference: [Installing Docker and Docker Compose on the Raspberry Pi in 5 Simple Steps](https://dev.to/rohansawant/installing-docker-and-docker-compose-on-the-raspberry-pi-in-5-simple-steps-3mgl)
-
-## Get source code
-```
-git clone https://github.com/SharpAI/DeepCamera
-```
-
-## Configure
-
-edit configuration on Pi, change following environment variables to PC/Server/Cloud ip address:
-
-### [docker/aws.env](docker/aws.env)
-AWS_END_POINT='<Server_IP>'  
-AWS_BUCKET=faces  
-AWS_READABLE_PREFIX='http://<Server_IP>:9000/faces/'
-
-### [docker/servers.env](docker/servers.env)
-MQTT_BROKER_ADDRESS=<Server_IP>  
-API_SERVER_ADDRESS=<Server_IP>
-## Start DeepCamera
-```
-cd DeepCamera  
-./run-on-rpi.sh start
-```
-# Label on GUI, Train on device
-
-To train face recogniton model, you need to tell AI the pictures belongs to whom AKA label dataset.  
-Most used method is save pictures into different folders, then train them. It will cost so much time.  
-SharpAI leverages AutoML to label/train/deploy face recognition model.  SharpAI web/mobile GUI show  
-detected faces, user can label the face picture(Name Unknown) on it, when server receives labelling data,  
-it sends to device, then device will train face recognition model on edge device. When there's good model  
-trained on device, the device will send recognition result to server to show result on web/mobile GUI.  
-
-## 1. Use API server web gui to label and train train face recognition model
-```
-cat docker/workaipython/ro_serialno 
-82f28703d001
-```
-`82f28703d001` is device ID.   
-
-Access http://165.232.62.29:3000/
-
-![how to config on web gui](screenshots/how_to_config_on_web_gui.png)
-
-## 2. Use Mobile APP to label and train face recognition model on device
-### Get device serial number
-```
-cat docker/workaipython/ro_serialno 
-82f28703d001
-```
-`82f28703d001` is device ID.    
-Generate QRCode of device ID
-
-### Download and install [SharpAI Mobile APP](https://github.com/SharpAI/SharpAIMobileApp/releases/download/3.0.2/debug.apk)
-
-### [Configure on Mobile APP](docs/configure_on_mobile.md)
-
-# In case of you have no Raspberry Pi Camera
-If you don't have camera module for raspberry pi for now,   
-you can order one or connect to your home surveillance camera   
-when you know the ip and password of it.
-
-Access to raspberry pi's 8080 port.
-http://device_ip:8080   
-Default username and password is:  
-username: user@sharpaibox.com  
-password: SharpAI2018
-
-This is open source NVR project Shinobi video.  
-It supports thousands kinds of surveillance camera,  
-if you are confident with DIY your own NVR server,  
-you can checkout following guide:  
-## [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
-## [The Shinobi NVR's document for camera streaming URL format](https://shinobi.video)
-
-# Develop your own Application GUI with DeepCamera API Server
-If you don't like the GUI or you want to develop your own application.  
-You can use following API:  
-
-### Get device serial number
-```
-cat docker/workaipython/ro_serialno 
-82f28703d001
-```
-`82f28703d001` is device ID
-### Create User on API Server
-REST API:
-```
-curl -X POST -H "Content-type: application/json" http://localhost:3000/api/v1/sign-up -d '{"username": "test11", "email": "xxxx@xxx.xx", "password": "xxxxxx"}'
-```
-Response:
-```
-{
-  "success": true
-}
-```
-### Get Token of created user
-REST API:
-```
-curl -X POST -H "Content-type: application/json" http://localhost:3000/api/v1/login/ -d '{"username": "test11", "email": "xxxx@xxx.xx", "password": "123456"}'
-```
-Response:
-```
-{
-  "status": "success",
-  "data": {
-    "authToken": "t6QsPaU3VdbfUQMkNIf6I3MDtox29WLrPJRAKkOCfpc",
-    "userId": "tiK8RYG87sGJAErdB"
-  }
-}
-```
-### Create Group on API Server
-Rest API:
-
-Fill in `X-Auth-Token` and `X-User-Id` in previous response.
-```
-curl -X POST -H "X-Auth-Token: t6QsPaU3VdbfUQMkNIf6I3MDtox29WLrPJRAKkOCfpc" -H "X-User-Id: tiK8RYG87sGJAErdB" http://localhost:3000/api/v1/groups -d "name=group01"
-```
-Response:
-```
-{
-  "groupId": "e309ff8c7a3a8ceb4011e86e"
-}
-```
-### Add device to Group on API Server
-REST API:
-Replace `X-Auth-Token` and `X-User-Id`.
-Replace group id in requesting URL: http://localhost:3000/api/v1/groups/`e309ff8c7a3a8ceb4011e86e`/devices
-```
-curl -X POST -H "X-Auth-Token: t6QsPaU3VdbfUQMkNIf6I3MDtox29WLrPJRAKkOCfpc" -H "X-User-Id: tiK8RYG87sGJAErdB" -H "Content-type: application/json" http://localhost:3000/api/v1/groups/e309ff8c7a3a8ceb4011e86e/devices -d '{"uuid": "82f28703d001", "deviceName": "testDevice", "name":"testdevice","type": "inout"}'
-```
-Response:
-```
-{
-  "success": true
-}
-```
-
-Then restart DeepCamera service.
-### API Server document can be found here: [SharpAI/ApiServer](https://github.com/SharpAI/ApiServer#full-api-document)
-
-### You can also develop/debug code on your PC [How to run DeepCamera On PC](docs/develop_on_pc.md)
-
-
-# Deploy your own API_Server on X86/Cloud Server
-Now, you got the idea of DeepCamera,  
-the public testing server is open to the internet.  
-You can deploy your own API server on your OWN device.  
-
-```
-git clone https://github.com/SharpAI/DeepCamera
-cd DeepCamera
-./start-cloud.sh start
-```
-You need ip address of private cloud server on next step (replace ip address to <Server_IP> on next step).  
-If you don't want to setup your own server for now, a test server can be used for evaluation, the ip address of test server is 165.232.62.29
-
-
-# If your have any question or feature request, please feel free to join slack for commercial support
-## Slack
-[Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
-
-## Feature List
+## Features 
+- [x] Install with SharpAI Hub CLI
+- [x] FFMpeg with Nvidia Nano hardware decoder
+- [x] Face Detector with Nvidia Nano GPU [TensorRT MTCNN](https://github.com/jkjung-avt/tensorrt_demos)
+- [x] Face Embedding with Nvidia Nano GPU [Pytorch](https://github.com/nizhib/pytorch-insightface) [InsightFace](https://github.com/deepinsight/insightface) 
+- [x] Person Detection with GPU
+- [x] Integrate with telegram bot API
+- [x] Porting to Jetson Nano 
 - [x] High accurate Face Recognition
 - [x] Face Detection
 - [x] Inference on ARM Mali GPU
@@ -200,5 +49,44 @@ If you don't want to setup your own server for now, a test server can be used fo
 - [x] Native raspberry pi camera support
 - [x] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
 - [x] Image upload to AWS or on premise AWS compatiable server(MINIO)
+## Todos
+- [ ] Integration with Home Assistant
+
+## Commercial Version
+- Provide real time pipeline on edge device     
+- E2E pipeline to support model customization  
+- Cluster on the edge  
+- Port to specific edge device/chipset
+- Voice application (ASR/KWS) end to end pipeline  
+- ReID model   
+- Behavior analysis model    
+- Transformer model  
+- Contrastive learning  
+- [Click to join sharpai slack channel for commercial support](https://sharpai-invite-automation.herokuapp.com/)
+
+# DeepCamera Architecture
+![architecture](screenshots/DeepCamera_infrastructure.png)
+
+## Demo On Youtube
+[![Demo On Youtube](http://img.youtube.com/vi/LfcBN8UCy5k/0.jpg)](https://youtu.be/LfcBN8UCy5k)
+
+##  Install Docker-compose on Jetson Nano
+```
+sudo apt-get install -y libhdf5-dev python3 python3-pip
+pip3 install -U pip
+sudo pip3 install docker-compose==1.27.4
+```
+## Create Token for Telegram Bot
+- Create Telegram Bot through @BotFather
+- Set Telegram Token in [Configure File](https://github.com/SharpAI/DeepCamera/blob/nano/docker/production_1.env#L15)
+- Send message to the new bot you created
+
+![how to config on web gui](screenshots/how_to_config_on_web_gui.png)
+## [Detail information](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
+## [Camera streaming URL format](https://shinobi.video)
+
+# If your have any question or feature request, please feel free to join slack for commercial support
+## Slack
+[Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
 ## [Contributions](Contributions.md)
