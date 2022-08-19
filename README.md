@@ -1,30 +1,39 @@
 # Face Recognition/Person Detection NVR
+DeepCamera is a face recongnition NVR which can be deployed with sharpai-hub.
 
-DeepCamera is a sample application from sharpai-hub.
+# DeepCamera Architecture
+![architecture](screenshots/DeepCamera_infrastructure.png)
 
-## Get started on Jetson Nano/Windows/Linux/Mac
+# Get started on Jetson Nano/Windows/Linux/Mac
 
-### Installation
+## Installation
 - Register account on [DeepCamera website](http://dp.sharpai.org:3000)
 - Install sharpai-hub: `pip3 install sharpai-hub`
 - Login on device: `sharpai-cli login`
 - Register device: `sharpai-cli device register`
 - Start DeepCamera: `sharpai-cli deepcamera start`
 
-### Connect To Camera through NVR Gui
+## Connect To Camera through NVR Gui
 
 - NVR GUI(Shinobi) address: http://localhost:8080   
 - Default username and password is:  
 - username: user@sharpaibox.com  
 - password: SharpAI2018
 
-#### Tested Camera:
+## Tested Camera:
 - DaHua / Lorex / AMCREST: URL Path: `/cam/realmonitor?channel=1&subtype=0` Port: `554`
 - Ip Camera Lite on IOS: URL Path: `/live` Port: `8554`   
 
-If you are using a camera but have no idea about the RTSP URL, please file an issue or use [iSpyConnect](https://www.ispyconnect.com/cameras) to get camera streaming URL format
+# Support
+If you are using a camera but have no idea about the RTSP URL, please join SharpAI community for help or use [iSpyConnect](https://www.ispyconnect.com/cameras) to get camera streaming URL format. SharpAI provides commercial support to companies which want to deploy AI Camera application to real world.
 
-## Features 
+## [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
+
+
+
+
+
+# Features 
 - [x] Install with SharpAI Hub CLI
 - [x] FFMpeg with Nvidia Nano hardware decoder
 - [x] Face Detector with Nvidia Nano GPU [TensorRT MTCNN](https://github.com/jkjung-avt/tensorrt_demos)
@@ -49,10 +58,10 @@ If you are using a camera but have no idea about the RTSP URL, please file an is
 - [x] Native raspberry pi camera support
 - [x] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
 - [x] Image upload to AWS or on premise AWS compatiable server(MINIO)
-## Todos
+# Todos
 - [ ] Integration with Home Assistant
 
-## Commercial Version
+# Commercial Version
 - Provide real time pipeline on edge device     
 - E2E pipeline to support model customization  
 - Cluster on the edge  
@@ -64,19 +73,13 @@ If you are using a camera but have no idea about the RTSP URL, please file an is
 - Contrastive learning  
 - [Click to join sharpai slack channel for commercial support](https://sharpai-invite-automation.herokuapp.com/)
 
-# DeepCamera Architecture
-![architecture](screenshots/DeepCamera_infrastructure.png)
-
-## Demo On Youtube
-[![Demo On Youtube](http://img.youtube.com/vi/LfcBN8UCy5k/0.jpg)](https://youtu.be/LfcBN8UCy5k)
-
-##  Install Docker-compose on Jetson Nano
+# FAQ
+##  How to install Docker-compose on Jetson Nano
 ```
 sudo apt-get install -y libhdf5-dev python3 python3-pip
 pip3 install -U pip
 sudo pip3 install docker-compose==1.27.4
 ```
-
 ## [How to use web gui](screenshots/how_to_config_on_web_gui.png)
 ## [How to config RTSP on GUI](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
 ## [Camera streaming URL format](https://shinobi.video)
@@ -84,9 +87,5 @@ sudo pip3 install docker-compose==1.27.4
 - Create Telegram Bot through @BotFather
 - Set Telegram Token in [Configure File](https://github.com/SharpAI/DeepCamera/blob/nano/docker/production_1.env#L15)
 - Send message to the new bot you created
-
-# If your have any question or feature request, please feel free to join slack for commercial support
-## Slack
-[Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
 ## [Contributions](Contributions.md)
