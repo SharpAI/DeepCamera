@@ -36,4 +36,4 @@ RUN cp sql/shinobi.sample.sqlite /opt/nvr/conf.sqlite
 VOLUME ["/opt/nvr/videos"]
 
 EXPOSE 8080
-ENTRYPOINT ["/opt/nvr/docker-entrypoint.sh" ]
+#ENTRYPOINT ["/opt/nvr/docker-entrypoint.sh" ]
