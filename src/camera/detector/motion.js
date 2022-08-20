@@ -14,7 +14,7 @@ var old_time = new Date()
 
 var detector_http_url = process.env.DETECTOR_HTTP_URL || 'None'
 function post_task_to_detector(detect_task_url,camera_id,file_path, cb) {
-    var json_request_content = {'args': [camera_id,file_path, ts]};
+    var json_request_content = {'args': [camera_id,file_path]};
     console.log('request task url: ', detect_task_url)
     request({
         url: detect_task_url,
@@ -166,7 +166,7 @@ module.exports = {
                 onframe(d.id, s.has_motion,filepath,undefined_obj,start)
               } else {
                 post_task_to_detector(detector_http_url,d.id,filepath,function(error){
-                    
+                  console.log('the post task sent to detector')  
                 })
               }
             } else {
@@ -184,7 +184,13 @@ module.exports = {
       var start = new Date();
       s.has_motion = true
       var undefined_obj
-      onframe(d.id, true,d.filename,undefined_obj,start)
+      if(detector_http_url=='None'){
+        onframe(d.id, s.has_motion,filepath,undefined_obj,start)
+      } else {
+        post_task_to_detector(detector_http_url,d.id,d.filename,function(error){
+            console.log('the post task sent to detector')  
+          })
+      }
     }
     io.on('f',function(d){
         switch(d.f){
