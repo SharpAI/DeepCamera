@@ -1,26 +1,38 @@
-# Face Recognition/Person Detection NVR
-DeepCamera is a face recongnition NVR which can be deployed with sharpai-hub.
+# AI Empowered NVR 
 
-# DeepCamera Architecture
-![architecture](screenshots/DeepCamera_infrastructure.png)
+SharpAI help you deploy AI empowered NVR on your edge device with several lines of CLI.
 
-# Get started on Jetson Nano/Windows/Linux/Mac
-
-## Installation
-- Register account on [DeepCamera website](http://dp.sharpai.org:3000)
+## Install SharpAI on Jetson Nano/Xavier AGX/Windows/Linux/Mac
+- Register account on [SharpAI website](http://dp.sharpai.org:3000)
 - Install sharpai-hub: `pip3 install sharpai-hub`
 - Login on device: `sharpai-cli login`
 - Register device: `sharpai-cli device register`
-- Start DeepCamera: `sharpai-cli deepcamera start`
 
-## Connect To Camera through NVR Gui
+# Start Applications
+
+## DeepCamera Face Recognition NVR
+DeepCamera is a face recongnition NVR
+
+```
+sharpai-cli deepcamera start
+```
+
+## Yolo Parking
+Maintaining empty parking spot count using YOLO real-time vehicle detection
+
+```
+sharpai-cli yoloparking start
+```
+### Then access Linux GUI http://localhost:8000 w/ pre-configured noVNC
+
+# Connect To Camera through NVR Gui
 
 - NVR GUI(Shinobi) address: http://localhost:8080   
 - Default username and password is:  
 - username: user@sharpaibox.com  
 - password: SharpAI2018
 
-## Tested Camera:
+# Tested Camera:
 - DaHua / Lorex / AMCREST: URL Path: `/cam/realmonitor?channel=1&subtype=0` Port: `554`
 - Ip Camera Lite on IOS: URL Path: `/live` Port: `8554`   
 
@@ -30,8 +42,8 @@ If you are using a camera but have no idea about the RTSP URL, please join Sharp
 ## [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
 
-
-
+# DeepCamera Architecture
+![architecture](screenshots/DeepCamera_infrastructure.png)
 
 # Features 
 - [x] Install with SharpAI Hub CLI
