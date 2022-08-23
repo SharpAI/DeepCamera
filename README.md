@@ -1,6 +1,6 @@
 # AI Empowered NVR 
 
-SharpAI help you deploy AI empowered NVR on your edge device with several lines of CLI.
+SharpAI help you deploy AI empowered NVR on your edge device in minutes.
 
 ## Install SharpAI on Jetson Nano/Xavier AGX/Windows/Linux/Mac
 - Register account on [SharpAI website](http://dp.sharpai.org:3000)
