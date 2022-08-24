@@ -26,11 +26,7 @@ sharpai-cli yoloparking start
 ### Then access Linux GUI http://localhost:8000 w/ pre-configured noVNC
 
 # Connect To Camera through NVR Gui
-
-- NVR GUI(Shinobi) address: http://localhost:8080   
-- Default username and password is:  
-- username: user@sharpaibox.com  
-- password: SharpAI2018
+- NVR GUI address: http://localhost:8080   
 
 # Tested Camera:
 - DaHua / Lorex / AMCREST: URL Path: `/cam/realmonitor?channel=1&subtype=0` Port: `554`
