@@ -20,7 +20,7 @@ sharpai-cli deepcamera start
 ```
 
 ## Yolo Parking
-Maintaining empty parking spot count using YOLO real-time vehicle detection. [Original Link](https://github.com/ankit1khare/Smart-Park-with-YOLO-V3)
+Maintaining empty parking spot count using YOLO real-time vehicle detection, this is an original version for evaluation, we are planning to bring yolov7 to this interesting application. [Github Link](https://github.com/SharpAI/YoloParking)
 
 ```
 sharpai-cli yoloparking start
