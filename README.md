@@ -30,6 +30,15 @@ You need to get the RTSP url of your camera and add it to NVR. Then NVR engine w
 
 - NVR GUI address: http://localhost:8080   
 
+# Tested Devices
+
+## Edge AI Devices / Workstation
+- [Jetson Nano(ReComputer j10)](https://www.seeedstudio.com/Jetson-10-1-H0-p-5335.html)
+- Jetson Xavier AGX
+- MacOS 12.4
+- Windows 11
+- Ubuntu 20.04
+
 ## Tested Camera:
 - DaHua / Lorex / AMCREST: URL Path: `/cam/realmonitor?channel=1&subtype=0` Port: `554`
 - Ip Camera Lite on IOS: URL Path: `/live` Port: `8554`   
@@ -38,7 +47,6 @@ You need to get the RTSP url of your camera and add it to NVR. Then NVR engine w
 If you are using a camera but have no idea about the RTSP URL, please join SharpAI community for help or use [iSpyConnect](https://www.ispyconnect.com/cameras) to get camera streaming URL format. SharpAI provides commercial support to companies which want to deploy AI Camera application to real world.
 
 ## [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
-
 
 # DeepCamera Architecture
 ![architecture](screenshots/DeepCamera_infrastructure.png)
