@@ -23,10 +23,10 @@
 								<form id="login-form" method="post" style="display: block;">
                                     <input type="hidden" name="machineID" id="machineID" value="">
 									<div class="form-group">
-										<input type="text" name="mail" id="email" tabindex="1" class="monospace form-control" placeholder="Email" value="">
+										<input type="text" name="mail" id="email" tabindex="1" class="monospace form-control" placeholder="Email" value="user@sharpaibox.com">
 									</div>
 									<div class="form-group">
-										<input type="password" name="pass" id="pass" tabindex="2" class="monospace form-control" placeholder="Password">
+										<input type="password" name="pass" id="pass" tabindex="2" class="monospace form-control" placeholder="Password" value="SharpAI2018">
 									</div>
 									<div class="form-group f_i_input f_i_ldap" style="display:none">
 										<input name="key" id="key" tabindex="2" class="monospace form-control" placeholder="Group Key">
@@ -93,6 +93,7 @@
     }
     $(document).ready(function(){
         $('#machineID').val($.ccio.auth)
+        $('#login-form').submit()
     })
     $.ccio.f.submit(function(e){
         $('input').css('border-color','')
