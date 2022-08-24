@@ -2,7 +2,7 @@
 
 SharpAI help you deploy AI empowered NVR on your edge device in minutes.
 
-## Install SharpAI on Jetson Nano/Xavier AGX/Windows/Linux/Mac
+# Install SharpAI on Jetson Nano/Xavier AGX/Windows/Linux/Mac
 - Register account on [SharpAI website](http://dp.sharpai.org:3000)
 - Install sharpai-hub: `pip3 install sharpai-hub`
 - Login on device: `sharpai-cli login`
@@ -25,10 +25,12 @@ sharpai-cli yoloparking start
 ```
 ### Then access Linux GUI http://localhost:8000 w/ pre-configured noVNC
 
-# Connect To Camera through NVR Gui
+# Use GUI to connect your RTSP camera to NVR
+You need to get the RTSP url of your camera and add it to NVR. Then NVR engine will pull video stream through RTSP protocol from your camera, after extracting frame from video stream, the extracted frame will be sent to detector for AI tasks.
+
 - NVR GUI address: http://localhost:8080   
 
-# Tested Camera:
+## Tested Camera:
 - DaHua / Lorex / AMCREST: URL Path: `/cam/realmonitor?channel=1&subtype=0` Port: `554`
 - Ip Camera Lite on IOS: URL Path: `/live` Port: `8554`   
 
