@@ -2,7 +2,7 @@
 
 SharpAI help you deploy AI empowered NVR on your edge device in minutes.
 
-# Install SharpAI on Jetson Nano/Xavier AGX/Windows/Linux/Mac
+# Install SharpAI on Jetson Nano/Xavier AGX/Windows/Linux/MacOS
 - Register account on [SharpAI website](http://dp.sharpai.org:3000)
 - Install sharpai-hub: `pip3 install sharpai-hub`
 - Login on device: `sharpai-cli login`
