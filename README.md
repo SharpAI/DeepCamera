@@ -23,7 +23,7 @@ Maintaining empty parking spot count using YOLO real-time vehicle detection. [Or
 ```
 sharpai-cli yoloparking start
 ```
-### Then access Linux GUI http://localhost:8000 w/ pre-configured noVNC
+#### Linux Desktop GUI is accessible through http://localhost:8000, thanks to open source web vnc client [noVNC](https://novnc.com/info.html), we don't have to install any software on the computer to remote access a edge device.
 
 # Connect RTSP camera source to NVR
 You need to get the RTSP url of your camera and add it to NVR. Then NVR engine will pull video stream through RTSP protocol from your camera, after extracting frame from video stream, the extracted frame will be sent to detector for AI tasks.
