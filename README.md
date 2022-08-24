@@ -25,7 +25,7 @@ sharpai-cli yoloparking start
 ```
 ### Then access Linux GUI http://localhost:8000 w/ pre-configured noVNC
 
-# Use GUI to connect your RTSP camera to NVR
+# Connect RTSP camera source to NVR
 You need to get the RTSP url of your camera and add it to NVR. Then NVR engine will pull video stream through RTSP protocol from your camera, after extracting frame from video stream, the extracted frame will be sent to detector for AI tasks.
 
 - NVR GUI address: http://localhost:8080   
