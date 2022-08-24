@@ -33,7 +33,7 @@ You need to get the RTSP url of your camera and add it to NVR. Then NVR engine w
 # Tested Devices
 
 ## Edge AI Devices / Workstation
-- [Jetson Nano(ReComputer j10)](https://www.seeedstudio.com/Jetson-10-1-H0-p-5335.html)
+- [Jetson Nano (ReComputer j1010)](https://www.seeedstudio.com/Jetson-10-1-H0-p-5335.html)
 - Jetson Xavier AGX
 - MacOS 12.4
 - Windows 11
