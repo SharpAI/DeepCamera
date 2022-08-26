@@ -8,6 +8,10 @@ SharpAI help you deploy AI empowered NVR on your edge device in minutes.
 - Login on device: `sharpai-cli login`
 - Register device: `sharpai-cli device register`
 
+## If you don't have python3 or pip3
+### [Install `python3`](https://www.python.org/downloads)
+### [Install `pip`](https://pip.pypa.io/en/stable/installation)
+
 # Start Applications
 
 ## DeepCamera Face Recognition NVR
