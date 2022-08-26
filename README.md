@@ -8,10 +8,6 @@ SharpAI help you deploy AI empowered NVR on your edge device in minutes.
 - Login on device: `sharpai-cli login`
 - Register device: `sharpai-cli device register`
 
-## If you don't have python3 or pip3
-### [Install `python3`](https://www.python.org/downloads)
-### [Install `pip`](https://pip.pypa.io/en/stable/installation)
-
 # Start Applications
 
 ## DeepCamera Face Recognition NVR
@@ -85,6 +81,9 @@ If you are using a camera but have no idea about the RTSP URL, please join Sharp
 - [Click to join sharpai slack channel for commercial support](https://sharpai-invite-automation.herokuapp.com/)
 
 # FAQ
+
+## [How to install python3](https://www.python.org/downloads)
+## [How to install pip3](https://pip.pypa.io/en/stable/installation)
 ##  How to install Docker-compose on Jetson Nano
 ```
 sudo apt-get install -y libhdf5-dev python3 python3-pip
