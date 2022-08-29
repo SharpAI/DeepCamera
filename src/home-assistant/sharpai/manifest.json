@@ -1,0 +1,10 @@
+{
+    "domain": "sharpai",
+    "name": "detector",
+    "documentation": "Not yet available",
+    "requirements": [
+    ],
+    "codeowners": [],
+    "iot_class": "local_polling",
+    "loggers": ["sharpai"]
+  }
