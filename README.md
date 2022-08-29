@@ -1,6 +1,8 @@
-# AI Empowered NVR 
+# AI Empowered CCTV/NVR for your smart home
 
-SharpAI help you deploy AI empowered NVR on your edge device in minutes.
+SharpAI empowers your traditional CCTV/NVR and survallance cameras with machine learning technologies. It provides open source facial recognition based intrusion detection, fall detection and parking lot monitoring with the inference engine on your local device. SharpAI team is working on home-assistant integration, we are planning to release it by the end of 09/2022.
+
+SharpAI-hub is the cloud hosting for AI applications which help you deploy AI applications with your CCTV camera on your edge device in minutes. 
 
 # Install SharpAI on Jetson Nano/Xavier AGX/Windows/Linux/MacOS
 - Register account on [SharpAI website](http://dp.sharpai.org:3000)
