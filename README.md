@@ -1,6 +1,8 @@
-# AI Empowered NVR 
+# AI Empowered CCTV/NVR for your smart home
 
-SharpAI help you deploy AI empowered NVR on your edge device in minutes.
+SharpAI empowers your traditional CCTV/NVR and surveillance cameras with machine learning technologies. It provides open source facial recognition based intrusion detection, fall detection and parking lot monitoring with the inference engine on your local device. SharpAI team is working on home-assistant integration, we are planning to release it by the end of 09/2022.
+
+SharpAI-hub is the cloud hosting for AI applications which help you deploy AI applications with your CCTV camera on your edge device in minutes. 
 
 # Install SharpAI on Jetson Nano/Xavier AGX/Windows/Linux/MacOS
 - Register account on [SharpAI website](http://dp.sharpai.org:3000)
@@ -26,6 +28,19 @@ Maintaining empty parking spot count using YOLO real-time vehicle detection, thi
 sharpai-cli yoloparking start
 ```
 #### Linux Desktop GUI is accessible through http://localhost:8000, thanks to open source web vnc client [noVNC](https://novnc.com/info.html), we don't have to install any software on the computer to remote access a edge device.
+
+## Fall Detection
+
+Using Tiny-YOLO oneclass to detect each person in the frame and use AlphaPose to get skeleton-pose and then use ST-GCN model to predict action from every 30 frames of each person tracks. [Github Link](https://github.com/SharpAI/FallDetection)
+```
+sharpai-cli falldetection start
+```
+#### Linux Desktop GUI is accessible through http://localhost:8000, thanks to open source web vnc client [noVNC](https://novnc.com/info.html), we don't have to install any software on the computer to remote access a edge device.
+
+#### Todo
+- [ ] Preview image size is too large
+- [ ] Has an exception when run on X86
+- [x] AGX tested
 
 # Connect RTSP camera source to NVR
 You need to get the RTSP url of your camera and add it to NVR. Then NVR engine will pull video stream through RTSP protocol from your camera, after extracting frame from video stream, the extracted frame will be sent to detector for AI tasks.
@@ -53,33 +68,7 @@ If you are using a camera but have no idea about the RTSP URL, please join Sharp
 # DeepCamera Architecture
 ![architecture](screenshots/DeepCamera_infrastructure.png)
 
-# Features 
-- [x] Install with SharpAI Hub CLI
-- [x] FFMpeg with Nvidia Nano hardware decoder
-- [x] Face Detector with Nvidia Nano GPU [TensorRT MTCNN](https://github.com/jkjung-avt/tensorrt_demos)
-- [x] Face Embedding with Nvidia Nano GPU [Pytorch](https://github.com/nizhib/pytorch-insightface) [InsightFace](https://github.com/deepinsight/insightface) 
-- [x] Person Detection with GPU
-- [x] Integrate with telegram bot API
-- [x] Porting to Jetson Nano 
-- [x] High accurate Face Recognition
-- [x] Face Detection
-- [x] Inference on ARM Mali GPU
-- [x] Support Android TF Lite(GPU/CPU/NPU)
-- [x] Support open source embedded linux
-- [x] Control from mobile application
-- [x] Management System for devices
-- [x] Push Notification to Mobile Device
-- [x] Object Detection
-- [x] Distributed System based on celery
-- [x] Plugin to process video by Shinobi CCTV
-- [x] Application on Android to decode video with hw acc
-- [x] Motion Detection with Android GPU
-- [x] Lable and train from Mobile to Edge Device
-- [x] Native raspberry pi camera support
-- [x] Labelling server and application is down, need BYOD document [API server repo](https://github.com/SharpAI/ApiServer)
-- [x] Image upload to AWS or on premise AWS compatiable server(MINIO)
-# Todos
-- [ ] Integration with Home Assistant
+# [DeepCamera Feature List](docs/DeepCamera_Features.md)
 
 # Commercial Version
 - Provide real time pipeline on edge device     
@@ -94,6 +83,9 @@ If you are using a camera but have no idea about the RTSP URL, please join Sharp
 - [Click to join sharpai slack channel for commercial support](https://sharpai-invite-automation.herokuapp.com/)
 
 # FAQ
+
+## [How to install python3](https://www.python.org/downloads)
+## [How to install pip3](https://pip.pypa.io/en/stable/installation)
 ##  How to install Docker-compose on Jetson Nano
 ```
 sudo apt-get install -y libhdf5-dev python3 python3-pip
