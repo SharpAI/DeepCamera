@@ -1,4 +1,4 @@
-# Turn surveillance cameras and CCTV into intrusion detection AI camera with Home-Assistant
+# Intrusion detection AI camera with Home-Assistant
 
 DeepCamera empowers your traditional surveillance cameras and CCTV/NVR with machine learning technologies. 
 It provides open source facial recognition based intrusion detection, fall detection and parking lot monitoring with the inference engine on your local device.
@@ -11,15 +11,18 @@ SharpAI-hub is the cloud hosting for AI applications which help you deploy AI ap
 - Login on device: `sharpai-cli login`
 - Register device: `sharpai-cli device register`
 
-# Start Applications
-## 1. DeepCamera, intrusion detection AI camera with Home-Assistant
-### Following command will start DeepCamera and Home-Assistant with docker-compose.
+# Start DeepCamera
+- DeepCamera is a face recongnition NVR leverages [MTCNN](https://arxiv.org/abs/1604.02878) for face detection and [InsightFace's ArcFace](https://arxiv.org/abs/1801.07698) for face recognition, it leverages SVM from SKLearn as classifier and a private implemetation from Frank Zuo to fine-tune accuracy. To handle unbalanced dataset distribution which is most likely seen when you start to labelling unknown faces, we deployed upsampling policy to your own labelled face dataset. All the inference code as well as AutoML training code are running on your own device. 
+- The DeepCamera commerical version which had been deployed to a large-scale AI smart city construction project has strong backend design to support large scale edge device cluster with redis. The commerical version provides private cloud deployment for security requirement.
+- Learned from the open source community, it was a painful procedure to deploy a private cloud solution on your own device, we provide free cloud host for evaluation and non-commericial use with limited storage quota, so you can easily use following command line to setup DeepCamera on your own device in 5-minutes:
+
+### 1. Following command will start DeepCamera and Home-Assistant with docker-compose.
 ```
 sharpai-cli deepcamera start
 ```
-### Land-on Home-Assistant with URL: http://localhost:8123
-### Add your Camera through Home-Assistant camera integration
-### Added SharpAI configuration to configuration.yaml
+### 2. Land-on Home-Assistant with URL: http://localhost:8123
+### 3. Add your Camera through Home-Assistant camera integration
+### 4. Added SharpAI configuration to configuration.yaml
 ```
 stream:
   ll_hls: true
@@ -32,11 +35,13 @@ image_processing:
       - entity_id: camera.<camera_entity_id>
     scan_interval: 1
 ```
-### Access detection result on [SharpAI website](http://dp.sharpai.org:3000)
-### [Implementation detail](docs/DeepCamera_introduction.md)
+### 5. Access detection result on [SharpAI website](http://dp.sharpai.org:3000)
+### 6. Integration with Home-Assistant
+### 7. [Implementation detail](docs/DeepCamera_introduction.md)
 
-## [2. Maintaining empty parking spot count using YOLO](docs/Yolo_Parking.md)
-## [3. Fall Detection w built-in Shinobi CCTV](docs/FallDetection_with_shinobi.md)
+# Other Applications(early release)
+- [Parking lot protection](docs/Yolo_Parking.md)
+- [Fall Detection](docs/FallDetection_with_shinobi.md)
 
 # Tested Devices
 
