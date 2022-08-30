@@ -25,6 +25,7 @@ var TRACKER_ID_SILIENCE_INTERVAL = 4000 // MS, fixed value implement first
 var MAX_UNKNOWN_FRONT_FACE_IN_TRACKING = 5 // 陌生人情况下的入队列阈值
 var DEVICE_UUID_FILEPATH = process.env.DEVICE_UUID_FILEPATH || '/dev/ro_serialno'
 var DEVICE_GROUP_ID_FILEPATH = process.env.DEVICE_GROUP_ID_FILEPATH || '/data/usr/com.deep.workai/cache/groupid.txt'
+var ENABLE_SHINOBI = process.env.ENABLE_SHINOBI || 'true'
 var cameras_tracker = {}
 
 var REDIS_HOST = process.env.REDIS_HOST || "redis"
@@ -870,8 +871,9 @@ async function downloadImages(json){
   //console.log(json)
   return json
 }
-
-motion.init(onframe)
+if(ENABLE_SHINOBI == 'true'){
+  motion.init(onframe)
+}
 if(UPLOAD_IMAGE_SERVICE_ENABLED){
   upload_listener.init(onframe)
 }
