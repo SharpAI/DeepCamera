@@ -6,7 +6,9 @@ import logging
 import os
 import sys
 import time
+import uuid
 import voluptuous as vol
+import requests
 
 from homeassistant.components.image_processing import (
     CONF_CONFIDENCE,
@@ -29,7 +31,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from homeassistant.util.pil import draw_box
-
+from PIL import Image, ImageDraw, UnidentifiedImageError
 _LOGGER = logging.getLogger(__name__)
 
 ATTR_MATCHES = "matches"
@@ -114,6 +116,7 @@ class SharpAI(ImageProcessingEntity):
             self._name = name
         else:
             name = split_entity_id(camera_entity)[1]
+            self._camera_id = name
             self._name = f"SharpAI {name}"
         # self._doods = doods
         # self._file_out = config[CONF_FILE_OUT]
@@ -192,7 +195,18 @@ class SharpAI(ImageProcessingEntity):
         # self._total_matches = 0
         # self._last_image = None
         # self._process_time = 0
+        self._unknown_count = 0
+        self._familiar_count = 0
+        self._person_count = 0
         pass
+    @property
+    def unknown_count(self):
+        """Return unknown count of detection result."""
+        return self._unknown_count
+    @property
+    def familiar_count(self):
+        """Return familiar person count of detection result."""
+        return self._familiar_count
     @property
     def camera_entity(self):
         """Return camera entity id from process pictures."""
@@ -207,7 +221,7 @@ class SharpAI(ImageProcessingEntity):
     def state(self):
         """Return the state of the entity."""
         #return self._total_matches
-        return 0
+        return {'unknown':self._unknown_count,'familiar':self._familiar_count}
 
     @property
     def extra_state_attributes(self):
@@ -268,14 +282,55 @@ class SharpAI(ImageProcessingEntity):
 
     def process_image(self, image):
         # """Process the image."""
-        _LOGGER.info("Processing Image")
-        # try:
-        #     img = Image.open(io.BytesIO(bytearray(image))).convert("RGB")
-        # except UnidentifiedImageError:
-        #     _LOGGER.warning("Unable to process image, bad data")
-        #     return
-        # img_width, img_height = img.size
+        try:
+            img = Image.open(io.BytesIO(bytearray(image))).convert("RGB")
+            fileurl = r'/opt/nvr/detector/images/' +self._camera_id.replace(' ','_') + '_' + str(uuid.uuid4()) + r'.jpg'
+            payloads = {'fileurl':fileurl,'cameraid':self._camera_id}
+            img.save(fileurl)
+            r = requests.get('http://detector_plugin:3000/api/submit',params=payloads)
+        except UnidentifiedImageError:
+            _LOGGER.warning("Unable to process image, bad data")
+        except Exception as e:
+            _LOGGER.error("Can't conver image to jpeg format")
+            _LOGGER.error(e)
+            return
+        img_width, img_height = img.size
+        _LOGGER.info(f"Processing Image wxh: {img_width}x{img_height}, response {r.json()}")
+        response = r.json()
+        
+        if response['status'] == 'ok':
+            self._unknown_count = 0
+            self._familiar_count = 0
+            
+            {'status': 'ok', 'detection_result': [{'result': {'style': 'front', 'face_fuzziness': 3248.8831953805766, 'recognized': True, 'detected': True, 'face_id': '16608023019230000', 'accuracy': 99, 'img_url': 'https://deepcamera-face-recognition.s3.us-west-1.amazonaws.com/4d90c978-27f6-11ed-94f4-0242ac140006.png'}}]}
+            if len(response['detection_result']) > 0:
+                for result in response['detection_result']:
+                    if 'result' in result:
+                        if result['result']['recognized'] == True:
+                            self._familiar_count += 1
+                        else:
+                            self._unknown_count += 1
+                    elif 'activity' in response['detection_result']:
+                        if result['activity']['person_count'] >=0:
+                            self._person_count = result['activity']['person_count']
+                
 
+        #{
+        #    "status":"ok",
+        #    "detection_result":[
+        #       {
+        #          "result":{
+        #             "style":"front",
+        #             "face_fuzziness":2152.8507749292785,
+        #             "recognized":true,
+        #             "detected":true,
+        #             "face_id":"16608023019230000",
+        #             "accuracy":99
+        #          }
+        #       }
+        #    ]
+        # } 
+        
         # if self._aspect and abs((img_width / img_height) - self._aspect) > 0.1:
         #     _LOGGER.debug(
         #         "The image aspect: %s and the detector aspect: %s differ by more than 0.1",

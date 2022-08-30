@@ -357,7 +357,7 @@ function getFaceRecognitionTaskList(cameraId,cropped_images,tracking_info,curren
   })
   return face_list
 }
-function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_info,current_tracker_id){
+function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_info,current_tracker_id,callback){
   var ts = new Date().getTime()
   var timeout = setTimeout(function(){
     console.log('timeout of tack do_face_detection, manually recover it')
@@ -372,13 +372,16 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
       if(err) {
           console.log(err)
           //deepeye.delete_image(whole_file)
+          if(callback){
+            callback('error',err)
+          }
           return;
       }
       if(typeof person_count === 'undefined'){
         person_count = face_detected
       }
       var current_person_count = getCurrentPersonCount(cameraId)
-      console.log('['+cameraId+'] tid: '+current_tracker_id+' person num: '+person_count+' face num: '+face_detected+' cost: '+(new Date() - start_ts));
+      console.log('Index.js ['+cameraId+'] tid: '+current_tracker_id+' person num: '+person_count+' face num: '+face_detected+' cost: '+(new Date() - start_ts));
       setCurrentPersonCount(cameraId, person_count)
       setCurrentFaceCount(cameraId, face_detected)
       if(person_count >= 1){
@@ -419,6 +422,9 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
               current_tracker_id:current_tracker_id,
               whole_file:whole_file,
               name_sorting:false});
+            if(callback){
+              callback('skip','over flow')
+            }
             return
           }
         }
@@ -452,6 +458,15 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
           } else {
             deepeye.delete_image(whole_file)
           }
+          console.log("classify result:")
+          console.log(results)
+          if(!err){
+            if(callback){
+              callback('ok',results)
+            } else {
+              callback('error',results)
+            }
+          }
         })
       } else {
           if(GIF_UPLOADING){
@@ -463,6 +478,9 @@ function do_face_detection(cameraId,file_path,person_count,start_ts,tracking_inf
               name_sorting:false});
           } else {
             deepeye.delete_image(whole_file)
+          }
+          if(callback){
+            callback('ok',[{activity:{ person_count: person_count}}])
           }
       }
     //})
@@ -522,7 +540,7 @@ function need_save_to_delayed_process(tracking_info){
 }
 // Has motion mean in defined duration, motion detected.
 // Can define it on WEB GUI
-var onframe = function(cameraId, motion_detected, file_path, person_count, start_ts){
+var onframe = function(cameraId, motion_detected, file_path, person_count, start_ts,callback){
   ON_DEBUG && console.log('onframe '+ cameraId +' motion detected frame has motion: '+ motion_detected)
   var previous_diff = new Date().getTime() - getOldTimeStamp(cameraId)
   ON_DEBUG && console.log(previous_diff)
@@ -554,6 +572,9 @@ var onframe = function(cameraId, motion_detected, file_path, person_count, start
             ON_DEBUG && console.log('delete image due to no need save to delayed process')
             deepeye.delete_image(file_path)
           }
+          if(callback){
+            callback('async','deleyed')
+          }
       })
 
       return;
@@ -561,7 +582,7 @@ var onframe = function(cameraId, motion_detected, file_path, person_count, start
     timeline.get_tracking_info(current_tracker_id,function(error, tracking_info){
       setFaceDetectInProcessingStatus(cameraId, true);
       return do_face_detection(cameraId,file_path,person_count,
-        start_ts,tracking_info,current_tracker_id)
+        start_ts,tracking_info,current_tracker_id,callback)
     })
   } else if(is_in_tracking(cameraId)){
     // 由于现在没有使用Motion Detection，这里都不会进入
@@ -891,8 +912,8 @@ app.use('/api', router);
 app.use(express.json());
 
 router.get('/post', (request, response) => {
-    file_url = request.originalUrl
-    filename = file_url.substring(file_url.indexOf('=')+1)
+    var file_url = request.originalUrl
+    var filename = file_url.substring(file_url.indexOf('=')+1)
     console.log(filename)
     setTimeout(function(){
        var undefined_obj
@@ -901,6 +922,31 @@ router.get('/post', (request, response) => {
     }, 0)
     response.json({message: 'OK'});
     keepalive_to_montior();
+});
+
+router.get('/submit', (request, response) => {
+  var filename = request.query.fileurl
+  var cameraid = request.query.cameraid
+  //var filename = file_url.substring(file_url.indexOf('=')+1)
+  console.log(filename)
+  setTimeout(function(){
+     var undefined_obj
+     var start = new Date()
+     onframe(cameraid, true, filename, undefined_obj, start,function(err,message){
+      if(err){
+        if(err != 'ok'){
+          response.json({status:'failed',message: message});
+        } else {
+
+          response.json({status:'ok',detection_result: message});
+        }
+      } else {
+        response.json({status:'failed',message: message});
+      }
+     })
+  }, 0)
+
+  //keepalive_to_montior();
 });
 
 app.post('/post2',function(request, response) {

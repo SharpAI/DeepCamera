@@ -3,6 +3,8 @@
     "name": "detector",
     "documentation": "Not yet available",
     "requirements": [
+      "pillow==9.2.0",
+      "requests"
     ],
     "codeowners": [],
     "iot_class": "local_polling",

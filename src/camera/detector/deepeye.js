@@ -487,13 +487,13 @@ function classify_task(task_info, cb) {
         if(result && result.status === 'SUCCESS'){
           if(result.result){
             var json = JSON.parse(result.result)
-            console.log('JSON.parse(result.result)=',json)
+            ON_DEBUG && console.log('JSON.parse(result.result)=',json)
             if(!json.result || !json.result.key){
               return cb && cb(null, null)
             }
 
-            console.log('json.result.key[',json.result.key,']task_info.path',task_info.path)
-            console.log(task_info)
+            ON_DEBUG && console.log('json.result.key[',json.result.key,']task_info.path',task_info.path)
+            ON_DEBUG && console.log(task_info)
 
             if(task_info.url && task_info.url!=''){
                 console.log('face url is '+task_info.url)
@@ -520,17 +520,29 @@ function classify_task(task_info, cb) {
                       'Content-Type' : 'image/png'
                     }
                   
-                  console.log(options)
+                  ON_DEBUG && console.log(options)
                   const stream = https.request(options);
                   stream.on('response', (res) => {
-                      console.log(res.statusCode);
-                      res.pipe(process.stdout);
+                      if (res.statusCode < 400){
+                        ON_DEBUG && cconsole.log(res.statusCode);
+                        res.pipe(process.stdout);
+                        json.result.img_url = info.url
 
-                      console.log('uploaded to ' + info.url)
-                      post_recognition_result_to_api_server(json,info.url)
+                        console.log('uploaded to ' + info.url)
+                   
+                        post_recognition_result_to_api_server(json,info.url)
+
+                        delete json.api_data
+                        console.log('classify result json:',json)
+                        cb && cb(null, json)
+                      } else {
+                        cb && cb('error', 'upload error')
+                      }
                   });
                   
                   dataStream.pipe(stream);
+                } else {
+                  cb && cb('error', 'exceed quota, please upgrade your plan')
                 }
                 /*json.result['url'] = upload.getAccessUrl(json.result.key)+'.png'
                 upload.putFile(json.result.key+'.png',task_info.path,function(error,accessUrl){
@@ -542,8 +554,7 @@ function classify_task(task_info, cb) {
               })
             }
             delete json.result.key
-            console.log('classify result json:',json)
-            return cb && cb(null, json)
+            return 
           }
         }
         return cb && cb('error', null)
