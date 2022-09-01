@@ -41,6 +41,8 @@ function GetEnvironmentVarInt(varname, defaultvalue)
     else
         return defaultvalue;
 }
+
+var LOCAL_DEPLOYMENT = GetEnvironmentVarInt('LOCAL_DEPLOYMENT', 0)
 // ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE 一张图里，出现一个人脸，不再计算后续
 var ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE = GetEnvironmentVarInt('ONE_KNOWN_PERSON_BYPASS_QUEUE_MODE', 1)
 // TASK_EXECUTOR_EXPIRE_IN_SECONDS Celery重启的时候，已经发出的任务不会超时，将导致永远不再执行
@@ -500,58 +502,61 @@ function classify_task(task_info, cb) {
                 json.result['url'] = task_info.url
                 post_recognition_result_to_api_server(json,task_info.url)
             } else {
-              check_quote_and_sign_url(json.result.key+'.png',function(error, response, body){
-                if (!error && response.statusCode == 200) {
-                  //const info = JSON.parse(body);
-                  ON_DEBUG && console.log('server response: '+ body);
-                  ON_DEBUG && console.log(body);
-                  const info = JSON.parse(body);
-                  ON_DEBUG && console.log(info);
-
-                  var presigned=info.presigned;
-                  var filename = task_info.path;
-                  var stats = fs.statSync(filename);
-                  var file_size = stats.size;
-                  var dataStream = fs.createReadStream(filename);
-                  var options = url.parse(presigned);
-                  options.method = 'PUT';
-                  options.headers = {
-                      'Content-Length' : file_size,
-                      'Content-Type' : 'image/png'
-                    }
-                  
-                  ON_DEBUG && console.log(options)
-                  const stream = https.request(options);
-                  stream.on('response', (res) => {
-                      if (res.statusCode < 400){
-                        ON_DEBUG && cconsole.log(res.statusCode);
-                        res.pipe(process.stdout);
-                        json.result.img_url = info.url
-
-                        console.log('uploaded to ' + info.url)
-                   
-                        post_recognition_result_to_api_server(json,info.url)
-
-                        delete json.api_data
-                        console.log('classify result json:',json)
-                        cb && cb(null, json)
-                      } else {
-                        cb && cb('error', 'upload error')
-                      }
-                  });
-                  
-                  dataStream.pipe(stream);
-                } else {
-                  cb && cb('error', 'exceed quota, please upgrade your plan')
-                }
-                /*json.result['url'] = upload.getAccessUrl(json.result.key)+'.png'
+              if(LOCAL_DEPLOYMENT == 1){
+                json.result['url'] = upload.getAccessUrl(json.result.key)+'.png'
                 upload.putFile(json.result.key+'.png',task_info.path,function(error,accessUrl){
-                  ON_DEBUG && console.log('error=',error,'accessUrl=',accessUrl)
+                  console.log('error=',error,'accessUrl=',accessUrl)
                   if(!error){
                     post_recognition_result_to_api_server(json,accessUrl)
                   }
-                })*/
-              })
+                })
+              } else {
+                check_quote_and_sign_url(json.result.key+'.png',function(error, response, body){
+                  if (!error && response.statusCode == 200) {
+                    //const info = JSON.parse(body);
+                    ON_DEBUG && console.log('server response: '+ body);
+                    ON_DEBUG && console.log(body);
+                    const info = JSON.parse(body);
+                    ON_DEBUG && console.log(info);
+
+                    var presigned=info.presigned;
+                    var filename = task_info.path;
+                    var stats = fs.statSync(filename);
+                    var file_size = stats.size;
+                    var dataStream = fs.createReadStream(filename);
+                    var options = url.parse(presigned);
+                    options.method = 'PUT';
+                    options.headers = {
+                        'Content-Length' : file_size,
+                        'Content-Type' : 'image/png'
+                      }
+                    
+                    ON_DEBUG && console.log(options)
+                    const stream = https.request(options);
+                    stream.on('response', (res) => {
+                        if (res.statusCode < 400){
+                          ON_DEBUG && cconsole.log(res.statusCode);
+                          res.pipe(process.stdout);
+                          json.result.img_url = info.url
+
+                          console.log('uploaded to ' + info.url)
+                    
+                          post_recognition_result_to_api_server(json,info.url)
+
+                          delete json.api_data
+                          console.log('classify result json:',json)
+                          cb && cb(null, json)
+                        } else {
+                          cb && cb('error', 'upload error')
+                        }
+                    });
+                    
+                    dataStream.pipe(stream);
+                  } else {
+                    cb && cb('error', 'exceed quota, please upgrade your plan')
+                  }
+                })
+              }
             }
             delete json.result.key
             return 
