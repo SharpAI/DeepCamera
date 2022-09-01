@@ -1,6 +1,7 @@
-# AI Empowered CCTV/NVR for your smart home
+# Intrusion detection AI camera with Home-Assistant
 
-SharpAI empowers your traditional CCTV/NVR and surveillance cameras with machine learning technologies. It provides open source facial recognition based intrusion detection, fall detection and parking lot monitoring with the inference engine on your local device. SharpAI team is working on home-assistant integration, we are planning to release it by the end of 09/2022.
+DeepCamera empowers your traditional surveillance cameras and CCTV/NVR with machine learning technologies. 
+It provides open source facial recognition based intrusion detection, fall detection and parking lot monitoring with the inference engine on your local device.
 
 SharpAI-hub is the cloud hosting for AI applications which help you deploy AI applications with your CCTV camera on your edge device in minutes. 
 
@@ -10,42 +11,39 @@ SharpAI-hub is the cloud hosting for AI applications which help you deploy AI ap
 - Login on device: `sharpai-cli login`
 - Register device: `sharpai-cli device register`
 
-# Start Applications
-
-## DeepCamera Face Recognition NVR
-- DeepCamera is a face recongnition NVR leverages [MTCNN](https://arxiv.org/abs/1604.02878) for face detection and [InsightFace's ArcFace](https://arxiv.org/abs/1801.07698) for face recognition, it leverages SVM from SKLearn as classifier and a private implemetation from Frank Zuo to fine-tune accuracy. To handle unbalanced dataset distribution which is most likely seen when you start to labelling unknown faces, we deployed upsampling policy to your own labelled face dataset. All the inference code as well as AutoML training code are running on your own device. 
+# Start DeepCamera
+- DeepCamera uses [MTCNN](https://arxiv.org/abs/1604.02878) for face detection and [InsightFace's ArcFace](https://arxiv.org/abs/1801.07698) for face recognition, it leverages SVM from SKLearn as classifier and a private implemetation from Frank Zuo to fine-tune accuracy. To handle unbalanced dataset distribution which is most likely seen when you start to labelling unknown faces, we deployed upsampling policy to your own labelled face dataset. All the inference code as well as AutoML training code are running on your own device. 
 - The DeepCamera commerical version which had been deployed to a large-scale AI smart city construction project has strong backend design to support large scale edge device cluster with redis. The commerical version provides private cloud deployment for security requirement.
 - Learned from the open source community, it was a painful procedure to deploy a private cloud solution on your own device, we provide free cloud host for evaluation and non-commericial use with limited storage quota, so you can easily use following command line to setup DeepCamera on your own device in 5-minutes:
 
+### 1. Following command will start DeepCamera and Home-Assistant with docker-compose.
 ```
 sharpai-cli deepcamera start
 ```
-
-## Yolo Parking
-Maintaining empty parking spot count using YOLO real-time vehicle detection, this is an original version for evaluation, we are planning to bring yolov7 to this interesting application. [Github Link](https://github.com/SharpAI/YoloParking)
-
+### 2. Land-on Home-Assistant with URL: http://localhost:8123
+### 3. Add your Camera through Home-Assistant camera integration
+### 4. Added SharpAI configuration to configuration.yaml
 ```
-sharpai-cli yoloparking start
+stream:
+  ll_hls: true
+  part_duration: 0.75
+  segment_duration: 6
+
+image_processing:
+  - platform: sharpai
+    source:
+      - entity_id: camera.<camera_entity_id>
+    scan_interval: 1
 ```
-#### Linux Desktop GUI is accessible through http://localhost:8000, thanks to open source web vnc client [noVNC](https://novnc.com/info.html), we don't have to install any software on the computer to remote access a edge device.
+### 5. Access detection result on [SharpAI website](http://dp.sharpai.org:3000)
+### 6. Integration with Home-Assistant
+### 7. [Implementation detail](docs/DeepCamera_introduction.md)
+### 8. [How to deploy your own API server from source code](docs/deploy_with_your_own_server.md)
+Instead of using cloud server, you can also deploy your own server.
 
-## Fall Detection
-
-Using Tiny-YOLO oneclass to detect each person in the frame and use AlphaPose to get skeleton-pose and then use ST-GCN model to predict action from every 30 frames of each person tracks. [Github Link](https://github.com/SharpAI/FallDetection)
-```
-sharpai-cli falldetection start
-```
-#### Linux Desktop GUI is accessible through http://localhost:8000, thanks to open source web vnc client [noVNC](https://novnc.com/info.html), we don't have to install any software on the computer to remote access a edge device.
-
-#### Todo
-- [ ] Preview image size is too large
-- [ ] Has an exception when run on X86
-- [x] AGX tested
-
-# Connect RTSP camera source to NVR
-You need to get the RTSP url of your camera and add it to NVR. Then NVR engine will pull video stream through RTSP protocol from your camera, after extracting frame from video stream, the extracted frame will be sent to detector for AI tasks.
-
-- NVR GUI address: http://localhost:8080   
+# Other Applications(early release)
+- [Parking lot protection](docs/Yolo_Parking.md)
+- [Fall Detection](docs/FallDetection_with_shinobi.md)
 
 # Tested Devices
 
