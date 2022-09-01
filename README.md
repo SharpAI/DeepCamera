@@ -38,8 +38,15 @@ image_processing:
 ### 5. Access detection result on [SharpAI website](http://dp.sharpai.org:3000)
 ### 6. Integration with Home-Assistant
 ### 7. [Implementation detail](docs/DeepCamera_introduction.md)
-### 8. [How to deploy your own API server from source code](docs/deploy_with_your_own_server.md)
-Instead of using cloud server, you can also deploy your own server.
+
+## Local deployment is ready for testing now
+
+Since the most concern from community is security/privacy, we implemented local deployment by sharpai-cli command line.
+```
+sharpai-cli local_deepcamera start
+```
+It will bring up everything on you own machine, so after the setup, you can disconnect your machine from internet and it will still work.
+This release is supporting x86 machine.
 
 # Other Applications(early release)
 - [Parking lot protection](docs/Yolo_Parking.md)
