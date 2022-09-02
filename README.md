@@ -20,8 +20,8 @@ sharpai-cli <application name> start
 
 |Application|SharpAI CLI Name|Integration|Support Device|Support OS|
 |---|---|---|---|---|
-|[Intruder Detection](docs/how_to_run_intruder_detection.md) | deepcamera |Home-Assistant| Intel Nuc/Jetson Nano/X86 machine|Windows/Linux/MacOS|
-|[Local Intruder Detection](docs/how_to_run_local_intruder_detection.md) | local_deepcamera |Home-Assistant| Intel Nuc/X86 machine|Windows/Linux/MacOS|
+|[Intruder Detection](docs/how_to_run_intruder_detection.md) | deepcamera |Home-Assistant| Intel Nuc/Jetson Nano|Windows/Linux/MacOS|
+|[Local Intruder Detection](docs/how_to_run_local_intruder_detection.md) | local_deepcamera |Home-Assistant| Intel Nuc|Windows/Linux/MacOS|
 |[Parking Lot monitor](docs/Yolo_Parking.md) | yoloparking  |Shinobi CCTV| Jetson AGX |Linux|
 |[Fall Detection](docs/FallDetection_with_shinobi.md) | falldetection   |Shinobi CCTV| Jetson AGX |Linux|
 
