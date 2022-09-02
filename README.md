@@ -5,7 +5,8 @@ It provides open source facial recognition based intrusion detection, fall detec
 
 SharpAI-hub is the cloud hosting for AI applications which help you deploy AI applications with your CCTV camera on your edge device in minutes. 
 
-# Install SharpAI on Jetson Nano/Xavier AGX/Windows/Linux/MacOS
+# Install SharpAI-Hub CLI
+Support Jetson Nano/Xavier AGX/Windows/Linux/MacOS
 - Register account on [SharpAI website](http://dp.sharpai.org:3000)
 - Install sharpai-hub: `pip3 install sharpai-hub`
 - Login on device: `sharpai-cli login`
