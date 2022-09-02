@@ -67,8 +67,8 @@ When you have everything running, the GUI will be here: [http://localhost:3000](
 - Ip Camera Lite on IOS: URL Path: `/live` Port: `8554`   
 
 # Support
-If you are using a camera but have no idea about the RTSP URL, please join SharpAI community for help or use [iSpyConnect](https://www.ispyconnect.com/cameras) to get camera streaming URL format. SharpAI provides commercial support to companies which want to deploy AI Camera application to real world.
-
+- If you are using a camera but have no idea about the RTSP URL, please join SharpAI community for help.
+- SharpAI provides commercial support to companies which want to deploy AI Camera application to real world.
 ## [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
 
 # DeepCamera Architecture
