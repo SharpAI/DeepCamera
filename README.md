@@ -13,7 +13,7 @@ Support Jetson Nano/Xavier AGX/Windows/Linux/MacOS
 - Register device: `sharpai-cli device register`
 
 # Start DeepCamera
-### 1. Start DeepCamera and Home-Assistant with docker-compose.
+### 1. Start DeepCamera
 ```
 sharpai-cli deepcamera start
 ```
