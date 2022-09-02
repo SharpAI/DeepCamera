@@ -12,46 +12,20 @@ Support Jetson Nano/Xavier AGX/Windows/Linux/MacOS
 - Login on device: `sharpai-cli login`
 - Register device: `sharpai-cli device register`
 
-# Start DeepCamera
-### 1. Start DeepCamera
-```
-sharpai-cli deepcamera start
-```
-### 2. Land-on Home-Assistant with URL: http://localhost:8123
-### 3. Add your Camera through Home-Assistant camera integration
-### 4. Added SharpAI configuration to configuration.yaml
-```
-stream:
-  ll_hls: true
-  part_duration: 0.75
-  segment_duration: 6
+# Start SharpAI Application
 
-image_processing:
-  - platform: sharpai
-    source:
-      - entity_id: camera.<camera_entity_id>
-    scan_interval: 1
 ```
-### 5. Access detection result on [SharpAI website](http://dp.sharpai.org:3000)
-### 6. Integration with Home-Assistant
-### 7. [Implementation detail](docs/DeepCamera_introduction.md)
-
-## Local deployment is ready for testing now
-
-Since the most concern from community is security/privacy, we implemented local deployment by sharpai-cli command line.
+sharpai-cli <application name> start
 ```
-sharpai-cli local_deepcamera start
-```
-It will bring up everything on you own machine, so after the setup, you can disconnect your machine from internet and it will still work.
-This release is supporting x86 machine.
-When you have everything running, the GUI will be here: [http://localhost:3000](http://localhost:3000)
 
-# Other Applications(early release)
-- [Parking lot protection](docs/Yolo_Parking.md)
-- [Fall Detection](docs/FallDetection_with_shinobi.md)
+|Application|SharpAI CLI Name|Integration|Support Device|Support OS|
+|---|---|---|---|---|
+|[Intruder Detection](docs/how_to_run_intruder_detection.md) | deepcamera |Home-Assistant| Intel Nuc/Jetson Nano|Windows/Linux/MacOS|
+|[Local Intruder Detection](docs/how_to_run_local_intruder_detection.md) | local_deepcamera |Home-Assistant| Intel Nuc|Windows/Linux/MacOS|
+|[Parking Lot monitor](docs/Yolo_Parking.md) | yoloparking  |Shinobi CCTV| Jetson AGX |Linux|
+|[Fall Detection](docs/FallDetection_with_shinobi.md) | falldetection   |Shinobi CCTV| Jetson AGX |Linux|
 
 # Tested Devices
-
 ## Edge AI Devices / Workstation
 - [Jetson Nano (ReComputer j1010)](https://www.seeedstudio.com/Jetson-10-1-H0-p-5335.html)
 - Jetson Xavier AGX
