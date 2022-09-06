@@ -1,10 +1,5 @@
 version: '2'
 services:
-  face_detector:
-    image: shareai/face_detector:arm32v7
-    build:
-      context: ./face_detection
-      dockerfile: Dockerfile
   redis:
     image: shareai/redis:arm32v7
     build:
@@ -15,18 +10,23 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./broker
-  camera:
-    image: shareai/shinobi:arm32v7
-    build:
-      context: ./camera
   flower:
     image: shareai/flower:arm32v7
     build:
       context: ./flower
+  camera:
+    image: shareai/shinobi:arm32v7
+    build:
+      context: ../src/camera
+  face_detector:
+    image: shareai/face_detector:arm32v7
+    build:
+      context: ../src/face_detection
+      dockerfile: Dockerfile
   embedding:
     image: shareai/embedding:v1.1_arm32v7
     build:
-      context: ./embedding
+      context: ../src/embedding
   rtspserver:
     image: shareai/rtspserver:arm32v7
     build:
