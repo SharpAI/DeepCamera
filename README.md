@@ -1,4 +1,28 @@
-# Intrusion detection AI camera with Home-Assistant
+<div align="center">
+<h1>&nbsp;&nbsp;DeepCamera </h1>
+  <p>
+		<b>
+        <h3> AI based intruder detection for any cameras </h3>
+        </b>
+	</p>
+
+<p>
+    <a href="https://join.slack.com/t/sharpai/shared_invite/zt-1g4l7c928-w6ANwRzdAjstIw3wYmwG1g">
+        <img src="https://img.shields.io/badge/slack-purple?style=for-the-badge&logo=slack" height=25>
+    </a>
+    <a href="https://github.com/SharpAI/DeepCamera/issues">
+        <img src="https://img.shields.io/badge/support%20forums-navy?style=for-the-badge&logo=github" height=25>
+    </a>
+    <a href="https://github.com/SharpAI/DeepCamera/releases">
+        <img alt="GitHub release" src="https://img.shields.io/github/release/neuralmagic/deepsparse.svg?style=for-the-badge" height=25>
+    </a>
+    <a href="https://github.com/SharpAI/DeepCamera/blob/master/CODE_OF_CONDUCT.md">
+        <img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-v2.1%20adopted-ff69b4.svg?color=yellow&style=for-the-badge" height=25>
+    </a>
+</p>
+
+<br>
+</div>
 
 DeepCamera empowers your traditional surveillance cameras and CCTV/NVR with machine learning technologies. 
 It provides open source facial recognition based intrusion detection, fall detection and parking lot monitoring with the inference engine on your local device.
