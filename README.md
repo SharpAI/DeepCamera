@@ -14,7 +14,7 @@
         <img src="https://img.shields.io/badge/support%20forums-navy?style=for-the-badge&logo=github" height=25>
     </a>
     <a href="https://github.com/SharpAI/DeepCamera/releases">
-        <img alt="GitHub release" src="https://img.shields.io/github/release/neuralmagic/deepsparse.svg?style=for-the-badge" height=25>
+        <img alt="GitHub release" src="https://img.shields.io/github/release/SharpAI/DeepCamera.svg?style=for-the-badge" height=25>
     </a>
     <a href="https://github.com/SharpAI/DeepCamera/blob/master/CODE_OF_CONDUCT.md">
         <img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-v2.1%20adopted-ff69b4.svg?color=yellow&style=for-the-badge" height=25>
