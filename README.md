@@ -2,7 +2,7 @@
 <h1>&nbsp;&nbsp;DeepCamera </h1>
   <p>
 		<b>
-        <h3> AI based intruder detection for any cameras </h3>
+        <h3> AI based intruder detection for any cameras from sharpai-hub </h3>
         </b>
 	</p>
 
@@ -16,8 +16,11 @@
     <a href="https://github.com/SharpAI/DeepCamera/releases">
         <img alt="GitHub release" src="https://img.shields.io/github/release/SharpAI/DeepCamera.svg?style=for-the-badge" height=25>
     </a>
-    <a href="https://github.com/SharpAI/DeepCamera/blob/master/CODE_OF_CONDUCT.md">
-        <img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-v2.1%20adopted-ff69b4.svg?color=yellow&style=for-the-badge" height=25>
+    <a href="https://pypi.python.org/pypi/sharpai-hub">
+        <img alt="Pypi release" src="https://img.shields.io/pypi/v/sharpai-hub.svg?style=for-the-badge" height=25>
+    </a>
+    <a href="https://pypi.python.org/pypi/sharpai-hub">
+        <img alt="Monthly download" src="https://img.shields.io/pypi/dm/sharpai-hub.svg?style=for-the-badge" height=25>
     </a>
 </p>
 
