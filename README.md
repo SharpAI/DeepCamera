@@ -30,24 +30,22 @@ It provides open source facial recognition based intrusion detection, fall detec
 SharpAI-hub is the cloud hosting for AI applications which help you deploy AI applications with your CCTV camera on your edge device in minutes. 
 
 # Install SharpAI-Hub CLI
-Support Jetson Nano/Xavier AGX/Windows/Linux/MacOS
+`pip3 install sharpai-hub`
+
+# DeepCamera local deployment
+We received feedback from community, local deployment is needed. With local deepcamera deployment, all information/images will be saved locally.
+`sharpai-cli local_deepcamera start`
+
+# DeepCamera cloud deployment for free
 - Register account on [SharpAI website](http://dp.sharpai.org:3000)
-- Install sharpai-hub: `pip3 install sharpai-hub`
 - Login on device: `sharpai-cli login`
 - Register device: `sharpai-cli device register`
-
-# Start DeepCamera
 - Start DeepCamera: `sharpai-cli deepcamera start`
 
-# Start DeepCamera local deployment
-We received feedback from community, local deployment is needed. With local deepcamera deployment, all information/images will be saved locally.
-- Start local DeepCamera: `sharpai-cli local_deepcamera start`
-
-# Start [laptop screen monitor](https://github.com/SharpAI/laptop_monitor) for kids/teens safe(Local)
-
+# [laptop screen monitor](https://github.com/SharpAI/laptop_monitor) for kids/teens safe(Local)
 SharpAI screen monitoring capture screen, extract screen image features(embeddings) with AI model privoded by img2vec_pytorch, save unseen features(embeddings) into AI vector database [Milvus](https://milvus.io/), raw images are saved to [Labelstudio](https://labelstud.io) for labelling and model training, all information/images will be saved locally.
 
-- Start DeepCamera: `sharpai-cli screen_monitor start`
+`sharpai-cli screen_monitor start`
 
 ### Access streaming screen: http://localhost:8000
 ### Access labelstudio: http://localhost:8080
