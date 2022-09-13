@@ -36,7 +36,7 @@ SharpAI-hub is the cloud hosting for AI applications which help you deploy AI ap
 `pip3 install sharpai-hub`
 
 # DeepCamera local deployment
-We received feedback from community, local deployment is needed. With local deepcamera deployment, all information/images will be saved locally.
+We received feedback from community, local deployment is needed. With local deepcamera deployment, all information/images will be saved locally.   
 `sharpai-cli local_deepcamera start`
 
 # DeepCamera cloud deployment for free
