@@ -36,7 +36,24 @@ Support Jetson Nano/Xavier AGX/Windows/Linux/MacOS
 - Login on device: `sharpai-cli login`
 - Register device: `sharpai-cli device register`
 
-# Start SharpAI Application
+# Start DeepCamera
+- Start DeepCamera: `sharpai-cli deepcamera start`
+
+# Start DeepCamera local deployment
+We received feedback from community, local deployment is needed. With local deepcamera deployment, all information/images will be saved locally.
+- Start local DeepCamera: `sharpai-cli local_deepcamera start`
+
+# Start [laptop screen monitor](https://github.com/SharpAI/laptop_monitor) for kids/teens safe(Local)
+
+SharpAI screen monitoring capture screen, extract screen image features(embeddings) with AI model privoded by img2vec_pytorch, save unseen features(embeddings) into AI vector database [Milvus](https://milvus.io/), raw images are saved to Labelstudio for labelling and model training.
+
+- Start DeepCamera: `sharpai-cli screen_monitor start`
+
+### Access streaming screen: http://localhost:8000
+### Access labelstudio: http://localhost:8080
+
+# SharpAI-Hub AI Applications
+SharpAI community is continually working on bringing state-of-the-art computer vision application to your device.
 
 ```
 sharpai-cli <application name> start
@@ -44,8 +61,9 @@ sharpai-cli <application name> start
 
 |Application|SharpAI CLI Name|Integration|Support Device|Support OS|
 |---|---|---|---|---|
-|[Intruder Detection](docs/how_to_run_intruder_detection.md) | deepcamera |Home-Assistant| Intel Nuc/Jetson Nano|Windows/Linux/MacOS|
-|[Local Intruder Detection](docs/how_to_run_local_intruder_detection.md) | local_deepcamera |Home-Assistant| Intel Nuc|Windows/Linux/MacOS|
+| Laptop Screen Monitor| screen_monitor   |Labelstudio/Milvus| X64 |Windows/Linux/MacOS|
+|[Intruder Detection](docs/how_to_run_intruder_detection.md) | deepcamera |Home-Assistant| X64/Jetson Nano|Windows/Linux/MacOS|
+|[Local Intruder Detection](docs/how_to_run_local_intruder_detection.md) | local_deepcamera |Home-Assistant| X64|Windows/Linux/MacOS|
 |[Parking Lot monitor](docs/Yolo_Parking.md) | yoloparking  |Shinobi CCTV| Jetson AGX |Linux|
 |[Fall Detection](docs/FallDetection_with_shinobi.md) | falldetection   |Shinobi CCTV| Jetson AGX |Linux|
 
