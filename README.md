@@ -59,7 +59,7 @@ sharpai-cli <application name> start
 
 |Application|SharpAI CLI Name|Integration|Support Device|Support OS|
 |---|---|---|---|---|
-| Laptop Screen Monitor| screen_monitor   |Labelstudio/Milvus| X64 |Windows/Linux/MacOS|
+|[Laptop Screen Monitor](https://github.com/SharpAI/laptop_monitor)| screen_monitor   |Labelstudio/Milvus| X64 |Windows/Linux/MacOS|
 |[Intruder Detection](docs/how_to_run_intruder_detection.md) | deepcamera |Home-Assistant| X64/Jetson Nano|Windows/Linux/MacOS|
 |[Local Intruder Detection](docs/how_to_run_local_intruder_detection.md) | local_deepcamera |Home-Assistant| X64|Windows/Linux/MacOS|
 |[Parking Lot monitor](docs/Yolo_Parking.md) | yoloparking  |Shinobi CCTV| Jetson AGX |Linux|
