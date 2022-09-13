@@ -45,7 +45,7 @@ We received feedback from community, local deployment is needed. With local deep
 
 # Start [laptop screen monitor](https://github.com/SharpAI/laptop_monitor) for kids/teens safe(Local)
 
-SharpAI screen monitoring capture screen, extract screen image features(embeddings) with AI model privoded by img2vec_pytorch, save unseen features(embeddings) into AI vector database [Milvus](https://milvus.io/), raw images are saved to Labelstudio for labelling and model training.
+SharpAI screen monitoring capture screen, extract screen image features(embeddings) with AI model privoded by img2vec_pytorch, save unseen features(embeddings) into AI vector database [Milvus](https://milvus.io/), raw images are saved to [Labelstudio](https://labelstud.io) for labelling and model training, all information/images will be saved locally.
 
 - Start DeepCamera: `sharpai-cli screen_monitor start`
 
