@@ -83,5 +83,3 @@ services:
     volumes:
       - ./volumes/videos:/opt/nvr/videos
       - ./volumes/images:/opt/nvr/detector/images
-      - ./src/detector_cpu.py:/app/detector.py
-      - ./src/requirements.txt:/app/requirements.txt

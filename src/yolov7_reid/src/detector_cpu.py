@@ -4,21 +4,18 @@ import json
 import argparse
 import threading
 import pafy
-# from pymilvus import (connections, CollectionSchema, 
-#                       FieldSchema, DataType, Collection, utility)
-# import redis
-
-# from PIL import Image
+from pymilvus import (connections, CollectionSchema, 
+                      FieldSchema, DataType, Collection, utility)
+import redis
 import numpy as np
 import cv2
 import onnxruntime
-
-#from LabelStudioClient import LabelStudioClient
 
 from flask import Flask
 from flask import request
 from flask import jsonify
 from YOLOv7 import YOLOv7
+from LabelStudioClient import LabelStudioClient
 
 model_path = "models/yolov7-tiny_480x640.onnx"
 yolov7_detector = YOLOv7(model_path, conf_thres=0.3, iou_thres=0.5)
@@ -30,13 +27,13 @@ def get_parser():
 
     parser.add_argument(
         "--model-path",
-        default="./models/fast-reid_mobilenetv2.onnx",
+        default="./models/mgn_R50-ibn.onnx",
         help="onnx model path"
     )
     parser.add_argument(
         "--height",
         type=int,
-        default=256,
+        default=384,
         help="height of image"
     )
     parser.add_argument(
@@ -46,26 +43,28 @@ def get_parser():
         help="width of image"
     )
     return parser
-# connections.connect(host="milvus", port=19530)
-# red = redis.Redis(host='redis', port=6379, db=0)
-# red.flushdb()
-# collection_name = "yolov7_reid"
 
-# dim = 512
-# default_fields = [
-#     FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
-#     FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=dim)
-# ]
-# default_schema = CollectionSchema(fields=default_fields, description="Image test collection")
-# collection = Collection(name=collection_name, schema=default_schema)
+def init_milvus(collection_name, dim):
+    connections.connect(host="milvus", port=19530)
+    red = redis.Redis(host='redis', port=6379, db=0)
+    red.flushdb()
 
-# if not utility.has_collection(collection_name):
-#     default_index = {"index_type": "IVF_SQ8", "params": {"nlist": 512}, "metric_type": "L2"}
-#     collection.create_index(field_name="vector", index_params=default_index)
-# collection.load()
+    default_fields = [
+        FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
+        FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, dim=dim)
+    ]
+    default_schema = CollectionSchema(fields=default_fields, description="Image test collection")
+    
+    collection_name = collection_name + f'_dim_{dim}'
+    collection = Collection(name=collection_name, schema=default_schema)
 
-def preprocess(image_path, image_height, image_width):
-    original_image = cv2.imread(image_path)
+    if not utility.has_collection(collection_name):
+        default_index = {"index_type": "IVF_SQ8", "params": {"nlist": 512}, "metric_type": "L2"}
+        collection.create_index(field_name="vector", index_params=default_index)
+    collection.load()
+    
+    return collection, red
+def preprocess(original_image, image_height, image_width):
     # the model expects RGB inputs
     original_image = original_image[:, :, ::-1]
 
@@ -81,25 +80,71 @@ def normalize(nparray, order=2, axis=-1):
 q = queue.Queue(1)
 args = get_parser().parse_args()
 ort_sess = onnxruntime.InferenceSession(args.model_path)
+input_name = ort_sess.get_inputs()[0].name
+collection, red = init_milvus('yolov7_reid',2048)
+
+def insert_to_milvus(vec, min_dist):
+    ids = []
+    search_param = {
+    "data": [vec],
+    "anns_field": 'vector',
+    "param": {"metric_type": 'L2', "params": {"nprobe": 16}},
+    "limit": 3}
+
+    insert = True
+    results = collection.search(**search_param)
+    for i, result in enumerate(results):
+        print("\nSearch result for {}th vector: ".format(i))
+        for j, res in enumerate(result):
+            print("Top {}: {}".format(j, res))
+            
+            if res.distance < min_dist:
+                insert = False
+                break
+    if insert == True:
+        print('found new feature, insert to vector database')
+        mr = collection.insert([[vec]])
+        ids = mr.primary_keys
+    return insert, ids
 
 def detection_with_image(image):
     # cv2.imshow('Screen',img)
     # Detect Objects
     bboxes, scores, class_ids = yolov7_detector(image)
-    cropped_imgs, person_bboxes, person_scores, person_class_ids = yolov7_detector.crop_class(image, bboxes, scores, class_ids, 'person', 20)
-    print(f'{len(cropped_imgs)} person detected')
-
-    combined_img = yolov7_detector.draw_detections(image,person_bboxes, person_scores, person_class_ids)
-    cv2.namedWindow("Screen", cv2.WINDOW_NORMAL)
-    cv2.setWindowProperty("Screen", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-    cv2.imshow("Screen", combined_img)
-
-    if cv2.waitKey(25) & 0xFF == ord('q'):
-        cv2.destroyAllWindows()
-
-def worker():
-    input_name = ort_sess.get_inputs()[0].name
+    cropped_imgs, person_bboxes, person_scores, person_class_ids = yolov7_detector.crop_class(image, bboxes, scores, class_ids, 'person', 100)
     
+    if len(cropped_imgs) > 0:
+
+        combined_img = yolov7_detector.draw_detections(image,person_bboxes, person_scores, person_class_ids)
+        cv2.namedWindow("Detection result", cv2.WINDOW_NORMAL)
+        # cv2.setWindowProperty("Screen", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        cv2.imshow("Detection result", combined_img)
+
+        if cv2.waitKey(25) & 0xFF == ord('q'):
+            cv2.destroyAllWindows()
+        unknown = 0
+        for img in cropped_imgs:
+            image = preprocess(img, args.height, args.width)
+            feat = ort_sess.run(None, {input_name: image})[0]
+            feat = normalize(feat, axis=1)
+
+            insert,ids = insert_to_milvus(feat[0],0.1)
+            if insert is True:
+                print('inserted') 
+                print(feat.shape)
+                print(feat[0])
+                unknown +=1
+                id = ids[0]
+                
+                filepath = f'/tmp/{id}.png'
+                cv2.imwrite(filepath,img)
+                
+                LabelStudioClient.create_task_with_file(filepath)
+                os.remove(filepath)
+        if unknown > 0:
+            print(f'{len(cropped_imgs)} person detected, unknown number is {unknown}')
+
+def worker():    
     while True:
         item = q.get()
         print(f'Working on {item}')
@@ -110,9 +155,6 @@ def worker():
 
             # Draw detections
             detection_with_image(img)
-            #image = preprocess(path, args.height, args.width)
-            #feat = ort_sess.run(None, {input_name: image})[0]
-            #feat = normalize(feat, axis=1)
 
         except Exception as e:
             print('exception:')
@@ -173,12 +215,11 @@ def video_worker(video_url):
             continue
         
         # Draw detections
-        detection_with_image(frame)
-        # Update object localizer
-        # bboxes, scores, class_ids = yolov7_detector(frame)
-        # cropped_imgs,person_bboxes,person_scores,person_class_ids = yolov7_detector.crop_class(frame, bboxes, scores, class_ids, 'person', 20)
-        # combined_img = yolov7_detector.draw_detections(frame,person_bboxes, person_scores, person_class_ids)
-        # cv2.imshow("Detected Objects", combined_img)
+        try:
+            detection_with_image(frame)
+        except Exception as e:
+            print(e)
+            continue
     
 # Turn-on the worker thread.
 if __name__ == '__main__':
