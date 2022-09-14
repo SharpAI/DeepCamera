@@ -100,6 +100,7 @@ def insert_to_milvus(vec, min_dist):
             
             if res.distance < min_dist:
                 insert = False
+                ids.append(res.id)
                 break
     if insert == True:
         print('found new feature, insert to vector database')
@@ -107,21 +108,16 @@ def insert_to_milvus(vec, min_dist):
         ids = mr.primary_keys
     return insert, ids
 
-def detection_with_image(image):
+def detection_with_image(frame):
     # cv2.imshow('Screen',img)
     # Detect Objects
-    bboxes, scores, class_ids = yolov7_detector(image)
-    cropped_imgs, person_bboxes, person_scores, person_class_ids = yolov7_detector.crop_class(image, bboxes, scores, class_ids, 'person', 100)
+    KNOWN_COLOR = (0,255,0)
+    UNKNOWN_COLOR = (0,0,255)
+    bboxes, scores, class_ids = yolov7_detector(frame)
+    cropped_imgs, person_bboxes, person_scores, person_class_ids = yolov7_detector.crop_class(frame, bboxes, scores, class_ids, 'person', 100)
     
+    pre_colors = []
     if len(cropped_imgs) > 0:
-
-        combined_img = yolov7_detector.draw_detections(image,person_bboxes, person_scores, person_class_ids)
-        cv2.namedWindow("Detection result", cv2.WINDOW_NORMAL)
-        # cv2.setWindowProperty("Screen", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-        cv2.imshow("Detection result", combined_img)
-
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            cv2.destroyAllWindows()
         unknown = 0
         for img in cropped_imgs:
             image = preprocess(img, args.height, args.width)
@@ -130,6 +126,7 @@ def detection_with_image(image):
 
             insert,ids = insert_to_milvus(feat[0],0.1)
             if insert is True:
+                pre_colors.append(UNKNOWN_COLOR)
                 print('inserted') 
                 print(feat.shape)
                 print(feat[0])
@@ -141,8 +138,18 @@ def detection_with_image(image):
                 
                 LabelStudioClient.create_task_with_file(filepath)
                 os.remove(filepath)
+            else:
+                pre_colors.append(KNOWN_COLOR)
         if unknown > 0:
             print(f'{len(cropped_imgs)} person detected, unknown number is {unknown}')
+        combined_img = yolov7_detector.draw_detections_with_predefined_colors(frame,person_bboxes, person_scores, person_class_ids,pre_colors)
+        
+        cv2.namedWindow("Detection result", cv2.WINDOW_NORMAL)
+        # cv2.setWindowProperty("Screen", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        cv2.imshow("Detection result", combined_img)
+
+        if cv2.waitKey(25) & 0xFF == ord('q'):
+            cv2.destroyAllWindows()
 
 def worker():    
     while True:

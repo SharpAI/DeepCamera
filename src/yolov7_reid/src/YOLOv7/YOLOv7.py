@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import onnxruntime
 
-from .utils import xywh2xyxy, nms, draw_detections, crop_class
+from .utils import xywh2xyxy, nms, draw_detections, crop_class, draw_detections_with_predefined_colors
 
 
 class YOLOv7:
@@ -148,6 +148,10 @@ class YOLOv7:
 
         return draw_detections(image, boxes, scores,
                                class_ids, mask_alpha)
+        
+    def draw_detections_with_predefined_colors(self, image, boxes, scores, class_ids , colors, mask_alpha=0.4):
+        return draw_detections_with_predefined_colors(image, boxes, scores,
+                               class_ids, colors, mask_alpha)
     def crop_class(self, image, boxes, scores, class_ids, class_to_crop, min_w_h):
 
         return crop_class(image, boxes, scores, class_ids, class_to_crop, min_w_h)
