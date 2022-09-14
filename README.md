@@ -82,6 +82,7 @@ sharpai-cli <application name> start
 ## Tested Camera:
 - DaHua / Lorex / AMCREST: URL Path: `/cam/realmonitor?channel=1&subtype=0` Port: `554`
 - Ip Camera Lite on IOS: URL Path: `/live` Port: `8554`   
+- Nest Camera indoor/outdoor by Home-Assistant integration
 
 # Support
 - If you are using a camera but have no idea about the RTSP URL, please join SharpAI community for help.
