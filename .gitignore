@@ -12,3 +12,4 @@ test/node_modules/*
 .DS_Store
 docker/db
 volumes
+src/yolov7_reid/src/models/mgn_R50-ibn.onnx
