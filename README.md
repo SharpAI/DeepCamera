@@ -2,7 +2,9 @@
 <h1>&nbsp;&nbsp;DeepCamera </h1>
   <p>
 		<b>
-        <h3> AI based intruder detection for any cameras from sharpai-hub </h3>
+        <h3> Empower any camera with the state of the art AI, including <br>facial recognition, person recognition(RE-ID)<br> car detection, fall detection and more </h3>
+        <h3> ML pipeline for AI camera/CCTV development<br>feature clustering with vector database Milvus<br>labelling with Labelstudio </h3>
+	<h3> Easy to use Edge AI development environment<br> AI frameworks in docker<br>desktop in docker with remote access</h3>
         </b>
 	</p>
 
@@ -60,13 +62,13 @@ SharpAI community is continually working on bringing state-of-the-art computer v
 sharpai-cli <application name> start
 ```
 
-|Application|SharpAI CLI Name|Integration|Support Device|Support OS|
-|---|---|---|---|---|
-|[Laptop Screen Monitor](https://github.com/SharpAI/laptop_monitor)| screen_monitor   |Labelstudio/Milvus| X64 |Windows/Linux/MacOS|
-|[Intruder Detection](docs/how_to_run_intruder_detection.md) | deepcamera |Home-Assistant| X64/Jetson Nano|Windows/Linux/MacOS|
-|[Local Intruder Detection](docs/how_to_run_local_intruder_detection.md) | local_deepcamera |Home-Assistant| X64|Windows/Linux/MacOS|
-|[Parking Lot monitor](docs/Yolo_Parking.md) | yoloparking  |Shinobi CCTV| Jetson AGX |Linux|
-|[Fall Detection](docs/FallDetection_with_shinobi.md) | falldetection   |Shinobi CCTV| Jetson AGX |Linux|
+|Application|SharpAI CLI Name| OS/Device |
+|---|---|---|
+|[Laptop Screen Monitor](https://github.com/SharpAI/laptop_monitor)| screen_monitor   | Windows/Linux/MacOS|
+|[Facial Recognition Intruder Detection](docs/how_to_run_intruder_detection.md) | deepcamera | Jetson Nano|Windows/Linux/MacOS|
+|[Local Facial Recognition Intruder Detection](docs/how_to_run_local_intruder_detection.md) | local_deepcamera | Windows/Linux/MacOS|
+|[Parking Lot monitor](docs/Yolo_Parking.md) | yoloparking  | Jetson AGX |
+|[Fall Detection](docs/FallDetection_with_shinobi.md) | falldetection   |Jetson AGX|
 
 # Tested Devices
 ## Edge AI Devices / Workstation
@@ -79,6 +81,7 @@ sharpai-cli <application name> start
 ## Tested Camera:
 - DaHua / Lorex / AMCREST: URL Path: `/cam/realmonitor?channel=1&subtype=0` Port: `554`
 - Ip Camera Lite on IOS: URL Path: `/live` Port: `8554`   
+- Nest Camera indoor/outdoor by Home-Assistant integration
 
 # Support
 - If you are using a camera but have no idea about the RTSP URL, please join SharpAI community for help.
