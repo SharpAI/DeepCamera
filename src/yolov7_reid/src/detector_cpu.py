@@ -142,33 +142,34 @@ def detection_with_image(frame):
                 pre_colors.append(KNOWN_COLOR)
         if unknown > 0:
             print(f'{len(cropped_imgs)} person detected, unknown number is {unknown}')
+
+        ret_json = {'total':len(cropped_imgs),'unknown':unknown}
+        
         combined_img = yolov7_detector.draw_detections_with_predefined_colors(frame,person_bboxes, person_scores, person_class_ids,pre_colors)
         
-        cv2.namedWindow("Detection result", cv2.WINDOW_NORMAL)
-        # cv2.setWindowProperty("Screen", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-        cv2.imshow("Detection result", combined_img)
-
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            cv2.destroyAllWindows()
-
+        try:
+            q.put_nowait(combined_img)
+        except queue.Full:
+            print('display queue full')
+        return ret_json
+    
 def worker():    
     while True:
         item = q.get()
         print(f'Working on {item}')
         
         try:
-            img = cv2.imread(item,cv2.IMREAD_ANYCOLOR)
-            print(img)
+            cv2.namedWindow("Detection result", cv2.WINDOW_NORMAL)
+            # cv2.setWindowProperty("Screen", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+            cv2.imshow("Detection result", item)
 
-            # Draw detections
-            detection_with_image(img)
-
+            if cv2.waitKey(25) & 0xFF == ord('q'):
+                cv2.destroyAllWindows()
         except Exception as e:
             print('exception:')
             print(e)
             continue
 
-        print(f'Finished {item}')
         q.task_done()
         # os.remove(item)
 
@@ -180,13 +181,13 @@ def submit_image():
     filename = json_data['filename']
     print(f'filename: {filename}, camera_id: {camera_id}')
 
-    try:
-        q.put_nowait(filename)
-    except queue.Full:
-        print('queue full')
+    img = cv2.imread(filename,cv2.IMREAD_ANYCOLOR)
 
-    # os.remove(filename)
-    return 'ok', 200
+    # Draw detections
+    ret = detection_with_image(img)
+
+    os.remove(filename)
+    return jsonify(ret)
 
 @app.route('/submit/video_url', methods=['POST'])
 def submit_video_url():
