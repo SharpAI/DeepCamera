@@ -11,3 +11,5 @@ sharpai-cli screen_monitor start
 ### Access streaming screen: http://localhost:8000
 ### Access labelstudio: http://localhost:8080
 
+# Model is downloaded from [yolov5_fastreid_deepsort_tensorrt](https://github.com/linghu8812/yolov5_fastreid_deepsort_tensorrt)
+# Train your own model with [fast-reid](https://github.com/JDAI-CV/fast-reid)
