@@ -1,0 +1,5 @@
+Flask
+pymilvus==2.0.0
+towhee==0.6.0
+redis
+notebook==6.4.12

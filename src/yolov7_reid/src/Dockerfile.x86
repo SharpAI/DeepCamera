@@ -1,0 +1,92 @@
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND "noninteractive"
+ENV TZ "America/Los_Angeles"
+# Install some basic utilities
+RUN apt-get update && apt-get install -y \
+    curl \
+    ca-certificates \
+    sudo \
+    git \
+    bzip2 \
+    libx11-6 \
+    libglib2.0-0 \
+    tzdata \
+    bash \
+    fluxbox \
+    git \
+    net-tools \
+    novnc \
+    supervisor \
+    x11vnc \
+    xterm \
+    xvfb \
+    wget \
+    python3-pip \
+    ffmpeg \
+    libsm6 \
+    libxext6
+ #&& rm -rf /var/lib/apt/lists/*
+
+# Create a working directory
+RUN mkdir /app
+WORKDIR /app
+
+# Create a non-root user and switch to it
+RUN adduser --disabled-password --gecos '' --shell /bin/bash user \
+ && chown -R user:user /app
+RUN echo "user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-user
+USER user
+
+# All users can use /home/user as their home directory
+ENV HOME=/home/user
+RUN chmod 777 /home/user
+
+# Install Miniconda and Python 3.8
+ENV CONDA_AUTO_UPDATE_CONDA=false
+# No CUDA-specific steps
+ENV NO_CUDA=1
+ENV PATH=/home/user/miniconda/bin:$PATH
+
+# Install Miniconda and Python 3.8
+ENV CONDA_AUTO_UPDATE_CONDA=false
+ENV PATH=/home/user/miniconda/bin:$PATH
+RUN curl -sLo ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-py38_4.12.0-Linux-x86_64.sh \
+ && chmod +x ~/miniconda.sh \
+ && ~/miniconda.sh -b -p ~/miniconda \
+ && rm ~/miniconda.sh \
+ && conda install -y python==3.8.1 \
+ && conda clean -ya
+
+RUN conda install -y -c pytorch \
+    cpuonly \
+    "pytorch=1.5.0=py3.8_cpu_0" \
+    "torchvision=0.6.0=py38_cpu" 
+RUN conda config --add channels conda-forge && \
+    conda install libopencv opencv py-opencv
+RUN sudo apt-get install -y ffmpeg libsm6 libxext6
+RUN conda install -y matplotlib scipy
+RUN conda install -y -c anaconda pandas
+
+ADD ./docker-novnc /app/docker-novnc
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    DISPLAY=:0.0 \
+    DISPLAY_WIDTH=1024 \
+    DISPLAY_HEIGHT=768 \
+    RUN_XTERM=yes \
+    RUN_FLUXBOX=yes
+
+ADD ./requirements.txt /app/requirements.txt
+RUN pip install -r /app/requirements.txt
+# RUN pip install img2vec_pytorch
+
+RUN pip install onnxruntime
+ADD ./models/yolov7-tiny_480x640.onnx /app/models/yolov7-tiny_480x640.onnx
+ADD ./YOLOv7 /app/YOLOv7
+ADD ./detector_cpu.py /app/detector.py
+ADD ./LabelStudioClient.py /app/LabelStudioClient.py 
+
+CMD ["/app/docker-novnc/entrypoint.sh"]
+EXPOSE 8080
