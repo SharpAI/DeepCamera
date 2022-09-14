@@ -1,0 +1,56 @@
+FROM nvcr.io/nvidia/l4t-ml:r35.1.0-py3
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    ca-certificates \
+    sudo \
+    git \
+    bzip2 \
+    libx11-6 \
+    libglib2.0-0 \
+    tzdata
+ #&& rm -rf /var/lib/apt/lists/*
+
+# Create a working directory
+RUN mkdir /app
+WORKDIR /app
+
+
+RUN apt-get install -y \
+      bash \
+      fluxbox \
+      git \
+      net-tools \
+      novnc \
+      supervisor \
+      x11vnc \
+      xterm \
+      xvfb \
+      python3-tk
+
+ADD ./docker-novnc /app/docker-novnc
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    DISPLAY=:0.0 \
+    DISPLAY_WIDTH=1024 \
+    DISPLAY_HEIGHT=768 \
+    RUN_XTERM=yes \
+    RUN_FLUXBOX=yes
+RUN sudo apt-get install -y wget 
+
+RUN git clone https://github.com/GajuuzZ/Human-Falling-Detect-Tracks && \
+    cd Human-Falling-Detect-Tracks/Models && \
+    wget --load-cookies /tmp/cookies.txt "https://drive.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1IPfCDRwCmQDnQy94nT1V-_NVtTEi4VmU' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1IPfCDRwCmQDnQy94nT1V-_NVtTEi4VmU" -O sppe/fast_res50_256x192.pth && rm -rf /tmp/cookies.txt && \
+    wget --load-cookies /tmp/cookies.txt "https://drive.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1N2MgE1Esq6CKYA6FyZVKpPwHRyOCrzA0' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1N2MgE1Esq6CKYA6FyZVKpPwHRyOCrzA0" -O sppe/fast_res101_320x256.pth && rm -rf /tmp/cookies.txt
+
+ADD ./assets/best-model.pth /app/Human-Falling-Detect-Tracks/Models/yolo-tiny-onecls/best-model.pth
+ADD ./assets/tsstg-model.pth /app/Human-Falling-Detect-Tracks/Models/TSSTG/tsstg-model.pth
+ADD ./assets/yolov3-tiny-onecls.cfg /app/Human-Falling-Detect-Tracks/Models/yolo-tiny-onecls/yolov3-tiny-onecls.cfg
+
+ADD ./requirements.txt /app/requirements.txt
+RUN pip3 install -r /app/requirements.txt
+ADD ./detector.py /app/Human-Falling-Detect-Tracks/detector.py
+
+CMD ["/app/docker-novnc/entrypoint.sh"]
+EXPOSE 8080

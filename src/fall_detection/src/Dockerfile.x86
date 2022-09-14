@@ -1,0 +1,90 @@
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND "noninteractive"
+ENV TZ "America/Los_Angeles"
+# Install some basic utilities
+RUN apt-get update && apt-get install -y \
+    curl \
+    ca-certificates \
+    sudo \
+    git \
+    bzip2 \
+    libx11-6 \
+    libglib2.0-0 \
+    tzdata
+ #&& rm -rf /var/lib/apt/lists/*
+
+# Create a working directory
+RUN mkdir /app
+WORKDIR /app
+
+# Create a non-root user and switch to it
+RUN adduser --disabled-password --gecos '' --shell /bin/bash user \
+ && chown -R user:user /app
+RUN echo "user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-user
+USER user
+
+# All users can use /home/user as their home directory
+ENV HOME=/home/user
+RUN chmod 777 /home/user
+
+# Install Miniconda and Python 3.8
+ENV CONDA_AUTO_UPDATE_CONDA=false
+ENV PATH=/home/user/miniconda/bin:$PATH
+RUN curl -sLo ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-py38_4.8.2-Linux-x86_64.sh \
+ && chmod +x ~/miniconda.sh \
+ && ~/miniconda.sh -b -p ~/miniconda \
+ && rm ~/miniconda.sh \
+ && conda install -y python==3.8.1 \
+ && conda clean -ya
+
+# No CUDA-specific steps
+ENV NO_CUDA=1
+RUN conda install -y -c pytorch \
+    cpuonly \
+    "pytorch=1.5.0=py3.8_cpu_0" \
+    "torchvision=0.6.0=py38_cpu" 
+RUN conda config --add channels conda-forge && \
+    conda install libopencv opencv py-opencv
+RUN sudo apt-get install -y ffmpeg libsm6 libxext6
+RUN conda install -y matplotlib
+RUN conda install -y -c anaconda pandas
+
+RUN sudo apt-get install -y \
+      bash \
+      fluxbox \
+      git \
+      net-tools \
+      novnc \
+      supervisor \
+      x11vnc \
+      xterm \
+      xvfb \
+      wget \
+      python3-pip
+RUN conda install -y scipy
+ADD ./docker-novnc /app/docker-novnc
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    DISPLAY=:0.0 \
+    DISPLAY_WIDTH=1024 \
+    DISPLAY_HEIGHT=768 \
+    RUN_XTERM=yes \
+    RUN_FLUXBOX=yes
+
+RUN git clone https://github.com/GajuuzZ/Human-Falling-Detect-Tracks && \
+    cd Human-Falling-Detect-Tracks/Models && \
+    wget --load-cookies /tmp/cookies.txt "https://drive.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1IPfCDRwCmQDnQy94nT1V-_NVtTEi4VmU' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1IPfCDRwCmQDnQy94nT1V-_NVtTEi4VmU" -O sppe/fast_res50_256x192.pth && rm -rf /tmp/cookies.txt && \
+    wget --load-cookies /tmp/cookies.txt "https://drive.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1N2MgE1Esq6CKYA6FyZVKpPwHRyOCrzA0' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1N2MgE1Esq6CKYA6FyZVKpPwHRyOCrzA0" -O sppe/fast_res101_320x256.pth && rm -rf /tmp/cookies.txt
+
+ADD ./assets/best-model.pth /app/Human-Falling-Detect-Tracks/Models/yolo-tiny-onecls/best-model.pth
+ADD ./assets/tsstg-model.pth /app/Human-Falling-Detect-Tracks/Models/TSSTG/tsstg-model.pth
+ADD ./assets/yolov3-tiny-onecls.cfg /app/Human-Falling-Detect-Tracks/Models/yolo-tiny-onecls/yolov3-tiny-onecls.cfg
+
+ADD ./requirements.txt /app/requirements.txt
+RUN conda install -y flask tqdm
+ADD ./detector_cpu.py /app/Human-Falling-Detect-Tracks/detector.py
+
+CMD ["/app/docker-novnc/entrypoint.sh"]
+EXPOSE 8080
