@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import onnxruntime
 
-from .utils import xywh2xyxy, nms, draw_detections
+from .utils import xywh2xyxy, nms, draw_detections, crop_class
 
 
 class YOLOv7:
@@ -144,11 +144,13 @@ class YOLOv7:
         boxes *= np.array([self.img_width, self.img_height, self.img_width, self.img_height])
         return boxes
 
-    def draw_detections(self, image, draw_scores=True, mask_alpha=0.4):
+    def draw_detections(self, image, boxes, scores, class_ids , draw_scores=True, mask_alpha=0.4):
 
-        return draw_detections(image, self.boxes, self.scores,
-                               self.class_ids, mask_alpha)
+        return draw_detections(image, boxes, scores,
+                               class_ids, mask_alpha)
+    def crop_class(self, image, boxes, scores, class_ids, class_to_crop, min_w_h):
 
+        return crop_class(image, boxes, scores, class_ids, class_to_crop, min_w_h)
     def get_input_details(self):
         model_inputs = self.session.get_inputs()
         self.input_names = [model_inputs[i].name for i in range(len(model_inputs))]

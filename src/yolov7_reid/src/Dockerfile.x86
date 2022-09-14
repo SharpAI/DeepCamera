@@ -83,7 +83,7 @@ RUN pip install -r /app/requirements.txt
 # RUN pip install img2vec_pytorch
 
 RUN pip install onnxruntime
-ADD ./models/yolov7-tiny_480x640.onnx /app/models/yolov7-tiny_480x640.onnx
+ADD ./models /app/models
 ADD ./YOLOv7 /app/YOLOv7
 ADD ./detector_cpu.py /app/detector.py
 ADD ./LabelStudioClient.py /app/LabelStudioClient.py 

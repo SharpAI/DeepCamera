@@ -67,7 +67,27 @@ def xywh2xyxy(x):
     y[..., 2] = x[..., 0] + x[..., 2] / 2
     y[..., 3] = x[..., 1] + x[..., 3] / 2
     return y
+def crop_class(image, boxes, scores, class_ids,class_to_crop, min_w_h):
+    cropped_imgs = []
+    ret_bboxes = []
+    ret_scores = []
+    ret_class_ids = []
 
+    for box, score, class_id in zip(boxes, scores, class_ids):
+        x1, y1, x2, y2 = box.astype(int)
+        label = class_names[class_id]
+        if label == class_to_crop:
+            if y2-y1 < min_w_h:
+                continue
+            if x2-x1 < min_w_h:
+                continue
+            cropped = image[y1:y2, x1:x2]
+            cropped_imgs.append(cropped)
+            ret_bboxes.append(box)
+            ret_scores.append(score)
+            ret_class_ids.append(class_id)
+
+    return cropped_imgs,ret_bboxes,ret_scores,ret_class_ids
 
 def draw_detections(image, boxes, scores, class_ids, mask_alpha=0.3):
     mask_img = image.copy()
