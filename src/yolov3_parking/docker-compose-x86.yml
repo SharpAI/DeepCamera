@@ -1,0 +1,106 @@
+version: '2'
+services:
+  redis:
+    image: shareai/redis:x86
+    restart: always
+    container_name: "redis"
+    command: sh -c "rm -rf /data/*.rdb && redis-server --maxmemory 40mb --maxmemory-policy allkeys-lru --save \"\" --appendonly no --dbfilename \"\""
+    #ports:
+    #  - 6379:6379
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+    networks:
+      main:
+        aliases:
+          - redis
+  camera:
+    container_name: "camera"
+    command: sh -c "if [ ! -f /opt/nvr/conf/conf.sqlite ]; then cp /opt/nvr/sql/shinobi.sample.sqlite /opt/nvr/conf/conf.sqlite -a ; fi && sleep 3 &&  (node /opt/nvr/cron.js &) && node /opt/nvr/camera.js"
+    image: shareai/nvr:x86
+    restart: always
+    environment:
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
+      IMAGE_DIR: "/opt/nvr/detector/images"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+    ports:
+      - 8080:8080
+    networks:
+      main:
+        aliases:
+          - camera
+    volumes:
+      - ./videos:/opt/nvr/videos
+      - ./sql:/opt/nvr/conf
+      - ./streams:/dev/shm/streams
+      - ./images:/opt/nvr/detector/images
+  detector_plugin:
+    container_name: "detector_plugin"
+    depends_on:
+      - "camera"
+      - "redis"
+    command: sh -c "export && cd /opt/nvr/detector && node /opt/nvr/detector/index.js"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+    image: shareai/nvr:x86
+    restart: always
+    env_file:
+      - ~/.sharpai/token.env
+    environment:
+      TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
+      IMAGE_DIR: "/opt/nvr/detector/images"
+      DETECTOR_HTTP_URL: "http://detector:3000/submit/image"
+    networks:
+      main:
+        aliases:
+          - detector_plugin
+    ports:
+      - 3000:3000
+    volumes:
+      - ./videos:/opt/nvr/videos
+      - ~/.sharpai/device_id:/dev/ro_serialno
+      - ~/.sharpai/group_id:/data/usr/com.deep.workai/cache/groupid.txt
+      - ./images:/opt/nvr/detector/images
+  detector:
+    container_name: "detector"
+    depends_on:
+      - "detector_plugin"
+    #command: sh -c "while [ 1 ] > /dev/null; do sleep 1; done"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+    #image: python:3.8
+    #image: huggingface/transformers-pytorch-cpu:4.18.0
+    image: shareai/pytorch_opencv:x86
+    restart: always
+    ports: 
+      - 5901:5901
+      - 8000:8080
+    env_file:
+      - ~/.sharpai/token.env
+    environment:
+      TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
+      IMAGE_DIR: "/opt/nvr/detector/images"
+    networks:
+      main:
+        aliases:
+          - detector
+    volumes:
+      - ./videos:/opt/nvr/videos
+      - ~/.sharpai/device_id:/dev/ro_serialno
+      - ~/.sharpai/group_id:/data/usr/com.deep.workai/cache/groupid.txt
+      - ./images:/opt/nvr/detector/images
+networks:
+  main:

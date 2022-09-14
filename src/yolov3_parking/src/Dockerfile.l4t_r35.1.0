@@ -1,0 +1,49 @@
+FROM nvcr.io/nvidia/l4t-ml:r35.1.0-py3
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    ca-certificates \
+    sudo \
+    git \
+    bzip2 \
+    libx11-6 \
+    libglib2.0-0 \
+    tzdata
+ #&& rm -rf /var/lib/apt/lists/*
+
+# Create a working directory
+RUN mkdir /app
+WORKDIR /app
+
+
+RUN apt-get install -y \
+      bash \
+      fluxbox \
+      git \
+      net-tools \
+      novnc \
+      supervisor \
+      x11vnc \
+      xterm \
+      xvfb
+
+ADD ./docker-novnc /app/docker-novnc
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    DISPLAY=:0.0 \
+    DISPLAY_WIDTH=1024 \
+    DISPLAY_HEIGHT=768 \
+    RUN_XTERM=yes \
+    RUN_FLUXBOX=yes
+RUN sudo apt-get install -y wget 
+RUN git clone https://github.com/SharpAI/Smart-Park-with-YOLO-V3 && \
+    cd Smart-Park-with-YOLO-V3 && \
+    wget --no-check-certificate https://pjreddie.com/media/files/yolov3.weights
+ADD ./requirements.txt /app/requirements.txt
+RUN pip install -r ./requirements.txt
+ADD detector.py /app/Smart-Park-with-YOLO-V3/
+
+RUN apt-get install -y python3-tk
+CMD ["/app/docker-novnc/entrypoint.sh"]
+EXPOSE 8080
