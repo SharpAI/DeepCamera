@@ -4,8 +4,7 @@
 		<b>
         <h3> Empower any camera with the state of the art AI, including <br>facial recognition, person recognition(RE-ID)<br> car detection, fall detection and more </h3>
         <h3> ML pipeline for AI camera/CCTV development<br>feature clustering with vector database Milvus<br>labelling with Labelstudio </h3>
-	<h3> Smart Home integration ready<br> Integration with Home-Assistant </h3>
-	<h3> Easy to use Edge AI development environment<br> AI frameworks in docker<br>desktop in docker with remote access<br> pretrained model for quick demo<br> community support </h3>
+	<h3> Easy to use Edge AI development environment<br> AI frameworks in docker<br>desktop in docker with remote access</h3>
         </b>
 	</p>
 
