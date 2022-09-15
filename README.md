@@ -32,6 +32,8 @@ It provides open source facial recognition based intrusion detection, fall detec
 
 SharpAI-hub is the cloud hosting for AI applications which help you deploy AI applications with your CCTV camera on your edge device in minutes. 
 
+
+
 ### Empower any camera with the state of the art AI
 - facial recognition
 - person recognition(RE-ID)
@@ -47,6 +49,12 @@ SharpAI-hub is the cloud hosting for AI applications which help you deploy AI ap
 
 # Install SharpAI-Hub CLI
 `pip3 install sharpai-hub`
+
+# Self-supervised person recognition(REID) intruder detection
+```
+sharpai-cli yolov7_reid start
+```
+<img src="screenshots/reid_self_supervised.gif" width="960" height="540" />
 
 # DeepCamera Facial Recognition local deployment
 We received feedback from community, local deployment is needed. With local deepcamera deployment, all information/images will be saved locally.   
