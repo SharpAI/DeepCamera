@@ -117,8 +117,8 @@ def detection_with_image(frame):
     cropped_imgs, person_bboxes, person_scores, person_class_ids = yolov7_detector.crop_class(frame, bboxes, scores, class_ids, 'person', 100)
     
     pre_colors = []
+    unknown = 0
     if len(cropped_imgs) > 0:
-        unknown = 0
         for img in cropped_imgs:
             image = preprocess(img, args.height, args.width)
             feat = ort_sess.run(None, {input_name: image})[0]
@@ -143,7 +143,6 @@ def detection_with_image(frame):
         if unknown > 0:
             print(f'{len(cropped_imgs)} person detected, unknown number is {unknown}')
 
-        ret_json = {'total':len(cropped_imgs),'unknown':unknown}
         
         combined_img = yolov7_detector.draw_detections_with_predefined_colors(frame,person_bboxes, person_scores, person_class_ids,pre_colors)
         
@@ -151,7 +150,8 @@ def detection_with_image(frame):
             q.put_nowait(combined_img)
         except queue.Full:
             print('display queue full')
-        return jsonify(ret_json)
+    ret_json = {'total':len(cropped_imgs),'unknown':unknown}
+    return ret_json
     
 def worker():    
     while True:
