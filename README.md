@@ -2,7 +2,7 @@
 <h1>&nbsp;&nbsp;DeepCamera </h1>
   <p>
 		<b>
-        <h3> Empower any camera with the state of the art AI <br>ML pipeline for AI camera/CCTV development<br>Easy to use Edge AI development environment</h3>
+        <h3> Empower camera with SOTA AI <br>ML pipeline for AI camera/CCTV <br>Easy to use Edge AI development</h3>
         </b>
 	</p>
 
