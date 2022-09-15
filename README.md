@@ -2,9 +2,7 @@
 <h1>&nbsp;&nbsp;DeepCamera </h1>
   <p>
 		<b>
-        <h3> Empower any camera with the state of the art AI, including <br>facial recognition, person recognition(RE-ID)<br> car detection, fall detection and more </h3>
-        <h3> ML pipeline for AI camera/CCTV development<br>feature clustering with vector database Milvus<br>labelling with Labelstudio </h3>
-	<h3> Easy to use Edge AI development environment<br> AI frameworks in docker<br>desktop in docker with remote access</h3>
+        <h3> Empower any camera with the state of the art AI <br>ML pipeline for AI camera/CCTV development<br>Easy to use Edge AI development environment</h3>
         </b>
 	</p>
 
@@ -34,14 +32,27 @@ It provides open source facial recognition based intrusion detection, fall detec
 
 SharpAI-hub is the cloud hosting for AI applications which help you deploy AI applications with your CCTV camera on your edge device in minutes. 
 
+### Empower any camera with the state of the art AI
+- facial recognition
+- person recognition(RE-ID)
+- parking lot management
+- fall detection
+
+###  ML pipeline for AI camera/CCTV development
+- feature clustering with vector database Milvus
+- labelling with Labelstudio
+### Easy to use Edge AI development environment
+- AI frameworks in docker
+- desktop in docker with web vnc client, so you don't need even install vnc client
+
 # Install SharpAI-Hub CLI
 `pip3 install sharpai-hub`
 
-# DeepCamera local deployment
+# DeepCamera Facial Recognition local deployment
 We received feedback from community, local deployment is needed. With local deepcamera deployment, all information/images will be saved locally.   
 `sharpai-cli local_deepcamera start`
 
-# DeepCamera cloud deployment for free
+# DeepCamera Facial Recognition cloud deployment for free
 - Register account on [SharpAI website](http://dp.sharpai.org:3000)
 - Login on device: `sharpai-cli login`
 - Register device: `sharpai-cli device register`
