@@ -287,7 +287,7 @@ class SharpAI(ImageProcessingEntity):
             fileurl = r'/opt/nvr/detector/images/' +self._camera_id.replace(' ','_') + '_' + str(uuid.uuid4()) + r'.jpg'
             payloads = {'filename':fileurl,'camera_id':self._camera_id}
             img.save(fileurl)
-            r = requests.post('http://localhost:3000/submit/image', json=payloads)
+            r = requests.post('http://detector:3000/submit/image', json=payloads)
         except UnidentifiedImageError:
             _LOGGER.warning("Unable to process image, bad data")
             return
