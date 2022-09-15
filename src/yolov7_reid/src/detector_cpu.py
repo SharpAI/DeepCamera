@@ -151,7 +151,7 @@ def detection_with_image(frame):
             q.put_nowait(combined_img)
         except queue.Full:
             print('display queue full')
-        return ret_json
+        return jsonify(ret_json)
     
 def worker():    
     while True:
