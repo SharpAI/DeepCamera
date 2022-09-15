@@ -51,10 +51,28 @@ SharpAI-hub is the cloud hosting for AI applications which help you deploy AI ap
 `pip3 install sharpai-hub`
 
 # Self-supervised person recognition(REID) intruder detection
+<img src="screenshots/reid_self_supervised.gif" width="960" height="540" />
+
+SharpAI yolov7_reid is an open source python application leverages AI technologies to detect intruder with traditional surveillance camera. Source code is [here](https://github.com/SharpAI/DeepCamera/blob/master/src/yolov7_reid/src/detector_cpu.py)
+
+It leverages Yolov7 as person detector, FastReID for person feature extraction, Milvus the local vector database for self-supervised learning to identity unseen person, Labelstudio to host image locally and for further usage such as label data and train your own classifier. It also integrates with Home-Assistant to empower smart home with AI technology. 
+
+## Deploy yolov7_reid with sharpai-hub CLI
+
 ```
+pip3 install sharpai-hub
 sharpai-cli yolov7_reid start
 ```
-<img src="screenshots/reid_self_supervised.gif" width="960" height="540" />
+If you are using Windows, you can use following command line to start yolov7_reid application
+```
+python3 -m sharpai_hub.cli yolov7_reid start
+```
+
+Then please following the instruction which sharpai-cli provides.   
+The yolov7 detector is running in docker, you can access the docker desktop with http://localhost:8000  
+
+Home-Assistant is hosted at http://localhost:8123  
+Labelstudio is hosted at http://localhost:8080
 
 # DeepCamera Facial Recognition local deployment
 We received feedback from community, local deployment is needed. With local deepcamera deployment, all information/images will be saved locally.   
