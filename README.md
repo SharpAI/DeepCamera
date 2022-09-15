@@ -37,11 +37,11 @@ SharpAI-hub is the cloud hosting for AI applications which help you deploy AI ap
 # Install SharpAI-Hub CLI
 `pip3 install sharpai-hub`
 
-# DeepCamera local deployment
+# DeepCamera Facial Recognition local deployment
 We received feedback from community, local deployment is needed. With local deepcamera deployment, all information/images will be saved locally.   
 `sharpai-cli local_deepcamera start`
 
-# DeepCamera cloud deployment for free
+# DeepCamera Facial Recognition cloud deployment for free
 - Register account on [SharpAI website](http://dp.sharpai.org:3000)
 - Login on device: `sharpai-cli login`
 - Register device: `sharpai-cli device register`
