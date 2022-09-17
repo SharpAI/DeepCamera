@@ -28,13 +28,8 @@ RUN apt-get update && apt-get install -y \
     libxext6
  #&& rm -rf /var/lib/apt/lists/*
 
-# Create a working directory
-RUN mkdir /app
-WORKDIR /app
-
 # Create a non-root user and switch to it
-RUN adduser --disabled-password --gecos '' --shell /bin/bash user \
- && chown -R user:user /app
+RUN adduser --disabled-password --gecos '' --shell /bin/bash user
 RUN echo "user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-user
 USER user
 
@@ -68,7 +63,6 @@ RUN sudo apt-get install -y ffmpeg libsm6 libxext6
 RUN conda install -y matplotlib scipy
 RUN conda install -y -c anaconda pandas
 
-ADD ./docker-novnc /app/docker-novnc
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
     LC_ALL=C.UTF-8 \
@@ -78,15 +72,14 @@ ENV LANG=en_US.UTF-8 \
     RUN_XTERM=yes \
     RUN_FLUXBOX=yes
 
-ADD ./requirements.txt /app/requirements.txt
-RUN pip install -r /app/requirements.txt
 # RUN pip install img2vec_pytorch
+# Create a working directory
 
 RUN pip install onnxruntime
-ADD ./models /app/models
-ADD ./YOLOv7 /app/YOLOv7
-ADD ./detector_cpu.py /app/detector.py
-ADD ./LabelStudioClient.py /app/LabelStudioClient.py 
+ADD . /app
+RUN chown -R user:user /app
+WORKDIR /app
+RUN pip install -r /app/requirements.txt
 
 CMD ["/app/docker-novnc/entrypoint.sh"]
 EXPOSE 8080

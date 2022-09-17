@@ -16,9 +16,10 @@ from flask import request
 from flask import jsonify
 from YOLOv7 import YOLOv7
 from LabelStudioClient import LabelStudioClient
+from telegram_bot import TelegramBot
 
 model_path = "models/yolov7-tiny_480x640.onnx"
-yolov7_detector = YOLOv7(model_path, conf_thres=0.3, iou_thres=0.5)
+yolov7_detector = YOLOv7(model_path, conf_thres=0.6, iou_thres=0.5)
 
 app = Flask(__name__)
 q = queue.Queue(1)
@@ -152,7 +153,10 @@ def detection_with_image(frame):
             print('display queue full')
     ret_json = {'total':len(cropped_imgs),'unknown':unknown}
     return ret_json
-    
+
+telegram_bot = TelegramBot()
+telegram_bot.start()
+
 def worker():    
     while True:
         item = q.get()
