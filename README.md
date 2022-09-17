@@ -32,7 +32,7 @@ It provides open source facial recognition based intrusion detection, fall detec
 
 SharpAI-hub is the cloud hosting for AI applications which help you deploy AI applications with your CCTV camera on your edge device in minutes. 
 
-
+# Features
 
 ### Empower any camera with the state of the art AI
 - facial recognition
@@ -47,30 +47,90 @@ SharpAI-hub is the cloud hosting for AI applications which help you deploy AI ap
 - AI frameworks in docker
 - desktop in docker with web vnc client, so you don't need even install vnc client
 
-# Install SharpAI-Hub CLI
-`pip3 install sharpai-hub`
-
-# Self-supervised person recognition(REID) intruder detection
-<img src="screenshots/reid_self_supervised.gif" width="960" height="540" />
+# Installation Guide 
 
 SharpAI yolov7_reid is an open source python application leverages AI technologies to detect intruder with traditional surveillance camera. Source code is [here](https://github.com/SharpAI/DeepCamera/blob/master/src/yolov7_reid/src/detector_cpu.py)
 
 It leverages Yolov7 as person detector, FastReID for person feature extraction, Milvus the local vector database for self-supervised learning to identity unseen person, Labelstudio to host image locally and for further usage such as label data and train your own classifier. It also integrates with Home-Assistant to empower smart home with AI technology. 
 
-## Deploy yolov7_reid with sharpai-hub CLI
+In Simple terms yolov7_reid is a person detector.
 
-```
-pip3 install sharpai-hub
-sharpai-cli yolov7_reid start
-```
-If you are using Windows, you can use following command line to start yolov7_reid application
+## Prerequisites 
+
+a) Docker (Latest version)
+
+b) Python (v3.6 to v3.10 will work fine)
+
+```NOTE: Before executing any of commands mentioned below please start Docker.```
+
+```This guide is to install the sharpai and run the yolov7_reid service but can also be used to start other services.```
+
+1) Install SharpAI-Hub by running the following command in a Command Prompt and Terminal. Remeber this as Command Prompt 1. This will be needed in further steps:
+
+	```
+	pip3 install sharpai-hub
+	```
+
+2) Now run the following command:
+
+	```
+	sharpai-cli yolov7_reid start
+	```
+	
+**NOTE: If in a Windows system after running command mentioned in Step 2 if you get error:**
+
+`'sharpai-cli' is not recognized as an internal or external command, operable program or batch file.`
+
+Then it means environment variable is not set for Python on your system. More on this at the end of page in FAQ section.
+
+
+3) If you are using Windows and get error in step 2 you can also use following command line to start yolov7_reid
+
 ```
 python3 -m sharpai_hub.cli yolov7_reid start
 ```
+OR
 
-Then please following the instruction which sharpai-cli provides.   
+```
+python -m sharpai_hub.cli yolov7_reid start
+```
+4) Go to directory ```C:\Users``` and open the folder with name of current user. Here look for a folder  ```.sharpai``` . In ```.sharpai``` folder you will see a folder ```yolov7_reid```. Open it and start a new Command Prompt here. Remember this as ```Command Prompt 2```
+
+5) In Command Prompt 2 run the below command:
+
+```
+docker compose up
+```
+
+**NOTE: DO NOT TERMINATE THIS COMMAND.** Let it complete. After running the above command it will take roughly 15-20 minutes or even more time to complete depending upon your system specifications and internet speed. After 5-10 minutes of running the command in the images tab of Docker will images will start to appear. If the command ran successful then there must be seven images in images tab plus one container named as `yolov7_reid` in the container tab.
+
+6) Go to folder ```yolov7_reid``` mentioned in step 4. In this folder there will be file ```.env```. Delete it. Now close the Command Prompt 1. Open and new Command prompt and run the following command again. We will call this as Command Prompt 3. 
+
+```
+sharpai-cli yolov7_reid start
+```
+OR
+
+```
+python3 -m sharpai_hub.cli yolov7_reid start
+```
+OR
+
+```
+python -m sharpai_hub.cli yolov7_reid start
+```
+
+7) Running command in Step 6 will open a Signup/Signin page in the browser and in Command Prompt it will ask for the Labelstudio Token. After Signing up in you will be taken to your account. At the top right corrent you will see a small cirle with your account initials. Click on it and after that click on `Account Setting`. Here at the right side of page you will see a Access token. Copy the token and paste it carefully in the command prompt 3.
+ 
+ ```NOTE: Till further steps are added you can use below video tutorial for further help.```
+
+# Self-supervised person recognition(REID) intruder detection
+<img src="screenshots/reid_self_supervised.gif" width="960" height="540" />
+
+
+## Important Links 
+
 The yolov7 detector is running in docker, you can access the docker desktop with http://localhost:8000  
-
 Home-Assistant is hosted at http://localhost:8123  
 Labelstudio is hosted at http://localhost:8080
 
