@@ -46,22 +46,12 @@ ENV PATH=/home/user/miniconda/bin:$PATH
 # Install Miniconda and Python 3.8
 ENV CONDA_AUTO_UPDATE_CONDA=false
 ENV PATH=/home/user/miniconda/bin:$PATH
+RUN sudo apt-get install -y ffmpeg libsm6 libxext6
 RUN curl -sLo ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-py38_4.12.0-Linux-x86_64.sh \
  && chmod +x ~/miniconda.sh \
  && ~/miniconda.sh -b -p ~/miniconda \
  && rm ~/miniconda.sh \
- && conda install -y python==3.8.1 \
- && conda clean -ya
-
-RUN conda install -y -c pytorch \
-    cpuonly \
-    "pytorch=1.5.0=py3.8_cpu_0" \
-    "torchvision=0.6.0=py38_cpu" 
-RUN conda config --add channels conda-forge && \
-    conda install libopencv opencv py-opencv
-RUN sudo apt-get install -y ffmpeg libsm6 libxext6
-RUN conda install -y matplotlib scipy
-RUN conda install -y -c anaconda pandas
+ && conda install -y python libopencv opencv py-opencv
 
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
@@ -72,12 +62,8 @@ ENV LANG=en_US.UTF-8 \
     RUN_XTERM=yes \
     RUN_FLUXBOX=yes
 
-# RUN pip install img2vec_pytorch
-# Create a working directory
-
 RUN pip install onnxruntime
 ADD . /app
-RUN chown -R user:user /app
 WORKDIR /app
 RUN pip install -r /app/requirements.txt
 

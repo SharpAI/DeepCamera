@@ -236,4 +236,5 @@ def video_worker(video_url):
 # Turn-on the worker thread.
 if __name__ == '__main__':
     threading.Thread(target=worker, daemon=True).start()
+    telegram_bot.start()
     app.run(host='0.0.0.0', port=3000)
