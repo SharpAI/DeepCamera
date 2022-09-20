@@ -51,7 +51,6 @@ class TelegramBot(threading.Thread):
 
             print('starting telegram bot')
             updater.start_polling()
-            updater.idle()
 
     def send(self,message) -> None:
         if self.application != None and self.chat_id != None:
