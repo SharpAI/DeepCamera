@@ -65,6 +65,15 @@ pip3 install sharpai-hub
 sharpai-cli yolov7_reid start
 ```
 
+Add SharpAI to Home-Assistant:
+```
+image_processing:
+  - platform: sharpai
+    source:
+      - entity_id: camera.<camera_entity_id>
+    scan_interval: 3
+```
+
 <details> 
    <summary><h3>Prerequisites</h3></summary>
 	1. Docker (Latest version)
@@ -124,8 +133,25 @@ python -m sharpai_hub.cli yolov7_reid start
 ```
 
 7) Running command in Step 6 will open a Signup/Signin page in the browser and in Command Prompt it will ask for the Labelstudio Token. After Signing up in you will be taken to your account. At the top right corrent you will see a small cirle with your account initials. Click on it and after that click on `Account Setting`. Here at the right side of page you will see a Access token. Copy the token and paste it carefully in the command prompt 3.
- 
- ```NOTE: Till further steps are added you can use below video tutorial for further help.```
+8) Add Camera to Home-Assistant, you can use "Genaric Camera" to add camera with RTSP url
+9) Add following integration to Home-Assistant 
+```
+docker exec -ti home-assistant /bin/bash
+vi configuration.yaml
+	  
+stream:
+  ll_hls: true
+  part_duration: 0.75
+  segment_duration: 6
+
+image_processing:
+  - platform: sharpai
+    source:
+      - entity_id: camera.<camera_entity_id>
+    scan_interval: 1
+```
+
+ ```NOTE: Till further steps are added you can use demo video in the beginning tutorial for further help.```
 
 </details>
 <details>
