@@ -58,29 +58,13 @@ In Simple terms yolov7_reid is a person detector.
 <img src="screenshots/reid_self_supervised.gif" width="960" height="480" />
 
 ## Installation Guide 
-### TL;DR
-
-```
-pip3 install sharpai-hub
-sharpai-cli yolov7_reid start
-```
-
-Add SharpAI to Home-Assistant:
-```
-image_processing:
-  - platform: sharpai
-    source:
-      - entity_id: camera.<camera_entity_id>
-    scan_interval: 3
-```
-
 <details> 
    <summary><h3>Prerequisites</h3></summary>
-	1. Docker (Latest version)
+	1. Docker (Latest version) <br />
 	2. Python (v3.6 to v3.10 will work fine)
 </details>
 <details>
-  <summary><h3>Step-by-step</h3></summary
+  <summary><h3>Step-by-step guide</h3></summary
 
 ```NOTE: Before executing any of commands mentioned below please start Docker.```
 ```This guide is to install the sharpai and run the yolov7_reid service but can also be used to start other services.```
@@ -133,12 +117,33 @@ python -m sharpai_hub.cli yolov7_reid start
 ```
 
 7) Running command in Step 6 will open a Signup/Signin page in the browser and in Command Prompt it will ask for the Labelstudio Token. After Signing up in you will be taken to your account. At the top right corrent you will see a small cirle with your account initials. Click on it and after that click on `Account Setting`. Here at the right side of page you will see a Access token. Copy the token and paste it carefully in the command prompt 3.
-8) Add Camera to Home-Assistant, you can use "Genaric Camera" to add camera with RTSP url
-9) Add following integration to Home-Assistant 
-```
-docker exec -ti home-assistant /bin/bash
-vi configuration.yaml
 	  
+8) Add Camera to Home-Assistant, you can use "Generic Camera" to add camera with RTSP url
+	  
+9) In this step, we will obtain the camera entity ID of your cameras. After adding your camera to `home-Assistant`, go to the `Overview` tab. Here all your cameras will be listed. Click on the video stream of a camera, after which a small popup will open. At the top right of the popup, click the gear icon to open the settings page. A new popup will open with a few editable properties. Here look for Entity ID, which is in the format `camera.IP_ADDRESS_OF_CAMERA`, copy/note this entity ID (these entity ids will be required later). If you have multiple cameras, we will need each cameras Entity ID. Note all these camera entity IDs.
+
+	  
+10) Run following two commands to open and edit the `configuration.yaml` of Home-Assistant:
+	  
+```
+docker exec -ti home-assistant /bin/bash 
+```	
+	  
+```
+vi configuration.yaml
+```
+	  
+**NOTE FOR WINDOWS SYSTEM USERS: These commands wont work with windows Systems. For Windows system, please open Docker (the instance of Docker, which is already running from the start) and in the container tab, open the `yolov7_reid`. Here look for the `home-assistant` container. Hover your mouse cursor on the `home-assistant` container, and a few options will appear. Click on `cli`. An inbuilt console will start on the same page. If the typing cursor keeps blinking and nothing shows up on the inbuilt console, then click on `Open in External Terminal`, which is just above the blinking cursor. After clicking it, a new command prompt will open. To check everything is working as expected, run the command `ls` and see if the commands list the files and folders in the config folder.**
+	  
+**Now run a command `vi configuration.yaml`. This command will open your configuration file of the `home-assistant` in the Vi editor. Vi Editor is a bit tricky if you are unfamiliar with using it. You will now have to enter into Insert mode to add the integration code mentioned in Step 9 to the configuration file. Press the `I` key to enter Insert mode and go end of the file using the down arrow key. Next, press the right mouse (while the mouse cursor is inside the command prompt window) while in the command prompt. This will paste the integration code that you had copied earlier. After making changes to the config file, press the escape key, type the following `:wq` (yes with colon) and press enter key. You will be back taken to `/config #`. This command `:wq` means you want to write changes to the config file and quit (I told you Vi is a bit tricky for beginners). You can now close the command prompt.**
+	  
+
+11) Add the below code to the end of `configuration.yaml` file. 
+	  
+**Here, replace `camera.<camera_entity_id>` with the camera entity ID we obtained in Step 9. If you have multiple cameras then keep adding the `entity_id` under `images_processing`.**
+	  
+	  
+```
 stream:
   ll_hls: true
   part_duration: 0.75
@@ -151,8 +156,29 @@ image_processing:
     scan_interval: 1
 ```
 
- ```NOTE: Till further steps are added you can use demo video in the beginning tutorial for further help.```
+If you have multiple cameras then after changing the 'entity_id' the code will become similar to this:
+	  
+```
+stream:
+  ll_hls: true
+  part_duration: 0.75
+  segment_duration: 6
 
+image_processing:
+  - platform: sharpai
+    source:
+      - entity_id: camera.192_168_29_44
+      - entity_id: camera.192_168_29_45
+      - entity_id: camera.192_168_29_46
+      - entity_id: camera.192_168_29_47
+    scan_interval: 1
+```
+
+12) At `home-assistant` homepage `http://localhost:8123` select `Developer Tools`. Look for and click `Check Configuration` under `Configuration Validation`. If everything went well then it must show "Configuration Valid'. Click `Restart`.Now go to the `container` tab of docker, click three vertical dots under `Actions` and press restart. Open the `Overview` tab of `home-assitant`. If you see `Image Processing` beside your cameras and below it `Sharp IP_ADDRESS_OF_YOUR_CAMERA`, then congrats. Everything is working as expected.
+	  
+	  
+ ```NOTE: Till further steps are added you can use demo video in the beginning tutorial for further help.```
+	 
 </details>
 <details>
   <summary><h3>Important Links</h3></summary>
