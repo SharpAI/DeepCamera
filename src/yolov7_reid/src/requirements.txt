@@ -1,7 +1,1 @@
-pymilvus==2.0.0
-notebook==6.4.12
-youtube-dl==2020.12.2
-Flask==2.2.2
-redis==4.3.4
-pafy==0.5.5
-python-telegram-bot==13.14
+# python-telegram-bot==20.0a0

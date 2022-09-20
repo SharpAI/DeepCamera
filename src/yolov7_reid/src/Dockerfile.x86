@@ -62,10 +62,18 @@ ENV LANG=en_US.UTF-8 \
     RUN_XTERM=yes \
     RUN_FLUXBOX=yes
 
-RUN pip install onnxruntime
+RUN pip install onnxruntime \
+                python-telegram-bot==13.14 \
+                pymilvus==2.0.0 \
+                notebook==6.4.12 \
+                youtube-dl==2020.12.2 \
+                Flask==2.2.2 \
+                redis==4.3.4 \
+                pafy==0.5.5 
 ADD . /app
 WORKDIR /app
 RUN pip install -r /app/requirements.txt
+RUN sudo chown -R user.user /app
 
 CMD ["/app/docker-novnc/entrypoint.sh"]
 EXPOSE 8080

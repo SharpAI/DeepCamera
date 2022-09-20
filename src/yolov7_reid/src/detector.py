@@ -121,7 +121,12 @@ def detection_with_image(frame):
     unknown = 0
     if len(cropped_imgs) > 0:
         for img in cropped_imgs:
-            image = preprocess(img, args.height, args.width)
+            try:
+                image = preprocess(img, args.height, args.width)
+            except Exception as e:
+                print('cant preprocess img')
+                print(e)
+                continue
             feat = ort_sess.run(None, {input_name: image})[0]
             feat = normalize(feat, axis=1)
 
@@ -155,7 +160,7 @@ def detection_with_image(frame):
     return ret_json
 
 telegram_bot = TelegramBot()
-telegram_bot.start()
+# telegram_bot.start()
 
 def worker():    
     while True:
