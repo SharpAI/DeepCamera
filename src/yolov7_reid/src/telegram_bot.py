@@ -32,7 +32,7 @@ class TelegramBot(threading.Thread):
         def cmd_start(update: Update,  context: CallbackContext):
             print(update.message)
             try:
-                chat_id = update.message['chat']['io']
+                chat_id = update.message['chat']['id']
                 self.save_id(chat_id)
             except Exception as e:
                 print(e)
