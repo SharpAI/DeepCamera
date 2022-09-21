@@ -70,9 +70,14 @@ RUN pip install onnxruntime \
                 Flask==2.2.2 \
                 redis==4.3.4 \
                 pafy==0.5.5 
-ADD . /app
-WORKDIR /app
+ADD ./docker-novnc /app/docker-novnc
+ADD ./models /app/models
+ADD ./YOLOv7 /app/YOLOv7
+ADD ./requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt
+ADD ./*.py /app/
+
+WORKDIR /app
 RUN sudo chown -R user.user /app
 
 CMD ["/app/docker-novnc/entrypoint.sh"]
