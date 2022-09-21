@@ -1,4 +1,5 @@
 import os
+import time
 import queue
 import json
 import argparse
@@ -83,7 +84,15 @@ q = queue.Queue(1)
 args = get_parser().parse_args()
 ort_sess = onnxruntime.InferenceSession(args.model_path)
 input_name = ort_sess.get_inputs()[0].name
-collection, red = init_milvus('yolov7_reid',2048)
+
+while True:
+    try:
+        collection, red = init_milvus('yolov7_reid',2048)
+        break
+    except Exception as e:
+        print('waiting for milvus start')
+        time.sleep(5)
+
 
 telegram_bot = TelegramBot()
 previous_known_person_ts = 0
