@@ -3,6 +3,7 @@ import queue
 import json
 import argparse
 import threading
+import time
 import pafy
 from pymilvus import (connections, CollectionSchema, 
                       FieldSchema, DataType, Collection, utility)
@@ -84,6 +85,9 @@ ort_sess = onnxruntime.InferenceSession(args.model_path)
 input_name = ort_sess.get_inputs()[0].name
 collection, red = init_milvus('yolov7_reid',2048)
 
+telegram_bot = TelegramBot()
+previous_known_person_ts = time.time()
+
 def insert_to_milvus(vec, min_dist):
     ids = []
     search_param = {
@@ -119,9 +123,15 @@ def detection_with_image(frame):
     
     pre_colors = []
     unknown = 0
-    if len(cropped_imgs) > 0:
+    total = len(cropped_imgs)
+    if total > 0:
         for img in cropped_imgs:
-            image = preprocess(img, args.height, args.width)
+            try:
+                image = preprocess(img, args.height, args.width)
+            except Exception as e:
+                print('cant preprocess img')
+                print(e)
+                continue
             feat = ort_sess.run(None, {input_name: image})[0]
             feat = normalize(feat, axis=1)
 
@@ -142,9 +152,16 @@ def detection_with_image(frame):
             else:
                 pre_colors.append(KNOWN_COLOR)
         if unknown > 0:
-            print(f'{len(cropped_imgs)} person detected, unknown number is {unknown}')
+            if unknown == 1:
+                telegram_bot.send('SharpAI seen one unknown person')
+            else:
+                telegram_bot.send(f'SharpAI seen {unknown} unknown people')
+        elif total > 0:
+            print(f'SharpAI seen {total} person')
+            current_ts = time.time()
+            if current_ts - previous_known_person_ts > 30*1000:
+                telegram_bot.send(f'SharpAI seen {total} person')
 
-        
         combined_img = yolov7_detector.draw_detections_with_predefined_colors(frame,person_bboxes, person_scores, person_class_ids,pre_colors)
         
         try:
@@ -154,8 +171,7 @@ def detection_with_image(frame):
     ret_json = {'total':len(cropped_imgs),'unknown':unknown}
     return ret_json
 
-telegram_bot = TelegramBot()
-telegram_bot.start()
+# telegram_bot.start()
 
 def worker():    
     while True:
@@ -236,4 +252,5 @@ def video_worker(video_url):
 # Turn-on the worker thread.
 if __name__ == '__main__':
     threading.Thread(target=worker, daemon=True).start()
+    telegram_bot.start()
     app.run(host='0.0.0.0', port=3000)

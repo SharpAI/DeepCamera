@@ -2,32 +2,65 @@ import os
 import logging
 import threading
 from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
-
+from telegram.ext import (
+    Updater,
+    CommandHandler,
+    MessageHandler,
+    Filters,
+    CallbackContext
+)
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
 
 class TelegramBot(threading.Thread):
-    def __init__(self) -> None:
-        self.chat_id = self.load_id()
-        self.chat_id_filepath = 'telegram_token.txt'
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.chat_id_filepath = 'telegram_chat_id.txt'
         self.token = os.getenv('TELEGRAM_TOKEN', None)
         self.application = None
+        self.chat_id = self.load_id()
+        self.bot = None
+        self.updater = None
+
+    def run(self):
+        def recv_msg(update: Update, context: CallbackContext):
+            update.message.reply_text("Hi, SharpAI is running...")
+            print(update.message)
+
+        def cmd_start(update: Update,  context: CallbackContext):
+            update.message.reply_text("SharpAI started...")
+            print(update.message)
+            try:
+                self.chat_id = str(update.message['chat']['id'])
+                self.save_id(self.chat_id)
+            except Exception as e:
+                print(e)
+        # await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
 
         if self.token != None:
-            self.application = ApplicationBuilder().token(self.token).build()
+            self.updater = Updater(self.token )
+            self.bot = self.updater.bot
+            dispatcher = self.updater.dispatcher
 
-    def run(self) -> None:
-        if self.application != None:
-            self.application.run_polling()
+            dispatcher.add_handler(CommandHandler("start", cmd_start))
+
+            dispatcher.add_handler(MessageHandler(
+                Filters.text & ~Filters.command,
+                recv_msg
+            ))
+
+            print('starting telegram bot')
+            self.send('SharpAI detecter started')
+            self.updater.start_polling()
+
     def send(self,message) -> None:
-        if self.application != None and self.chat_id != None:
+        self.chat_id = self.load_id()
+        if self.bot != None and self.chat_id != None:
             print(f'sending message {message}')
+            self.bot.send_message(chat_id=self.chat_id, text=message)
     def save_id(self,chat_id):
         with open(self.chat_id_filepath, "w") as f:
             f.write(chat_id)
