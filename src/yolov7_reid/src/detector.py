@@ -160,7 +160,7 @@ def detection_with_image(frame):
         elif total > 0:
             print(f'SharpAI seen {total} person')
             current_ts = time.time()
-            if current_ts - previous_known_person_ts > 30:
+            if current_ts - previous_known_person_ts > 30*60:
                 previous_known_person_ts = current_ts
                 telegram_bot.send(f'SharpAI seen {total} person')
 
@@ -170,8 +170,7 @@ def detection_with_image(frame):
             q.put_nowait(combined_img)
         except queue.Full:
             print('display queue full')
-    else :
-        q.put_nowait(frame)
+
     ret_json = {'total':len(cropped_imgs),'unknown':unknown}
     return ret_json
 

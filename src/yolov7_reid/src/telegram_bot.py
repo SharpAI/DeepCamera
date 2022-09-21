@@ -27,13 +27,17 @@ class TelegramBot(threading.Thread):
 
     def run(self):
         def recv_msg(update: Update, context: CallbackContext):
-            update.message.reply_text("Hi, SharpAI is running...")
-            print(update.message)
+            try:
+                update.message.reply_text("Hi, SharpAI is running...")
+                print(update.message)
+            except Exception as e:
+                print('Exception when processing received message')
+                print(e)
 
         def cmd_start(update: Update,  context: CallbackContext):
-            update.message.reply_text("SharpAI started...")
-            print(update.message)
             try:
+                update.message.reply_text("SharpAI started...")
+                print(update.message)
                 self.chat_id = str(update.message['chat']['id'])
                 self.save_id(self.chat_id)
             except Exception as e:
@@ -44,9 +48,7 @@ class TelegramBot(threading.Thread):
             self.updater = Updater(self.token )
             self.bot = self.updater.bot
             dispatcher = self.updater.dispatcher
-
             dispatcher.add_handler(CommandHandler("start", cmd_start))
-
             dispatcher.add_handler(MessageHandler(
                 Filters.text & ~Filters.command,
                 recv_msg
@@ -57,10 +59,14 @@ class TelegramBot(threading.Thread):
             self.updater.start_polling()
 
     def send(self,message) -> None:
-        self.chat_id = self.load_id()
-        if self.bot != None and self.chat_id != None:
-            print(f'sending message {message}')
-            self.bot.send_message(chat_id=self.chat_id, text=message)
+        try:
+            self.chat_id = self.load_id()
+            if self.bot != None and self.chat_id != None:
+                print(f'sending message {message}')
+                self.bot.send_message(chat_id=self.chat_id, text=message)
+        except Exception as e:
+            print('Exception when sending message')
+            print(e)
     def save_id(self,chat_id):
         with open(self.chat_id_filepath, "w") as f:
             f.write(chat_id)
