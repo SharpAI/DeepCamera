@@ -86,7 +86,7 @@ input_name = ort_sess.get_inputs()[0].name
 collection, red = init_milvus('yolov7_reid',2048)
 
 telegram_bot = TelegramBot()
-previous_known_person_ts = time.time()
+previous_known_person_ts = 0
 
 def insert_to_milvus(vec, min_dist):
     ids = []
@@ -114,6 +114,7 @@ def insert_to_milvus(vec, min_dist):
     return insert, ids
 
 def detection_with_image(frame):
+    global previous_known_person_ts
     # cv2.imshow('Screen',img)
     # Detect Objects
     KNOWN_COLOR = (0,255,0)
