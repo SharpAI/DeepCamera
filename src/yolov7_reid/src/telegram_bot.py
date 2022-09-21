@@ -36,10 +36,11 @@ class TelegramBot(threading.Thread):
 
         def cmd_start(update: Update,  context: CallbackContext):
             try:
-                update.message.reply_text("SharpAI started...")
-                print(update.message)
                 self.chat_id = str(update.message['chat']['id'])
                 self.save_id(self.chat_id)
+
+                self.send("SharpAI started...")
+                print(update.message)
             except Exception as e:
                 print(e)
         # await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
