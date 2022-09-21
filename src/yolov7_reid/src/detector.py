@@ -142,9 +142,17 @@ def detection_with_image(frame):
             else:
                 pre_colors.append(KNOWN_COLOR)
         if unknown > 0:
-            print(f'{len(cropped_imgs)} person detected, unknown number is {unknown}')
+            if unknown == 1:
+                telegram_bot.send('SharpAI seen one unknown person')
+            else:
+                telegram_bot.send(f'SharpAI seen {unknown} unknown people')
+        elif total > 0:
+            print(f'SharpAI seen {total} person')
+            current_ts = time.time()
+            if current_ts - previous_known_person_ts > 30*1000:
+                previous_known_person_ts = current_ts
+                telegram_bot.send(f'SharpAI seen {total} person')
 
-        
         combined_img = yolov7_detector.draw_detections_with_predefined_colors(frame,person_bboxes, person_scores, person_class_ids,pre_colors)
         
         try:
