@@ -18,29 +18,32 @@ logging.basicConfig(
 class TelegramBot(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.chat_id_filepath = 'telegram_token.txt'
+        self.chat_id_filepath = 'telegram_chat_id.txt'
         self.token = os.getenv('TELEGRAM_TOKEN', None)
         self.application = None
         self.chat_id = self.load_id()
+        self.bot = None
+        self.updater = None
 
     def run(self):
         def recv_msg(update: Update, context: CallbackContext):
-            update.message.reply_text("Oooopa")
+            update.message.reply_text("Hi, SharpAI is running...")
             print(update.message)
 
-            # context.bot.send_message(chat_id=update.effective_chat.id, text=f"Your chat_id is {update.effective_chat.id}")
         def cmd_start(update: Update,  context: CallbackContext):
+            update.message.reply_text("SharpAI started...")
             print(update.message)
             try:
-                chat_id = update.message['chat']['id']
-                self.save_id(chat_id)
+                self.chat_id = str(update.message['chat']['id'])
+                self.save_id(self.chat_id)
             except Exception as e:
                 print(e)
         # await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
 
         if self.token != None:
-            updater = Updater(self.token )
-            dispatcher = updater.dispatcher
+            self.updater = Updater(self.token )
+            self.bot = self.updater.bot
+            dispatcher = self.updater.dispatcher
 
             dispatcher.add_handler(CommandHandler("start", cmd_start))
 
@@ -50,12 +53,14 @@ class TelegramBot(threading.Thread):
             ))
 
             print('starting telegram bot')
-            updater.start_polling()
+            self.send('SharpAI detecter started')
+            self.updater.start_polling()
 
     def send(self,message) -> None:
-        if self.application != None and self.chat_id != None:
+        self.chat_id = self.load_id()
+        if self.bot != None and self.chat_id != None:
             print(f'sending message {message}')
-            self.application.bot.send_message(chat_id=self.chat_id, text=message)
+            self.bot.send_message(chat_id=self.chat_id, text=message)
     def save_id(self,chat_id):
         with open(self.chat_id_filepath, "w") as f:
             f.write(chat_id)
