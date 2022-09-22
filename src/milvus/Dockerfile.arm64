@@ -1,0 +1,80 @@
+
+# https://community.arm.com/arm-community-blogs/b/tools-software-ides-blog/posts/aarch64-docker-images-for-tensorflow-and-pytorch
+# FROM soulteary/milvus-openblas:0.3.20-armv8-ubuntu-22.04
+FROM ubuntu:20.04
+LABEL maintainer=solderzzc@gmail.com
+
+ARG USE_MIRROR=false
+RUN if [ "$USE_MIRROR" = true ] ; then sed -i -e "s/archive.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/" /etc/apt/sources.list && sed -i -e "s/security.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/" /etc/apt/sources.list; fi
+
+ENV DEBIAN_FRONTEND noninteractive
+
+# deps
+RUN apt-get update && \
+    # common utils for download sources tarball/zipball
+    apt-get install -y --no-install-recommends curl wget ca-certificates gnupg2 && \
+    # openblas deps
+    apt-get install -y --no-install-recommends g++ gcc gfortran git make g++ gcc make lcov libtool m4 autoconf automake ccache libssl-dev zlib1g-dev libboost-regex-dev libboost-program-options-dev libboost-system-dev libboost-filesystem-dev libboost-serialization-dev python3-dev libboost-python-dev libcurl4-openssl-dev gfortran libtbb-dev \
+    # install extra deps `clang-format-10 clang-tidy-10` (from milvus/build/docker/builder/cpu/ubuntu20.04/Dockerfile)
+    clang-format-10 clang-tidy-10 \
+    # install extra deps for golang installer
+    bison && \
+    # cleanup
+    apt-get remove --purge -y && rm -rf /var/lib/apt/lists/*
+
+# build cmake 3.24.2 from source https://cmake.org
+ENV DOCKER_CMAKE_TARBALL=https://github.com/Kitware/CMake/releases/download/v3.24.2/cmake-3.24.2-linux-aarch64.tar.gz
+RUN wget -qO- "${DOCKER_CMAKE_TARBALL}" | tar --strip-components=1 -xz -C /usr/local
+
+# build openblas 3.8+ from source https://github.com/xianyi/OpenBLAS
+ARG OPENBLAS=0.3.9
+ENV OPENBLASH_VERSION=${OPENBLAS}
+RUN wget https://github.com/xianyi/OpenBLAS/archive/v${OPENBLASH_VERSION}.tar.gz && \
+    tar zxvf v${OPENBLASH_VERSION}.tar.gz && \
+    cd OpenBLAS-${OPENBLASH_VERSION} && \
+    # same complie options as milvus 18.04 dockerfile
+    make TARGET=CORE2 DYNAMIC_ARCH=1 DYNAMIC_OLDER=1 USE_THREAD=0 USE_OPENMP=0 FC=gfortran CC=gcc COMMON_OPT="-O3 -g -fPIC" FCOMMON_OPT="-O3 -g -fPIC -frecursive" NMAX="NUM_THREADS=128" LIBPREFIX="libopenblas" LAPACKE="NO_LAPACKE=1" INTERFACE64=0 NO_STATIC=1 && \
+    make -j4 PREFIX=/usr NO_STATIC=1 install && \
+    cd .. && rm -rf OpenBLAS-${OPENBLASH_VERSION} && rm v${OPENBLASH_VERSION}.tar.gz
+# change default shell for build milvus
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# use gvm improved version, can support golang fast installation for x86 / arm platform
+# maybe the milvus community can fork a version to provide a more stable service
+# ref: https://soulteary.com/2021/12/15/golang-multi-version-management.html / https://soulteary.com/2022/05/12/better-golang-usage-on-m1-mac.html
+RUN curl -sSL https://github.com/soulteary/gvm/raw/master/binscripts/gvm-installer | bash
+ARG GO_BINARY_BASE_URL=https://golang.google.cn/dl/
+ENV GO_BINARY_BASE_URL=${GO_BINARY_BASE_URL}
+ENV GVM_ROOT=/root/.gvm
+# keep same version with milvus builder images: milvus/build/docker/builder/cpu/ubuntu18.04/Dockerfile
+ARG GOLANG_VERSION=1.18.6
+ENV GOLANG_VERSION=${GOLANG_VERSION}
+RUN source /root/.gvm/scripts/gvm && \
+    gvm install go${GOLANG_VERSION} -B && \
+    gvm use go${GOLANG_VERSION} --default
+# after go1.15+, need set `GOROOT_BOOTSTRAP` for golang
+ENV GOROOT_BOOTSTRAP=/root/.gvm
+ENV GO111MODULE=on
+ENV GOPATH="$HOME/go"
+ENV PATH="$GOPATH/bin:$PATH"
+ARG GOPROXY_URL=https://proxy.golang.org
+ENV GOPROXY="${GOPROXY_URL},direct"
+
+# download milvus source from github
+# allow user specify a milvus git repository, branch, clone depth
+ARG MILVUS_GIT_REPO=https://github.com/SharpAI/milvus-aarch64
+ENV MILVUS_GIT_REPO=${MILVUS_GIT_REPO}
+ARG MILVUS_GIT_BRANCH=aarch64
+ENV MILVUS_GIT_BRANCH=${MILVUS_GIT_BRANCH}
+ARG MILVUS_GIT_CLONE_DEPTH=
+ENV MILVUS_GIT_CLONE_DEPTH=${MILVUS_GIT_CLONE_DEPTH}
+RUN echo "Version 0.0.1"
+RUN if [ "$MILVUS_GIT_CLONE_DEPTH" = "" ];then \
+        bash -c "git clone ${MILVUS_GIT_REPO} --branch=${MILVUS_GIT_BRANCH} /milvus";\
+    else \
+        bash -c "git clone ${MILVUS_GIT_REPO} --branch=${MILVUS_GIT_BRANCH} --depth=${MILVUS_GIT_CLONE_DEPTH} /milvus"; \
+    fi
+
+WORKDIR /milvus
+RUN source /root/.gvm/scripts/gvm && make # milvus mode=Debug
+
+# RUN echo "f16c faiss knowwhere"
