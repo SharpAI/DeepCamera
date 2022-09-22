@@ -181,8 +181,7 @@ def detection_with_image(frame):
         if send_image == True:
             filepath = '/tmp/to_send.jpg'
             cv2.imwrite(filepath,combined_img)
-            telegram_bot.send_image(f'SharpAI seen {total} person')
-                
+            telegram_bot.send_image(filepath)
         
         try:
             q.put_nowait(combined_img)
