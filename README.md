@@ -55,7 +55,15 @@ SharpAI-hub is the cloud hosting for AI applications which help you deploy AI ap
 SharpAI yolov7_reid is an open source python application leverages AI technologies to detect intruder with traditional surveillance camera. Source code is [here](https://github.com/SharpAI/DeepCamera/blob/master/src/yolov7_reid/src/detector_cpu.py)
 It leverages Yolov7 as person detector, FastReID for person feature extraction, Milvus the local vector database for self-supervised learning to identity unseen person, Labelstudio to host image locally and for further usage such as label data and train your own classifier. It also integrates with Home-Assistant to empower smart home with AI technology. 
 In Simple terms yolov7_reid is a person detector.
+
+
+- Machine learning technology
+  - Yolov7 Tiny, pretrained from COCO dataset
+  - FastReID ResNet50
+  - Vector Database Milvus for self-supervised learning
+
 <img src="screenshots/reid_self_supervised.gif" width="960" height="480" />
+
 
 ## Installation Guide 
 <details> 
