@@ -68,6 +68,16 @@ class TelegramBot(threading.Thread):
         except Exception as e:
             print('Exception when sending message')
             print(e)
+    def send_image(self, photo_path) -> None:
+        try:
+            self.chat_id = self.load_id()
+            if self.bot != None and self.chat_id != None:
+                print(f'sending photo {photo_path}')
+                self.bot.send_photo(chat_id=self.chat_id, photo=open(photo_path, 'rb'))
+        except Exception as e:
+            print('Exception when sending message')
+            print(e)
+        
     def save_id(self,chat_id):
         with open(self.chat_id_filepath, "w") as f:
             f.write(chat_id)
