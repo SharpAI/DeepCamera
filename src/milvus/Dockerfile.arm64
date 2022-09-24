@@ -75,6 +75,8 @@ RUN if [ "$MILVUS_GIT_CLONE_DEPTH" = "" ];then \
     fi
 
 WORKDIR /milvus
-RUN source /root/.gvm/scripts/gvm && make # milvus mode=Debug
+
+RUN source /root/.gvm/scripts/gvm && make 
+# milvus mode=Debug
 
 # RUN echo "f16c faiss knowwhere"
