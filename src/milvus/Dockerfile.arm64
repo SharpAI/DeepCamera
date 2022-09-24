@@ -67,7 +67,7 @@ ARG MILVUS_GIT_BRANCH=aarch64
 ENV MILVUS_GIT_BRANCH=${MILVUS_GIT_BRANCH}
 ARG MILVUS_GIT_CLONE_DEPTH=
 ENV MILVUS_GIT_CLONE_DEPTH=${MILVUS_GIT_CLONE_DEPTH}
-RUN echo "Version 0.0.1"
+RUN echo "Version 0.1.1"
 RUN if [ "$MILVUS_GIT_CLONE_DEPTH" = "" ];then \
         bash -c "git clone ${MILVUS_GIT_REPO} --branch=${MILVUS_GIT_BRANCH} /milvus";\
     else \
