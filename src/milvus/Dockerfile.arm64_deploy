@@ -1,0 +1,17 @@
+
+# https://community.arm.com/arm-community-blogs/b/tools-software-ides-blog/posts/aarch64-docker-images-for-tensorflow-and-pytorch
+# FROM soulteary/milvus-openblas:0.3.20-armv8-ubuntu-22.04
+FROM shareai/milvus:arm64 AS base
+
+
+FROM ubuntu:20.04
+LABEL maintainer=solderzzc@gmail.com
+
+ENV DEBIAN_FRONTEND noninteractive
+
+COPY --from=base /milvus/internal/core/output/lib/*.so /usr/lib/
+COPY --from=base /milvus/bin/milvus /usr/bin/milvus
+COPY --from=base /usr/lib/libopenblas.* /usr/lib/
+
+RUN apt-get update && \
+    apt-get install -y libtbb2 libgomp1 gfortran netcat iputils-ping ca-certificates
