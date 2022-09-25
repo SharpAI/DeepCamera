@@ -46,7 +46,7 @@ services:
 
   milvus:
     container_name: milvus-standalone
-    image: shareai/milvus:arm64_deploy
+    image: shareai/milvus:arm64_latest
     command: ["milvus", "run", "standalone"]
     environment:
       ETCD_ENDPOINTS: etcd:2379
