@@ -50,7 +50,7 @@ RUN rm -rf ./label_studio/frontend
 COPY --from=frontend-builder /label-studio/label_studio/frontend/dist ./label_studio/frontend/dist
 
 # RUN python3 label_studio/manage.py collectstatic --no-input
-
+RUN pip3 install numpy==1.19.4 djangorestframework==3.13.1
 EXPOSE 8080
 
 ENTRYPOINT ["./deploy/docker-entrypoint.sh"]

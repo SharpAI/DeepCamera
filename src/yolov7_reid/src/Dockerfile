@@ -25,7 +25,8 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     ffmpeg \
     libsm6 \
-    libxext6
+    libxext6 \
+    qt5dxcb-plugin
  #&& rm -rf /var/lib/apt/lists/*
 
 # Create a non-root user and switch to it
