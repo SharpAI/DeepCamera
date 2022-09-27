@@ -10,7 +10,8 @@ LABEL maintainer=solderzzc@gmail.com
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
-    apt-get install -y libtbb2 libgomp1 gfortran netcat iputils-ping ca-certificates
+    apt-get install -y libtbb2 libgomp1 gfortran netcat iputils-ping ca-certificates libmarisa0 && \
+    mkdir -p /milvus/internal/util/paramtable/
 
 COPY --from=base /milvus/internal/core/output/lib/*.so /usr/lib/
 COPY --from=base /milvus/bin/ /usr/bin/
