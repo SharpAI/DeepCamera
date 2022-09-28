@@ -57,11 +57,13 @@ It leverages Yolov7 as person detector, FastReID for person feature extraction, 
 In Simple terms yolov7_reid is a person detector.
 
 
-- Machine learning technology
+- Machine learning technologies
   - Yolov7 Tiny, pretrained from COCO dataset
   - FastReID ResNet50
   - Vector Database Milvus for self-supervised learning
-- Supported Device
+- <details>
+  <summary>Supported Devices</summary>
+
   - Nvidia Jetson
     - [Nano (ReComputer j1010)](https://www.seeedstudio.com/Jetson-10-1-H0-p-5335.html)
     - Xavier AGX
@@ -78,6 +80,7 @@ In Simple terms yolov7_reid is a person detector.
   - Tested Cameras/CCTV/NVR
     - RTSP Camera (Lorex/Amrest/DoorBell)
     - Google Nest (Indoor/Outdoor)
+</details>
 
 <img src="screenshots/reid_self_supervised.gif" width="960" height="480" />
 
