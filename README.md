@@ -61,6 +61,23 @@ In Simple terms yolov7_reid is a person detector.
   - Yolov7 Tiny, pretrained from COCO dataset
   - FastReID ResNet50
   - Vector Database Milvus for self-supervised learning
+- Supported Device
+  - Nvidia Jetson
+    - [Nano (ReComputer j1010)](https://www.seeedstudio.com/Jetson-10-1-H0-p-5335.html)
+    - Xavier AGX
+  - Single Board Computer (SBC)
+    - Raspberry Pi 4GB
+    - Raspberry Pi 8GB
+  - Intel X64
+    - MacOS
+    - Windows
+    - Ubuntu
+  - MCU Camera
+    - ESP32 CAM
+    - ESP32-S3-Eye
+  - Tested Cameras/CCTV/NVR
+    - RTSP Camera (Lorex/Amrest/DoorBell)
+    - Google Nest (Indoor/Outdoor)
 
 <img src="screenshots/reid_self_supervised.gif" width="960" height="480" />
 
