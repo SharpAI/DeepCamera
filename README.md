@@ -32,10 +32,8 @@ It provides open source facial recognition based intrusion detection, fall detec
 
 SharpAI-hub is the cloud hosting for AI applications which help you deploy AI applications with your CCTV camera on your edge device in minutes. 
 
-
-# Features
 <details>
-  <summary>Spoiler</summary>
+  <summary><h1>Features</h1></summary>
 
   ## Empower any camera with the state of the art AI
   - facial recognition
@@ -57,10 +55,13 @@ It leverages Yolov7 as person detector, FastReID for person feature extraction, 
 In Simple terms yolov7_reid is a person detector.
 
 
-- Machine learning technologies
+- <details>
+  <summary>Machine learning technologies</summary>
+
   - Yolov7 Tiny, pretrained from COCO dataset
   - FastReID ResNet50
   - Vector Database Milvus for self-supervised learning
+  </details>
 - <details>
   <summary>Supported Devices</summary>
 
