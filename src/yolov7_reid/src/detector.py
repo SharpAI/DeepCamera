@@ -82,7 +82,10 @@ def normalize(nparray, order=2, axis=-1):
 
 q = queue.Queue(1)
 args = get_parser().parse_args()
-ort_sess = onnxruntime.InferenceSession(args.model_path)
+try:
+    ort_sess = onnxruntime.InferenceSession(args.model_path, providers=['TensorrtExecutionProvider', 'CUDAExecutionProvider'])
+except Exception as e:
+    ort_sess = onnxruntime.InferenceSession(args.model_path)
 input_name = ort_sess.get_inputs()[0].name
 
 while True:
