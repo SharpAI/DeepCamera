@@ -19,9 +19,10 @@
     <a href="https://pypi.python.org/pypi/sharpai-hub">
         <img alt="Pypi release" src="https://img.shields.io/pypi/v/sharpai-hub.svg?style=for-the-badge" height=25>
     </a>
-    <a href="https://pypi.python.org/pypi/sharpai-hub">
-        <img alt="Monthly download" src="https://img.shields.io/pypi/dm/sharpai-hub.svg?style=for-the-badge" height=25>
+    <a href="https://pepy.tech/project/sharpai-hub">
+        <img alt="download" src=https://static.pepy.tech/personalized-badge/sharpai-hub?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads height=25>
     </a>
+    
 </p>
 
 <br>
