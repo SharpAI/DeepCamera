@@ -93,6 +93,7 @@ RUN if [ "$JETPACK_VERSION" = "4" ] ; then \
     fi
 ADD ./docker-novnc /app/docker-novnc
 ADD ./models /app/models
+ADD https://github.com/SharpAI/DeepCamera/releases/download/v3.4.3/mgn_R50-ibn.onnx /app/models/mgn_R50-ibn.onnx
 ADD ./YOLOv7 /app/YOLOv7
 ADD ./requirements.txt /app/requirements.txt
 RUN pip3 install -r /app/requirements.txt
