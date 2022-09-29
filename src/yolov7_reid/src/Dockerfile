@@ -50,13 +50,15 @@ ENV CONDA_AUTO_UPDATE_CONDA=false
 ENV PATH=/home/user/miniconda/bin:$PATH
 RUN sudo apt-get install -y ffmpeg libsm6 libxext6
 ARG TARGETPLATFORM
-ARG SKIP_MINICONDA
-ADD ./assets/setup_opencv.sh ./
-RUN if [ -z "$SKIP_MINICONDA" ] ; then \
-        bash ./setup_opencv.sh \
-    else \
-        echo "OpenCV is install by L4T"; \
-    fi
+RUN case ${TARGETPLATFORM} in \
+    "linux/arm64")  MINICONDA_ARCH=aarch64  ;; \
+    *)              MINICONDA_ARCH=x86_64   ;; \
+    esac && \
+    curl -fsSL -v -o ~/miniconda.sh -O  "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-${MINICONDA_ARCH}.sh" \
+    && chmod +x ~/miniconda.sh \
+    && ~/miniconda.sh -b -p ~/miniconda \
+    && rm ~/miniconda.sh \
+    && conda install -y python libopencv opencv py-opencv
 
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
@@ -67,30 +69,17 @@ ENV LANG=en_US.UTF-8 \
     RUN_XTERM=yes \
     RUN_FLUXBOX=yes
 ARG JETPACK_VERSION
-RUN if [ -z "$JETPACK_VERSION" ] ; then \
-        pip3 install onnxruntime python-telegram-bot==13.14 notebook==6.4.12 ; \
-    else \
-        echo "onnxruntime is install by L4T"; \
-        pip3 install python-telegram-bot==13.12 notebook==6.4.10 ; \
-    fi
-RUN pip3 install pymilvus==2.0.0 \
+
+RUN pip3 install  onnxruntime \
+                python-telegram-bot==13.14 \
+                notebook==6.4.12 \
+                pymilvus==2.0.0 \
                 youtube-dl==2020.12.2 \
                 Flask==2.0.3 \
                 redis==4.3.4 \
                 pafy==0.5.5
 WORKDIR /home/user 
-RUN if [ "$JETPACK_VERSION" = "4" ] ; then \
-        wget https://nvidia.box.com/shared/static/pmsqsiaw4pg9qrbeckcbymho6c01jj4z.whl -O onnxruntime_gpu-1.11.0-cp36-cp36m-linux_aarch64.whl ; \
-        sudo pip3 install onnxruntime_gpu-1.11.0-cp36-cp36m-linux_aarch64.whl ; \
-        rm onnxruntime_gpu-1.11.0-cp36-cp36m-linux_aarch64.whl ; \ 
-        pip3 install python-telegram-bot==13.11 --upgrade ; \
-    fi ; \
-    if [ "$JETPACK_VERSION" = "5.0" ] ; then \
-        wget https://nvidia.box.com/shared/static/v59xkrnvederwewo2f1jtv6yurl92xso.whl -O onnxruntime_gpu-1.12.1-cp38-cp38m-linux_aarch64.whl ; \
-        sudo pip3 install onnxruntime_gpu-1.12.1-cp38-cp38m-linux_aarch64.whl ; \
-        rm onnxruntime_gpu-1.12.1-cp38-cp38m-linux_aarch64.whl ; \
-        pip3 install python-telegram-bot==13.14 --upgrade ; \
-    fi
+
 ADD ./docker-novnc /app/docker-novnc
 ADD ./models /app/models
 ADD https://github.com/SharpAI/DeepCamera/releases/download/v3.4.3/mgn_R50-ibn.onnx /app/models/mgn_R50-ibn.onnx
