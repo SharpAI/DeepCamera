@@ -69,7 +69,9 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
-    image: shareai/yolov7_reid:latest
+    image: shareai/yolov7_reid:r32.6.1_latest
+    runtime: nvidia
+    privileged: true
     restart: always
     ports: 
       - 5901:5901
@@ -81,6 +83,8 @@ services:
     environment:
       TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
       IMAGE_DIR: "/opt/nvr/detector/images"
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility,video
     volumes:
       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/images:/opt/nvr/detector/images
       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/detector/.config:/app/.config
