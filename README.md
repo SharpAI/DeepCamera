@@ -19,9 +19,10 @@
     <a href="https://pypi.python.org/pypi/sharpai-hub">
         <img alt="Pypi release" src="https://img.shields.io/pypi/v/sharpai-hub.svg?style=for-the-badge" height=25>
     </a>
-    <a href="https://pypi.python.org/pypi/sharpai-hub">
-        <img alt="Monthly download" src="https://img.shields.io/pypi/dm/sharpai-hub.svg?style=for-the-badge" height=25>
+    <a href="https://pepy.tech/project/sharpai-hub">
+        <img alt="download" src=https://static.pepy.tech/personalized-badge/sharpai-hub?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads height=25>
     </a>
+    
 </p>
 
 <br>
@@ -32,10 +33,8 @@ It provides open source facial recognition based intrusion detection, fall detec
 
 SharpAI-hub is the cloud hosting for AI applications which help you deploy AI applications with your CCTV camera on your edge device in minutes. 
 
-
-# Features
 <details>
-  <summary>Spoiler</summary>
+  <summary><h1>Features</h1></summary>
 
   ## Empower any camera with the state of the art AI
   - facial recognition
@@ -57,10 +56,33 @@ It leverages Yolov7 as person detector, FastReID for person feature extraction, 
 In Simple terms yolov7_reid is a person detector.
 
 
-- Machine learning technology
+- <details>
+  <summary>Machine learning technologies</summary>
+
   - Yolov7 Tiny, pretrained from COCO dataset
   - FastReID ResNet50
   - Vector Database Milvus for self-supervised learning
+  </details>
+- <details>
+  <summary>Supported Devices</summary>
+
+  - Nvidia Jetson
+    - [Nano (ReComputer j1010)](https://www.seeedstudio.com/Jetson-10-1-H0-p-5335.html)
+    - Xavier AGX
+  - Single Board Computer (SBC)
+    - Raspberry Pi 4GB
+    - Raspberry Pi 8GB
+  - Intel X64
+    - MacOS
+    - Windows
+    - Ubuntu
+  - MCU Camera
+    - ESP32 CAM
+    - ESP32-S3-Eye
+  - Tested Cameras/CCTV/NVR
+    - RTSP Camera (Lorex/Amrest/DoorBell)
+    - Google Nest (Indoor/Outdoor)
+</details>
 
 <img src="screenshots/reid_self_supervised.gif" width="960" height="480" />
 
