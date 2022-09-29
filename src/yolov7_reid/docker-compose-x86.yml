@@ -14,6 +14,7 @@ services:
         max-file: "10"
   etcd:
     container_name: milvus-etcd
+    restart: always
     image: quay.io/coreos/etcd:v3.5.0
     environment:
       - ETCD_AUTO_COMPACTION_MODE=revision
@@ -24,6 +25,7 @@ services:
     command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
   labelstudio:
     container_name: labelstudio
+    restart: always
     image: heartexlabs/label-studio:v1.5.0
     ports:
       - "8080:8080"
@@ -32,6 +34,7 @@ services:
   minio:
     container_name: milvus-minio
     image: minio/minio:RELEASE.2020-12-03T00-03-10Z
+    restart: always
     environment:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
@@ -43,10 +46,10 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
-
   milvus:
     container_name: milvus-standalone
     image: milvusdb/milvus:v2.0.2
+    restart: always
     command: ["milvus", "run", "standalone"]
     environment:
       ETCD_ENDPOINTS: etcd:2379
@@ -65,10 +68,7 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
-    image: shareai/yolov7_reid:latest   
-    build:
-      context: ./src
-      dockerfile: Dockerfile.x86
+    image: shareai/yolov7_reid:latest
     restart: always
     ports: 
       - 5901:5901
@@ -81,5 +81,19 @@ services:
       TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
       IMAGE_DIR: "/opt/nvr/detector/images"
     volumes:
-      - ./volumes/videos:/opt/nvr/videos
       - ./volumes/images:/opt/nvr/detector/images
+  home-assistant:
+    container_name: "home-assistant"
+    image:  shareai/home-assiistant-py:2022.8
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+    ports:
+      - 8123:8123
+    volumes:
+      - ./volumes/images:/opt/nvr/detector/images
+      - ~/.sharpai/ha/config:/config
+      - ~/.sharpai/ha/.storage:/config/.storage
