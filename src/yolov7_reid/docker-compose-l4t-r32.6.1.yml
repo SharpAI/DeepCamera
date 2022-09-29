@@ -82,8 +82,8 @@ services:
       TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
       IMAGE_DIR: "/opt/nvr/detector/images"
     volumes:
-      - ./volumes/videos:/opt/nvr/videos
-      - ./volumes/images:/opt/nvr/detector/images
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/images:/opt/nvr/detector/images
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/detector/.config:/app/.config
   home-assistant:
     container_name: "home-assistant"
     image:  shareai/home-assiistant-py:2022.8
@@ -96,6 +96,6 @@ services:
     ports:
       - 8123:8123
     volumes:
-      - ./volumes/images:/opt/nvr/detector/images
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/images:/opt/nvr/detector/images
       - ~/.sharpai/ha/config:/config
       - ~/.sharpai/ha/.storage:/config/.storage
