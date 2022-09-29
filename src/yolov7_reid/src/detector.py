@@ -80,7 +80,7 @@ def normalize(nparray, order=2, axis=-1):
     norm = np.linalg.norm(nparray, ord=order, axis=axis, keepdims=True)
     return nparray / (norm + np.finfo(np.float32).eps)
 
-q = queue.Queue(1)
+q = queue.Queue(3)
 args = get_parser().parse_args()
 try:
     ort_sess = onnxruntime.InferenceSession(args.model_path, providers=['CUDAExecutionProvider'])
@@ -129,10 +129,10 @@ def detection_with_image(frame):
     global previous_known_person_ts
     # cv2.imshow('Screen',img)
     # Detect Objects
-    KNOWN_COLOR = (0,255,0)
+    KNOWN_COLOR = (255,0,0)
     UNKNOWN_COLOR = (0,0,255)
     bboxes, scores, class_ids = yolov7_detector(frame)
-    cropped_imgs, person_bboxes, person_scores, person_class_ids = yolov7_detector.crop_class(frame, bboxes, scores, class_ids, 'person', 100)
+    cropped_imgs, person_bboxes, person_scores, person_class_ids = yolov7_detector.crop_class(frame, bboxes, scores, class_ids, 'person', 80)
     
     pre_colors = []
     unknown = 0
@@ -203,17 +203,17 @@ def worker():
         
         try:
             cv2.namedWindow("Detection result", cv2.WINDOW_NORMAL)
-            # cv2.setWindowProperty("Screen", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+            cv2.setWindowProperty("Detection result", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
             cv2.imshow("Detection result", item)
+            q.task_done()
 
-            if cv2.waitKey(25) & 0xFF == ord('q'):
+            if cv2.waitKey(10) & 0xFF == ord('q'):
                 cv2.destroyAllWindows()
         except Exception as e:
             print('exception:')
             print(e)
             continue
 
-        q.task_done()
         # os.remove(item)
 
 @app.route('/submit/image', methods=['POST'])
@@ -250,6 +250,7 @@ def video_worker(video_url):
     cap = cv2.VideoCapture(videoPafy.streams[-1].url)
     start_time = 0  # skip first {start_time} seconds
     cap.set(cv2.CAP_PROP_POS_FRAMES, start_time * 30)
+    count = 0
     while cap.isOpened():
 
         # Press key q to stop
@@ -267,7 +268,10 @@ def video_worker(video_url):
         
         # Draw detections
         try:
-            detection_with_image(frame)
+            if count % 25 == 0:
+                detection_with_image(frame)
+            count += 1                
+            
         except Exception as e:
             print(e)
             continue

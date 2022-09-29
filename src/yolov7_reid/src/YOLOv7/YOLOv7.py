@@ -19,7 +19,11 @@ class YOLOv7:
         return self.detect_objects(image)
 
     def initialize_model(self, path):
-        self.session = onnxruntime.InferenceSession(path,
+        try:
+            self.session = onnxruntime.InferenceSession(path,
+                                                    providers=['CUDAExecutionProvider'])
+        except Exception as e:
+            self.session = onnxruntime.InferenceSession(path,
                                                     providers=['CPUExecutionProvider'])
         # Get model info
         self.get_input_details()
@@ -149,7 +153,7 @@ class YOLOv7:
         return draw_detections(image, boxes, scores,
                                class_ids, mask_alpha)
         
-    def draw_detections_with_predefined_colors(self, image, boxes, scores, class_ids , colors, mask_alpha=0.4):
+    def draw_detections_with_predefined_colors(self, image, boxes, scores, class_ids , colors, mask_alpha=0.2):
         return draw_detections_with_predefined_colors(image, boxes, scores,
                                class_ids, colors, mask_alpha)
     def crop_class(self, image, boxes, scores, class_ids, class_to_crop, min_w_h):

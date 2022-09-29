@@ -127,7 +127,7 @@ def draw_detections(image, boxes, scores, class_ids, mask_alpha=0.3):
 
     return cv2.addWeighted(mask_img, mask_alpha, det_img, 1 - mask_alpha, 0)
 
-def draw_detections_with_predefined_colors(image, boxes, scores, class_ids, pre_colors ,mask_alpha=0.3):
+def draw_detections_with_predefined_colors(image, boxes, scores, class_ids, pre_colors ,mask_alpha=0.2):
     mask_img = image.copy()
     det_img = image.copy()
 
