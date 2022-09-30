@@ -97,7 +97,7 @@ def detection_with_image(frame):
         except queue.Full:
             print('display queue full')
 
-    ret_json = {'person':len(cropped_imgs)}
+    ret_json = {'unknown':len(cropped_imgs),'total':len(cropped_imgs)}
     return ret_json
 
 def worker():    
