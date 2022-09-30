@@ -12,6 +12,7 @@ services:
     ports: 
       - 5901:5901
       - 3000:3000
+      - 8000:8080
       - 9000:9000
     env_file:
       - .env
@@ -20,6 +21,7 @@ services:
       IMAGE_DIR: "/opt/nvr/detector/images"
     volumes:
       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/images:/opt/nvr/detector/images
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/detector/.config:/app/.config
   home-assistant:
     container_name: "home-assistant"
     image:  shareai/home-assiistant-py:2022.8

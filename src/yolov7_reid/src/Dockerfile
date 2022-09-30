@@ -30,24 +30,13 @@ RUN apt-get update && apt-get install -y \
     qt5dxcb-plugin
  #&& rm -rf /var/lib/apt/lists/*
 
-# Create a non-root user and switch to it
-RUN adduser --disabled-password --gecos '' --shell /bin/bash user
-RUN echo "user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-user
-USER user
-
-# All users can use /home/user as their home directory
-ENV HOME=/home/user
-RUN chmod 777 /home/user
+ENV HOME=/root
 
 # Install Miniconda and Python 3.8
 ENV CONDA_AUTO_UPDATE_CONDA=false
 # No CUDA-specific steps
 ENV NO_CUDA=1
-ENV PATH=/home/user/miniconda/bin:$PATH
-
-# Install Miniconda and Python 3.8
-ENV CONDA_AUTO_UPDATE_CONDA=false
-ENV PATH=/home/user/miniconda/bin:$PATH
+ENV PATH=/root/miniconda/bin:$PATH
 RUN sudo apt-get install -y ffmpeg libsm6 libxext6
 ARG TARGETPLATFORM
 RUN case ${TARGETPLATFORM} in \
@@ -79,7 +68,7 @@ RUN pip3 install onnxruntime \
                 Flask==2.0.3 \
                 redis==4.3.4 \
                 pafy==0.5.5
-WORKDIR /home/user 
+WORKDIR /root 
 
 ADD ./docker-novnc /app/docker-novnc
 ADD ./models /app/models
@@ -90,7 +79,6 @@ RUN pip3 install -r /app/requirements.txt
 ADD ./*.py /app/
 
 WORKDIR /app
-RUN sudo chown -R user.user /app
 
 CMD ["/app/docker-novnc/entrypoint.sh"]
 EXPOSE 8080
