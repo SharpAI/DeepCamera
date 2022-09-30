@@ -18,7 +18,7 @@ logging.basicConfig(
 class TelegramBot(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.chat_id_filepath = 'telegram_chat_id.txt'
+        self.chat_id_filepath = '.config/telegram_chat_id.txt'
         self.token = os.getenv('TELEGRAM_TOKEN', None)
         self.application = None
         self.chat_id = self.load_id()
