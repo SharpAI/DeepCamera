@@ -153,7 +153,7 @@ class YOLOv7:
         return draw_detections(image, boxes, scores,
                                class_ids, mask_alpha)
         
-    def draw_detections_with_predefined_colors(self, image, boxes, scores, class_ids , colors, mask_alpha=0.2):
+    def draw_detections_with_predefined_colors(self, image, boxes, scores, class_ids , colors, mask_alpha=0.05):
         return draw_detections_with_predefined_colors(image, boxes, scores,
                                class_ids, colors, mask_alpha)
     def crop_class(self, image, boxes, scores, class_ids, class_to_crop, min_w_h):
