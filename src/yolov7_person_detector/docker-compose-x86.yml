@@ -1,0 +1,40 @@
+version: '3.5'
+services:
+  detector:
+    container_name: "detector"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+    image: shareai/yolov7_person_detector:latest
+    restart: always
+    ports: 
+      - 5901:5901
+      - 8000:8080
+      - 3000:3000
+      - 9000:9000
+    env_file:
+      - .env
+    environment:
+      TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
+      IMAGE_DIR: "/opt/nvr/detector/images"
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/images:/opt/nvr/detector/images
+  home-assistant:
+    container_name: "home-assistant"
+    image:  shareai/home-assiistant-py:2022.8
+    restart: always
+    environment:
+      TIMEZONE_OFFSET: ${TIMEZONE_OFFSET}
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "10"
+    ports:
+      - 8123:8123
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/images:/opt/nvr/detector/images
+      - ~/.sharpai/ha/config:/config
+      - ~/.sharpai/ha/.storage:/config/.storage

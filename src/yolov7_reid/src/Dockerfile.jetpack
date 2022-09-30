@@ -33,12 +33,6 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get install -y ffmpeg libsm6 libxext6
 ARG TARGETPLATFORM
 ARG SKIP_MINICONDA
-ADD ./assets/setup_opencv.sh ./
-RUN if [ -z "$SKIP_MINICONDA" ] ; then \
-        bash ./setup_opencv.sh \
-    else \
-        echo "OpenCV is install by L4T"; \
-    fi
 
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
@@ -49,13 +43,10 @@ ENV LANG=en_US.UTF-8 \
     RUN_XTERM=yes \
     RUN_FLUXBOX=yes
 ARG JETPACK_VERSION
-RUN if [ -z "$JETPACK_VERSION" ] ; then \
-        pip3 install onnxruntime python-telegram-bot==13.14 notebook==6.4.12 ; \
-    else \
-        echo "onnxruntime is install by L4T"; \
-        pip3 install python-telegram-bot==13.12 notebook==6.4.10 ; \
-    fi
-RUN pip3 install pymilvus==2.0.0 \
+RUN pip3 install --upgrade pip
+RUN pip3 install python-telegram-bot==13.12 \
+                notebook==6.4.10 \
+                pymilvus==2.0.0 \
                 youtube-dl==2020.12.2 \
                 Flask==2.0.3 \
                 redis==4.3.4 \

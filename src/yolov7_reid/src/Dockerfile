@@ -70,7 +70,8 @@ ENV LANG=en_US.UTF-8 \
     RUN_FLUXBOX=yes
 ARG JETPACK_VERSION
 
-RUN pip3 install  onnxruntime \
+RUN pip3 install --upgrade pip
+RUN pip3 install onnxruntime \
                 python-telegram-bot==13.14 \
                 notebook==6.4.12 \
                 pymilvus==2.0.0 \
