@@ -229,12 +229,16 @@ We received feedback from community, local deployment is needed. With local deep
 - Start DeepCamera: `sharpai-cli deepcamera start`
 
 # [Application 4: Laptop Screen Monitor](https://github.com/SharpAI/laptop_monitor) for kids/teens safe
-SharpAI Screen monitor captures screen extract screen image features(embeddings) with AI model, save unseen features(embeddings) into AI vector database [Milvus](https://milvus.io/), raw images are saved to [Labelstudio](https://labelstud.io) for labelling and model training, all information/images will be only saved locally.
-
+SharpAI Screen monitor captures screen extract screen image features(embeddings) with AI model, save unseen features(embeddings) into AI vector database [Milvus](https://milvus.io/), raw images are saved to [Labelstudio](https://labelstud.io) for labelling and model training, all information/images will be only saved locally.  
+	  
 `sharpai-cli screen_monitor start`
-
+	  
 ### Access streaming screen: http://localhost:8000
 ### Access labelstudio: http://localhost:8080
+
+# Application 5: Person Detector
+`sharpai-cli yolov7_person_detector start`
+
 
 # SharpAI-Hub AI Applications
 SharpAI community is continually working on bringing state-of-the-art computer vision application to your device.
@@ -245,6 +249,8 @@ sharpai-cli <application name> start
 
 |Application|SharpAI CLI Name| OS/Device |
 |---|---|---|
+|Intruder detection with Person shape| yolov7_reid   | Jetson Nano/AGX /Windows/Linux/MacOS|
+|Person Detector| yolov7_person_detector   | Jetson Nano/AGX /Windows/Linux/MacOS|
 |[Laptop Screen Monitor](https://github.com/SharpAI/laptop_monitor)| screen_monitor   | Windows/Linux/MacOS|
 |[Facial Recognition Intruder Detection](docs/how_to_run_intruder_detection.md) | deepcamera | Jetson Nano|Windows/Linux/MacOS|
 |[Local Facial Recognition Intruder Detection](docs/how_to_run_local_intruder_detection.md) | local_deepcamera | Windows/Linux/MacOS|
