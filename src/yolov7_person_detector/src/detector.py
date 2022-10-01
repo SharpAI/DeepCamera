@@ -81,12 +81,12 @@ def detection_with_image(frame):
         send_image = False
         if total > 0:
                 
-            print(f'SharpAI seen {total} person')
+            print(f'SharpAI detected {total} person')
             current_ts = time.time()
             if current_ts - previous_person_ts > 5*60:
                 send_image = True
                 previous_person_ts = current_ts
-                telegram_bot.send(f'SharpAI seen {total} person')
+                telegram_bot.send(f'SharpAI detected {total} person')
 
         if send_image == True:
             filepath = '/tmp/to_send.jpg'
