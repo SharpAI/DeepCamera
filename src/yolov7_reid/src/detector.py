@@ -22,7 +22,7 @@ from telegram_bot import TelegramBot
 
 model_path = "models/yolov7-tiny_480x640.onnx"
 yolov7_detector = YOLOv7(model_path, conf_thres=0.6, iou_thres=0.5)
-
+full_screen = True
 app = Flask(__name__)
 q = queue.Queue(1)
 def get_parser():
@@ -107,21 +107,20 @@ def insert_to_milvus(vec, min_dist):
     "param": {"metric_type": 'L2', "params": {"nprobe": 16}},
     "limit": 3}
 
-    insert = False
+    insert = True
     results = collection.search(**search_param)
+
     for i, result in enumerate(results):
         print("\nSearch result for {}th vector: ".format(i))
+
         for j, res in enumerate(result):
             print("Top {}: {}".format(j, res))
-            
-            if res.distance > min_dist:
-                insert = True
+
             if res.distance < min_dist:
-                if insert == True:
-                    insert = False
-                    ids.append(res.id)
-                    break
-                
+                ids.append(res.id)
+                insert = False
+
+
     if insert == True:
         print('found new feature, insert to vector database')
         mr = collection.insert([[vec]])
@@ -197,7 +196,8 @@ def detection_with_image(frame, display_in_queue=True):
             else:
                 try:
                     cv2.namedWindow("Detection result", cv2.WINDOW_NORMAL)
-                    cv2.setWindowProperty("Detection result", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+                    if full_screen:
+                        cv2.setWindowProperty("Detection result", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
                     cv2.imshow("Detection result", combined_img)
                 except Exception as e:
                     print('Error when show image on screen')
@@ -215,7 +215,8 @@ def worker():
         
         try:
             cv2.namedWindow("Detection result", cv2.WINDOW_NORMAL)
-            cv2.setWindowProperty("Detection result", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+            if full_screen:
+                cv2.setWindowProperty("Detection result", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
             cv2.imshow("Detection result", item)
             q.task_done()
 
