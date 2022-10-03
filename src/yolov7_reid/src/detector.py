@@ -80,7 +80,6 @@ def normalize(nparray, order=2, axis=-1):
     norm = np.linalg.norm(nparray, ord=order, axis=axis, keepdims=True)
     return nparray / (norm + np.finfo(np.float32).eps)
 
-q = queue.Queue(3)
 args = get_parser().parse_args()
 try:
     ort_sess = onnxruntime.InferenceSession(args.model_path, providers=['CUDAExecutionProvider'])
@@ -108,24 +107,28 @@ def insert_to_milvus(vec, min_dist):
     "param": {"metric_type": 'L2', "params": {"nprobe": 16}},
     "limit": 3}
 
-    insert = True
+    insert = False
     results = collection.search(**search_param)
     for i, result in enumerate(results):
         print("\nSearch result for {}th vector: ".format(i))
         for j, res in enumerate(result):
             print("Top {}: {}".format(j, res))
             
+            if res.distance > min_dist:
+                insert = True
             if res.distance < min_dist:
-                insert = False
-                ids.append(res.id)
-                break
+                if insert == True:
+                    insert = False
+                    ids.append(res.id)
+                    break
+                
     if insert == True:
         print('found new feature, insert to vector database')
         mr = collection.insert([[vec]])
         ids = mr.primary_keys
     return insert, ids
 
-def detection_with_image(frame):
+def detection_with_image(frame, display_in_queue=True):
     global previous_known_person_ts
     # cv2.imshow('Screen',img)
     # Detect Objects
@@ -170,26 +173,35 @@ def detection_with_image(frame):
         if unknown > 0:
             send_image = True
             if unknown == 1:
-                telegram_bot.send('SharpAI seen one unknown person')
+                telegram_bot.send('SharpAI saw one unknown person')
             else:
-                telegram_bot.send(f'SharpAI seen {unknown} unknown people')
+                telegram_bot.send(f'SharpAI saw {unknown} unknown people')
         elif total > 0:
-            print(f'SharpAI seen {total} person')
+            print(f'SharpAI saw {total} person')
             current_ts = time.time()
             if current_ts - previous_known_person_ts > 30*60:
                 send_image = True
                 previous_known_person_ts = current_ts
-                telegram_bot.send(f'SharpAI seen {total} person')
+                telegram_bot.send(f'SharpAI saw {total} person')
 
         if send_image == True:
             filepath = '/tmp/to_send.jpg'
             cv2.imwrite(filepath,combined_img)
             telegram_bot.send_image(filepath)
         
-        try:
-            q.put_nowait(combined_img)
-        except queue.Full:
-            print('display queue full')
+            if display_in_queue == True:
+                try:
+                    q.put_nowait(combined_img)
+                except queue.Full:
+                    print('display queue full')
+            else:
+                try:
+                    cv2.namedWindow("Detection result", cv2.WINDOW_NORMAL)
+                    cv2.setWindowProperty("Detection result", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+                    cv2.imshow("Detection result", combined_img)
+                except Exception as e:
+                    print('Error when show image on screen')
+                    print(e)
 
     ret_json = {'total':len(cropped_imgs),'unknown':unknown}
     return ret_json
@@ -269,7 +281,7 @@ def video_worker(video_url):
         # Draw detections
         try:
             if count % 25 == 0:
-                detection_with_image(frame)
+                detection_with_image(frame,display_in_queue= False)
             count += 1                
             
         except Exception as e:
