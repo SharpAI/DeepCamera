@@ -81,10 +81,18 @@ def normalize(nparray, order=2, axis=-1):
     return nparray / (norm + np.finfo(np.float32).eps)
 
 args = get_parser().parse_args()
-try:
-    ort_sess = onnxruntime.InferenceSession(args.model_path, providers=['CUDAExecutionProvider'])
-except Exception as e:
-    ort_sess = onnxruntime.InferenceSession(args.model_path)
+
+JETPACK_VERSION = os.getenv('JETPACK_VERSION', None)
+
+providers=['CPUExecutionProvider']
+if JETPACK_VERSION == None:
+    providers=['CPUExecutionProvider']
+elif JETPACK_VERSION == '4':
+    providers=['CPUExecutionProvider']
+elif JETPACK_VERSION == '5.0':
+    providers=['CUDAExecutionProvider']
+
+ort_sess = onnxruntime.InferenceSession(args.model_path, providers = providers )
 input_name = ort_sess.get_inputs()[0].name
 
 while True:
@@ -133,8 +141,10 @@ def detection_with_image(frame, display_in_queue=True):
     # Detect Objects
     KNOWN_COLOR = (255,0,0)
     UNKNOWN_COLOR = (0,0,255)
+    print('detect with frame')
     bboxes, scores, class_ids = yolov7_detector(frame)
-    cropped_imgs, person_bboxes, person_scores, person_class_ids = yolov7_detector.crop_class(frame, bboxes, scores, class_ids, 'person', 80)
+    print('extract bounding boxes')
+    cropped_imgs, person_bboxes, person_scores, person_class_ids = yolov7_detector.crop_class(frame, bboxes, scores, class_ids, 'person', 100)
     
     pre_colors = []
     unknown = 0
@@ -142,18 +152,21 @@ def detection_with_image(frame, display_in_queue=True):
     if total > 0:
         for img in cropped_imgs:
             try:
+                print('crop image for person shape')
                 image = preprocess(img, args.height, args.width)
             except Exception as e:
                 print('cant preprocess img')
                 print(e)
                 continue
+            print('get feature of person shape')
             feat = ort_sess.run(None, {input_name: image})[0]
             feat = normalize(feat, axis=1)
 
             insert,ids = insert_to_milvus(feat[0],0.1)
+
             if insert is True:
                 pre_colors.append(UNKNOWN_COLOR)
-                print('inserted') 
+                print('inserted person shape to milvus for self-supervised learning') 
                 print(feat.shape)
                 print(feat[0])
                 unknown +=1
@@ -166,31 +179,36 @@ def detection_with_image(frame, display_in_queue=True):
                 os.remove(filepath)
             else:
                 pre_colors.append(KNOWN_COLOR)
+        print('draw bounding box to image')
         combined_img = yolov7_detector.draw_detections_with_predefined_colors(frame,person_bboxes, person_scores, person_class_ids,pre_colors)
 
         send_image = False
         if unknown > 0:
             send_image = True
             if unknown == 1:
-                telegram_bot.send('SharpAI saw one unknown person')
+                telegram_bot.send('SharpAI saw one unfamiliar person')
             else:
-                telegram_bot.send(f'SharpAI saw {unknown} unknown people')
+                telegram_bot.send(f'SharpAI saw {unknown} unfamiliar people')
         elif total > 0:
             print(f'SharpAI saw {total} person')
             current_ts = time.time()
             if current_ts - previous_known_person_ts > 30*60:
                 send_image = True
                 previous_known_person_ts = current_ts
-                telegram_bot.send(f'SharpAI saw {total} person')
+                if total > 1:
+                    telegram_bot.send(f'SharpAI saw {total} familiar people')
+                else:
+                    telegram_bot.send(f'SharpAI saw one familiar person')
 
         if send_image == True:
+            print('send image to telegram, display locally')
             filepath = '/tmp/to_send.jpg'
             cv2.imwrite(filepath,combined_img)
             telegram_bot.send_image(filepath)
         
             if display_in_queue == True:
                 try:
-                    q.put_nowait(combined_img)
+                    q.put_nowait(filepath)
                 except queue.Full:
                     print('display queue full')
             else:
@@ -208,23 +226,26 @@ def detection_with_image(frame, display_in_queue=True):
 
 # telegram_bot.start()
 
-def worker():    
+def worker():
+    cv2.namedWindow("Detection result", cv2.WINDOW_NORMAL)
+    if full_screen:
+        cv2.setWindowProperty("Detection result", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        cv2.waitKey(50)
     while True:
         item = q.get()
         print(f'Working on {item}')
         
         try:
-            cv2.namedWindow("Detection result", cv2.WINDOW_NORMAL)
-            if full_screen:
-                cv2.setWindowProperty("Detection result", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-            cv2.imshow("Detection result", item)
+            image = cv2.imread(item)
+            cv2.imshow("Detection result", image)
             q.task_done()
 
-            if cv2.waitKey(10) & 0xFF == ord('q'):
+            if cv2.waitKey(50) & 0xFF == ord('q'):
                 cv2.destroyAllWindows()
         except Exception as e:
             print('exception:')
             print(e)
+            q.task_done()
             continue
 
         # os.remove(item)
@@ -293,4 +314,4 @@ def video_worker(video_url):
 if __name__ == '__main__':
     threading.Thread(target=worker, daemon=True).start()
     telegram_bot.start()
-    app.run(host='0.0.0.0', port=3000)
+    app.run(host='0.0.0.0', port=3000, threaded=False)
