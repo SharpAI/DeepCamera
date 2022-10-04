@@ -56,7 +56,7 @@ class TelegramBot(threading.Thread):
             ))
 
             print('starting telegram bot')
-            self.send('SharpAI detecter started')
+            self.send('SharpAI detector started')
             self.updater.start_polling()
 
     def send(self,message) -> None:
