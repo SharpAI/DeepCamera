@@ -25,12 +25,12 @@ class LabelStudioClient:
             file_id = None
             if file_ids is not None and len(file_ids) > 0:
                 file_id = file_ids[0]
-            if file_id is not None:
+            if file_id is not None and response.ok:
                 get_upload_file_url = f"{labelstudio_url}/api/import/file-upload/{file_id}"
                 response = requests.get(get_upload_file_url,headers=auth_header)
-                if response.ok:
-                    logging.debug(response.json())
-                    return response.json()
+                logging.debug(response.json())
+                return response.json()
+            
                 else:
                     logging.error('cant get uploaded info')
         else:
@@ -39,7 +39,7 @@ class LabelStudioClient:
     @staticmethod
     def create_task_with_file(file_path):
         resp = LabelStudioClient.upload_file(file_path)
-        if resp != None:
+        if resp != None and response.ok:
             fileurl = '/data/' + resp['file']
             task_json = [{
                 "data": {"image": fileurl},
@@ -50,10 +50,10 @@ class LabelStudioClient:
             auth_header = {'Authorization' : f'Token {labelstudio_token}'}
             task_url = f"{labelstudio_url}/api/projects/{labelstudio_pid}/import"
             response = requests.post(task_url, json=task_json,  headers=auth_header)
-            if response.ok:
-                created_task = response.json()
-                logging.debug(created_task)
-                return True
+            created_task = response.json()
+            logging.debug(created_task)
+            return True
+        
             else:
                 logging.error('Failed to create Task {}'.format(response))
 
