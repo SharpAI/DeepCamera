@@ -187,8 +187,8 @@ def detection_with_image(frame, display_in_queue=True):
             send_image = True
             telegram_bot.send('SharpAI saw one unfamiliar person')
             
-            else:
-                telegram_bot.send(f'SharpAI saw {unknown} unfamiliar people')
+        else:
+            telegram_bot.send(f'SharpAI saw {unknown} unfamiliar people')
         elif total > 0:
             print(f'SharpAI saw {total} person')
             current_ts = time.time()
