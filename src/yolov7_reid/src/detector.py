@@ -183,34 +183,34 @@ def detection_with_image(frame, display_in_queue=True):
         combined_img = yolov7_detector.draw_detections_with_predefined_colors(frame,person_bboxes, person_scores, person_class_ids,pre_colors)
 
         send_image = False
-        if unknown > 0:
+        if unknown > 0 and unknown ==1:
             send_image = True
-            if unknown == 1:
-                telegram_bot.send('SharpAI saw one unfamiliar person')
+            telegram_bot.send('SharpAI saw one unfamiliar person')
+            
             else:
                 telegram_bot.send(f'SharpAI saw {unknown} unfamiliar people')
         elif total > 0:
             print(f'SharpAI saw {total} person')
             current_ts = time.time()
-            if current_ts - previous_known_person_ts > 30*60:
+            if current_ts - previous_known_person_ts > 30*60 and total > 1:
                 send_image = True
                 previous_known_person_ts = current_ts
-                if total > 1:
-                    telegram_bot.send(f'SharpAI saw {total} familiar people')
+                telegram_bot.send(f'SharpAI saw {total} familiar people')
+                
                 else:
                     telegram_bot.send(f'SharpAI saw one familiar person')
 
-        if send_image == True:
+        if send_image == True and display_in_queue == True:
             print('send image to telegram, display locally')
             filepath = '/tmp/to_send.jpg'
             cv2.imwrite(filepath,combined_img)
             telegram_bot.send_image(filepath)
         
-            if display_in_queue == True:
-                try:
-                    q.put_nowait(filepath)
-                except queue.Full:
-                    print('display queue full')
+            try:
+                q.put_nowait(filepath)
+            except queue.Full:
+                print('display queue full')
+                
             else:
                 try:
                     cv2.namedWindow("Detection result", cv2.WINDOW_NORMAL)
