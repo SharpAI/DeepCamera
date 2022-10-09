@@ -48,7 +48,7 @@ services:
       retries: 3
   milvus:
     container_name: milvus-standalone
-    image: milvusdb/milvus:v2.0.2
+    image: milvusdb/milvus:v2.1.4
     restart: always
     command: ["milvus", "run", "standalone"]
     environment:

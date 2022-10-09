@@ -116,7 +116,9 @@ def insert_to_milvus(vec, min_dist):
     "limit": 3}
 
     insert = True
+    print('search feature')
     results = collection.search(**search_param)
+    print(f'results from milvus {results}')
 
     for i, result in enumerate(results):
         print("\nSearch result for {}th vector: ".format(i))
@@ -158,9 +160,10 @@ def detection_with_image(frame, display_in_queue=True):
                 print('cant preprocess img')
                 print(e)
                 continue
-            print('get feature of person shape')
+            print(f'get feature of person shape, image shape {image.shape}')
             feat = ort_sess.run(None, {input_name: image})[0]
             feat = normalize(feat, axis=1)
+            print(f'feature shape {feat.shape}')
 
             insert,ids = insert_to_milvus(feat[0],0.1)
 
