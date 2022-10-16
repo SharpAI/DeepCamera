@@ -1,4 +1,4 @@
-ARG UBUNTU_BASE_IMG=ubuntu:18.04
+ARG UBUNTU_BASE_IMG=ubuntu:20.04
 FROM $UBUNTU_BASE_IMG
 
 ENV DEBIAN_FRONTEND "noninteractive"
@@ -39,16 +39,42 @@ ENV NO_CUDA=1
 ENV PATH=/root/miniconda/bin:$PATH
 RUN sudo apt-get install -y ffmpeg libsm6 libxext6
 ARG TARGETPLATFORM
-RUN case ${TARGETPLATFORM} in \
-    "linux/arm64")  MINICONDA_ARCH=aarch64  ;; \
-    *)              MINICONDA_ARCH=x86_64   ;; \
-    esac && \
-    curl -fsSL -v -o ~/miniconda.sh -O  "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-${MINICONDA_ARCH}.sh" \
-    && chmod +x ~/miniconda.sh \
-    && ~/miniconda.sh -b -p ~/miniconda \
-    && rm ~/miniconda.sh \
-    && conda install -y python libopencv opencv py-opencv
-
+RUN if [ "$TARGETPLATFORM" = "linux/arm64" ] ; \
+    then \
+        apt-get install -y build-essential cmake pkg-config libjpeg-dev libtiff5-dev  \
+            libpng-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libxvidcore-dev libx264-dev \
+            libfontconfig1-dev libcairo2-dev libgdk-pixbuf2.0-dev libpango1.0-dev libgtk2.0-dev libgtk-3-dev \
+            libatlas-base-dev gfortran libhdf5-dev libhdf5-serial-dev python3-pyqt5 python3-dev \
+        && pip3 install pip --upgrade ; \
+    else \
+        curl -fsSL -v -o ~/miniconda.sh -O  "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh" \
+        && chmod +x ~/miniconda.sh \
+        && ~/miniconda.sh -b -p ~/miniconda \
+        && rm ~/miniconda.sh \
+        && conda install -y python libopencv opencv py-opencv \
+        && pip3 install pip --upgrade \
+        && pip3 install onnxruntime \
+                python-telegram-bot==13.14 \
+                notebook==6.4.12 \
+                pymilvus==2.0.0 \
+                youtube-dl==2020.12.2 \
+                Flask==2.0.3 \
+                redis==4.3.4 \
+                pafy==0.5.5 ; \
+    fi
+RUN if [ "$TARGETPLATFORM" = "linux/arm64" ] ; \
+    then \
+        pip3 install opencv-python==4.5.3.56 numpy==1.19.4 \
+                onnxruntime \
+                python-telegram-bot==13.14 \
+                notebook==6.4.10 \
+                pymilvus==2.0.0 \
+                youtube-dl==2020.12.2 \
+                Flask==2.0.3 \
+                redis==4.3.4 \
+                requests \
+                pafy==0.5.5 ; \
+    fi
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
     LC_ALL=C.UTF-8 \
@@ -57,17 +83,7 @@ ENV LANG=en_US.UTF-8 \
     DISPLAY_HEIGHT=768 \
     RUN_XTERM=yes \
     RUN_FLUXBOX=yes
-ARG JETPACK_VERSION
 
-RUN pip3 install --upgrade pip
-RUN pip3 install onnxruntime \
-                python-telegram-bot==13.14 \
-                notebook==6.4.12 \
-                pymilvus==2.0.0 \
-                youtube-dl==2020.12.2 \
-                Flask==2.0.3 \
-                redis==4.3.4 \
-                pafy==0.5.5
 WORKDIR /root 
 
 ADD ./docker-novnc /app/docker-novnc
