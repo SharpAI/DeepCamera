@@ -88,6 +88,11 @@ In Simple terms yolov7_reid is a person detector.
 
 
 ## Installation Guide 
+```
+pip3 install sharpai-hub
+sharpai-cli yolov7_reid start
+```
+
 <details> 
    <summary><h3>Prerequisites</h3></summary>
 	1. Docker (Latest version) <br />
