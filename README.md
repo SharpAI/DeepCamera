@@ -81,6 +81,8 @@ In Simple terms yolov7_reid is a person detector.
     - ESP32-S3-Eye
   - Tested Cameras/CCTV/NVR
     - RTSP Camera (Lorex/Amrest/DoorBell)
+    - Blink Camera
+    - IMOU Camera
     - Google Nest (Indoor/Outdoor)
 </details>
 
