@@ -280,7 +280,7 @@ sharpai-cli <application name> start
 # Support
 - If you are using a camera but have no idea about the RTSP URL, please join SharpAI community for help.
 - SharpAI provides commercial support to companies which want to deploy AI Camera application to real world.
-## [Click to join sharpai slack channel](https://sharpai-invite-automation.herokuapp.com/)
+## [Click to join sharpai slack channel](https://join.slack.com/t/sharpai/shared_invite/zt-1nt1g0dkg-navTKx6REgeq5L3eoC1Pqg)
 
 # DeepCamera Architecture
 ![architecture](screenshots/DeepCamera_infrastructure.png)
