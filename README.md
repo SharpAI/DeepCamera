@@ -1,10 +1,8 @@
 <div align="center">
-<h1>&nbsp;&nbsp;DeepCamera </h1>
-  <p>
-		<b>
-        <h3> Empower camera with SOTA AI <br>ML pipeline for AI camera/CCTV <br>Easy to use Edge AI development</h3>
-        </b>
-	</p>
+<h1>DeepCamera</h1>
+<h3>Edge AI for Smart Camera Systems</h3>
+
+<p><b>Transform any camera into an intelligent monitoring system with state-of-the-art AI capabilities</b></p>
 
 <p>
     <a href="https://join.slack.com/t/sharpai/shared_invite/zt-1nt1g0dkg-navTKx6REgeq5L3eoC1Pqg">
@@ -22,11 +20,38 @@
     <a href="https://pepy.tech/project/sharpai-hub">
         <img alt="download" src=https://static.pepy.tech/personalized-badge/sharpai-hub?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads height=25>
     </a>
-    
 </p>
-
-<br>
 </div>
+
+## 🎯 Overview
+
+DeepCamera transforms traditional surveillance cameras and CCTV/NVR systems into intelligent monitoring solutions using advanced machine learning technologies. It provides:
+
+- Open-source facial recognition for intrusion detection
+- Fall detection capabilities
+- Smart parking lot monitoring
+- Local inference engine for privacy and performance
+
+SharpAI-hub is the cloud platform that enables rapid deployment of AI applications to your CCTV cameras and edge devices.
+
+## ✨ Key Features
+
+### 🤖 Advanced AI Capabilities
+- Facial Recognition
+- Person Re-identification (RE-ID)
+- Parking Space Management
+- Fall Detection
+- More features in development
+
+### 📊 Professional ML Pipeline
+- Feature clustering with Milvus vector database
+- Data labeling with Labelstudio
+- Comprehensive model training workflow
+
+### 💻 Edge AI Development
+- Containerized AI frameworks
+- Browser-based desktop environment
+- No VNC client installation needed
 
 DeepCamera empowers your traditional surveillance cameras and CCTV/NVR with machine learning technologies. 
 It provides open source facial recognition based intrusion detection, fall detection and parking lot monitoring with the inference engine on your local device.
@@ -48,6 +73,95 @@ SharpAI-hub is the cloud hosting for AI applications which help you deploy AI ap
   ## Easy to use Edge AI development environment
   - AI frameworks in docker
   - desktop in docker with web vnc client, so you don't need even install vnc client
+</details>
+
+## 🚀 Applications
+
+### 1. Person Recognition for Intruder Detection
+Advanced intruder detection using self-supervised person recognition (REID) technology. [Source code](https://github.com/SharpAI/DeepCamera/blob/master/src/yolov7_reid/src/detector_cpu.py)
+
+**Key Technologies:**
+- Yolov7 Tiny (COCO pretrained) for person detection
+- FastReID ResNet50 for feature extraction
+- Milvus vector database for self-supervised learning
+- Integration with Home-Assistant for smart home automation
+
+```bash
+pip3 install sharpai-hub
+sharpai-cli yolov7_reid start
+```
+
+### 2. Local Facial Recognition
+Secure, locally-deployed facial recognition system for intruder detection. All data stays on your device.
+```bash
+sharpai-cli local_deepcamera start
+```
+
+### 3. Cloud-Based Facial Recognition
+Free cloud-powered facial recognition system:
+```bash
+sharpai-cli login
+sharpai-cli device register
+sharpai-cli deepcamera start
+```
+
+### 4. Screen Monitor for Child Safety
+Monitor laptop screens using AI-powered feature extraction and local storage. Perfect for ensuring online safety for kids and teens.
+```bash
+sharpai-cli screen_monitor start
+```
+
+### 5. Basic Person Detection
+Simple and efficient person detection system:
+```bash
+sharpai-cli yolov7_person_detector start
+```
+
+## 📦 Installation Guide
+
+### Prerequisites
+- Docker (Latest version)
+- Python (v3.6 - v3.10)
+- Internet connection for initial setup
+
+### Quick Start
+1. Install SharpAI-Hub:
+```bash
+pip3 install sharpai-hub
+```
+
+2. Start desired application (example using yolov7_reid):
+```bash
+sharpai-cli yolov7_reid start
+```
+
+### Important URLs
+- Docker Desktop UI: http://localhost:8000
+- Home-Assistant: http://localhost:8123
+- Labelstudio: http://localhost:8080
+
+<details>
+<summary><h3>📱 Supported Devices</h3></summary>
+
+#### Edge AI Hardware
+- Nvidia Jetson
+  - Nano (ReComputer j1010)
+  - Xavier AGX
+- Single Board Computers
+  - Raspberry Pi 4GB/8GB
+- Desktop/Laptop
+  - MacOS
+  - Windows
+  - Ubuntu
+- MCU Cameras
+  - ESP32 CAM
+  - ESP32-S3-Eye
+
+#### Compatible Cameras
+- RTSP Cameras (Lorex/Amrest/DoorBell)
+- Blink Camera
+- IMOU Camera
+- Google Nest (Indoor/Outdoor)
 </details>
 
 # Application 1: Self-supervised person recognition(REID) for intruder detection
@@ -250,8 +364,7 @@ SharpAI Screen monitor captures screen extract screen image features(embeddings)
 # SharpAI-Hub AI Applications
 SharpAI community is continually working on bringing state-of-the-art computer vision application to your device.
 
-```
-sharpai-cli <application name> start
+```sharpai-cli <application name> start
 ```
 
 |Application|SharpAI CLI Name| OS/Device |
@@ -301,20 +414,50 @@ sharpai-cli <application name> start
 
 # FAQ
 
-## [How to install python3](https://www.python.org/downloads)
-## [How to install pip3](https://pip.pypa.io/en/stable/installation)
-##  How to install Docker-compose on Jetson Nano
-```
+## 🏗️ Architecture
+![architecture](screenshots/DeepCamera_infrastructure.png)
+
+## 🤝 Support & Community
+
+### Community Support
+- Join our [Slack Community](https://join.slack.com/t/sharpai/shared_invite/zt-1nt1g0dkg-navTKx6REgeq5L3eoC1Pqg) for help and discussions
+- Visit our [GitHub Issues](https://github.com/SharpAI/DeepCamera/issues) for technical support
+- Need help with camera setup? Our community is here to assist!
+
+### Commercial Support
+SharpAI offers professional support for enterprise deployments:
+- Real-time processing pipeline optimization
+- End-to-end model customization
+- Edge device clustering
+- Hardware-specific optimizations
+- Voice application pipelines (ASR/KWS)
+- Custom AI model development
+  - ReID models
+  - Behavior analysis
+  - Transformer-based solutions
+  - Contrastive learning
+
+[Contact us for commercial support](https://join.slack.com/t/sharpai/shared_invite/zt-1nt1g0dkg-navTKx6REgeq5L3eoC1Pqg)
+
+## ❓ FAQ
+
+### Installation & Setup
+- [How to install Python3](https://www.python.org/downloads)
+- [How to install pip3](https://pip.pypa.io/en/stable/installation)
+- [How to configure the web GUI](screenshots/how_to_config_on_web_gui.png)
+- [How to configure RTSP on GUI](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)
+- [Camera streaming URL formats](https://shinobi.video)
+
+### Device-Specific Setup
+#### Jetson Nano Docker-compose Installation
+```bash
 sudo apt-get install -y libhdf5-dev python3 python3-pip
 pip3 install -U pip
 sudo pip3 install docker-compose==1.27.4
 ```
-## [How to use web gui](screenshots/how_to_config_on_web_gui.png)
-## [How to config RTSP on GUI](https://github.com/SharpAI/DeepCamera/blob/master/docs/shinobi.md)   
-## [Camera streaming URL format](https://shinobi.video)
-## How to create token for Telegram Bot(DOC W.I.P)
-- Create Telegram Bot through @BotFather
-- Set Telegram Token in [Configure File](https://github.com/SharpAI/DeepCamera/blob/nano/docker/production_1.env#L15)
-- Send message to the new bot you created
+
+### Additional Resources
+- [Complete Feature List](docs/DeepCamera_Features.md)
+- [How to Contribute](Contributions.md)
 
 ## [Contributions](Contributions.md)
