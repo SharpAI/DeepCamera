@@ -82,10 +82,9 @@ class TelegramBot(threading.Thread):
         with open(self.chat_id_filepath, "w") as f:
             f.write(chat_id)
     def load_id(self):
-        if os.path.exists(self.chat_id_filepath):
+        if os.path.exists(self.chat_id_filepath) and chat_id == '':
             with open(self.chat_id_filepath,'r') as f:
                 chat_id = f.readline()
-                if chat_id == '':
-                    return None
+                return None
                 return chat_id
         return None
