@@ -84,6 +84,19 @@ if not _env_config_loaded:
             return {"backend": self.backend, "device": self.device}
 
 
+# Optional temporal tracker — smooths YOLO's per-frame flicker into stable,
+# persistent tracks (coasting through missed detections, confirmation to drop
+# single-frame false positives). Bundled alongside detect.py; if it's missing we
+# fall back to raw per-frame detections so the skill still runs.
+try:
+    from tracker import MultiObjectTracker
+    _TRACKER_AVAILABLE = True
+except Exception as _tracker_err:  # pragma: no cover - import guard
+    _TRACKER_AVAILABLE = False
+    print(f"[YOLO-2026] WARNING: tracker unavailable ({_tracker_err}); raw detections",
+          file=sys.stderr, flush=True)
+
+
 # Model size → ultralytics model name mapping (YOLO26, released Jan 2026)
 MODEL_SIZE_MAP = {
     "nano": "yolo26n",
@@ -239,6 +252,21 @@ def main():
     if isinstance(target_classes, str):
         target_classes = [c.strip() for c in target_classes.split(",")]
 
+    # ── Temporal tracking config ──
+    tracking_enabled = config.get("tracking", True)
+    if isinstance(tracking_enabled, str):
+        tracking_enabled = tracking_enabled.lower() in ("true", "1", "yes")
+    tracking_enabled = bool(tracking_enabled) and _TRACKER_AVAILABLE
+    try:
+        track_max_age = int(config.get("track_max_age", 15))
+    except (TypeError, ValueError):
+        track_max_age = 15
+    try:
+        track_min_hits = int(config.get("track_min_hits", 3))
+    except (TypeError, ValueError):
+        track_min_hits = 3
+    trackers = {}  # camera_id → MultiObjectTracker (one per camera)
+
     # ── Hardware detection & optimized model loading ──
     emit({"event": "progress", "stage": "init", "message": "Detecting compute hardware..."})
     env = HardwareEnv.detect()
@@ -341,6 +369,26 @@ def main():
                                 "bbox": [int(x1), int(y1), int(x2), int(y2)],
                             })
                 perf.record("postprocess", (time.perf_counter() - t0) * 1000)
+
+                # ── Temporal tracking: turn the raw per-frame boxes into smooth,
+                # persistent tracks (kills flicker). One tracker per camera. The
+                # original image + dims come from the YOLO result we already have,
+                # so there's no extra decode. Falls back to raw boxes on any error.
+                if tracking_enabled and results:
+                    try:
+                        r0 = results[0]
+                        oh, ow = (r0.orig_shape if getattr(r0, "orig_shape", None)
+                                  else (0, 0))
+                        if ow and oh:
+                            tk = trackers.get(camera_id)
+                            if tk is None:
+                                tk = MultiObjectTracker(max_age=track_max_age,
+                                                        n_init=track_min_hits)
+                                trackers[camera_id] = tk
+                            objects = tk.update(objects, int(ow), int(oh),
+                                                getattr(r0, "orig_img", None))
+                    except Exception as track_err:
+                        log(f"tracker error (using raw detections): {track_err}")
 
                 t0 = time.perf_counter()
                 emit({

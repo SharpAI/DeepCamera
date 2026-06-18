@@ -26,6 +26,24 @@ params:
     default: 0.8
     description: "Minimum detection confidence (0.1–1.0)"
 
+  - key: tracking
+    label: Stabilize Boxes (Tracking)
+    type: boolean
+    default: true
+    description: "Smooth detections across frames so boxes stop flickering — keeps a box on an object through brief missed detections and predicts its motion. Turn off for raw per-frame boxes."
+
+  - key: track_min_hits
+    label: Confirm After (frames)
+    type: number
+    default: 3
+    description: "How many frames an object must be seen before its box appears — higher suppresses single-frame false positives (only used when tracking is on)."
+
+  - key: track_max_age
+    label: Keep Box For (frames)
+    type: number
+    default: 15
+    description: "How long to keep a box on an object after detection is briefly lost, before giving up — higher = boxes persist longer through occlusion/flicker (only used when tracking is on)."
+
   - key: fps
     label: Frame Rate
     type: select
