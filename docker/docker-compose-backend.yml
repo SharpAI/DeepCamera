@@ -82,6 +82,18 @@ services:
     volumes:
       - snapshots:/tmp/snapshots
 
+  frontend:
+    build:
+      context: ../src/frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+        NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL:-ws://localhost:8000}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
 volumes:
   pg_data:
   redis_data:
