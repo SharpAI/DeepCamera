@@ -16,6 +16,8 @@
  * Aegis → Skill (env vars):
  *   AEGIS_GATEWAY_URL  — LLM gateway URL (e.g. http://localhost:5407)
  *   AEGIS_VLM_URL      — VLM server URL (e.g. http://localhost:5405)
+ *   AEGIS_VLM_BASE_URL — OpenAI-compatible cloud VLM base URL
+ *   AEGIS_VLM_API_KEY  — Cloud VLM API key
  *   AEGIS_SKILL_PARAMS — JSON params from skill config
  *   AEGIS_SKILL_ID     — Skill ID
  * 
@@ -38,6 +40,10 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const { execSync } = require('child_process');
+const {
+    resolveAtlasVlmConfig,
+    validateAtlasVlmConfig,
+} = require('./atlas-vlm-config.cjs');
 
 // ─── Config: Aegis env vars → CLI args → defaults ────────────────────────────
 
@@ -58,6 +64,10 @@ Usage: node scripts/run-benchmark.cjs [options]
 Options:
   --gateway URL   LLM gateway URL           (default: http://localhost:5407)
   --vlm URL       VLM server base URL       (disabled if omitted)
+  --atlas-vlm     Use Atlas Cloud for VLM scene analysis
+  --confirm-paid-atlas
+                  Confirm the Atlas benchmark will make paid API requests
+  --mode MODE     Test mode: llm, vlm, or full
   --out DIR       Results output directory   (default: ~/.aegis-ai/benchmarks)
   --no-open       Don't auto-open report in browser
   -h, --help      Show this help message
@@ -65,6 +75,11 @@ Options:
 Environment Variables (set by Aegis):
   AEGIS_GATEWAY_URL   LLM gateway URL
   AEGIS_VLM_URL       VLM server base URL
+  AEGIS_VLM_BASE_URL  OpenAI-compatible cloud VLM base URL
+  AEGIS_VLM_API_KEY   Cloud VLM API key
+  ATLASCLOUD_API_KEY  Atlas Cloud API key (only read with --atlas-vlm)
+  ATLASCLOUD_VLM_MODEL
+                      Optional Atlas vision model override
   AEGIS_SKILL_ID      Skill identifier (enables skill mode)
   AEGIS_SKILL_PARAMS  JSON params from skill config
 
@@ -78,15 +93,32 @@ Tests: 131 total (96 LLM + 35 VLM) across 16 suites
 let skillParams = {};
 try { skillParams = JSON.parse(process.env.AEGIS_SKILL_PARAMS || '{}'); } catch { }
 
+const ATLAS_VLM = resolveAtlasVlmConfig(args, process.env);
+const atlasVlmError = validateAtlasVlmConfig(ATLAS_VLM);
+if (atlasVlmError) {
+    console.error(`Error: ${atlasVlmError}`);
+    process.exit(2);
+}
+
 // Aegis provides config via env vars; CLI args are fallback for standalone
 const GATEWAY_URL = process.env.AEGIS_GATEWAY_URL || getArg('gateway', 'http://localhost:5407');
 const LLM_URL = process.env.AEGIS_LLM_URL || getArg('llm', '');  // Direct llama-server LLM port
 const VLM_URL = process.env.AEGIS_VLM_URL || getArg('vlm', '');
+const VLM_BASE_URL = process.env.AEGIS_VLM_BASE_URL || (ATLAS_VLM.enabled ? ATLAS_VLM.baseUrl : '');
 const RESULTS_DIR = getArg('out', path.join(os.homedir(), '.aegis-ai', 'benchmarks'));
 const IS_SKILL_MODE = !!process.env.AEGIS_SKILL_ID;
 const NO_OPEN = args.includes('--no-open') || skillParams.noOpen || false;
-// Auto-detect mode: if no VLM URL, default to 'llm' (skip VLM image-analysis tests)
-const TEST_MODE = skillParams.mode || (VLM_URL ? 'full' : 'llm');
+const HAS_VLM = !!(VLM_URL || VLM_BASE_URL);
+// Auto-detect mode: if no VLM endpoint, default to 'llm' (skip VLM image-analysis tests)
+const TEST_MODE = getArg('mode', skillParams.mode || (HAS_VLM ? 'full' : 'llm'));
+if (!['llm', 'vlm', 'full'].includes(TEST_MODE)) {
+    console.error(`Error: --mode must be llm, vlm, or full (received: ${TEST_MODE})`);
+    process.exit(2);
+}
+if (TEST_MODE === 'vlm' && !HAS_VLM) {
+    console.error('Error: --mode vlm requires --vlm URL, AEGIS_VLM_BASE_URL, or --atlas-vlm.');
+    process.exit(2);
+}
 const IDLE_TIMEOUT_MS = 30000; // Streaming idle timeout — resets on each received token
 const FIXTURES_DIR = path.join(__dirname, '..', 'fixtures');
 
@@ -96,7 +128,8 @@ const LLM_MODEL = process.env.AEGIS_LLM_MODEL || '';
 const LLM_API_KEY = process.env.AEGIS_LLM_API_KEY || '';
 const LLM_BASE_URL = process.env.AEGIS_LLM_BASE_URL || '';
 const VLM_API_TYPE = process.env.AEGIS_VLM_API_TYPE || 'openai-compatible';
-const VLM_MODEL = process.env.AEGIS_VLM_MODEL || '';
+const VLM_API_KEY = process.env.AEGIS_VLM_API_KEY || (ATLAS_VLM.enabled ? ATLAS_VLM.apiKey : '');
+const VLM_MODEL = process.env.AEGIS_VLM_MODEL || (ATLAS_VLM.enabled ? ATLAS_VLM.model : '');
 
 // ─── OpenAI SDK Clients ──────────────────────────────────────────────────────
 const OpenAI = require('openai');
@@ -114,10 +147,18 @@ const llmClient = new OpenAI({
     baseURL: llmBaseUrl,
 });
 
-// VLM client — always local llama-server
-const vlmClient = VLM_URL ? new OpenAI({
-    apiKey: 'not-needed',
-    baseURL: `${strip(VLM_URL)}/v1`,
+const vlmBaseUrl = VLM_BASE_URL
+    ? `${strip(VLM_BASE_URL)}/v1`
+    : VLM_URL
+        ? `${strip(VLM_URL)}/v1`
+        : '';
+
+// Cloud VLMs are opt-in; Atlas disables SDK retries so one benchmark request
+// never turns into multiple paid POSTs behind the caller's back.
+const vlmClient = vlmBaseUrl ? new OpenAI({
+    apiKey: VLM_API_KEY || 'not-needed',
+    baseURL: vlmBaseUrl,
+    maxRetries: ATLAS_VLM.enabled ? 0 : 2,
 }) : null;
 
 // ─── Model Family Capabilities Config ────────────────────────────────────────
@@ -236,7 +277,7 @@ try { targetServerParams = JSON.parse(process.env.AEGIS_SERVER_PARAMS || '{}'); 
 const results = {
     timestamp: new Date().toISOString(),
     gateway: GATEWAY_URL,
-    vlm: VLM_URL || null,
+    vlm: vlmBaseUrl || null,
     serverParams: targetServerParams,
     system: {},
     model: {},
@@ -2159,8 +2200,8 @@ Respond in JSON format:
 // ═══════════════════════════════════════════════════════════════════════════════
 
 suite('📸 VLM Scene Analysis', async () => {
-    if (!VLM_URL) {
-        skip('All VLM tests', 'No --vlm URL provided');
+    if (!vlmClient) {
+        skip('All VLM tests', 'No VLM endpoint configured');
         return;
     }
 
@@ -2553,80 +2594,86 @@ async function main() {
             : GATEWAY_URL;
 
     log(`  LLM:      ${LLM_API_TYPE} @ ${effectiveLlmUrl}${LLM_MODEL ? ' → ' + LLM_MODEL : ''}`);
-    log(`  VLM:      ${VLM_URL || '(disabled — use --vlm URL to enable)'}${VLM_MODEL ? ' → ' + VLM_MODEL : ''}`);
+    log(`  VLM:      ${vlmBaseUrl || '(disabled — use --vlm URL or --atlas-vlm)'}${VLM_MODEL ? ' → ' + VLM_MODEL : ''}`);
     log(`  Results:  ${RESULTS_DIR}`);
     log(`  Mode:     ${IS_SKILL_MODE ? 'Aegis Skill' : 'Standalone'} (streaming, ${IDLE_TIMEOUT_MS / 1000}s idle timeout)`);
     log(`  Time:     ${new Date().toLocaleString()}`);
 
-    // Healthcheck — ping the LLM endpoint via SDK
-    try {
-        const ping = await llmClient.chat.completions.create({
-            ...(LLM_MODEL && { model: LLM_MODEL }),
-            messages: [{ role: 'user', content: 'ping' }],
-        });
-        results.model.name = ping.model || 'unknown';
-        log(`  Model:    ${results.model.name}`);
-    } catch (err) {
-        log(`\n  ❌ Cannot reach LLM endpoint: ${err.message}`);
-        log(`     Base URL: ${llmBaseUrl}`);
-        log('     Check that the LLM server is running.\n');
-        emit({ event: 'error', message: `Cannot reach LLM endpoint: ${err.message}` });
-        process.exit(IS_SKILL_MODE ? 0 : 1);
-    }
-    // ── Streaming sanity check ────────────────────────────────────────────────
-    // Fires a tiny streaming call to verify the model actually produces content.
-    // Catches the Mistral "token-loop" bug: server started with a Qwen-specific
-    // --chat-template-kwargs flag causes Mistral to emit only empty token ID 31
-    // on every chunk, giving 0 content tokens for every test.
-    //
-    // This check saves ~30 minutes of doomed benchmark runs by failing fast.
-    log('\n  🔍 Streaming sanity check (10 tokens)...');
-    try {
-        const warmupParams = {
-            ...(LLM_MODEL && { model: LLM_MODEL }),
-            messages: [{ role: 'user', content: 'Reply with just the word: hello' }],
-            stream: true,
-            max_tokens: 200,  // models with thinking/analysis phases need >10 tokens to reach final output
-            ...getModelApiParams(LLM_MODEL),
-        };
-        const warmupStream = await llmClient.chat.completions.create(warmupParams);
-        let warmupContent = '';
-        let warmupChunks = 0;
-        const warmupController = new AbortController();
-        const warmupTimeout = setTimeout(() => warmupController.abort(), 15000);
+    // VLM-only mode does not require a separate LLM endpoint.
+    if (TEST_MODE !== 'vlm') {
+        // Healthcheck — ping the LLM endpoint via SDK
         try {
-            for await (const chunk of warmupStream) {
-                warmupChunks++;
-                const d = chunk.choices?.[0]?.delta;
-                if (d?.content) warmupContent += d.content;
-                if (d?.reasoning_content) warmupContent += d.reasoning_content;
-                if (d?.thinking) warmupContent += d.thinking;
-                if (d?.reasoning) warmupContent += d.reasoning;
-                if (warmupChunks >= 30) break; // enough chunks to decide
-            }
-        } finally {
-            clearTimeout(warmupTimeout);
-        }
-
-        if (warmupContent.trim().length === 0) {
-            // Model produced chunks but zero content — server is in a bad state
-            const modelName = results.model.name || LLM_MODEL || 'current model';
-            log(`\n  ❌ STREAMING SANITY CHECK FAILED`);
-            log(`     The model (${modelName}) produced ${warmupChunks} stream chunks but 0 content tokens.`);
-            log(`     This usually means the llama-server was started with an incompatible`);
-            log(`     --chat-template-kwargs flag (e.g. Qwen's enable_thinking:false applied to Mistral).`);
-            log(`\n  ➡  Fix: Reload the model in Aegis-AI to restart the llama-server with`);
-            log(`          the correct flags for this model family.`);
-            log(`          Mistral requires: --reasoning-budget 0`);
-            log(`          Qwen requires:    --chat-template-kwargs '{"enable_thinking":false}'\n`);
-            emit({ event: 'error', message: `Streaming sanity failed: ${warmupChunks} chunks, 0 content tokens. Reload the model in Aegis-AI to fix.` });
+            const ping = await llmClient.chat.completions.create({
+                ...(LLM_MODEL && { model: LLM_MODEL }),
+                messages: [{ role: 'user', content: 'ping' }],
+            });
+            results.model.name = ping.model || 'unknown';
+            log(`  Model:    ${results.model.name}`);
+        } catch (err) {
+            log(`\n  ❌ Cannot reach LLM endpoint: ${err.message}`);
+            log(`     Base URL: ${llmBaseUrl}`);
+            log('     Check that the LLM server is running.\n');
+            emit({ event: 'error', message: `Cannot reach LLM endpoint: ${err.message}` });
             process.exit(IS_SKILL_MODE ? 0 : 1);
         }
 
-        log(`  ✅ Streaming OK — ${warmupContent.trim().split(/\s+/).length} words, ${warmupChunks} chunks`);
-    } catch (err) {
-        // Non-fatal — if warmup errors, let the benchmark try; individual tests will surface the issue
-        log(`  ⚠️  Streaming warmup error (non-fatal): ${err.message}`);
+        // ── Streaming sanity check ────────────────────────────────────────────
+        // Fires a tiny streaming call to verify the model actually produces content.
+        // Catches the Mistral "token-loop" bug: server started with a Qwen-specific
+        // --chat-template-kwargs flag causes Mistral to emit only empty token ID 31
+        // on every chunk, giving 0 content tokens for every test.
+        //
+        // This check saves ~30 minutes of doomed benchmark runs by failing fast.
+        log('\n  🔍 Streaming sanity check (10 tokens)...');
+        try {
+            const warmupParams = {
+                ...(LLM_MODEL && { model: LLM_MODEL }),
+                messages: [{ role: 'user', content: 'Reply with just the word: hello' }],
+                stream: true,
+                max_tokens: 200,  // models with thinking/analysis phases need >10 tokens to reach final output
+                ...getModelApiParams(LLM_MODEL),
+            };
+            const warmupStream = await llmClient.chat.completions.create(warmupParams);
+            let warmupContent = '';
+            let warmupChunks = 0;
+            const warmupController = new AbortController();
+            const warmupTimeout = setTimeout(() => warmupController.abort(), 15000);
+            try {
+                for await (const chunk of warmupStream) {
+                    warmupChunks++;
+                    const d = chunk.choices?.[0]?.delta;
+                    if (d?.content) warmupContent += d.content;
+                    if (d?.reasoning_content) warmupContent += d.reasoning_content;
+                    if (d?.thinking) warmupContent += d.thinking;
+                    if (d?.reasoning) warmupContent += d.reasoning;
+                    if (warmupChunks >= 30) break; // enough chunks to decide
+                }
+            } finally {
+                clearTimeout(warmupTimeout);
+            }
+
+            if (warmupContent.trim().length === 0) {
+                // Model produced chunks but zero content — server is in a bad state
+                const modelName = results.model.name || LLM_MODEL || 'current model';
+                log(`\n  ❌ STREAMING SANITY CHECK FAILED`);
+                log(`     The model (${modelName}) produced ${warmupChunks} stream chunks but 0 content tokens.`);
+                log(`     This usually means the llama-server was started with an incompatible`);
+                log(`     --chat-template-kwargs flag (e.g. Qwen's enable_thinking:false applied to Mistral).`);
+                log(`\n  ➡  Fix: Reload the model in Aegis-AI to restart the llama-server with`);
+                log(`          the correct flags for this model family.`);
+                log(`          Mistral requires: --reasoning-budget 0`);
+                log(`          Qwen requires:    --chat-template-kwargs '{"enable_thinking":false}'\n`);
+                emit({ event: 'error', message: `Streaming sanity failed: ${warmupChunks} chunks, 0 content tokens. Reload the model in Aegis-AI to fix.` });
+                process.exit(IS_SKILL_MODE ? 0 : 1);
+            }
+
+            log(`  ✅ Streaming OK — ${warmupContent.trim().split(/\s+/).length} words, ${warmupChunks} chunks`);
+        } catch (err) {
+            // Non-fatal — if warmup errors, let the benchmark try; individual tests will surface the issue
+            log(`  ⚠️  Streaming warmup error (non-fatal): ${err.message}`);
+        }
+    } else {
+        results.model.name = VLM_MODEL || 'VLM';
     }
 
     results.system = collectSystemInfo();
@@ -2812,4 +2859,3 @@ if (isDirectRun) {
 }
 
 module.exports = { main };
-
