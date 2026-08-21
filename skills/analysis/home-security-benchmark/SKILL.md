@@ -27,6 +27,7 @@ Entry script: `scripts/run-benchmark.cjs`
 
 ```bash
 node scripts/run-benchmark.cjs --help
+npm test
 ```
 
 ## Quick Start
@@ -43,6 +44,10 @@ node scripts/run-benchmark.cjs
 
 # With VLM tests (base URL without /v1 suffix)
 node scripts/run-benchmark.cjs --vlm http://localhost:5405
+
+# Atlas Cloud VLM only (paid; inspect the live catalog price first)
+export ATLASCLOUD_API_KEY=your_api_key
+node scripts/run-benchmark.cjs --atlas-vlm --confirm-paid-atlas --mode vlm
 
 # Custom LLM gateway
 node scripts/run-benchmark.cjs --gateway http://localhost:5407
@@ -64,7 +69,11 @@ node scripts/run-benchmark.cjs --no-open
 | `AEGIS_LLM_API_KEY` | — | API key for cloud LLM providers |
 | `AEGIS_LLM_BASE_URL` | — | Cloud provider base URL (e.g. `https://api.openai.com/v1`) |
 | `AEGIS_VLM_URL` | *(disabled)* | VLM server base URL |
+| `AEGIS_VLM_BASE_URL` | — | OpenAI-compatible cloud VLM base URL |
+| `AEGIS_VLM_API_KEY` | — | Cloud VLM API key |
 | `AEGIS_VLM_MODEL` | — | Loaded VLM model ID |
+| `ATLASCLOUD_API_KEY` | — | Atlas key used only with `--atlas-vlm` |
+| `ATLASCLOUD_VLM_MODEL` | `qwen/qwen3-vl-235b-a22b-thinking` | Optional Atlas model override |
 | `AEGIS_SKILL_ID` | — | Skill identifier (enables skill mode) |
 | `AEGIS_SKILL_PARAMS` | `{}` | JSON params from skill config |
 
@@ -87,9 +96,16 @@ Platform parameters like `AEGIS_GATEWAY_URL` and `AEGIS_VLM_URL` are auto-inject
 |----------|---------|-------------|
 | `--gateway URL` | `http://localhost:5407` | LLM gateway |
 | `--vlm URL` | *(disabled)* | VLM server base URL |
+| `--atlas-vlm` | *(disabled)* | Use the Atlas OpenAI-compatible VLM endpoint |
+| `--confirm-paid-atlas` | — | Required acknowledgement before Atlas requests |
+| `--mode MODE` | auto | Run `llm`, `vlm`, or `full` suites |
 | `--out DIR` | `~/.aegis-ai/benchmarks` | Results directory |
 | `--report` | *(auto in skill mode)* | Force report generation |
 | `--no-open` | — | Don't auto-open report in browser |
+
+### Atlas Cloud safety boundary
+
+Atlas is an optional VLM provider; local Aegis remains the default. Before a run, verify the selected model still accepts image input and review its current catalog price. `--confirm-paid-atlas` is required because VLM mode sends one paid request per scene test. The Atlas client sets SDK retries to zero, so a failed request is not submitted again automatically.
 
 ## Protocol
 
