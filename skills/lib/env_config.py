@@ -848,7 +848,26 @@ class HardwareEnv:
             self.load_ms = (time.perf_counter() - t0) * 1000
             return pt_model, "pytorch"
 
-        # No optimization requested or framework missing
+        # No optimization requested or framework missing.
+        # mps ships without torch/ultralytics (see requirements_mps.txt) — the
+        # pre-built .onnx is still usable via plain CPUExecutionProvider even
+        # when the CoreML EP check that sets framework_ok failed, so try that
+        # before assuming ultralytics is importable (SharpAI/DeepCamera#207:
+        # this branch used to crash with "No module named 'ultralytics'" on
+        # every mps machine where framework_ok was False).
+        if self.backend == "mps":
+            optimized_path = self.get_optimized_path(model_name)
+            if optimized_path.exists():
+                model = self._load_onnx_coreml(str(optimized_path))
+                self.load_ms = (time.perf_counter() - t0) * 1000
+                _log(f"Loaded {self.export_format} model via ONNX CPU fallback ({self.load_ms:.0f}ms)")
+                return model, self.export_format
+            raise RuntimeError(
+                f"No optimized runtime available for mps and no pre-built "
+                f"{optimized_path} found — cannot load {model_name} without "
+                f"torch/ultralytics, which are not installed for mps."
+            )
+
         from ultralytics import YOLO
         model = YOLO(f"{model_name}.pt")
         fallback_device = self.device
