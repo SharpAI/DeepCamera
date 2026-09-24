@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node scripts/test-model-config.cjs && node scripts/test-atlas-vlm-config.cjs"
   },
   "keywords": [],
   "author": "",
