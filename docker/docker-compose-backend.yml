@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: namucam
+      POSTGRES_USER: namucam
+      POSTGRES_PASSWORD: namucam
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U namucam"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
+  go2rtc:
+    image: alexxit/go2rtc
+    ports:
+      - "1984:1984"
+    volumes:
+      - ./go2rtc.yaml:/config/go2rtc.yaml
+
+  backend:
+    build:
+      context: ../src/backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://namucam:namucam@db:5432/namucam
+      REDIS_URL: redis://redis:6379/0
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      GO2RTC_URL: http://go2rtc:1984
+      VLM_BASE_URL: ${VLM_BASE_URL:-http://host.docker.internal:5405}
+      LLM_BASE_URL: ${LLM_BASE_URL:-http://host.docker.internal:5407}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - snapshots:/tmp/snapshots
+
+  worker:
+    build:
+      context: ../src/backend
+      dockerfile: Dockerfile
+    command: celery -A backend.workers.celery_app worker --loglevel=info --concurrency=4
+    environment:
+      DATABASE_URL: postgresql+asyncpg://namucam:namucam@db:5432/namucam
+      REDIS_URL: redis://redis:6379/0
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      GO2RTC_URL: http://go2rtc:1984
+      VLM_BASE_URL: ${VLM_BASE_URL:-http://host.docker.internal:5405}
+      LLM_BASE_URL: ${LLM_BASE_URL:-http://host.docker.internal:5407}
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - snapshots:/tmp/snapshots
+
+  frontend:
+    build:
+      context: ../src/frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+        NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL:-ws://localhost:8000}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  pg_data:
+  redis_data:
+  minio_data:
+  snapshots:

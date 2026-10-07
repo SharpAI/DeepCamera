@@ -1,0 +1,2 @@
+# No extra dependencies — uses only Python stdlib (urllib, base64, json, signal)
+# The VLM runs externally via HTTP (Aegis gateway or local llama-server)

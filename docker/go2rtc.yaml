@@ -1,0 +1,12 @@
+api:
+  listen: ":1984"
+
+# Streams are added dynamically via the go2rtc REST API
+# Example:
+# streams:
+#   cam_001: rtsp://192.168.1.100/stream1
+#   cam_002: rtsp://192.168.1.101/stream1
+streams: {}
+
+webrtc:
+  listen: ":8555"
