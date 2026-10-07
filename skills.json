@@ -326,6 +326,37 @@
       "platforms": [
         "win-x64"
       ]
+    },
+    {
+      "id": "mmx-cli",
+      "name": "MiniMax CLI",
+      "description": "Generate text, images, video, speech, and music via MiniMax AI platform — MiniMax-M2.7 LLM, image-01, Hailuo-2.3 video, speech-2.8-hd TTS, and music-2.6.",
+      "version": "1.0.0",
+      "category": "integrations",
+      "url": "https://github.com/MiniMax-AI/cli",
+      "repo_url": "https://github.com/MiniMax-AI/cli",
+      "tags": [
+        "llm",
+        "image-generation",
+        "video-generation",
+        "tts",
+        "music-generation",
+        "minimax"
+      ],
+      "platforms": [
+        "linux-x64",
+        "linux-arm64",
+        "darwin-arm64",
+        "darwin-x64",
+        "win-x64"
+      ],
+      "capabilities": [
+        "text_generation",
+        "image_generation",
+        "video_generation",
+        "speech_synthesis",
+        "music_generation"
+      ]
     }
   ]
 }
